@@ -1,0 +1,149 @@
+.insp {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  background: #07020f;
+  animation: insp-in 0.35s ease-out;
+}
+@keyframes insp-in {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+}
+.insp-stage {
+  position: relative;
+  overflow: hidden;
+  min-height: 0;
+}
+.insp-stage canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.insp-side {
+  margin: 14px;
+  min-height: 0;
+}
+.hotspot {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.hotspot span {
+  position: absolute;
+  left: -12px;
+  top: -12px;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  color: #16001a;
+  background: var(--green);
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  box-shadow: 0 0 12px var(--green);
+}
+.hotspot:hover span,
+.hotspot[data-hi='true'] span {
+  background: var(--pink);
+}
+.hotspot::after {
+  content: '';
+  position: absolute;
+  left: -18px;
+  top: -18px;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(57, 255, 136, 0.6);
+  border-radius: 50%;
+  animation: ping 2.4s ease-out infinite;
+}
+@keyframes ping {
+  from {
+    transform: scale(0.5);
+    opacity: 1;
+  }
+  to {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+.insp-axes {
+  position: absolute;
+  left: 16px;
+  bottom: 14px;
+  display: flex;
+  gap: 16px;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.insp-callout {
+  position: absolute;
+  left: 16px;
+  top: 16px;
+  width: min(360px, calc(100% - 32px));
+  line-height: 1.5;
+  color: var(--text-2);
+}
+.insp-parts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.insp-parts button {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  background: none;
+  border: 0;
+  border-bottom: 1px dashed var(--line-soft);
+  padding: 7px 2px;
+  text-align: left;
+  cursor: pointer;
+  color: var(--text);
+}
+.insp-parts button:hover,
+.insp-parts button[aria-pressed='true'] {
+  color: var(--pink);
+}
+.insp-parts .n {
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  font-size: 10px;
+  font-family: var(--font-display);
+  color: #16001a;
+  background: var(--green);
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  flex: none;
+}
+@media (max-width: 860px) {
+  .insp {
+    grid-template-columns: 1fr;
+    grid-template-rows: 55vh 1fr;
+  }
+  .insp-side {
+    margin: 0 10px 10px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hotspot::after,
+  .insp {
+    animation: none;
+  }
+}
