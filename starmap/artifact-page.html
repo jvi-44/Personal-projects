@@ -1,14 +1,19 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Vi's Starmap · Sun Garden</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌻</text></svg>">
+<title>Vi's Starmap</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
-</head>
+<style>
+/* Dark-first single look: space. Full token set lives in css/style.css, injected below. */
+:root { color-scheme: dark; --bg: #070512; --text: #f3effd; }
+html, body { height: 100%; }
+body { background: var(--bg); color: var(--text); }
+</style>
+<script>
+  window.ARTIFACT = true;
+  // Stylesheets can only come from Google Fonts, so the app's own CSS is injected as an inline <style>.
+  fetch("css/style.css").then(function (r) { return r.text(); }).then(function (t) {
+    var s = document.createElement("style"); s.textContent = "html, body { height: 100%; }\n" + t; document.head.appendChild(s);
+  });
+</script>
 <body data-view="garden">
 <header class="top">
   <div class="brand"><span class="brand-mark">🌻</span><div><h1>Vi's Starmap</h1><p>sun garden · daily planner</p></div></div>
@@ -18,7 +23,7 @@
     <button id="nextDay" aria-label="Next day">›</button>
     <button id="todayBtn" class="ghost">Today</button>
   </nav>
-  <div class="syncpill" id="syncPill" role="status"><i></i><span>Checking Notion…</span></div>
+  <div class="syncpill" id="syncPill" role="status"><i></i><span>Loading…</span></div>
 </header>
 
 <main class="layout">
@@ -55,5 +60,3 @@
 <dialog id="modal"><form method="dialog"><header><h3 id="modalTitle"></h3><button aria-label="Close">✕</button></header><pre id="modalBody"></pre><footer><button type="button" id="copyPrev" hidden>Copy text</button></footer></form></dialog>
 <div id="toasts" aria-live="polite"></div>
 <script type="module" src="js/app.js"></script>
-</body>
-</html>

@@ -33,7 +33,33 @@ function load() {
   return fresh();
 }
 let S = load();
-const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch {} };
+const IN_ARTIFACT = typeof ARTIFACT !== "undefined" && ARTIFACT; // set by build-artifact.mjs
+let db = null, dbTimer = null, dbBusy = false, dbAgain = false;
+const save = () => {
+  try { localStorage.setItem(KEY, JSON.stringify(S)); } catch {}
+  if (db) { clearTimeout(dbTimer); dbTimer = setTimeout(pushDb, 1200); }
+};
+async function pushDb() {
+  if (dbBusy) { dbAgain = true; return; }
+  dbBusy = true;
+  try { S.savedAt = Date.now(); await db.doc("starmap/state").set({ savedAt: S.savedAt, json: JSON.stringify(S) }); }
+  catch (e) { /* read-only viewer or store unavailable: localStorage still holds it */ }
+  dbBusy = false;
+  if (dbAgain) { dbAgain = false; pushDb(); }
+}
+async function initDb() {
+  try {
+    const c = window.claude && (await window.claude.use("db")); if (!c) return;
+    const snap = await c.doc("starmap/state").get();
+    if (snap.exists) {
+      const remote = JSON.parse(snap.data().json);
+      if ((remote.savedAt || 0) > (S.savedAt || 0)) { S = { ...fresh(), ...remote }; try { localStorage.setItem(KEY, JSON.stringify(S)); } catch {} }
+    }
+    db = c;
+    if (!snap.exists) pushDb();
+    cur = today(); ensureWeek(cur); tab = day().plan ? "plan" : "inputs"; renderInputs(); renderSettings(); renderAll();
+  } catch (e) { db = null; }
+}
 
 const today = () => P.iso(new Date());
 const nowMin = () => { const d = new Date(); return d.getHours() * 60 + d.getMinutes(); };
@@ -58,7 +84,7 @@ function toast(msg, ms = 3200) {
   const t = document.createElement("div"); t.className = "toast"; t.textContent = msg;
   $("#toasts").appendChild(t); setTimeout(() => t.classList.add("out"), ms - 300); setTimeout(() => t.remove(), ms);
 }
-function modal(title, body) { $("#modalTitle").textContent = title; $("#modalBody").textContent = body; $("#modal").showModal(); }
+function modal(title, body) { $("#modalTitle").textContent = title; $("#modalBody").textContent = body; $("#copyPrev").hidden = false; $("#modal").showModal(); }
 
 /* ───────────── scene ───────────── */
 const scene = createScene($("#scene"), { onSelect: (i) => { selected = selected === i ? -1 : i; scene.setSelected(selected); renderFocus(); renderPlan(); } });
@@ -274,7 +300,7 @@ function renderWeek() {
       ${ts.length > wins.length ? `<div class="more">+${ts.length - wins.length} more</div>` : ""}
     </button>`;
   }).join("");
-  const conn = server.connected ? "Notion connected" : server.known ? "Preview mode (no NOTION_TOKEN)" : "Server offline";
+  const conn = IN_ARTIFACT ? "Plans are saved with this page. Ask Claude to sync a week and it writes the days into your Starmap page" : server.connected ? "Notion connected" : server.known ? "Preview mode (no NOTION_TOKEN)" : "Server offline";
   el.innerHTML = `<div class="whead"><button id="prevWeek" aria-label="Previous week">‹</button><div><small>Weekly agenda</small><h2>ЩΣΣK ${esc(w.label)}</h2></div><button id="nextWeek" aria-label="Next week">›</button></div>
     <div class="dlist">${cards}</div>
     <div class="wfoot"><label class="switch"><input type="checkbox" id="autosync" ${S.ui.autosync ? "checked" : ""}><span>Auto-sync to Notion</span></label>
@@ -346,8 +372,10 @@ async function syncWeek(k, { force = false, quiet = true } = {}) {
 function paintPill(state) {
   const pill = $("#syncPill"), s = $("span", pill);
   const pend = dates().filter((d) => S.days[d]?.plan && ["pending", "error"].includes(S.sync[d]?.status)).length;
-  let cls = "off", txt = "Server offline";
+  let cls = "off", txt = IN_ARTIFACT ? "Notion: Claude syncs on request" : "Server offline";
+  if (IN_ARTIFACT) cls = "preview";
   if (state === "syncing") { cls = "busy"; txt = "Syncing to Notion…"; }
+  else if (IN_ARTIFACT) { /* no local server in a published page */ }
   else if (server.known && !server.connected) { cls = "preview"; txt = "Notion: preview mode"; }
   else if (server.connected) { cls = pend ? "pending" : "ok"; txt = pend ? `${pend} day(s) waiting to sync` : "Notion in sync"; }
   pill.className = "syncpill " + cls; s.textContent = txt;
@@ -396,7 +424,7 @@ document.addEventListener("click", (e) => {
   if (t.dataset.open !== undefined) { const d = t.querySelector(".blk-desc"); if (d && !e.target.closest("button")) d.hidden = !d.hidden; return; }
   switch (t.id) {
     case "genBtn": return generate();
-    case "startOver": if (confirm("Discard this day's plan and start over?")) { day().plan = null; tab = "inputs"; commit(); } return;
+    case "startOver": if (t.dataset.arm) { day().plan = null; tab = "inputs"; commit(); } else { t.dataset.arm = "1"; t.textContent = "Tap again to discard this day's plan"; setTimeout(() => { if (t.isConnected) { delete t.dataset.arm; t.textContent = "Discard & start over"; } }, 4000); } return;
     case "ciReplan": { const [h, m] = $("#ciTime").value.split(":").map(Number); day().inputs.energy = $("#ciEnergy").value; return replanNow(h * 60 + m, { energy: $("#ciEnergy").value }); }
     case "ciAddBtn": { const v = $("#ciAdd").value; return addQuickTask(v); }
     case "saveSettings": {
@@ -413,9 +441,10 @@ document.addEventListener("click", (e) => {
     case "prevWeek": return goDay(P.addDays(cur, -7));
     case "nextWeek": return goDay(P.addDays(cur, 7));
     case "addWeek": { const nk = P.addDays(P.weekStart(cur), 7); ensureWeek(nk); goDay(nk); toast(`Added ЩΣΣK ${S.weeks[nk].label}. All 7 days are ready.`); if (server.connected) syncWeek(nk, { force: true, quiet: false }); return; }
-    case "syncNow": { const k = P.weekStart(cur); if (!server.connected) { toast(server.known ? "No NOTION_TOKEN set: showing a preview instead." : "Server offline."); return previewWeek(); } return syncWeek(k, { force: true, quiet: false }); }
+    case "syncNow": { if (IN_ARTIFACT) { toast("Plans are saved. Ask Claude: “sync this week to Notion”."); return previewWeek(); } const k = P.weekStart(cur); if (!server.connected) { toast(server.known ? "No NOTION_TOKEN set: showing a preview instead." : "Server offline."); return previewWeek(); } return syncWeek(k, { force: true, quiet: false }); }
     case "previewWeek": return previewWeek();
     case "resetCam": return scene.resetCamera();
+    case "copyPrev": { const txt = $("#modalBody").textContent; return navigator.clipboard.writeText(txt).then(() => toast("Copied"), () => { const r = document.createRange(); r.selectNodeContents($("#modalBody")); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); toast("Press Ctrl/Cmd+C to copy"); }); }
   }
 });
 document.addEventListener("change", (e) => {
@@ -446,4 +475,4 @@ setInterval(() => { if (cur === today() && !$("#tab-inputs").contains(document.a
 ensureWeek(cur);
 if (day().plan) tab = "plan"; else tab = "inputs";
 renderInputs(); renderSettings(); renderAll();
-checkServer();
+if (IN_ARTIFACT) { server = { known: false, connected: false }; paintPill(); initDb(); } else checkServer();

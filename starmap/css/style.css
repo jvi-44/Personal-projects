@@ -1,7 +1,7 @@
 :root {
   --bg: #070512; --panel: rgba(20, 15, 42, .78); --panel-2: rgba(34, 26, 66, .6); --line: rgba(190, 170, 255, .16);
   --text: #f3effd; --muted: #a9a2c9; --gold: #ffc233; --gold-2: #ff9d1a; --purple: #b79bff; --green: #7be29a; --blue: #7cc4ff; --pink: #ff8fb8; --danger: #ff7b7b;
-  --r: 14px; --font: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif; --serif: "Fraunces", Georgia, serif;
+  color-scheme: dark; --r: 14px; --font: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif; --serif: "Fraunces", Georgia, serif;
 }
 * { box-sizing: border-box; }
 html, body { height: 100%; margin: 0; }
@@ -135,6 +135,7 @@ form h3 { font-size: 14px; margin: 18px 0 8px; color: var(--purple); } form h3 s
 
 dialog { background: #14102a; color: var(--text); border: 1px solid var(--line); border-radius: var(--r); width: min(720px, 92vw); max-height: 82vh; padding: 0; }
 dialog::backdrop { background: rgba(0, 0, 0, .6); } dialog header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--line); } dialog header button { background: none; border: 0; }
+dialog footer { padding: 10px 16px; border-top: 1px solid var(--line); }
 dialog pre { margin: 0; padding: 16px; overflow: auto; max-height: 64vh; font: 12.5px/1.6 ui-monospace, Menlo, monospace; white-space: pre-wrap; }
 #toasts { position: fixed; top: 64px; right: 16px; display: grid; gap: 8px; z-index: 30; }
 .toast { background: #221a44; border: 1px solid var(--purple); border-radius: 12px; padding: 9px 14px; max-width: 340px; box-shadow: 0 8px 30px #0008; animation: in .3s; transition: opacity .3s; } .toast.out { opacity: 0; }
