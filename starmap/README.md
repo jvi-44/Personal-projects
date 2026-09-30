@@ -1,62 +1,38 @@
 # Vi's Starmap · Sun Garden 🌻
 
-A generative daily planner: a 3D sun floating in space with a glass greenhouse on top. Every key task is a sunflower, and the flower blooms as you complete it. Your week sits on the side and syncs **one-way** into your Notion page **✮ Vi's Starmap 2026 ✮**, in the same toggle format you already use.
+A generative daily planner set on a living 3D sun. A brass-and-glass greenhouse sits on the sun's crown; each of the day's six tasks (three *win the day* + three *also*) is a sunflower that sprouts when you plant it and blooms as you finish it. Seeds for the week grow as seedlings around the rim, and routine steps are lanterns that light up as you tick them off.
 
-## Run it
+Published as a pinned Claude artifact: <https://claude.ai/artifact/RJ7yPptKSamhJVvuVvH2Tb>
+
+## Using it
+
+- **Plant tasks:** type into the planter at the bottom (or tap an empty seed mound in the garden). Commas or new lines make several tasks; durations like `2h` or `45m` are understood. With Claude on, each task gets a realistic duration, a best place to do it, a finish line and a personal first-step tip.
+- **Today / This week:** the planter's toggle decides whether tasks go straight into today's greenhouse or into the week's seed tray.
+- **Places:** tap Morning / Afternoon / Evening in the day card to cycle through home, cafe, library, school and outdoors. Travel is added automatically when you change place.
+- **Plan my week:** choose where you'll be each day and which seeds to plant. Claude matches work to places (timed papers in the library, essays at the cafe, admin at school or home), stays inside each day's free time, splits big tasks across days, and writes a theme, description and encouraging tip for every day. Without Claude, a built-in planner does the same matching.
+- **Routines:** the Routines button turns the morning and night routines on or off. You can edit, reorder by retyping, add your own steps or pick from presets. Routines go in first; everything else grows around them.
+- **Through the day:** tick schedule blocks or bloom a whole task, and the flower opens with a burst of pollen. *Check in* sets your energy and re-plans from now. *✨ Coach me* asks Claude for a fresh note based on your progress and reflection.
+- **Notion:** *Copy for Notion* copies the week in your `[5.30-6.15] …` Starmap format. In local server mode with `NOTION_TOKEN` set, it also syncs one-way into the "ЩΣΣK …" week toggles.
+
+Keyboard: `/` focuses the planter, `Esc` closes the focused flower, double-click the garden to reset the view.
+
+## Develop
 
 ```bash
 cd starmap
-npm start                         # http://localhost:5173  (preview mode, nothing written to Notion)
-NOTION_TOKEN=secret_xxx npm start # live one-way sync to Notion
-npm test                          # planner + Notion-sync tests
+npm install
+npm test          # planner, coach and Notion-sync tests
+npm run build     # dist/app.js (local) + dist/starmap.html (single-file artifact)
+npm start         # build + http://localhost:5173 ; add NOTION_TOKEN=… for live Notion sync
 ```
-
-Requires Node 18+. There are no npm dependencies; Three.js is vendored in `vendor/`.
-
-### Connecting Notion (one time)
-
-1. Go to <https://www.notion.so/profile/integrations> and create an **internal integration**. Copy its secret.
-2. Open **✮ Vi's Starmap 2026 ✮** in Notion, then **⋯ → Connections → add your integration**. This gives it access to the page and its children.
-3. Start the server with `NOTION_TOKEN=…`. The header pill turns green when connected.
-
-The page id defaults to your Starmap page; override with `NOTION_PAGE_ID`.
-
-## How a day works
-
-1. **Plan the day** tab: enter 3 *win the day* tasks + 3 secondary tasks (minutes, optional "done when…", optional preferred place), small admin (one per line, `(minutes)` optional), where you'll be in the morning, afternoon and evening, and fixed commitments (`14:00-15:30 Physics lesson @school`).
-2. **Generate my day**. The planner lays down, in order:
-   - your fixed commitments,
-   - your evening wind-down (stacked back from sleep) and morning routine (from wake),
-   - travel blocks whenever the place changes, plus lunch and dinner,
-   - your six tasks, split into ≤90 min chunks with breaks, with the top win in your peak-energy window,
-   - one batched *admin sweep* in a low-energy slot,
-   - **flex buffers** in whatever is left ("room to adjust").
-   Every block carries a short, task-type-aware guide (essay, paper, study, code, and so on). Click a block to expand it.
-3. **Check in** during the day. Tick blocks off (flowers bloom, pollen bursts), set your energy, add something new that came up, or press **Re-plan rest of day**. Everything before *now* is kept; missed work is rescheduled into the time that remains (low energy shortens the secondaries and the focus chunks).
-4. **Skip & reschedule** on any task block pushes that work into the remaining time.
-5. Clicking a flower shows its slots and lets you mark the whole task bloomed.
-
-Routines, meal times, travel time, wake/sleep, peak focus and a task backlog (for autocomplete) live in the **Routines** tab. The defaults come from your "After Prelims" week.
-
-## Notion sync (dashboard → Notion, one-way)
-
-- The week starting Sunday 27 Sep is linked to your existing **ЩΣΣK After Prelims** toggle. Each date is matched to its `ƧЦПDΛY [27 Sep]`-style day toggle.
-- For each day, the app rewrites only the **to-do lines** and one `🌻 Win the day: …` bullet. Plain bullets and other notes you typed in a day are left alone. Lines look like `[5.30-6.15] Weights + bands…`, with checked state mirrored.
-- **Auto-add week:** the current week is created if it doesn't exist, and from Friday onward the next week is created right after the latest one, with all seven day toggles, colours and headings. You can also press **＋ Add next week**. New toggles are named `ЩΣΣK of 04 Oct` by default; rename in the Routines tab.
-- Changes sync ~2s after you edit (toggle *Auto-sync* off to sync manually). Days show a coloured dot: green synced, yellow pending, blue preview, red error.
-- Without `NOTION_TOKEN` the **Preview** button shows exactly what would be written.
-
-> Sync is overwrite-only for the to-do lines of days that have a plan here. Days without a plan in the dashboard are never touched.
-
-## Files
 
 | Path | What |
 | --- | --- |
-| `js/planner.js` | Scheduling engine, replanning, Notion line formatting (pure, unit-tested) |
-| `js/scene.js` | Three.js sun, greenhouse and sunflowers |
-| `js/app.js` | UI state, weekly agenda, check-ins, sync client |
-| `notion.js` | Notion REST client (find/create week and day toggles, rewrite to-dos) |
-| `server.js` | Static server and `/api/sync` proxy (Notion's API can't be called from a browser) |
-| `data/notion-map.json` | Created at runtime: remembers which Notion block is which week |
+| `js/planner.js` | Deterministic day scheduler: routines, travel, meals, energy-aware task placement, buffers, re-planning |
+| `js/coach.js` | Places and their working conditions; seed parsing; AI prompts (via the artifact `sample` capability) with offline fallbacks |
+| `js/scene.js` | Three.js scene: shader sun with corona and prominences, bloom, greenhouse, sunflowers, seedlings, lanterns |
+| `js/app.js` | UI, state, persistence (localStorage + artifact `db`), dialogs |
+| `notion.js`, `server.js` | Local server and one-way Notion sync (the Notion API can't be called from a browser) |
+| `build.mjs` | esbuild bundle + single-file artifact page |
 
-State is stored in your browser's `localStorage` (`starmap.v1`).
+The planner always computes the timestamps, so the schedule never overlaps. Claude only chooses which tasks go on which day and writes the words around them.

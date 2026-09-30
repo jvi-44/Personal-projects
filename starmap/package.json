@@ -1,8 +1,16 @@
 {
   "name": "vis-starmap-sun-garden",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
-  "description": "Generative daily planner: a sunflower greenhouse on a 3D sun, synced one-way to Notion.",
-  "scripts": { "start": "node server.js", "test": "node --test test/*.test.mjs" }
+  "description": "Generative daily planner: a sunflower greenhouse on a 3D sun, AI week planning, one-way Notion sync.",
+  "scripts": {
+    "build": "node build.mjs",
+    "start": "node build.mjs && node server.js",
+    "test": "node --test test/*.test.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "0.24.0",
+    "three": "0.170.0"
+  }
 }

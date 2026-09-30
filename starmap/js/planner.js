@@ -67,7 +67,7 @@ const KIND_RULES = [
   ["reading", /read|book|novel|article/i],
   ["exercise", /run|gym|workout|swim|tennis|weights|walk/i],
   ["outreach", /email|reply|message|call|meeting|reach out|recommendation|follow.?up|volunteer|stemulate/i],
-  ["admin", /admin|form|payment|book\b|register|sign up|submit|organi[sz]e|tidy|clean|laundry|errand/i],
+  ["admin", /admin|form\b|forms|pay\b|payment|fee\b|book\b|register|sign up|submit|organi[sz]e|tidy|clean|laundry|errand|renew/i],
 ];
 export const inferKind = (title) => (KIND_RULES.find(([, re]) => re.test(title)) || ["generic"])[0];
 
@@ -127,6 +127,14 @@ const GUIDE = {
 const pickGuide = (kind, i, n) => {
   const g = GUIDE[kind] || GUIDE.generic;
   return n === 1 ? g[0] : i === 0 ? g[0] : i === n - 1 ? g[2] : g[1];
+};
+
+export const PLACE_TIP = {
+  cafe: "Cafe mode: headphones in, sit facing a wall, one drink per 90 minutes.",
+  library: "Library mode: silent zone, phone in your bag, leave notes for the break.",
+  school: "At school: use gaps between classes for quick recall, save teacher questions for the end.",
+  home: "At home: desk not bed, door closed, phone in another room.",
+  outdoors: "Outside: short, light work only; bring water and shade.",
 };
 
 const BREAKS = [
@@ -367,7 +375,8 @@ export function generatePlan(inputs, settings = DEFAULT_SETTINGS, opts = {}) {
       const tag = job.tier === "primary" ? `Win the day #${job.order + 1}` : `Task #${job.order + 4}`;
       add({
         type: job.tier, start: run.s, end: run.s + len, title: job.task.title, loc: run.loc, taskId: job.task.id, chunk: n > 1 ? `${ci + 1}/${n}` : null, kind: job.kind, tag,
-        desc: pickGuide(job.kind, ci, n) + (job.task.doneWhen ? ` Done when: ${job.task.doneWhen}.` : ""),
+        tip: ci === 0 ? job.task.tip || null : null,
+        desc: pickGuide(job.kind, ci, n) + (ci === 0 && PLACE_TIP[run.loc] ? " " + PLACE_TIP[run.loc] : "") + (job.task.doneWhen ? ` Done when: ${job.task.doneWhen}.` : ""),
       });
       if (grid.runFree(run.s + len, 10)) {
         place(run.s + len, 10, "break");

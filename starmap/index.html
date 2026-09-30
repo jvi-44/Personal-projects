@@ -2,58 +2,54 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Vi's Starmap · Sun Garden</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌻</text></svg>">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vi's Starmap</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 </head>
-<body data-view="garden">
-<header class="top">
-  <div class="brand"><span class="brand-mark">🌻</span><div><h1>Vi's Starmap</h1><p>sun garden · daily planner</p></div></div>
-  <nav class="datenav" aria-label="Choose day">
-    <button id="prevDay" aria-label="Previous day">‹</button>
-    <label class="datepick"><span id="dateLabel"></span><input type="date" id="datePick" aria-label="Pick a date"></label>
-    <button id="nextDay" aria-label="Next day">›</button>
-    <button id="todayBtn" class="ghost">Today</button>
+<body>
+<!--APP-->
+<header class="bar">
+  <div class="brand"><h1>Vi's Starmap</h1><p>sun garden</p></div>
+  <nav class="days" aria-label="Days of the week">
+    <button id="prevDay" class="round" aria-label="Previous day">‹</button>
+    <div id="weekStrip" class="strip"></div>
+    <button id="nextDay" class="round" aria-label="Next day">›</button>
+    <label class="round cal" title="Pick a date"><span aria-hidden="true">◷</span><input type="date" id="datePick" aria-label="Pick a date"></label>
+    <button id="todayBtn" class="pill">Today</button>
   </nav>
-  <div class="syncpill" id="syncPill" role="status"><i></i><span>Checking Notion…</span></div>
+  <div class="tools">
+    <span id="aiBadge" class="badge">Built-in planner</span>
+    <button id="openRoutines" class="pill">Routines</button>
+    <button id="planWeekTop" class="gold">✨ Plan my week</button>
+  </div>
 </header>
 
-<main class="layout">
-  <aside class="panel left" id="leftPanel">
-    <div class="tabs" role="tablist">
-      <button role="tab" data-tab="plan" class="on">Today's plan</button>
-      <button role="tab" data-tab="inputs">Plan the day</button>
-      <button role="tab" data-tab="settings">Routines</button>
-    </div>
-    <section id="tab-plan" class="tabpane on"></section>
-    <section id="tab-inputs" class="tabpane"></section>
-    <section id="tab-settings" class="tabpane"></section>
-  </aside>
+<div id="scene" aria-label="3D sun garden. Each sunflower is one of the day's six tasks; seedlings are this week's seeds; lanterns are routine steps."></div>
 
-  <section class="stage" id="stage">
-    <div id="scene" aria-label="3D sun garden. Each sunflower is one of today's six tasks."></div>
-    <div class="hud hud-top">
-      <div class="meter" aria-label="Day progress"><div class="meter-bar"><b id="meterFill"></b></div><span id="meterText"></span></div>
-    </div>
-    <div class="hud hud-bottom" id="focusCard"></div>
-    <button class="hud-btn" id="resetCam" title="Reset camera">⌖</button>
-    <p class="hint">drag to orbit · scroll to zoom · click a flower</p>
-  </section>
 
-  <aside class="panel right" id="rightPanel"></aside>
-</main>
+<aside id="dayPanel" class="glass panel left" aria-label="Day plan"></aside>
+<aside id="weekPanel" class="glass panel right" aria-label="Week"></aside>
 
-<nav class="mobnav" aria-label="Sections">
-  <button data-view="garden" class="on">🌻<span>Garden</span></button>
-  <button data-view="plan">🗓<span>Plan</span></button>
-  <button data-view="week">✦<span>Week</span></button>
-</nav>
+<section id="focusCard" class="glass focus" hidden aria-live="polite"></section>
+<button id="resetView" class="round view" title="Reset view" aria-label="Reset view">⌂</button>
 
-<dialog id="modal"><form method="dialog"><header><h3 id="modalTitle"></h3><button aria-label="Close">✕</button></header><pre id="modalBody"></pre><footer><button type="button" id="copyPrev" hidden>Copy text</button></footer></form></dialog>
+<form id="seedForm" class="glass seedbar" autocomplete="off">
+  <div id="scope" class="scope" role="radiogroup" aria-label="Plant into">
+    <button type="button" role="radio" data-scope="today">Today</button>
+    <button type="button" role="radio" data-scope="week">This week</button>
+  </div>
+  <input id="seedInput" aria-label="Plant a task" enterkeyhint="send">
+  <button class="gold" type="submit">Plant 🌱</button>
+</form>
+
+<dialog id="weekDialog"><form id="weekForm" class="sheet" method="dialog"></form></dialog>
+<dialog id="routineDialog"><div id="routineForm" class="sheet"></div></dialog>
+<dialog id="copyDialog"><div class="sheet"><header><h2>Copy for Notion</h2><button type="button" class="x" data-close>✕</button></header><pre id="copyBody"></pre><footer><span></span><button id="copyAgain">Select all</button><button class="gold" data-close>Done</button></footer></div></dialog>
 <div id="toasts" aria-live="polite"></div>
-<script type="module" src="js/app.js"></script>
+<!--/APP-->
+<script src="dist/app.js"></script>
 </body>
 </html>
