@@ -39,3 +39,31 @@ test("heuristic week plan respects slots, budgets and places, and plans every da
   assert.ok(all.every((t) => t.tip));
   assert.ok(out.days.some((d) => d.admin.length));
 });
+
+test("check-in text moves the schedule without AI", () => {
+  const plan = P.generatePlan({ primary: [{ id: "a", title: "ESAT paper 3", min: 60 }, { id: "b", title: "Cornell essay", min: 60 }], secondary: [{ id: "g", title: "Gym", min: 45 }], locations: { morning: "home", afternoon: "home", evening: "home" } });
+  const first = [...plan.blocks].sort((x, y) => x.start - y.start)[0];
+  const late = C.checkinHeuristic("woke up late, at 6:15", plan.blocks, P.hm("06:20"));
+  assert.ok(late);
+  assert.equal([...late.blocks].filter((b) => b.type !== "flex").sort((x, y) => x.start - y.start)[0].start, first.start + 75);
+  const mv = C.checkinHeuristic("please move the cornell essay to 3pm and skip gym", plan.blocks, P.hm("09:00"));
+  assert.equal(mv.blocks.find((b) => b.taskId === "b").start, P.hm("15:00"));
+  assert.ok(!mv.blocks.some((b) => b.taskId === "g"));
+  assert.match(mv.reply, /moved “Cornell essay” to 3 pm/);
+  assert.equal(C.checkinHeuristic("feeling good", plan.blocks, 600), null);
+});
+
+test("reminders cover lunch, travel home and deep work", () => {
+  const { blocks } = P.generatePlan({ primary: [{ id: "a", title: "UCAS PS", min: 90 }], secondary: [], locations: { morning: "cafe", afternoon: "cafe", evening: "home" } });
+  const n = C.nudgesFor(blocks).map((x) => x.text).join(" | ");
+  assert.match(n, /Lunch break/);
+  assert.match(n, /Home from the cafe: plug in/);
+  assert.match(n, /Deep work in 5 minutes/);
+});
+
+test("titles keep their words when durations and times of day are stripped", () => {
+  const [a] = C.parseSeedsHeuristic("UCAS personal statement 2h morning");
+  assert.equal(a.title, "UCAS personal statement");
+  assert.equal(a.when, "morning");
+  assert.equal(a.min, 120);
+});

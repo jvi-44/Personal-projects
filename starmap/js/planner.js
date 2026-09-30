@@ -178,6 +178,7 @@ class Grid {
     this.n = DAY / CELL;
     this.owner = new Array(this.n).fill(null);
     this.loc = new Array(this.n).fill("home");
+    this.seg = new Array(this.n).fill("morning");
     for (let i = 0; i < Math.ceil(from / CELL); i++) this.owner[i] = "past";
   }
   free(i) { return i >= 0 && i < this.n && this.owner[i] === null; }
@@ -239,6 +240,15 @@ export function generatePlan(inputs, settings = DEFAULT_SETTINGS, opts = {}) {
   const add = (b) => { blocks.push({ id: bid(b.type), done: false, ...b }); };
   const place = (s, len, tag) => grid.take(s, len, tag);
 
+  const fill = !!opts.fill;
+  const lunchAt = hm(S.lunch), dinnerAt = hm(S.dinner);
+  let windStart, routineEnd;
+  if (fill) {
+    const r = frozen.filter((b) => b.type === "routine");
+    const am = r.filter((b) => b.start < 12 * 60), pm = r.filter((b) => b.start >= 12 * 60);
+    routineEnd = am.length ? Math.max(...am.map((b) => b.end)) : wake;
+    windStart = pm.length ? Math.min(...pm.map((b) => b.start)) : sleep;
+  } else {
   // 1) fixed commitments win every conflict
   for (const f of inputs.fixed || []) {
     if (f.start < from) continue;
@@ -249,7 +259,7 @@ export function generatePlan(inputs, settings = DEFAULT_SETTINGS, opts = {}) {
   // 2) evening wind-down stacked backwards from sleep
   const ev = S.eveningRoutine.map(([m, t]) => ({ m, t }));
   const evTotal = ev.reduce((a, b) => a + b.m, 0);
-  const windStart = Math.max(wake + 60, sleep - evTotal);
+  windStart = Math.max(wake + 60, sleep - evTotal);
   let t = windStart;
   for (const r of ev) {
     if (t >= from) { place(t, r.m, "routine"); add({ type: "routine", start: t, end: t + r.m, title: r.t, loc: "home", desc: "Evening routine. Protect it; tomorrow's energy is built here." }); }
@@ -265,10 +275,10 @@ export function generatePlan(inputs, settings = DEFAULT_SETTINGS, opts = {}) {
     if (s >= from) { place(s, m, "routine"); add({ type: "routine", start: s, end: s + m, title, loc: "home", desc: "Morning routine. Non-negotiable; it powers the rest of the day." }); }
     t = s + m;
   }
-  const routineEnd = t;
+  routineEnd = t;
+  }
 
   // 4) location segments + travel
-  const lunchAt = hm(S.lunch), dinnerAt = hm(S.dinner);
   const segs = [
     { name: "morning", loc: L.morning, start: routineEnd, end: lunchAt },
     { name: "afternoon", loc: L.afternoon, start: lunchAt, end: dinnerAt },
@@ -276,7 +286,7 @@ export function generatePlan(inputs, settings = DEFAULT_SETTINGS, opts = {}) {
   ];
   let prevLoc = "home";
   const segLocAt = (m) => (segs.find((s) => m >= s.start && m < s.end) || segs[2]).loc;
-  for (const sg of segs) {
+  for (const sg of fill ? [] : segs) {
     if (sg.loc !== prevLoc && sg.start >= from) {
       const s = grid.spot(sg.start, S.travelMin, { forward: 60, backward: 0, before: sg.end });
       if (s != null) {
@@ -286,7 +296,7 @@ export function generatePlan(inputs, settings = DEFAULT_SETTINGS, opts = {}) {
     }
     prevLoc = sg.loc;
   }
-  if (prevLoc !== "home") {
+  if (!fill && prevLoc !== "home") {
     const s = grid.spot(windStart - S.travelMin, S.travelMin, { forward: 0, backward: 60 });
     if (s != null && s >= from) {
       place(s, S.travelMin, "travel");
@@ -295,7 +305,7 @@ export function generatePlan(inputs, settings = DEFAULT_SETTINGS, opts = {}) {
   }
 
   // 5) meals
-  for (const [title, at, len, key] of [["Lunch", lunchAt, S.lunchMin, "lunch"], ["Dinner", dinnerAt, S.dinnerMin, "dinner"]]) {
+  for (const [title, at, len, key] of fill ? [] : [["Lunch", lunchAt, S.lunchMin, "lunch"], ["Dinner", dinnerAt, S.dinnerMin, "dinner"]]) {
     if (at < from) continue; // already happened (kept from the frozen plan)
     const s = grid.spot(at, len, { forward: 90, backward: 60, before: windStart });
     if (s != null && s >= from) {
@@ -306,10 +316,10 @@ export function generatePlan(inputs, settings = DEFAULT_SETTINGS, opts = {}) {
 
   // stamp location on every free cell
   for (const sg of segs) {
-    for (let i = Math.floor(sg.start / CELL); i < Math.ceil(sg.end / CELL) && i < grid.n; i++) grid.loc[i] = sg.loc;
+    for (let i = Math.floor(sg.start / CELL); i < Math.ceil(sg.end / CELL) && i < grid.n; i++) { grid.loc[i] = sg.loc; grid.seg[i] = sg.name; }
   }
   for (let i = 0; i < Math.floor(routineEnd / CELL); i++) grid.loc[i] = "home";
-  for (let i = Math.floor(windStart / CELL); i < grid.n; i++) grid.loc[i] = "home";
+  for (let i = Math.floor(windStart / CELL); i < grid.n; i++) { grid.loc[i] = "home"; grid.seg[i] = "evening"; }
 
   // 6) tasks → chunks
   const remaining = (task) => Math.max(0, task.min - (opts.doneMin?.[task.id] || 0));
@@ -362,17 +372,32 @@ export function generatePlan(inputs, settings = DEFAULT_SETTINGS, opts = {}) {
     return best;
   };
 
+  // earliest free run of `len` minutes at one location, starting at or after `min`, optionally inside a part of the day
+  const findSeq = (len, pref, min) => {
+    const cells = len / CELL;
+    for (let i = Math.ceil(Math.max(min, wake, from) / CELL); i + cells <= grid.n; i++) {
+      if (!grid.runFree(i * CELL, len)) continue;
+      const l0 = grid.loc[i];
+      let ok = true;
+      for (let k = 0; k < cells; k++) if (grid.loc[i + k] !== l0 || (pref && grid.seg[i + k] !== pref)) { ok = false; break; }
+      if (ok) return { s: i * CELL, loc: l0 };
+    }
+    return null;
+  };
   const overflow = [];
-  const order = [...jobs].sort((a, b) => (a.tier === b.tier ? a.order - b.order : a.tier === "primary" ? -1 : 1));
-  let breakN = 0;
+  // tasks with a chosen part of the day claim it first; the rest follow priority order through the day
+  const hasPref = (j) => ["morning", "afternoon", "evening"].includes(j.task.when);
+  const order = [...jobs].sort((a, b) => (hasPref(b) - hasPref(a)) || (a.tier === b.tier ? a.order - b.order : a.tier === "primary" ? -1 : 1));
+  let breakN = 0, cursor = Math.max(routineEnd, from);
   for (const job of order) {
-    const scorer = (m) => energyAt(S.peak, m);
+    const pref = ["morning", "afternoon", "evening"].includes(job.task.when) ? job.task.when : null;
     job.chunks.forEach((len, ci) => {
-      const run = findRun(len, scorer, job.task.where, true);
+      const run = (pref && findSeq(len, pref, from)) || findSeq(len, null, pref ? from : cursor) || findSeq(len, null, from);
       if (!run) { overflow.push({ task: job.task, min: len }); return; }
       place(run.s, len, "task");
+      if (!pref) cursor = Math.max(cursor, run.s + len);
       const n = job.chunks.length;
-      const tag = job.tier === "primary" ? `Win the day #${job.order + 1}` : `Task #${job.order + 4}`;
+      const tag = job.tier === "primary" ? `Win the day #${job.order + 1}` : `Also #${job.order + 1}`;
       add({
         type: job.tier, start: run.s, end: run.s + len, title: job.task.title, loc: run.loc, taskId: job.task.id, chunk: n > 1 ? `${ci + 1}/${n}` : null, kind: job.kind, tag,
         tip: ci === 0 ? job.task.tip || null : null,
@@ -381,6 +406,7 @@ export function generatePlan(inputs, settings = DEFAULT_SETTINGS, opts = {}) {
       if (grid.runFree(run.s + len, 10)) {
         place(run.s + len, 10, "break");
         add({ type: "break", start: run.s + len, end: run.s + len + 10, title: "Break", loc: run.loc, desc: BREAKS[breakN++ % BREAKS.length] });
+        if (!pref) cursor = Math.max(cursor, run.s + len + 10);
       }
     });
   }
@@ -438,7 +464,9 @@ export function taskProgress(task, blocks) {
 
 /* Re-plan the rest of the day from `now`. Keeps whatever already happened. */
 export function replan(inputs, settings, prevBlocks, now) {
-  const frozen = prevBlocks.filter((b) => b.done || b.end <= now || (b.start < now && b.end > now));
+  // keep what happened (and what's happening); unfinished task blocks from earlier get rescheduled, not duplicated
+  const isTask = (b) => ["primary", "secondary", "admin"].includes(b.type);
+  const frozen = dropOrphanBreaks(prevBlocks.filter((b) => b.done || (b.end <= now && !isTask(b)) || (b.start < now && b.end > now)));
   const done = doneMinutes(frozen);
   // tasks already fully done, or marked done, don't return
   const p = (arr) => (arr || []).map((t) => ({ ...t, done: t.done || (done[t.id] || 0) >= t.min }));
@@ -466,3 +494,99 @@ export const notionHeadline = (inputs) => {
   const wins = (inputs.primary || []).filter((t) => t.title).map((t) => t.title);
   return wins.length ? `🌻 Win the day: ${wins.join(" · ")}` : null;
 };
+
+/* ───────────── manual schedule editing (pure) ─────────────
+ * "Items" are what the person reorders: a run of routine steps, a task chunk with the
+ * break that follows it, or any single block. Flex buffers are free time and are
+ * recomputed after every edit.
+ */
+const clone = (blocks) => blocks.map((b) => ({ ...b }));
+export function itemsOf(blocks) {
+  const out = [];
+  for (const b of [...blocks].filter((b) => b.type !== "flex").sort((a, b) => a.start - b.start)) {
+    const last = out[out.length - 1];
+    const joinRoutine = b.type === "routine" && last?.kind === "routine" && last.end === b.start;
+    const joinBreak = b.type === "break" && last && ["primary", "secondary", "admin"].includes(last.kind) && last.end === b.start && last.blocks.length === 1;
+    if (joinRoutine || joinBreak) { last.blocks.push(b); last.end = b.end; continue; }
+    out.push({ key: b.id, kind: b.type, start: b.start, end: b.end, blocks: [b] });
+  }
+  return out;
+}
+const shiftItem = (it, d) => { it.blocks.forEach((b) => { b.start += d; b.end += d; }); it.start += d; it.end += d; };
+const flatten = (items) => items.flatMap((it) => it.blocks).sort((a, b) => a.start - b.start);
+
+/* Fixed plans and the night routine hold their place; everything else flows around them. */
+const anchored = (it) => it.kind === "fixed" || (it.kind === "routine" && it.start >= 18 * 60);
+/* Push later items forward so nothing overlaps. `pinKey` keeps its time; anchored items never move. */
+export function resolve(items, pinKey = null) {
+  items.sort((a, b) => a.start - b.start || (a.key === pinKey ? -1 : b.key === pinKey ? 1 : 0));
+  const pin = items.find((it) => it.key === pinKey);
+  if (pin) { // anything that started before the pinned item but runs into it goes after it
+    for (const it of items) if (it !== pin && !anchored(it) && it.start < pin.start && it.end > pin.start) shiftItem(it, pin.end - it.start);
+    items.sort((a, b) => a.start - b.start || (a.key === pinKey ? -1 : b.key === pinKey ? 1 : 0));
+  }
+  for (let i = 1; i < items.length; i++) {
+    const it = items[i];
+    const prevEnd = Math.max(...items.slice(0, i).map((p) => p.end));
+    if (it.start >= prevEnd || anchored(it) || it.key === pinKey) continue;
+    shiftItem(it, prevEnd - it.start);
+    items.sort((a, b) => a.start - b.start);
+  }
+  return items;
+}
+
+/* Move an item up (-1) or down (+1) in the day: the two swap places within the span they share. */
+export function moveItem(blocks, key, dir) {
+  const items = itemsOf(clone(blocks));
+  const i = items.findIndex((it) => it.key === key), j = i + dir;
+  if (i < 0 || j < 0 || j >= items.length) return blocks;
+  const [a, b] = dir > 0 ? [items[i], items[j]] : [items[j], items[i]]; // a is earlier
+  const gap = b.start - a.end, aLen = a.end - a.start;
+  const start = a.start;
+  shiftItem(b, start - b.start);
+  shiftItem(a, b.end + Math.max(0, gap) - a.start);
+  void aLen;
+  return flatten(resolve(items, b.key));
+}
+
+/* Set an item's start (and, for a single block, its end) and push what follows. */
+export function setItemTime(blocks, key, start, end = null) {
+  const items = itemsOf(clone(blocks));
+  const it = items.find((x) => x.key === key);
+  if (!it) return blocks;
+  if (end != null && it.blocks.length === 1 && end > start) { it.blocks[0].start = start; it.blocks[0].end = end; it.start = start; it.end = end; }
+  else shiftItem(it, start - it.start);
+  return flatten(resolve(items, key));
+}
+
+/* Shift every unfinished item starting at/after `fromMin` by `delta` minutes (fixed commitments stay). */
+export function shiftFrom(blocks, fromMin, delta) {
+  const items = itemsOf(clone(blocks));
+  const first = items.find((it) => it.end > fromMin && !it.blocks.every((b) => b.done) && !anchored(it));
+  if (!first) return blocks;
+  shiftItem(first, delta);
+  return flatten(resolve(items, first.key));
+}
+
+export function removeItem(blocks, key) {
+  const items = itemsOf(clone(blocks)).filter((it) => it.key !== key);
+  return flatten(items);
+}
+
+/* A break only makes sense straight after a piece of work. */
+export function dropOrphanBreaks(blocks) {
+  const work = blocks.filter((b) => ["primary", "secondary", "admin"].includes(b.type));
+  return blocks.filter((b) => b.type !== "break" || b.done || work.some((w) => w.end === b.start));
+}
+/* Recompute flex buffers in every gap of 15+ minutes between wake and sleep. */
+export function refillFlex(blocks, settings = DEFAULT_SETTINGS) {
+  const S = { ...DEFAULT_SETTINGS, ...settings };
+  const wake = hm(S.wake), sleep = hm(S.sleep);
+  const rest = dropOrphanBreaks(clone(blocks).filter((b) => b.type !== "flex")).sort((a, b) => a.start - b.start);
+  const out = [...rest];
+  let t = wake;
+  const gap = (s, e) => { if (e - s >= 15) out.push({ id: bid("flex"), type: "flex", start: s, end: e, title: e - s >= 40 ? "Flex buffer" : "Buffer", loc: "home", done: false, desc: e - s >= 40 ? "Room to adjust: spillover, an errand, or real rest." : "Short buffer to breathe." }); };
+  for (const b of rest) { if (b.start > t) gap(t, Math.min(b.start, sleep)); t = Math.max(t, b.end); }
+  if (t < sleep) gap(t, sleep);
+  return out.sort((a, b) => a.start - b.start || a.end - b.end);
+}

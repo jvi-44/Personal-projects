@@ -6,22 +6,32 @@ Published as a pinned Claude artifact: <https://claude.ai/artifact/RJ7yPptKSamhJ
 
 ## Using it
 
-- **Plant tasks:** type into the planter at the bottom (or tap an empty seed mound in the garden). Commas or new lines make several tasks; durations like `2h` or `45m` are understood. With Claude on, each task gets a realistic duration, a best place to do it, a finish line and a personal first-step tip.
-- **Today / This week:** the planter's toggle decides whether tasks go straight into today's greenhouse or into the week's seed tray.
-- **Places:** tap Morning / Afternoon / Evening in the day card to cycle through home, cafe, library, school and outdoors. Travel is added automatically when you change place.
-- **Plan my week:** choose where you'll be each day and which seeds to plant. Claude matches work to places (timed papers in the library, essays at the cafe, admin at school or home), stays inside each day's free time, splits big tasks across days, and writes a theme, description and encouraging tip for every day. Without Claude, a built-in planner does the same matching.
-- **Routines:** the Routines button turns the morning and night routines on or off. You can edit, reorder by retyping, add your own steps or pick from presets. Routines go in first; everything else grows around them.
-- **Through the day:** tick schedule blocks or bloom a whole task, and the flower opens with a burst of pollen. *Check in* sets your energy and re-plans from now. *✨ Coach me* asks Claude for a fresh note based on your progress and reflection.
-- **Notion:** *Copy for Notion* copies the week in your `[5.30-6.15] …` Starmap format. In local server mode with `NOTION_TOKEN` set, it also syncs one-way into the "ЩΣΣK …" week toggles.
+**Days**
+- **Plant tasks** in the planter at the bottom (or tap an empty seed mound). Commas or new lines make several tasks; `2h`, `45m`, `morning`/`afternoon`/`evening` are understood. With Claude on, each task gets a realistic length, a best time of day, a finish line and a first-step tip.
+- **Prioritise** with ▲▼ (or drag) inside *Win the day* and *Also*. The schedule runs tasks in that order; tasks with a best time of day (set in a task's editor) claim that part of the day first.
+- **✨ Plan my day**: pick places, energy, fixed plans and a note for Claude. The day is rebuilt in priority order around your routines, then Claude adds a theme, tips and 5–8 reminders tied to the schedule.
+- **Edit the schedule**: drag items or use ▲▼ to swap them; open an item to set its start/end. Later items move forward; fixed plans and the night routine stay put. *Add to schedule* inserts your own event. Once edited, the schedule is kept as you left it (new tasks slot into free time) until you choose *Re-plan by priority*.
+- **Check in** in plain words: “woke up late, start from 8:30”, “move ESAT paper to 3pm and push the rest”, “skip gym”, “add dentist at 4 for 45 min”. Claude rewrites the schedule; without Claude, a built-in parser handles those phrasings.
+- **Reminders** appear in the schedule and pop up at their time while the page is open (lunch, leaving for the cafe, getting home and charging devices, wind-down…).
 
-Keyboard: `/` focuses the planter, `Esc` closes the focused flower, double-click the garden to reset the view.
+**Weeks**
+- **Saturday is reset day**: the week card shows a banner and *Plan my week* defaults to next week. Choose a **theme word**, where you'll be each day, and the seeds to plant. The week grows as a draft in the garden.
+- **Confirm → Notion** shows exactly what will be written, then creates `ЩΣΣK <theme>` on your Starmap page right after the current week, with a toggle per day and a checkbox per task with its final times (routines, meals, travel and buffers are left out).
+- After confirming, edits sync automatically (about 15 s after you stop changing things). Days you haven't planned here keep whatever Notion already has. The current week, *After Prelims*, is linked: press *Sync to Notion* once to take it over.
+- The **Notion card** (bottom right) previews the week in Notion's style, *Check Notion* reads back what's really there, and *Open in Notion ↗* opens the page in a new tab (Notion pages can't be embedded inside an artifact).
+
+**Rituals**
+- Tick morning and night routine steps in the schedule, or tap a day in the **Rituals** tracker to tick the whole routine. Streaks count days with at least 80% done. Each step is a lantern on the greenhouse rim.
+- **Routines** (top bar) turns each routine on or off, edits, reorders and adds steps, and sets wake/sleep, meals, travel time and usual places.
+
+Keyboard: `/` focuses the planter, `Esc` closes the focused flower, `Ctrl/⌘+Enter` sends a check-in.
 
 ## Develop
 
 ```bash
 cd starmap
 npm install
-npm test          # planner, coach and Notion-sync tests
+npm test          # planner, schedule editing, coach, check-in and Notion-sync tests
 npm run build     # dist/app.js (local) + dist/starmap.html (single-file artifact)
 npm start         # build + http://localhost:5173 ; add NOTION_TOKEN=… for live Notion sync
 ```
@@ -31,7 +41,8 @@ npm start         # build + http://localhost:5173 ; add NOTION_TOKEN=… for liv
 | `js/planner.js` | Deterministic day scheduler: routines, travel, meals, energy-aware task placement, buffers, re-planning |
 | `js/coach.js` | Places and their working conditions; seed parsing; AI prompts (via the artifact `sample` capability) with offline fallbacks |
 | `js/scene.js` | Three.js scene: shader sun with corona and prominences, bloom, greenhouse, sunflowers, seedlings, lanterns |
-| `js/app.js` | UI, state, persistence (localStorage + artifact `db`), dialogs |
+| `js/notionsync.js` | Builds your Notion week markup, finds a week's toggle on the page, replaces it or inserts a new week (via the artifact `mcp` Notion connector) |
+| `js/app.js` | UI, state, persistence (localStorage + artifact `db`), habits, reminders, dialogs |
 | `notion.js`, `server.js` | Local server and one-way Notion sync (the Notion API can't be called from a browser) |
 | `build.mjs` | esbuild bundle + single-file artifact page |
 

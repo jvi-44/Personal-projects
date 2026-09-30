@@ -23,6 +23,7 @@
   <div class="tools">
     <span id="aiBadge" class="badge">Built-in planner</span>
     <button id="openRoutines" class="pill">Routines</button>
+    <button id="planDayTop" class="pill">✨ Plan my day</button>
     <button id="planWeekTop" class="gold">✨ Plan my week</button>
   </div>
 </header>
@@ -31,7 +32,11 @@
 
 
 <aside id="dayPanel" class="glass panel left" aria-label="Day plan"></aside>
-<aside id="weekPanel" class="glass panel right" aria-label="Week"></aside>
+<div class="rightcol">
+  <aside id="weekPanel" class="glass panel right" aria-label="Week"></aside>
+  <aside id="notionCard" class="notion" aria-label="Notion preview"></aside>
+</div>
+<div id="nudge" class="glass nudge" role="status" aria-live="polite" hidden></div>
 
 <section id="focusCard" class="glass focus" hidden aria-live="polite"></section>
 <button id="resetView" class="round view" title="Reset view" aria-label="Reset view">⌂</button>
@@ -45,6 +50,8 @@
   <button class="gold" type="submit">Plant 🌱</button>
 </form>
 
+<dialog id="dayDialog"><form id="dayForm" class="sheet" method="dialog"></form></dialog>
+<dialog id="confirmDialog"><form id="confirmForm" class="sheet" method="dialog"></form></dialog>
 <dialog id="weekDialog"><form id="weekForm" class="sheet" method="dialog"></form></dialog>
 <dialog id="routineDialog"><div id="routineForm" class="sheet"></div></dialog>
 <dialog id="copyDialog"><div class="sheet"><header><h2>Copy for Notion</h2><button type="button" class="x" data-close>✕</button></header><pre id="copyBody"></pre><footer><span></span><button id="copyAgain">Select all</button><button class="gold" data-close>Done</button></footer></div></dialog>
