@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cartographer's Torment</title>
+<style>
+body{font-family:system-ui,sans-serif;background:#10202b;color:#e8f1f5;max-width:560px;margin:0 auto;padding:24px 16px}
+h1{font-size:1.5rem;margin:0 0 4px}.sub{color:#8fa9b8;margin-bottom:20px}
+.q{font-size:1.2rem;margin:16px 0}.meta{color:#8fa9b8;font-size:.9rem}
+button{display:block;width:100%;text-align:left;margin:8px 0;padding:12px 14px;font-size:1rem;background:#1b3444;color:inherit;border:1px solid #2d4d62;border-radius:8px;cursor:pointer}
+button:hover:enabled{background:#24445a}button:disabled{cursor:default}
+.ok{background:#1f6b45!important;border-color:#2fa86a}.bad{background:#7a2a2a!important;border-color:#b34545}
+.fact{margin:12px 0;color:#b9d0dc;min-height:2.6em}.next{text-align:center;background:#2f7fa8;border:0}
+</style></head><body>
+<h1>🌍 Cartographer's Torment</h1><div class="sub">Obscure geography. No mercy.</div>
+<div id="app"></div>
+<script>
+const POOL=[
+["Which Pacific nation has its capital at Palikir?",["Palau","Marshall Islands","Federated States of Micronesia","Kiribati"],2,"Palau's capital is Ngerulmud; Palikir is on Pohnpei."],
+["Baarle-Hertog, a patchwork of exclaves with enclaves inside them, belongs to which country?",["Netherlands","Belgium","Luxembourg","Germany"],1,"It interlocks with Dutch Baarle-Nassau; the border runs through houses."],
+["Which strait separates Sakhalin Island from mainland Russia?",["La Pérouse","Tsugaru","Tatar","Korea"],2,"The Strait of Tartary (Tatar Strait) is quite shallow at its narrowest."],
+["The Danakil Depression, one of Earth's hottest places, lies mostly in which country?",["Eritrea","Ethiopia","Djibouti","Sudan"],1,"It sits in Ethiopia's Afar region, up to ~125 m below sea level."],
+["Which of these is doubly landlocked (every neighbour is also landlocked)?",["Kazakhstan","Mongolia","Bolivia","Uzbekistan"],3,"Only Uzbekistan and Liechtenstein qualify."],
+["What is the legislative capital of Eswatini?",["Mbabane","Lobamba","Manzini","Siteki"],1,"Mbabane is the administrative capital."],
+["The Northwest Angle, the northernmost point of the contiguous US, is part of which state?",["Michigan","North Dakota","Minnesota","Maine"],2,"It's reachable by land only through Canada."],
+["Which narrow strip of land connects Afghanistan to China?",["Khyber Pass","Wakhan Corridor","Hindu Kush Gap","Bolan Corridor"],1,"A buffer drawn in the 1890s between British India and Russia."],
+["Which sea is the only one in the world with no land boundaries?",["Sargasso Sea","Coral Sea","Weddell Sea","Celebes Sea"],0,"It's defined by ocean currents, in the North Atlantic."],
+["Carstensz Pyramid, often cited as Oceania's highest peak, is in which country?",["Papua New Guinea","Australia","New Zealand","Indonesia"],3,"It's in Indonesia's Papua region."],
+["Which is one of the landmasses closest to Point Nemo, the oceanic pole of inaccessibility?",["Ducie Island","Tristan da Cunha","Kerguelen","Fiji"],0,"Ducie Island, Motu Nui and Maher Island, about 2,688 km away."],
+["Which lake's outflowing river reverses its flow direction each year with the monsoon?",["Lake Toba","Tonlé Sap","Lake Inle","Lake Biwa"],1,"The Tonlé Sap river flows into the lake during the wet season."],
+["Which exclave province is separated from the rest of its country by the DR Congo's coastline strip?",["Cabinda","Oecusse","Kaliningrad","Ceuta"],0,"Cabinda belongs to Angola."],
+["Lake Titicaca is shared by Peru and which other country?",["Chile","Bolivia","Ecuador","Argentina"],1,"About 56% is in Peru, the rest in Bolivia."],
+["Which city is the southernmost national capital in the world?",["Canberra","Santiago","Wellington","Buenos Aires"],2,"Wellington lies at about 41.3°S."]
+];
+let qs,i,score,app=document.getElementById("app");
+const shuffle=a=>{a=[...a];for(let j=a.length-1;j>0;j--){const k=Math.random()*(j+1)|0;[a[j],a[k]]=[a[k],a[j]]}return a};
+function start(){qs=shuffle(POOL).slice(0,10);i=0;score=0;show()}
+function show(){
+ if(i>=qs.length){const r=score>=9?"Cartographer-in-chief":score>=6?"Seasoned navigator":score>=3?"Tourist with a map":"Lost at sea";
+  app.innerHTML=`<div class="q">Final score: ${score}/${qs.length}</div><div class="fact">${r}</div><button class="next" id="again">Play again</button>`;
+  document.getElementById("again").onclick=start;return}
+ const [q,opts,ans,fact]=qs[i];
+ app.innerHTML=`<div class="meta">Question ${i+1}/${qs.length} · Score ${score}</div><div class="q">${q}</div><div id="o"></div><div class="fact" id="f"></div>`;
+ opts.forEach((t,n)=>{const b=document.createElement("button");b.textContent=t;
+  b.onclick=()=>{[...document.querySelectorAll("#o button")].forEach((x,m)=>{x.disabled=true;if(m==ans)x.classList.add("ok")});
+   if(n==ans)score++;else b.classList.add("bad");
+   document.getElementById("f").textContent=fact;
+   const nx=document.createElement("button");nx.className="next";nx.textContent=i+1<qs.length?"Next":"See score";nx.onclick=()=>{i++;show()};app.appendChild(nx)};
+  document.getElementById("o").appendChild(b)})}
+start();
+</script></body></html>
