@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sparkle Seas Battleship</title>
+<style>
+:root{--pink:#ff7ac6;--hot:#ff3fa4;--purple:#8e44ff;--lav:#d9c2ff;--bg1:#2a0a4a;--bg2:#6a1b9a;--card:#ffffff22}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:"Trebuchet MS","Comic Sans MS",sans-serif;color:#fff;
+background:linear-gradient(160deg,var(--bg1),var(--bg2) 55%,#ff5fb8);display:flex;flex-direction:column;align-items:center;padding:16px}
+h1{margin:4px 0;font-size:2rem;text-shadow:0 0 12px var(--pink),0 0 24px var(--purple)}
+#msg{margin:8px 0 14px;padding:8px 18px;background:var(--card);border-radius:20px;border:2px solid var(--lav);min-height:2.2em;text-align:center}
+.boards{display:flex;flex-wrap:wrap;gap:24px;justify-content:center}
+.panel{background:var(--card);padding:12px;border-radius:20px;border:2px solid var(--pink);box-shadow:0 0 20px #ff7ac655}
+.panel h2{margin:0 0 8px;text-align:center;font-size:1.1rem}
+.grid{display:grid;grid-template-columns:repeat(10,var(--c));gap:2px}
+:root{--c:min(8.2vw,34px)}
+.cell{width:var(--c);height:var(--c);border-radius:6px;background:#ffffff26;border:1px solid #ffffff44;display:flex;align-items:center;justify-content:center;font-size:calc(var(--c)*.6);cursor:default}
+#enemy .cell:not(.hit):not(.miss){cursor:pointer}
+#enemy .cell:not(.hit):not(.miss):hover{background:#ff7ac688}
+.ship{background:linear-gradient(135deg,var(--pink),var(--purple))}
+.hit{background:#ff3fa4cc}
+.miss{background:#b9a0ffaa}
+.sunk{background:#4b1670}
+.controls{margin:14px 0;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+button{font:inherit;color:#fff;background:linear-gradient(135deg,var(--hot),var(--purple));border:0;border-radius:20px;padding:8px 18px;cursor:pointer;box-shadow:0 3px 10px #0004}
+button:hover{filter:brightness(1.15)}
+.legend{font-size:.85rem;opacity:.9;text-align:center;max-width:520px}
+</style>
+</head>
+<body>
+<h1>💖 Sparkle Seas 💜</h1>
+<div id="msg"></div>
+<div class="controls">
+  <button id="newBtn">✨ New Game</button>
+  <button id="rotBtn">🔄 Shuffle My Fleet</button>
+</div>
+<div class="boards">
+  <div class="panel"><h2>🦄 Enemy Waters (tap to fire!)</h2><div class="grid" id="enemy"></div></div>
+  <div class="panel"><h2>👑 Your Fleet</h2><div class="grid" id="mine"></div></div>
+</div>
+<p class="legend">🌸 = hit &nbsp; 💧 = miss &nbsp; 💔 = sunk ship. Sink all 5 enemy ships before they sink yours!</p>
+<script>
+const N=10, SHIPS=[5,4,3,3,2];
+let me,foe,over,aiQueue,aiShots;
+const $=id=>document.getElementById(id);
+const say=t=>$('msg').textContent=t;
+
+function emptyBoard(){return {ships:[],shots:new Set(),cells:Array.from({length:N*N},()=>-1)}}
+function place(b){
+  b.ships=[];b.cells.fill(-1);
+  SHIPS.forEach((len,i)=>{
+    for(;;){
+      const h=Math.random()<.5,r=Math.floor(Math.random()*N),c=Math.floor(Math.random()*N);
+      const pos=[];
+      for(let k=0;k<len;k++)pos.push(h?r*N+c+k:(r+k)*N+c);
+      if((h?c+len:r+len)>N||pos.some(p=>b.cells[p]>=0))continue;
+      pos.forEach(p=>b.cells[p]=i);
+      b.ships.push({pos,hits:0});break;
+    }
+  });
+}
+function build(id,click){
+  const g=$(id);g.innerHTML='';
+  for(let i=0;i<N*N;i++){const d=document.createElement('div');d.className='cell';d.id=id+i;
+    if(click)d.onclick=()=>fire(i);g.appendChild(d)}
+}
+function draw(){
+  for(let i=0;i<N*N;i++){
+    paint($('mine'+i),me,i,true);
+    paint($('enemy'+i),foe,i,false);
+  }
+}
+function paint(el,b,i,show){
+  el.className='cell';el.textContent='';
+  const s=b.cells[i];
+  if(show&&s>=0)el.classList.add('ship');
+  if(b.shots.has(i)){
+    if(s>=0){const sh=b.ships[s];
+      if(sh.hits===sh.pos.length){el.classList.add('sunk');el.textContent='💔'}
+      else{el.classList.add('hit');el.textContent='🌸'}
+    }else{el.classList.add('miss');el.textContent='💧'}
+  }
+}
+function shoot(b,i){
+  b.shots.add(i);const s=b.cells[i];
+  if(s<0)return 'miss';
+  const sh=b.ships[s];sh.hits++;
+  return sh.hits===sh.pos.length?'sunk':'hit';
+}
+const won=b=>b.ships.every(s=>s.hits===s.pos.length);
+
+function fire(i){
+  if(over||foe.shots.has(i))return;
+  const r=shoot(foe,i);
+  draw();
+  if(won(foe)){over=true;say('👑 You win, queen! The seas are yours! 💖');return}
+  say(r==='miss'?'Splash! Missed 💧':r==='hit'?'Direct hit! 🌸':'You sank a ship! 💔✨');
+  setTimeout(aiTurn,550);
+}
+function neighbors(i){
+  const r=Math.floor(i/N),c=i%N,o=[];
+  if(r>0)o.push(i-N);if(r<N-1)o.push(i+N);if(c>0)o.push(i-1);if(c<N-1)o.push(i+1);
+  return o;
+}
+function aiTurn(){
+  if(over)return;
+  let i;
+  while(aiQueue.length){const q=aiQueue.pop();if(!me.shots.has(q)){i=q;break}}
+  if(i===undefined){
+    do{i=Math.floor(Math.random()*N*N)}while(me.shots.has(i)||((Math.floor(i/N)+i%N)%2&&Math.random()<.7&&me.shots.size<70));
+  }
+  const r=shoot(me,i);
+  if(r==='hit')aiQueue.push(...neighbors(i).filter(n=>!me.shots.has(n)));
+  if(r==='sunk')aiQueue=[];
+  draw();
+  if(won(me)){over=true;say('The enemy fleet wins this time 😢 Try again!');return}
+  say(r==='miss'?'Enemy missed! Your turn 💜':'Ouch, they hit your ship! Fire back! 💥');
+}
+function start(){
+  me=emptyBoard();foe=emptyBoard();place(me);place(foe);
+  over=false;aiQueue=[];build('mine',false);build('enemy',true);draw();
+  say('Tap the enemy waters to fire! 💖');
+}
+$('newBtn').onclick=start;
+$('rotBtn').onclick=()=>{if(me.shots.size===0&&foe.shots.size===0){place(me);draw()}else say('Fleet is locked once battle begins!')};
+start();
+</script>
+</body>
+</html>
