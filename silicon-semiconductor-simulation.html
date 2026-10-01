@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Silicon Carrier Concentration Simulator</title>
+<style>
+:root{--bg:#0f1419;--card:#1a212b;--fg:#e6edf3;--mut:#8b98a8;--line:#2d3744;--acc:#4da3ff;
+--frz:#5ec8ff;--ext:#6fdc8c;--int:#ff8a5c;--n:#ffd166;--p:#ef6f9c}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,sans-serif}
+header{padding:48px 16px 24px;text-align:center}
+h1{margin:0 0 8px;font-size:2rem}
+header p{color:var(--mut);max-width:680px;margin:0 auto}
+main{max-width:960px;margin:0 auto;padding:0 16px 80px}
+section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;margin:20px 0}
+h2{margin-top:0}
+.controls{position:sticky;top:0;z-index:10;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 20px;margin:0 0 20px;box-shadow:0 6px 16px #0008}
+.row{display:flex;flex-wrap:wrap;gap:16px}
+.row label{flex:1 1 280px;font-size:.9rem;color:var(--mut)}
+.row b{color:var(--fg)}
+input[type=range]{width:100%}
+canvas{width:100%;display:block;background:#11171e;border-radius:8px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:12px}
+.stat{background:#11171e;border-radius:8px;padding:10px}
+.stat small{color:var(--mut);display:block}
+.stat span{font-size:1.1rem;font-weight:600}
+.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-weight:700;color:#0f1419}
+.jump{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.jump button{background:#11171e;color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:6px 12px;cursor:pointer}
+.jump button:hover{border-color:var(--acc)}
+.region{border-left:6px solid}
+code{background:#11171e;padding:1px 6px;border-radius:4px}
+ul{padding-left:20px}
+.eq{background:#11171e;padding:10px 14px;border-radius:8px;overflow-x:auto;font-family:ui-monospace,monospace;font-size:.9rem}
+footer{text-align:center;color:var(--mut);font-size:.85rem;padding-bottom:40px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Silicon: Freeze-out, Extrinsic &amp; Intrinsic Regions</h1>
+  <p>Scroll down to explore how electron concentration in n-type silicon changes with temperature. Move the sliders and watch the curve, band diagram and region classification update live.</p>
+</header>
+<main>
+
+<div class="controls">
+  <div class="row">
+    <label>Temperature: <b id="tv"></b> K<input id="T" type="range" min="20" max="1000" value="300"></label>
+    <label>Donor doping Nd (phosphorus): <b id="nv"></b> cm⁻³<input id="Nd" type="range" min="12" max="18" step="0.05" value="15"></label>
+  </div>
+  <div class="jump">
+    <button data-t="40">Jump to freeze-out</button>
+    <button data-t="300">Jump to extrinsic</button>
+    <button data-t="800">Jump to intrinsic</button>
+  </div>
+</div>
+
+<section>
+  <h2>Live state</h2>
+  <div>Current region: <span id="reg" class="badge"></span></div>
+  <div class="stats" id="stats"></div>
+  <p id="regInfo" style="color:var(--mut)"></p>
+</section>
+
+<section>
+  <h2>Electron concentration vs. temperature</h2>
+  <canvas id="cn" height="420"></canvas>
+  <p style="color:var(--mut);font-size:.9rem">Log scale. x-axis is 1000/T so the exponential regimes appear as straight lines. Shaded zones show the three regions for the chosen Nd; the dot is your current temperature.</p>
+</section>
+
+<section>
+  <h2>Energy band diagram</h2>
+  <canvas id="cb" height="330"></canvas>
+  <p style="color:var(--mut);font-size:.9rem">Conduction band Ec, valence band Ev, donor level Ed (45 meV below Ec) and Fermi level EF at the current temperature. Dots on the right show the fraction of donors ionized.</p>
+</section>
+
+<section class="region" style="border-color:var(--frz)">
+  <h2 style="color:var(--frz)">1 · Freeze-out region (low T)</h2>
+  <p>At very low temperature there is too little thermal energy (kT ≪ Ed) to ionize the donors, so most donor electrons remain bound ("frozen") to their phosphorus atoms.</p>
+  <ul>
+    <li>Fermi level sits between the donor level and Ec, rising toward Ed as T → 0.</li>
+    <li>Electron density is thermally activated: <code>n ∝ exp(−Ed / 2kT)</code> at the lowest T, then <code>exp(−Ed / kT)</code> as the donors begin to ionize.</li>
+    <li>Conductivity falls rapidly with cooling; devices stop working as designed.</li>
+    <li>Heavily doped silicon (Nd above about 3·10¹⁸ cm⁻³) goes through the Mott transition and does not freeze out; this simple model ignores that effect.</li>
+  </ul>
+</section>
+
+<section class="region" style="border-color:var(--ext)">
+  <h2 style="color:var(--ext)">2 · Extrinsic (saturation) region (mid T)</h2>
+  <p>Once kT is enough to ionize practically every donor but not enough to excite many electrons across the 1.12 eV gap, n stays pinned at the doping level.</p>
+  <ul>
+    <li><code>n ≈ Nd</code> and <code>p ≈ ni² / Nd</code> (minority carriers).</li>
+    <li>Flat plateau in the plot; this is the operating range of nearly all silicon devices.</li>
+    <li>Mobility, not carrier density, now determines how conductivity varies with T.</li>
+    <li>The Fermi level drifts down toward mid-gap as T rises.</li>
+  </ul>
+</section>
+
+<section class="region" style="border-color:var(--int)">
+  <h2 style="color:var(--int)">3 · Intrinsic region (high T)</h2>
+  <p>At high temperature, thermally generated electron-hole pairs outnumber the dopants. The semiconductor behaves as if undoped.</p>
+  <ul>
+    <li><code>n ≈ p ≈ ni = √(NcNv)·exp(−Eg / 2kT)</code>.</li>
+    <li>Fermi level approaches mid-gap; p-n junctions lose rectification.</li>
+    <li>Steep exponential increase of carriers with T; the onset temperature climbs with Nd, roughly 450 K for 10¹⁴ cm⁻³ and about 900 K for 10¹⁶ cm⁻³.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Model &amp; equations</h2>
+  <div class="eq">
+    Nc = 2.8·10¹⁹ (T/300)^1.5 cm⁻³ &nbsp; Nv = 1.04·10¹⁹ (T/300)^1.5 cm⁻³<br>
+    Eg(T) = 1.17 − 4.73·10⁻⁴ T² / (T + 636) eV (Varshni)<br>
+    n = Nc·exp(−(Ec − EF)/kT) &nbsp; p = Nv·exp(−(EF − Ev)/kT)<br>
+    Nd⁺ = Nd / (1 + 2·exp((EF − Ed)/kT)) &nbsp; (donor degeneracy g = 2)<br>
+    Charge neutrality: n = p + Nd⁺ &nbsp; (solved numerically for EF by bisection)
+  </div>
+  <p style="color:var(--mut)">Region classification: <b>intrinsic</b> if p &gt; 10 % of n; otherwise <b>freeze-out</b> if less than 90 % of donors are ionized; otherwise <b>extrinsic</b>. Boltzmann statistics are used, and the model is valid for nondegenerate doping.</p>
+</section>
+</main>
+<footer>Educational simulation · Silicon, phosphorus donors</footer>
+
+<script>
+const k=8.617333e-5, Ed=0.045;
+const Eg=T=>1.17-4.73e-4*T*T/(T+636);
+function solve(T,Nd){
+  const kT=k*T, e=Eg(T), s=Math.pow(T/300,1.5), Nc=2.8e19*s, Nv=1.04e19*s;
+  const ex=x=>Math.exp(Math.max(-700,Math.min(700,x)));
+  const f=EF=>Nc*ex((EF-e)/kT)-Nv*ex(-EF/kT)-Nd/(1+2*ex((EF-e+Ed)/kT));
+  let lo=-0.3,hi=e+0.3;
+  for(let i=0;i<200;i++){const m=(lo+hi)/2; f(m)>0?hi=m:lo=m;}
+  const EF=(lo+hi)/2, n=Nc*ex((EF-e)/kT), p=Nv*ex(-EF/kT), Ndp=Nd/(1+2*ex((EF-e+Ed)/kT));
+  const ni=Math.sqrt(Nc*Nv)*Math.exp(-e/(2*kT));
+  let reg; if(p>0.1*n) reg='int'; else if(Ndp/Nd<0.9) reg='frz'; else reg='ext';
+  return {EF,n,p,Ndp,ni,e,reg,frac:Ndp/Nd};
+}
+const R={frz:['Freeze-out','var(--frz)','Donors are mostly neutral; electrons are frozen onto phosphorus atoms. Carrier density rises exponentially with temperature.'],
+ ext:['Extrinsic','var(--ext)','Nearly all donors are ionized and thermal pair generation is negligible, so n ≈ Nd stays constant.'],
+ int:['Intrinsic','var(--int)','Thermally generated electron-hole pairs rival or exceed the doping; n ≈ p ≈ ni and EF moves to mid-gap.']};
+const col={frz:'#5ec8ff',ext:'#6fdc8c',int:'#ff8a5c'};
+const $=id=>document.getElementById(id);
+const fmt=x=>x>=1e-2?x.toExponential(2):'< 0.01';
+function setup(c){const d=devicePixelRatio||1,w=c.clientWidth,h=+c.getAttribute('height');c.width=w*d;c.height=h*d;const g=c.getContext('2d');g.setTransform(d,0,0,d,0,0);return[g,w,h];}
+
+function drawN(T,Nd){
+  const [g,W,H]=setup($('cn')), L=60,B=36,Tp=14,Rt=14;
+  const x0=1000/1000,x1=1000/20; // 1000/T range
+  const X=T=>L+(1000/T-1)/(x1-1)*0 ; // placeholder
+  const xs=t=>L+(x1-1000/t)/(x1-x0)*(W-L-Rt); // high T on right
+  const ymax=20,ymin=0, ys=v=>Tp+(ymax-Math.log10(Math.max(v,1)))/(ymax-ymin)*(H-Tp-B);
+  g.clearRect(0,0,W,H);
+  // region shading
+  let prev=null,start=20;
+  const pts=[];
+  for(let t=20;t<=1000;t+=2){const s=solve(t,Nd);pts.push([t,s]);}
+  pts.forEach(([t,s],i)=>{
+    const nxt=i===pts.length-1;
+    if(prev===null) prev=s.reg;
+    if(s.reg!==prev||nxt){
+      g.fillStyle=col[prev]+'22';
+      g.fillRect(xs(start),Tp,xs(t)-xs(start),H-Tp-B);
+      start=t;prev=s.reg;
+    }
+  });
+  // grid
+  g.strokeStyle='#2d3744';g.fillStyle='#8b98a8';g.font='11px system-ui';g.lineWidth=1;
+  for(let e=0;e<=20;e+=4){const y=ys(Math.pow(10,e));g.beginPath();g.moveTo(L,y);g.lineTo(W-Rt,y);g.stroke();g.textAlign='right';g.fillText('1e'+e,L-6,y+4);}
+  g.textAlign='center';
+  [20,30,50,100,200,300,500,1000].forEach(t=>{g.fillText(t+'K',xs(t),H-B+16);});
+  g.fillText('Temperature (high T on the right)',(W+L)/2,H-4);
+  // curves
+  const draw=(fn,c,dash)=>{g.beginPath();g.strokeStyle=c;g.lineWidth=2.5;g.setLineDash(dash||[]);
+    pts.forEach(([t,s],i)=>{const v=fn(s);i?g.lineTo(xs(t),ys(v)):g.moveTo(xs(t),ys(v));});g.stroke();g.setLineDash([]);};
+  draw(s=>s.p,'#ef6f9c',[5,4]);
+  draw(s=>s.n,'#ffd166');
+  g.strokeStyle='#8b98a8';g.setLineDash([2,4]);g.beginPath();g.moveTo(L,ys(Nd));g.lineTo(W-Rt,ys(Nd));g.stroke();g.setLineDash([]);
+  g.fillStyle='#ffd166';g.textAlign='left';g.fillText('n (electrons)',L+8,Tp+14);
+  g.fillStyle='#ef6f9c';g.fillText('p (holes, dashed)',L+8,Tp+30);
+  g.fillStyle='#8b98a8';g.fillText('Nd',W-Rt-24,ys(Nd)-4);
+  // region labels
+  g.font='bold 12px system-ui';g.textAlign='center';
+  [['frz',25],['ext',0],['int',0]].forEach(()=>{});
+  const mid={};let a=pts[0][1].reg,st=20;
+  pts.forEach(([t,s],i)=>{if(s.reg!==a||i===pts.length-1){if(!(a in mid))mid[a]=(st+t)/2;a=s.reg;st=t;}});
+  Object.keys(mid).forEach(r=>{g.fillStyle=col[r];g.fillText(R[r][0],xs(mid[r]),H-B-8);});
+  // marker
+  const s=solve(T,Nd);g.fillStyle='#fff';g.beginPath();g.arc(xs(T),ys(s.n),6,0,7);g.fill();
+  g.strokeStyle='#fff8';g.setLineDash([3,3]);g.beginPath();g.moveTo(xs(T),Tp);g.lineTo(xs(T),H-B);g.stroke();g.setLineDash([]);
+}
+
+function drawB(T,Nd){
+  const [g,W,H]=setup($('cb')), s=solve(T,Nd), e=s.e;
+  const top=30,bot=H-30, sc=(bot-top)/(1.3), y=E=>bot-(E+0.05)/1.3*(bot-top)*1; // energy->px
+  const yy=E=>top+(1.22-E)/1.3*(bot-top);
+  g.clearRect(0,0,W,H);
+  const x0=60,x1=W-120;
+  g.fillStyle='#4da3ff44';g.fillRect(x0,top-10,x1-x0,yy(e)-top+10);
+  g.fillStyle='#ef6f9c44';g.fillRect(x0,yy(0),x1-x0,bot+10-yy(0));
+  g.strokeStyle='#4da3ff';g.lineWidth=3;g.beginPath();g.moveTo(x0,yy(e));g.lineTo(x1,yy(e));g.stroke();
+  g.strokeStyle='#ef6f9c';g.beginPath();g.moveTo(x0,yy(0));g.lineTo(x1,yy(0));g.stroke();
+  g.lineWidth=2;g.strokeStyle='#5ec8ff';g.setLineDash([6,4]);g.beginPath();g.moveTo(x0,yy(e-Ed));g.lineTo(x1,yy(e-Ed));g.stroke();
+  g.strokeStyle='#ffd166';g.setLineDash([2,3]);g.beginPath();g.moveTo(x0,yy(s.EF));g.lineTo(x1,yy(s.EF));g.stroke();g.setLineDash([]);
+  g.font='13px system-ui';g.textAlign='left';
+  g.fillStyle='#4da3ff';g.fillText('Ec',x0+6,yy(e)-8);
+  g.fillStyle='#ef6f9c';g.fillText('Ev',x0+6,yy(0)+18);
+  g.fillStyle='#5ec8ff';g.fillText('Ed = Ec − 0.045 eV',x0+40,yy(e-Ed)+(yy(s.EF)<yy(e-Ed)+4&&yy(s.EF)>yy(e-Ed)-4?-10:16));
+  g.fillStyle='#ffd166';g.fillText('EF',x1+8,yy(s.EF)+4);
+  g.fillStyle='#8b98a8';g.fillText('Eg = '+e.toFixed(3)+' eV',x1+8,(yy(e)+yy(0))/2);
+  // donors: 10 dots at donor level, filled = neutral (electron bound)
+  for(let i=0;i<10;i++){
+    const bound=i>=Math.round(s.frac*10);
+    g.beginPath();g.arc(x0+90+i*22,yy(e-Ed)+0,5,0,7);
+    bound?(g.fillStyle='#5ec8ff',g.fill()):(g.strokeStyle='#5ec8ff',g.setLineDash([]),g.stroke());
+  }
+  g.fillStyle='#8b98a8';g.textAlign='center';g.fillText('donors: filled = neutral, hollow = ionized',x0+200,yy(e-Ed)+34>bot?bot:yy(e-Ed)+34);
+}
+
+function update(){
+  const T=+$('T').value, lg=+$('Nd').value, Nd=Math.pow(10,lg), s=solve(T,Nd);
+  $('tv').textContent=T;$('nv').textContent=Nd.toExponential(1);
+  const [nm,c,desc]=R[s.reg];
+  $('reg').textContent=nm;$('reg').style.background=c;$('regInfo').textContent=desc;
+  const st=[['n (cm⁻³)',s.n.toExponential(2)],['p (cm⁻³)',fmt(s.p)],['ni (cm⁻³)',s.ni.toExponential(2)],
+   ['Ionized donors',(s.frac*100).toFixed(1)+' %'],['Eg (eV)',s.e.toFixed(3)],['EF − Ev (eV)',s.EF.toFixed(3)]];
+  $('stats').innerHTML=st.map(a=>`<div class="stat"><small>${a[0]}</small><span>${a[1]}</span></div>`).join('');
+  drawN(T,Nd);drawB(T,Nd);
+}
+$('T').oninput=$('Nd').oninput=update;
+document.querySelectorAll('.jump button').forEach(b=>b.onclick=()=>{$('T').value=b.dataset.t;update();});
+addEventListener('resize',update);
+update();
+</script>
+</body>
+</html>
