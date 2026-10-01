@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Constellation Quiz</title>
+<style>
+:root{--bg:#04060f;--ink:#e8ecf8;--dim:#8d97b5;--gold:#ffd36b;--cyan:#6fd3ff;--ok:#6be3a0;--bad:#ff7a8a;--card:rgba(10,14,30,.82);--line:rgba(160,180,255,.18)}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:16px/1.4 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;overflow:hidden}
+canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
+.hud{position:fixed;top:0;left:0;right:0;display:flex;gap:10px;justify-content:space-between;align-items:flex-start;padding:max(12px,env(safe-area-inset-top)) 16px 0;pointer-events:none}
+.pill{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:14px;backdrop-filter:blur(8px);pointer-events:auto}
+.pill b{color:var(--gold)}
+.caption{position:fixed;top:56px;left:0;right:0;text-align:center;font-size:15px;color:var(--dim);padding:0 16px;pointer-events:none;text-shadow:0 1px 8px #000}
+.caption b{color:var(--cyan)}
+.panel{position:fixed;left:50%;bottom:max(16px,env(safe-area-inset-bottom));transform:translateX(-50%);width:min(560px,calc(100% - 32px));background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;backdrop-filter:blur(12px)}
+.q{font-size:17px;margin:0 0 10px;font-weight:600}
+.row{display:flex;gap:8px;position:relative}
+input[type=text]{flex:1;min-width:0;background:#0b1020;border:1px solid var(--line);color:var(--ink);border-radius:12px;padding:12px 14px;font-size:16px;outline:none}
+input[type=text]:focus{border-color:var(--gold)}
+button{font:inherit;color:var(--ink);background:#151b34;border:1px solid var(--line);border-radius:12px;padding:10px 14px;cursor:pointer}
+button:hover:not(:disabled){border-color:var(--gold)}
+button:disabled{opacity:.45;cursor:default}
+button.primary{background:var(--gold);color:#1a1300;border-color:var(--gold);font-weight:700}
+.sub{display:flex;gap:8px;margin-top:10px;align-items:center;flex-wrap:wrap}
+.sub .grow{flex:1}
+.msg{min-height:22px;font-size:15px;margin-top:8px}
+.msg.ok{color:var(--ok)}.msg.bad{color:var(--bad)}.msg small{color:var(--dim)}
+.sugg{position:absolute;left:0;right:90px;bottom:100%;margin-bottom:6px;background:#0b1020;border:1px solid var(--line);border-radius:12px;overflow:hidden;display:none}
+.sugg div{padding:9px 14px;cursor:pointer}
+.sugg div.on,.sugg div:hover{background:#1b2347}
+.sugg span{color:var(--dim);font-size:13px;margin-left:6px}
+.mc{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mc button{padding:12px 8px}
+.mc button.bad{border-color:var(--bad);color:var(--bad)}
+.mc button.good{border-color:var(--ok);color:var(--ok)}
+.shake{animation:sh .35s}
+@keyframes sh{20%{transform:translateX(calc(-50% - 8px))}50%{transform:translateX(calc(-50% + 8px))}80%{transform:translateX(calc(-50% - 4px))}}
+.overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(2,4,12,.72);backdrop-filter:blur(4px);z-index:5;overflow:auto}
+.card{width:min(480px,100%);background:#0a0f22;border:1px solid var(--line);border-radius:20px;padding:24px;max-height:100%;overflow:auto}
+.card h1{margin:0 0 6px;font-size:26px}
+.card p{color:var(--dim);margin:0 0 16px}
+.opt{margin:14px 0}.opt label.t{display:block;font-size:13px;color:var(--dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{flex:1;padding:9px 8px}
+.seg button.on{background:#262006;border-color:var(--gold);color:var(--gold)}
+.chk{display:flex;gap:8px;align-items:center;color:var(--ink)}
+.big{font-size:44px;font-weight:800;color:var(--gold);line-height:1}
+.missed{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 16px}
+.missed span{background:#151b34;border-radius:999px;padding:3px 10px;font-size:13px}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<canvas id="sky"></canvas>
+
+<div class="hud">
+  <div class="pill">Question <b id="hQ">0</b>/<span id="hN">0</span></div>
+  <div class="pill">Score <b id="hS">0</b> · Streak <b id="hK">0</b></div>
+</div>
+<div class="caption" id="cap"></div>
+
+<div class="panel hidden" id="panel">
+  <p class="q" id="qText">Which constellation is glowing?</p>
+  <div id="typeUI">
+    <div class="row">
+      <div class="sugg" id="sugg"></div>
+      <input type="text" id="ans" placeholder="Type a constellation name…" autocomplete="off" autocapitalize="words" spellcheck="false">
+      <button class="primary" id="go">Guess</button>
+    </div>
+  </div>
+  <div class="mc hidden" id="mcUI"></div>
+  <div class="msg" id="msg"></div>
+  <div class="sub">
+    <button id="hint">Hint</button>
+    <button id="replay" title="Replay the zoom">↻ Replay</button>
+    <span class="grow"></span>
+    <button id="skip">Skip</button>
+    <button class="primary hidden" id="next">Next →</button>
+  </div>
+</div>
+
+<div class="overlay" id="start">
+  <div class="card">
+    <h1>✦ Constellation Quiz</h1>
+    <p>The night sky starts on a neighbouring constellation, then glides over to the one you need to name. All 88 official constellations are in the deck.</p>
+    <div class="opt"><label class="t">Questions</label>
+      <div class="seg" data-k="n"><button data-v="10">10</button><button data-v="25">25</button><button data-v="88" class="on">All 88</button></div></div>
+    <div class="opt"><label class="t">Answer style</label>
+      <div class="seg" data-k="mode"><button data-v="type" class="on">Type it</button><button data-v="mc">Multiple choice</button></div></div>
+    <div class="opt"><label class="t">Starting neighbour</label>
+      <div class="seg" data-k="labels"><button data-v="1" class="on">Show names (easier)</button><button data-v="0">Hide names (hard)</button></div></div>
+    <button class="primary" id="begin" style="width:100%;padding:14px">Start</button>
+  </div>
+</div>
+
+<div class="overlay hidden" id="end">
+  <div class="card">
+    <h1>Round complete</h1>
+    <div class="big" id="eScore">0</div>
+    <p id="eSub" style="margin-top:8px"></p>
+    <div id="eMissed"></div>
+    <button class="primary" id="again" style="width:100%;padding:14px">Play again</button>
+  </div>
+</div>
+
+<script>
+/*DATA*/
+</script>
+<script>
+"use strict";
+const R = Math.PI / 180;
+const C = DATA.c, STARS = DATA.s, byId = {};
+C.forEach(c => byId[c.id] = c);
+const norm = s => s.toLowerCase().replace(/[^a-z]/g, "");
+const $ = id => document.getElementById(id);
+const cv = $("sky"), ctx = cv.getContext("2d");
+let W = 0, H = 0, DPR = 1;
+
+/* ---------- projection (stereographic, north up, east left) ---------- */
+function unit(ra, dec) { const a = ra * R, d = dec * R; return [Math.cos(d) * Math.cos(a), Math.cos(d) * Math.sin(a), Math.sin(d)]; }
+function toRaDec(v) { return [Math.atan2(v[1], v[0]), Math.asin(Math.max(-1, Math.min(1, v[2])))]; }
+function slerp(a, b, t) {
+  const dot = Math.max(-1, Math.min(1, a[0]*b[0] + a[1]*b[1] + a[2]*b[2])), om = Math.acos(dot);
+  if (om < 1e-6) return a;
+  const s = Math.sin(om), x = Math.sin((1-t)*om)/s, y = Math.sin(t*om)/s;
+  return [a[0]*x + b[0]*y, a[1]*x + b[1]*y, a[2]*x + b[2]*y];
+}
+const angDist = (a, b) => Math.acos(Math.max(-1, Math.min(1, a[0]*b[0] + a[1]*b[1] + a[2]*b[2])));
+let V = { a0: 0, sd0: 0, cd0: 1, k: 300, cy: 0 };
+function setView(vec, k) {
+  const [a0, d0] = toRaDec(vec);
+  V = { a0, sd0: Math.sin(d0), cd0: Math.cos(d0), k, cy: H * 0.42 };
+}
+const P = [0, 0];
+function proj(raDeg, decDeg) {
+  const da = raDeg * R - V.a0, d = decDeg * R, cd = Math.cos(d), sd = Math.sin(d);
+  let D = 1 + V.sd0 * sd + V.cd0 * cd * Math.cos(da);
+  if (D < 0.04) D = 0.04;
+  P[0] = W / 2 - V.k * cd * Math.sin(da) / D;
+  P[1] = V.cy - V.k * (V.cd0 * sd - V.sd0 * cd * Math.cos(da)) / D;
+  return P;
+}
+function fitK(c) {
+  const rad = Math.max(8, c.rad) * R;
+  return 0.78 * Math.min(W * 0.5, H * 0.34) / Math.tan(rad / 2);
+}
+const cvec = c => unit(c.ra, c.dec);
+
+/* ---------- drawing ---------- */
+function polyPath(poly) {
+  for (let i = 0; i < poly.length; i++) { const p = proj(poly[i][0], poly[i][1]); i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1]); }
+  ctx.closePath();
+}
+function drawLines(c) {
+  for (const seg of c.lines) {
+    for (let i = 0; i < seg.length; i++) { const p = proj(seg[i][0], seg[i][1]); i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1]); }
+  }
+}
+const S = { target: null, start: null, hl: 0, hlStart: 1, reveal: false, showLabels: true };
+function render() {
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  const g = ctx.createRadialGradient(W/2, H*0.4, 0, W/2, H*0.4, Math.max(W, H) * 0.8);
+  g.addColorStop(0, "#0c1431"); g.addColorStop(1, "#02030a");
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+
+  // boundaries (all, faint)
+  ctx.lineWidth = 1; ctx.strokeStyle = "rgba(120,150,255,.16)"; ctx.beginPath();
+  for (const c of C) for (const poly of c.polys) polyPath(poly);
+  ctx.stroke();
+
+  // highlight fills + outlines
+  const hl = (c, col, a, glow) => {
+    if (!c || a <= 0.01) return;
+    ctx.save(); ctx.globalAlpha = a;
+    ctx.beginPath(); for (const poly of c.polys) polyPath(poly);
+    ctx.fillStyle = col.replace("X", ".13"); ctx.fill("nonzero");
+    ctx.shadowColor = col.replace("X", "1"); ctx.shadowBlur = glow;
+    ctx.lineWidth = 2.5; ctx.strokeStyle = col.replace("X", ".95"); ctx.stroke();
+    ctx.restore();
+  };
+  hl(S.start, "rgba(111,211,255,X)", S.hlStart, 10);
+  hl(S.target, "rgba(255,211,107,X)", S.hl, 18);
+
+  // constellation stick figures
+  ctx.lineWidth = 1; ctx.strokeStyle = "rgba(150,175,255,.30)"; ctx.beginPath();
+  for (const c of C) if (c !== S.target && c !== S.start) drawLines(c);
+  ctx.stroke();
+  for (const [c, col, a, w] of [[S.start, "111,211,255", S.hlStart, 1.6], [S.target, "255,211,107", S.hl, 2]]) {
+    if (!c) continue;
+    ctx.strokeStyle = `rgba(${col},${0.35 + 0.6*a})`; ctx.lineWidth = w; ctx.beginPath(); drawLines(c); ctx.stroke();
+  }
+
+  // stars
+  const z = Math.max(0.8, Math.min(2.4, Math.sqrt(V.k / 260)));
+  for (const s of STARS) {
+    const p = proj(s[0], s[1]);
+    if (p[0] < -10 || p[0] > W + 10 || p[1] < -10 || p[1] > H + 10) continue;
+    const r = Math.max(0.35, (6.7 - s[2]) * 0.42) * z;
+    ctx.fillStyle = s[2] < 2 ? "#fff6dd" : s[2] < 4 ? "#e6ecff" : "rgba(210,220,255,.75)";
+    ctx.beginPath(); ctx.arc(p[0], p[1], r, 0, 6.2832); ctx.fill();
+  }
+
+  // labels
+  ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  const label = (c, txt, font, col) => {
+    const p = proj(c.ra, c.dec); if (p[0] < 20 || p[0] > W - 20 || p[1] < 60 || p[1] > H) return;
+    ctx.font = font; ctx.fillStyle = col; ctx.shadowColor = "#000"; ctx.shadowBlur = 6; ctx.fillText(txt, p[0], p[1]); ctx.shadowBlur = 0;
+  };
+  if (S.target) {
+    if (S.showLabels) {
+      for (const id of S.target.adj) { const n = byId[id]; if (n !== S.start) label(n, n.name, "13px system-ui", "rgba(170,185,230,.55)"); }
+      if (S.start) label(S.start, S.start.name, "600 16px system-ui", `rgba(111,211,255,${0.35 + 0.65 * S.hlStart})`);
+    }
+    if (S.reveal) label(S.target, S.target.name, "700 26px system-ui", "#ffe6a0");
+  }
+}
+
+/* ---------- camera flight ---------- */
+let anim = null;
+function fly(from, to, dur, done) {
+  const a = cvec(from), b = cvec(to), ka = Math.log(fitK(from)), kb = Math.log(fitK(to));
+  const dist = angDist(a, b), pull = 0.2 + Math.min(1, dist / (70 * R)) * 0.7;
+  anim = { t0: performance.now() + 700, dur, a, b, ka, kb, pull, done };
+  setView(a, Math.exp(ka)); S.hl = 0; S.hlStart = 1;
+}
+function tick(now) {
+  if (anim) {
+    const raw = Math.max(0, Math.min(1, (now - anim.t0) / anim.dur));
+    const e = raw < .5 ? 4*raw*raw*raw : 1 - Math.pow(-2*raw + 2, 3) / 2;
+    setView(slerp(anim.a, anim.b, e), Math.exp(anim.ka + (anim.kb - anim.ka) * e - anim.pull * Math.sin(Math.PI * raw)));
+    S.hlStart = 1 - Math.min(1, raw * 2.2);
+    S.hl = Math.max(0, (raw - 0.55) / 0.45);
+    if (raw >= 1) { const d = anim.done; anim = null; S.hl = 1; S.hlStart = 0; d && d(); }
+  }
+  render();
+  requestAnimationFrame(tick);
+}
+function resize() {
+  DPR = Math.min(2, window.devicePixelRatio || 1); W = innerWidth; H = innerHeight;
+  cv.width = W * DPR; cv.height = H * DPR;
+  if (!anim && S.target) setView(cvec(S.target), fitK(S.target));
+  else if (!S.target) setView(unit(100, 5), 260);
+}
+addEventListener("resize", resize);
+
+/* ---------- quiz logic ---------- */
+const opt = { n: 88, mode: "type", labels: 1 };
+const G = { deck: [], i: 0, score: 0, streak: 0, wrong: 0, hinted: false, done: false, missed: [], ready: false };
+const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+document.querySelectorAll(".seg").forEach(seg => seg.addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  seg.querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b));
+  const k = seg.dataset.k; opt[k] = k === "mode" ? b.dataset.v : +b.dataset.v;
+}));
+$("begin").onclick = () => { $("start").classList.add("hidden"); newRound(); };
+$("again").onclick = () => { $("end").classList.add("hidden"); $("start").classList.remove("hidden"); };
+
+function newRound() {
+  G.deck = shuffle(C.slice()).slice(0, opt.n); G.i = -1; G.score = 0; G.streak = 0; G.missed = [];
+  S.showLabels = !!opt.labels;
+  $("hN").textContent = G.deck.length;
+  $("typeUI").classList.toggle("hidden", opt.mode !== "type");
+  $("mcUI").classList.toggle("hidden", opt.mode !== "mc");
+  $("panel").classList.remove("hidden");
+  nextQ();
+}
+function hud() { $("hQ").textContent = Math.max(0, G.i + 1); $("hS").textContent = G.score; $("hK").textContent = G.streak; }
+
+function nextQ() {
+  if (++G.i >= G.deck.length) return finish();
+  const t = G.deck[G.i];
+  const nb = t.adj.map(id => byId[id]);
+  // prefer a neighbour that is not tiny, so the start view is easy to read
+  const st = nb[Math.random() * nb.length | 0];
+  S.target = t; S.start = st; S.reveal = false; G.wrong = 0; G.hinted = false; G.done = false; G.ready = false;
+  hud(); setMsg("");
+  $("next").classList.add("hidden"); $("skip").classList.remove("hidden"); $("hint").disabled = false; $("go").disabled = false;
+  $("ans").value = ""; $("ans").disabled = false; hideSugg();
+  $("qText").textContent = "Which constellation is glowing?";
+  $("cap").innerHTML = S.showLabels ? `Starting at <b>${st.name}</b> (${st.en}) — find the next one…` : "Finding the next constellation…";
+  buildMC();
+  fly(st, t, 3600, () => { G.ready = true; $("cap").innerHTML = S.showLabels ? `Grey: neighbours · <b>${st.name}</b>: where we started` : ""; if (opt.mode === "type" && matchMedia("(hover:hover)").matches) $("ans").focus(); });
+}
+$("replay").onclick = () => { if (!S.target || G.done && false) return; S.reveal = G.done; fly(S.start, S.target, 3000, () => { if (G.done) S.hl = 1; }); };
+
+function setMsg(html, cls) { const m = $("msg"); m.innerHTML = html; m.className = "msg " + (cls || ""); }
+const accepts = (t, s) => { const n = norm(s); return n && (n === norm(t.name) || n === norm(t.en)); };
+
+function submit(guess) {
+  if (G.done) return;
+  const t = S.target;
+  if (accepts(t, guess)) {
+    const pts = Math.max(1, 3 - G.wrong - (G.hinted ? 1 : 0));
+    G.score += pts; G.streak++; if (G.wrong || G.hinted) {}
+    finishQ(true, `Correct! <b>${t.name}</b> <small>(${t.en}) · +${pts}</small>`);
+  } else {
+    G.wrong++; G.streak = 0; hud();
+    $("panel").classList.remove("shake"); void $("panel").offsetWidth; $("panel").classList.add("shake");
+    if (G.wrong >= 3) { G.missed.push(t); finishQ(false, `It was <b>${t.name}</b> <small>(${t.en})</small>`); }
+    else setMsg(`Not quite — ${3 - G.wrong} ${3 - G.wrong === 1 ? "try" : "tries"} left. ${G.wrong === 1 && !G.hinted ? "<small>Tap Hint if you’re stuck.</small>" : ""}`, "bad");
+  }
+}
+function finishQ(ok, html) {
+  G.done = true; S.reveal = true; S.hl = 1; hud();
+  setMsg(html, ok ? "ok" : "bad");
+  $("ans").disabled = true; $("go").disabled = true; $("hint").disabled = true; hideSugg();
+  document.querySelectorAll("#mcUI button").forEach(b => { b.disabled = true; if (accepts(S.target, b.textContent)) b.classList.add("good"); });
+  $("skip").classList.add("hidden"); $("next").classList.remove("hidden");
+  $("next").textContent = G.i + 1 >= G.deck.length ? "Finish" : "Next →"; $("next").focus();
+}
+$("skip").onclick = () => { if (G.done) return; G.streak = 0; G.missed.push(S.target); finishQ(false, `It was <b>${S.target.name}</b> <small>(${S.target.en})</small>`); };
+$("next").onclick = nextQ;
+$("hint").onclick = () => {
+  if (G.done) return; G.hinted = true; const t = S.target;
+  setMsg(`Hint: starts with <b>${t.name[0]}</b>, ${t.name.length} letters. <small>(−1 point)</small>`);
+};
+$("go").onclick = () => submit($("ans").value);
+
+/* typing + autocomplete */
+let sel = -1;
+function hideSugg() { $("sugg").style.display = "none"; sel = -1; }
+function showSugg() {
+  const q = norm($("ans").value), box = $("sugg");
+  if (!q) return hideSugg();
+  const m = C.filter(c => norm(c.name).startsWith(q) || norm(c.en).startsWith(q))
+    .concat(C.filter(c => !norm(c.name).startsWith(q) && !norm(c.en).startsWith(q) && (norm(c.name).includes(q) || norm(c.en).includes(q)))).slice(0, 6);
+  if (!m.length) return hideSugg();
+  box.innerHTML = m.map((c, i) => `<div data-n="${c.name}">${c.name}<span>${c.en !== c.name ? c.en : ""}</span></div>`).join("");
+  box.style.display = "block"; sel = -1;
+}
+$("ans").addEventListener("input", showSugg);
+$("sugg").addEventListener("mousedown", e => { const d = e.target.closest("div[data-n]"); if (d) { e.preventDefault(); $("ans").value = d.dataset.n; hideSugg(); submit(d.dataset.n); $("ans").value = G.done ? $("ans").value : ""; } });
+$("ans").addEventListener("keydown", e => {
+  const items = [...$("sugg").children];
+  if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+    if (!items.length) return; e.preventDefault();
+    sel = (sel + (e.key === "ArrowDown" ? 1 : -1) + items.length) % items.length;
+    items.forEach((d, i) => d.classList.toggle("on", i === sel));
+  } else if (e.key === "Enter") {
+    e.preventDefault();
+    const v = sel >= 0 && items[sel] ? items[sel].dataset.n : $("ans").value;
+    hideSugg(); if (v.trim()) { submit(v); if (!G.done) { $("ans").value = ""; } }
+  } else if (e.key === "Escape") hideSugg();
+});
+addEventListener("keydown", e => { if (e.key === "Enter" && G.done && !$("panel").classList.contains("hidden") && document.activeElement !== $("next")) $("next").click(); });
+
+/* multiple choice */
+function buildMC() {
+  const box = $("mcUI"); box.innerHTML = "";
+  if (opt.mode !== "mc") return;
+  const t = S.target, pool = shuffle(t.adj.map(i => byId[i]).filter(c => c !== t));
+  const opts = pool.slice(0, 2);
+  for (const c of shuffle(C.slice())) { if (opts.length >= 3) break; if (c !== t && !opts.includes(c)) opts.push(c); }
+  shuffle(opts.concat([t])).forEach(c => {
+    const b = document.createElement("button"); b.textContent = c.name;
+    b.onclick = () => { if (G.done || b.disabled) return; if (accepts(t, c.name)) submit(c.name); else { b.classList.add("bad"); b.disabled = true; submit(c.name); } };
+    box.appendChild(b);
+  });
+}
+
+function finish() {
+  $("panel").classList.add("hidden"); $("cap").textContent = ""; S.target = S.start = null; anim = null; resize();
+  const max = G.deck.length * 3;
+  $("eScore").textContent = `${G.score} / ${max}`;
+  $("eSub").textContent = G.missed.length ? `You missed ${G.missed.length} — review them:` : "Flawless — every constellation named! ✦";
+  $("eMissed").innerHTML = G.missed.length ? `<div class="missed">${G.missed.map(c => `<span>${c.name} <small style="color:var(--dim)">${c.en}</small></span>`).join("")}</div>` : "";
+  $("end").classList.remove("hidden");
+}
+
+resize();
+requestAnimationFrame(tick);
+</script>
+</body>
+</html>
