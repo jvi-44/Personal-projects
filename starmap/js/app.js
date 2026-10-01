@@ -128,7 +128,10 @@ function rebuild(d = cur, { from = null, fresh: forceFresh = false } = {}) {
   } else {
     const started = dd.plan?.blocks.some((b) => b.done);
     const at = from ?? (isToday && dd.plan && (started || nowMin() > P.hm(S.settings.wake) + 20) ? nowMin() : null);
-    const res = at != null && dd.plan ? P.replan(inp, eff(), dd.plan.blocks, at) : P.generatePlan(inp, eff());
+    // times Vi set herself survive every re-plan
+    const locked = (dd.plan?.blocks || []).filter((b) => b.locked && (!b.taskId || ids.has(b.taskId)));
+    const lockedMin = {}; locked.forEach((b) => { if (b.taskId) lockedMin[b.taskId] = (lockedMin[b.taskId] || 0) + b.end - b.start; });
+    const res = at != null && dd.plan ? P.replan(inp, eff(), dd.plan.blocks, at) : P.generatePlan(inp, eff(), { frozen: locked.map((b) => ({ ...b })), doneMin: lockedMin });
     dd.plan = { blocks: res.blocks, warnings: res.warnings, stats: res.stats, manual: false, adminText: inp.adminText };
   }
   dd.plan.generatedAt = Date.now();
@@ -479,11 +482,10 @@ function renderDay() {
 
   // schedule items with reminders woven in
   const all = P.itemsOf(blocks);
-  const nudges = [...(dd.nudges || [])];
+  const tipsFor = (it) => (dd.nudges || []).filter((n) => (n.block && it.blocks.some((b) => b.id === n.block)) || (!n.block && n.at >= it.start - 10 && n.at < it.end));
   let nowPlaced = !isToday;
   const sched = all.map((it, idx) => {
     let pre = "";
-    while (nudges.length && nudges[0].at <= it.start) { const n = nudges.shift(); pre += `<li class="nudge-row${isToday && n.at <= now ? " past" : ""}"><span>${P.pretty(n.at)}</span><p>${esc(n.text)}</p></li>`; }
     if (!nowPlaced && it.end > now) { nowPlaced = true; pre += `<li class="now" aria-label="Now"><span>${P.pretty(now)}</span></li>`; }
     const first = it.blocks[0], isRoutine = it.kind === "routine", open = openItem === it.key;
     const done = it.blocks.every((b) => b.done), live = isToday && it.start <= now && now < it.end;
@@ -500,13 +502,17 @@ function renderDay() {
       meta = `${P.dur(first.end - first.start)} · ${PLACE(first.loc).icon}${it.blocks.length > 1 ? " + break" : ""}`;
       body = `${first.tip ? `<p class="tip">💡 ${esc(first.tip)}</p>` : ""}<p>${esc(first.desc || "").replace(/\n/g, "<br>")}</p>${task || first.type === "admin" || first.type === "fixed" ? `<label class="mini"><input type="checkbox" data-chk="${first.id}" ${first.done ? "checked" : ""}> Done</label>` : ""}`;
     }
+    const isLocked = it.blocks.some((b) => b.locked);
+    const reminders = tipsFor(it).map((n) => `<p class="tip">⏰ ${P.pretty(n.at)} · ${esc(n.text)}</p>`).join("");
+    body = reminders + body;
+    meta = `${isLocked ? "🔒 your time · " : ""}${meta}`;
     const editor = `<div class="iedit"><label>Start<input type="time" data-istart="${it.key}" value="${P.clock(it.start)}"></label>${it.blocks.length === 1 ? `<label>End<input type="time" data-iend="${it.key}" value="${P.clock(it.end)}"></label>` : ""}
       <span class="updown"><button data-imove="${it.key}|-1" aria-label="Move earlier" ${idx === 0 ? "disabled" : ""}>▲</button><button data-imove="${it.key}|1" aria-label="Move later" ${idx === all.length - 1 ? "disabled" : ""}>▼</button></span>
-      <button class="danger" data-iremove="${it.key}">Remove</button></div>`;
+      ${isLocked ? `<button data-iunlock="${it.key}">Unlock time</button>` : ""}<button class="danger" data-iremove="${it.key}">Remove</button></div>`;
     return `${pre}<li class="blk t-${isRoutine ? "routine" : first.type}${done ? " done" : ""}${live ? " live" : ""}${late ? " late" : ""}${open ? " open" : ""}" draggable="true" data-drag="item" data-key="${it.key}">
       <button class="bhead" data-item="${it.key}" aria-expanded="${open}"><span class="bt">${P.pretty(it.start)}<em>${P.pretty(it.end)}</em></span><span class="bn">${title}<em>${meta}</em></span><span class="grip" aria-hidden="true">⋮⋮</span></button>
       ${open ? `<div class="bd">${body}${editor}</div>` : ""}</li>`;
-  }).join("") + nudges.map((n) => `<li class="nudge-row"><span>${P.pretty(n.at)}</span><p>${esc(n.text)}</p></li>`).join("");
+  }).join("");
 
   const note = dd.ai;
   const next = isToday ? (dd.nudges || []).find((n) => n.at > now) : null;
@@ -734,7 +740,8 @@ document.addEventListener("click", (e) => {
   if (ds.swap) { const t = tasksOf().find((x) => x.id === ds.swap); return t && swapTier(t); }
   if (ds.remove) { const t = tasksOf().find((x) => x.id === ds.remove); return t && removeTask(t); }
   if (ds.item) { openItem = openItem === ds.item ? null : ds.item; return renderDay(); }
-  if (ds.imove) { const [key, dir] = ds.imove.split("|"); return editPlan(cur, P.moveItem(blocksOf(), key, +dir)); }
+  if (ds.imove) { const [key, dir] = ds.imove.split("|"), b = blocksOf(), out = P.moveItem(b, key, +dir); if (out === b) return toast("The neighbouring item has a time you set, so it stays put. Change this item's time instead."); return editPlan(cur, out); }
+  if (ds.iunlock) { const it = P.itemsOf(blocksOf()).find((x) => x.key === ds.iunlock); it?.blocks.forEach((b) => delete b.locked); save(cur); renderDay(); return toast("Unlocked: re-plans can move it again."); }
   if (ds.iremove) { openItem = null; return editPlan(cur, P.removeItem(blocksOf(), ds.iremove), "Removed from today's schedule. The task stays in your list."); }
   if (ds.energy) { day().inputs.energy = ds.energy; save(cur); return renderDay(); }
   if (ds.habit) { const [d, which] = ds.habit.split("|"); return toggleHabitDay(d, which); }
@@ -805,7 +812,7 @@ document.addEventListener("submit", (e) => {
   e.preventDefault();
   const f = e.target, s = P.hm(f.s.value), en = P.hm(f.e.value), title = f.t.value.trim();
   if (s == null || en == null || en <= s || !title) return toast("Give it a name, a start and a later end.");
-  const b = { id: `e-${Date.now().toString(36)}`, type: "fixed", start: s, end: en, title, loc: day().inputs.locations[s < P.hm(S.settings.lunch) ? "morning" : s < P.hm(S.settings.dinner) ? "afternoon" : "evening"], done: false, desc: "Added by you." };
+  const b = { id: `e-${Date.now().toString(36)}`, type: "fixed", locked: true, start: s, end: en, title, loc: day().inputs.locations[s < P.hm(S.settings.lunch) ? "morning" : s < P.hm(S.settings.dinner) ? "afternoon" : "evening"], done: false, desc: "Added by you." };
   editPlan(cur, P.setItemTime([...blocksOf(), b], b.id, s, en), `Added “${title}” at ${P.pretty(s)}.`);
 });
 document.addEventListener("keydown", (e) => {
@@ -836,7 +843,7 @@ document.addEventListener("drop", (e) => {
     let blocks = blocksOf();
     const idx = (k) => P.itemsOf(blocks).findIndex((it) => it.key === k);
     const target = idx(el.dataset.key);
-    for (let g = 0; g < 40 && idx(drag.key) !== target && idx(drag.key) >= 0; g++) blocks = P.moveItem(blocks, drag.key, idx(drag.key) < target ? 1 : -1);
+    for (let g = 0; g < 40 && idx(drag.key) !== target && idx(drag.key) >= 0; g++) { const next = P.moveItem(blocks, drag.key, idx(drag.key) < target ? 1 : -1); if (next === blocks) { toast("Stopped at an item with a time you set."); break; } blocks = next; }
     editPlan(cur, blocks);
   }
   drag = null;
@@ -861,3 +868,7 @@ setInterval(() => {
   if (cur === today() && !$("#dayPanel").contains(document.activeElement)) { const y = $("#dayPanel").scrollTop; renderDay(); $("#dayPanel").scrollTop = y; }
 }, 30000);
 setTimeout(checkNudges, 3000);
+// never lose edits: push pending saves the moment the page is hidden or closed
+const flushNow = () => { if (db && (dirtyDays.size || metaDirty)) { clearTimeout(dbTimer); flushDb(); } };
+document.addEventListener("visibilitychange", () => { if (document.hidden) flushNow(); });
+addEventListener("pagehide", flushNow);

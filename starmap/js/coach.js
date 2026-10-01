@@ -316,7 +316,7 @@ export function checkinHeuristic(text, blocks, now) {
   return did.length ? { blocks: out, reply: `Done: ${did.join(", ")}.` } : null;
 }
 
-const schedJSON = (blocks) => JSON.stringify([...blocks].filter((b) => b.type !== "flex").sort((a, b) => a.start - b.start).map((b) => ({ id: b.id, type: b.type, title: b.title, start: P.clock(b.start), end: P.clock(b.end), done: !!b.done })));
+const schedJSON = (blocks) => JSON.stringify([...blocks].filter((b) => b.type !== "flex").sort((a, b) => a.start - b.start).map((b) => ({ id: b.id, type: b.type, title: b.title, start: P.clock(b.start), end: P.clock(b.end), done: !!b.done, ...(b.locked ? { locked: true } : {}) })));
 
 /* Apply {changes:[{id,start,end}], remove:[id], add:[{title,start,end}]} to a schedule. */
 export function applyChanges(blocks, out) {
@@ -325,7 +325,7 @@ export function applyChanges(blocks, out) {
   b = b.filter((x) => !rm.has(x.id));
   for (const c of Array.isArray(out.changes) ? out.changes : []) {
     const x = b.find((y) => y.id === c.id), s = hhmm(c.start), e = hhmm(c.end);
-    if (x && s != null) { const len = x.end - x.start; x.start = s; x.end = e != null && e > s ? e : s + len; }
+    if (x && s != null) { const len = x.end - x.start; x.start = s; x.end = e != null && e > s ? e : s + len; if (out.lock) x.locked = true; }
   }
   for (const a of Array.isArray(out.add) ? out.add : []) {
     const s = hhmm(a.start), e = hhmm(a.end), title = str(a.title, 80);
@@ -345,7 +345,7 @@ ${schedJSON(day.blocks)}
 
 Vi says: """${String(text).slice(0, 800)}"""
 
-Change the schedule to match what Vi asked. Rules: never move blocks marked done or finished before now; keep fixed commitments unless Vi says otherwise; keep block durations unless asked; when something moves later, move the remaining unfinished blocks after it forward in order; nothing may overlap; try to finish before sleep, shortening "secondary" blocks or dropping breaks if needed. Only list blocks whose times change.
+Change the schedule to match what Vi asked. Rules: blocks marked "locked" have times Vi set herself: never change them unless Vi explicitly asks about that block, and if Vi gives a time, use exactly that time; never move blocks marked done or finished before now; keep fixed commitments unless Vi says otherwise; keep block durations unless asked; when something moves later, move the remaining unfinished blocks after it forward in order; nothing may overlap; try to finish before sleep, shortening "secondary" blocks or dropping breaks if needed. Only list blocks whose times change.
 Reply with only JSON: {"changes":[{"id":"","start":"HH:MM","end":"HH:MM"}],"remove":["id"],"add":[{"title":"","start":"HH:MM","end":"HH:MM"}],"reply":"one short, kind sentence confirming what changed","tip":"one encouraging tip for the rest of the day"}`;
   try {
     const out = await ask(prompt, { tier: "default" });

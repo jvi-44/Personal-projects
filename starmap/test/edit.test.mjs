@@ -91,3 +91,27 @@ test("breaks never outlive the task they followed", () => {
   const work = re.blocks.filter((b) => ["primary", "secondary", "admin"].includes(b.type));
   for (const br of re.blocks.filter((b) => b.type === "break")) assert.ok(work.some((w) => w.end === br.start), `orphan break at ${P.clock(br.start)}`);
 });
+
+test("times you set are kept exactly: later edits, wake-up shifts and re-plans flow around them", () => {
+  const i = base();
+  const { blocks } = P.generatePlan(i);
+  let out = P.setItemTime(blocks, task(blocks, "b").id, P.hm("11:00"), P.hm("12:00"));
+  assert.ok(task(out, "b").locked);
+  out = P.shiftFrom(out, 0, 120); // woke up two hours late
+  assert.equal(task(out, "b").start, P.hm("11:00"));
+  assert.equal(task(out, "b").end, P.hm("12:00"));
+  noOverlap(out.filter((x) => x.type !== "flex"));
+  // moving a neighbour can't displace it
+  const items = P.itemsOf(out), bi = items.findIndex((it) => it.blocks.some((x) => x.taskId === "b"));
+  assert.equal(P.moveItem(out, items[bi - 1].key, 1), out);
+  // re-planning mid-day keeps it where it was set, without duplicating the task
+  const re = P.replan(i, P.DEFAULT_SETTINGS, out, P.hm("09:00"));
+  const bs = re.blocks.filter((x) => x.taskId === "b");
+  assert.equal(bs.length, 1);
+  assert.equal(bs[0].start, P.hm("11:00"));
+  // a fresh plan with the locked block frozen keeps it too, and doesn't double routines
+  const fresh = P.generatePlan(i, P.DEFAULT_SETTINGS, { frozen: out.filter((x) => x.locked), doneMin: { b: 60 } });
+  assert.equal(task(fresh.blocks, "b").start, P.hm("11:00"));
+  assert.equal(fresh.blocks.filter((x) => x.taskId === "b").length, 1);
+  noOverlap(fresh.blocks);
+});

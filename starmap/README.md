@@ -12,7 +12,8 @@ Published as a pinned Claude artifact: <https://claude.ai/artifact/RJ7yPptKSamhJ
 - **✨ Plan my day**: pick places, energy, fixed plans and a note for Claude. The day is rebuilt in priority order around your routines, then Claude adds a theme, tips and 5–8 reminders tied to the schedule.
 - **Edit the schedule**: drag items or use ▲▼ to swap them; open an item to set its start/end. Later items move forward; fixed plans and the night routine stay put. *Add to schedule* inserts your own event. Once edited, the schedule is kept as you left it (new tasks slot into free time) until you choose *Re-plan by priority*.
 - **Check in** in plain words: “woke up late, start from 8:30”, “move ESAT paper to 3pm and push the rest”, “skip gym”, “add dentist at 4 for 45 min”. Claude rewrites the schedule; without Claude, a built-in parser handles those phrasings.
-- **Reminders** appear in the schedule and pop up at their time while the page is open (lunch, leaving for the cafe, getting home and charging devices, wind-down…).
+- **Reminders** live inside the block they belong to (open a block to see them) and pop up at their time while the page is open.
+- **Your times are binding**: any time you set (editing an item, adding an event, or "move X to 3pm" in a check-in) locks that item 🔒. Re-plans, wake-up shifts, new tasks and reorders flow around it and never move it. Use *Unlock time* to release it.
 
 **Weeks**
 - **Saturday is reset day**: the week card shows a banner and *Plan my week* defaults to next week. Choose a **theme word**, where you'll be each day, and the seeds to plant. The week grows as a draft in the garden.

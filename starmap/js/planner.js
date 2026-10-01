@@ -241,6 +241,7 @@ export function generatePlan(inputs, settings = DEFAULT_SETTINGS, opts = {}) {
   const place = (s, len, tag) => grid.take(s, len, tag);
 
   const fill = !!opts.fill;
+  const has = (type, title) => frozen.some((b) => b.type === type && b.title === title);
   const lunchAt = hm(S.lunch), dinnerAt = hm(S.dinner);
   let windStart, routineEnd;
   if (fill) {
@@ -251,7 +252,7 @@ export function generatePlan(inputs, settings = DEFAULT_SETTINGS, opts = {}) {
   } else {
   // 1) fixed commitments win every conflict
   for (const f of inputs.fixed || []) {
-    if (f.start < from) continue;
+    if (f.start < from || has("fixed", f.title)) continue;
     place(f.start, f.end - f.start, "fixed");
     add({ type: "fixed", start: f.start, end: f.end, title: f.title, loc: f.loc || L.afternoon, desc: "Fixed commitment. Arrive 5 minutes early; everything else flexes around it." });
   }
@@ -262,7 +263,7 @@ export function generatePlan(inputs, settings = DEFAULT_SETTINGS, opts = {}) {
   windStart = Math.max(wake + 60, sleep - evTotal);
   let t = windStart;
   for (const r of ev) {
-    if (t >= from) { place(t, r.m, "routine"); add({ type: "routine", start: t, end: t + r.m, title: r.t, loc: "home", desc: "Evening routine. Protect it; tomorrow's energy is built here." }); }
+    if (t >= from && !has("routine", r.t)) { place(t, r.m, "routine"); add({ type: "routine", start: t, end: t + r.m, title: r.t, loc: "home", desc: "Evening routine. Protect it; tomorrow's energy is built here." }); }
     t += r.m;
   }
 
@@ -270,6 +271,8 @@ export function generatePlan(inputs, settings = DEFAULT_SETTINGS, opts = {}) {
   t = wake;
   for (const r of S.morningRoutine) {
     const [m, title] = r;
+    const kept = frozen.find((b) => b.type === "routine" && b.title === title);
+    if (kept) { t = Math.max(t, kept.end); continue; }
     const s = t < from ? t : grid.spot(t, m, { forward: 240, backward: 0, before: windStart });
     if (s == null) break;
     if (s >= from) { place(s, m, "routine"); add({ type: "routine", start: s, end: s + m, title, loc: "home", desc: "Morning routine. Non-negotiable; it powers the rest of the day." }); }
@@ -306,7 +309,7 @@ export function generatePlan(inputs, settings = DEFAULT_SETTINGS, opts = {}) {
 
   // 5) meals
   for (const [title, at, len, key] of fill ? [] : [["Lunch", lunchAt, S.lunchMin, "lunch"], ["Dinner", dinnerAt, S.dinnerMin, "dinner"]]) {
-    if (at < from) continue; // already happened (kept from the frozen plan)
+    if (at < from || has("meal", title)) continue; // already happened or kept as set
     const s = grid.spot(at, len, { forward: 90, backward: 60, before: windStart });
     if (s != null && s >= from) {
       place(s, len, "meal");
@@ -466,8 +469,8 @@ export function taskProgress(task, blocks) {
 export function replan(inputs, settings, prevBlocks, now) {
   // keep what happened (and what's happening); unfinished task blocks from earlier get rescheduled, not duplicated
   const isTask = (b) => ["primary", "secondary", "admin"].includes(b.type);
-  const frozen = dropOrphanBreaks(prevBlocks.filter((b) => b.done || (b.end <= now && !isTask(b)) || (b.start < now && b.end > now)));
-  const done = doneMinutes(frozen);
+  const frozen = dropOrphanBreaks(prevBlocks.filter((b) => b.done || b.locked || (b.end <= now && !isTask(b)) || (b.start < now && b.end > now)));
+  const done = doneMinutes(frozen.map((b) => (b.locked ? { ...b, done: true } : b)));
   // tasks already fully done, or marked done, don't return
   const p = (arr) => (arr || []).map((t) => ({ ...t, done: t.done || (done[t.id] || 0) >= t.min }));
   const next = { ...inputs, primary: p(inputs.primary), secondary: p(inputs.secondary) };
@@ -516,23 +519,21 @@ const shiftItem = (it, d) => { it.blocks.forEach((b) => { b.start += d; b.end +=
 const flatten = (items) => items.flatMap((it) => it.blocks).sort((a, b) => a.start - b.start);
 
 /* Fixed plans and the night routine hold their place; everything else flows around them. */
-const anchored = (it) => it.kind === "fixed" || (it.kind === "routine" && it.start >= 18 * 60);
+const anchored = (it) => it.kind === "fixed" || (it.kind === "routine" && it.start >= 18 * 60) || it.blocks.some((b) => b.locked);
 /* Push later items forward so nothing overlaps. `pinKey` keeps its time; anchored items never move. */
 export function resolve(items, pinKey = null) {
-  items.sort((a, b) => a.start - b.start || (a.key === pinKey ? -1 : b.key === pinKey ? 1 : 0));
-  const pin = items.find((it) => it.key === pinKey);
-  if (pin) { // anything that started before the pinned item but runs into it goes after it
-    for (const it of items) if (it !== pin && !anchored(it) && it.start < pin.start && it.end > pin.start) shiftItem(it, pin.end - it.start);
-    items.sort((a, b) => a.start - b.start || (a.key === pinKey ? -1 : b.key === pinKey ? 1 : 0));
+  const isFixed = (it) => it.key === pinKey || anchored(it);
+  const fixed = items.filter(isFixed);
+  const mov = items.filter((it) => !isFixed(it)).sort((a, b) => a.start - b.start);
+  let cursor = -Infinity;
+  for (const it of mov) { // keep order and gaps; bump past anything with a set time
+    const len = it.end - it.start;
+    let s = Math.max(it.start, cursor);
+    for (let g = 0; g < 60; g++) { const hit = fixed.find((f) => f.start < s + len && f.end > s); if (!hit) break; s = hit.end; }
+    shiftItem(it, s - it.start);
+    cursor = it.end;
   }
-  for (let i = 1; i < items.length; i++) {
-    const it = items[i];
-    const prevEnd = Math.max(...items.slice(0, i).map((p) => p.end));
-    if (it.start >= prevEnd || anchored(it) || it.key === pinKey) continue;
-    shiftItem(it, prevEnd - it.start);
-    items.sort((a, b) => a.start - b.start);
-  }
-  return items;
+  return items.sort((a, b) => a.start - b.start);
 }
 
 /* Move an item up (-1) or down (+1) in the day: the two swap places within the span they share. */
@@ -540,6 +541,7 @@ export function moveItem(blocks, key, dir) {
   const items = itemsOf(clone(blocks));
   const i = items.findIndex((it) => it.key === key), j = i + dir;
   if (i < 0 || j < 0 || j >= items.length) return blocks;
+  if (anchored(items[j])) return blocks; // never displace something with a set time
   const [a, b] = dir > 0 ? [items[i], items[j]] : [items[j], items[i]]; // a is earlier
   const gap = b.start - a.end, aLen = a.end - a.start;
   const start = a.start;
@@ -556,6 +558,7 @@ export function setItemTime(blocks, key, start, end = null) {
   if (!it) return blocks;
   if (end != null && it.blocks.length === 1 && end > start) { it.blocks[0].start = start; it.blocks[0].end = end; it.start = start; it.end = end; }
   else shiftItem(it, start - it.start);
+  it.blocks.forEach((b) => (b.locked = true)); // a time Vi sets is kept exactly
   return flatten(resolve(items, key));
 }
 
