@@ -1,0 +1,2 @@
+{ "name": "sjpo-mechanics-build", "private": true, "scripts": { "build": "node build.js" },
+  "dependencies": { "katex": "0.16.11", "playwright-core": "^1.48.0" } }
