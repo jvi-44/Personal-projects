@@ -452,15 +452,24 @@ function toast(msg) {
 }
 async function downloadPdf(which, btn) {
   const file = which === "guide" ? GUIDE_PDF : SOL_PDF;
+  let dl = null;
+  try { dl = window.claude && window.claude.use ? await window.claude.use("downloads") : null; } catch (e) {}
+  if (!dl) { toast("Saving files isn't supported in this view. Try the claude.ai website in a desktop browser."); return; }
+  btn.disabled = true; const old = btn.textContent; btn.textContent = "Preparing…";
   try {
-    const dl = window.claude && window.claude.use ? await window.claude.use("downloads") : null;
-    if (!dl) { toast("Downloads aren't available here. Read it with “Open PDF” instead"); return; }
-    btn.disabled = true;
-    const blob = await (await fetch(file)).blob();
-    await dl.save({ filename: file.split("/").pop(), data: blob });
+    const res = await fetch(file);
+    if (!res.ok) throw { code: "fetch_failed", message: "HTTP " + res.status };
+    // ArrayBuffer rather than Blob: Safari is unreliable at passing Blobs between frames.
+    const buf = await res.arrayBuffer();
+    await dl.save({ filename: file.split("/").pop(), data: buf });
+    toast("Saved");
   } catch (err) {
-    if (!err || err.code !== "declined") toast("Download unavailable here. Use “Open PDF” instead");
-  } finally { btn.disabled = false; }
+    const code = (err && err.code) || "unknown";
+    if (code === "declined") return;
+    if (code === "rate_limited") toast("A save prompt is already open. Finish that one first.");
+    else toast("Couldn't save the PDF (" + code + "). You can still read it with Open PDF.");
+    console.error("download failed", err);
+  } finally { btn.disabled = false; btn.textContent = old; }
 }
 
 /* ---------- in-page PDF viewer (PDF.js) ----------
