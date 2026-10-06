@@ -2,7 +2,7 @@ import pdfplumber,re,json,os,subprocess,sys
 from PIL import Image
 DPI=144; S=DPI/72
 keys=json.load(open('work/keys.json'))
-years=sys.argv[1:] or ['2016','2017','2019','2020','2021','2022','2023']
+years=sys.argv[1:] or ['2016','2017','2018','2019','2020','2021','2022','2023']
 os.makedirs('out/img',exist_ok=True); os.makedirs('work/pages',exist_ok=True)
 report={}
 for y in years:

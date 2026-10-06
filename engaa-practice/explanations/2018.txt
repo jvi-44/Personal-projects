@@ -1,0 +1,41 @@
+1|Women who passed = 200 − 143 = 57. Men who passed = 167 − 57 = 110.
+2|Each α removes 2 protons (−10 for five) and each β⁻ adds 1 (+2 for two). Net change −8, so Y has 8 fewer protons.
+3|V = 2√2x³. Surface area = 2(√2x² + 2x² + 2√2x²) = 2x²(2 + 3√2). Setting V = 2 × SA: 2√2x³ = 4x²(2 + 3√2), so x = 2(2 + 3√2)/√2 = 2√2 + 6.
+4|Battery voltage = 0.20 × (12 + 15 + 3) = 6.0 V. Without R₃: I = 6.0/27 = 0.22 A.
+5|The gradient of 2x + 3y + 1 = 0 is −2/3. Gradient between the points = (2p − (p − 1))/(1 − 2p) = (p + 1)/(1 − 2p). Setting −2/3: 3p + 3 = 4p − 2, so p = 5.
+6|UV has wavelengths shorter than visible light (&lt; 400 nm), so its frequency is above c/λ = 3.0 × 10⁸/400 × 10⁻⁹ = 7.5 × 10¹⁴ Hz. That gives a minimum frequency only.
+7|With QR = w and PQ = 2w, 2w² = 96 so w² = 48. The diagonal is a diameter: d² = 4w² + w² = 240, so d = 4√15 and r = 2√15.
+8|95% is wasted: 0.95 × 100 W × 600 s = 57 000 J.
+9|The drinks are similar with length ratio 4 : 5, so the volume ratio is 64 : 125. Large drink = 320 × 125/64 = 625 cm³.
+10|Electrical power = 400 × 1250 = 500 kW, so 2.0 MJ is supplied in 4.0 s. 45% ends up as kinetic energy: 900 000 J.
+11|The lines cross at 5x + 2(3x − 23) = 20, i.e. x = 6. On x = 0 they reach y = 10 and y = −23, a base of 33. Area = ½ × 33 × 6 = 99.
+12|KE = p²/(2m), so m = p²/(2KE) = 576/192 = 3.0 kg.
+13|Volume scales by (1/40)³ = 1/64 000. Model volume = 12π m³/64 000 = 12π × 10⁶/64 000 cm³ = 187.5π cm³. Mass = 4/3 × 187.5π = 250π g.
+14|The count levels off at 20 counts per minute, so that is the background. The isotope’s own rate starts at 100. It halves to 50 (a measured 70) at about 40 minutes.
+15|Each interior angle of a regular pentagon is 108°, so angle TSU = 108° − 60° = 48°. ST = SR = SU, so triangle STU is isosceles and angle STU = (180° − 48°)/2 = 66°.
+16|Resultant force = mg − 12 = ma, so 10m − 12 = 2m and m = 1.5 kg.
+17|Increasing by 125% multiplies by 2.25; decreasing by 40% multiplies by 0.6. m = 2.25 × 0.6 = 1.35 = 27/20.
+18|In each oscillation a particle travels 4 × 4.0 cm = 16 cm, and in 20 s there are 200 oscillations. 200 × 0.16 m = 32 m. The wave speed is a distractor.
+19|The bearings differ by 90°, so PQR is a right-angled isosceles triangle. Coordinates: Q = 5(sin 65°, cos 65°) ≈ (4.53, 2.11) and R ≈ (6.64, −2.42). The vector from R to P is (−6.64, 2.42), which points 20° north of west. That is a bearing of 290°.
+20|Cylinder + V g of water = 290 and cylinder + 0.9V g of oil = 270. Subtracting: 0.1V = 20, so V = 200 cm³ and the cylinder is 290 − 200 = 90 g.
+21|By the alternate segment theorem, angle SQP = angle PST = 75°. QS = QP, so angles QSP and QPS are both (180° − 75°)/2 = 52.5°. The radius OS is perpendicular to the tangent, so angle PSO = 90° − 75° = 15°. Angle QSO = 52.5° − 15° = 37.5°.
+22|Terminal velocity is the gradient of the straight part: (480 − 380)/(12 − 10) = 50 m s⁻¹. At terminal velocity the drag equals the weight: k × 50² = 1000, so k = 0.40.
+23|½b(b + 3) = 14, so b² + 3b − 28 = 0 and b = 4, giving h = 7. s² = 7² + 2² = 53, so s ≈ 7.3, between 7 and 8.
+24|Nucleons: 1 + 235 = 88 + 145 + n, so 3 neutrons are emitted. Protons: lanthanum has Z = 92 − 35 = 57, and β⁻ decay raises this to 58.
+25|p + q = 2 and 4p + q = 17, so 3p = 15, p = 5 and q = −3. (p − q)/(p + q) = 8/2 = 4.
+26|X and Y in parallel make R/2, in series with Z (R), so the total is 3R/2. The parallel pair takes ⅓ of the battery voltage V. P<sub>total</sub> = V²/(1.5R) = 18, so V²/R = 27. P<sub>X</sub> = (V/3)²/R = 27/9 = 3.0 W.
+27|At most one red sweet is ever taken, so the child needs at least two greens: the first two sweets must both be green. P = 6/12 × 5/11 = 5/22.
+28|X and Y are equidistant from the epicentre, but they need not be on opposite sides of it, so 1 isn’t certain. Z is 240 km further from the epicentre than X and Y are. That fixes neither Z’s distance from X and Y nor makes those distances equal. None must be true.
+29|9 − x² = 5 at x = ±2. Area = ∫₋₂²(4 − x²)dx = 2(8 − 8/3) = 32/3.
+31|sin θ(2sin²θ − 1) = 0. sin θ = 0 gives θ = 0, π. sin θ = ±1/√2 gives θ = −π/4, π/4, 3π/4. That is 5 solutions.
+33|dy/dx = 6x − 2 = 1 gives x = ½. On the curve y = ¾ − 1 + 1 = ¾, so k = ¾ − ½ = ¼.
+35|The extra sector π/20 has area 25π/2 − 10π = 5π/2, so ½r²(π/20) = 5π/2 and r = 10. Sector T’s angle: ½ × 100 × θ = 25π/2, so θ = π/4. Arc = rθ = 10 × π/4 = 5π/2.
+37|a + 12d = 6a gives 12d = 5a. a + 10d = 2(a + 4d) − 1 gives 2d = a − 1. So 6(a − 1) = 5a, a = 6 and d = 2.5. The third term is 6 + 2 × 2.5 = 11.
+39|(2p + 2)² = (p − 2)(5p + 14) gives p² − 4p − 32 = 0, so p = 8 (p = −4 makes the terms negative). The terms are 6, 18, 54 with r = 3, so the fifth term is 6 × 3⁴ = 486.
+41|The sum is log₂ of a telescoping product: (5/4)(6/5)…(64/63) = 64/4 = 16. log₂16 = 4.
+43|The centre is (−3, 2) and the radius is √5. Centre-to-P distance = √(tangent² + r²) = √(75 + 5) = 4√5. Shortest distance to the circle = 4√5 − √5 = 3√5.
+45|AB² = 4² + 1² = 17. AC² = 2² + (u − 2)² = 4 × 17 = 68, so (u − 2)² = 64 and u = 10 or −6.
+47|(1 − 2x)⁵(1 + 2x)⁵ = (1 − 4x²)⁵, which has only even powers of x. The x³ coefficient is 0.
+49|∫₀²xᵐdx = 2<sup>m+1</sup>/(m + 1) and ∫₀²x<sup>m+1</sup>dx = 2<sup>m+2</sup>/(m + 2). Dividing the second by the first: 2(m + 1)/(m + 2) = (32√2/9)/(16√2/7) = 14/9. So 9m + 9 = 7m + 14 and m = 5/2.
+51|f(4) − f(2) = ∫₂⁴(ax + g)dx = a(16 − 4)/2 + 12 = 6a + 12 = 18, so a = 1.
+53|2x²y = 576, so y = 288/x². Surface area = 4x² + 6xy = 4x² + 1728/x. Setting the derivative to zero: 8x = 1728/x², so x = 6 and y = 8. (This stationary point is actually a minimum.) The faces are 72, 96 and 48 cm², so the largest is 96 cm².

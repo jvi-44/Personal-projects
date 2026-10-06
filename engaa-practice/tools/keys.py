@@ -1,6 +1,6 @@
 import re,subprocess,json,sys
 out={}
-for y in [2016,2017,2019,2020,2021,2022,2023]:
+for y in [2016,2017,2018,2019,2020,2021,2022,2023]:
     t=subprocess.run(['pdftotext','-layout',f'pdfs/ENGAA_{y}_S1_AnswerKey.pdf','-'],capture_output=True,text=True).stdout
     d={}
     for m in re.finditer(r'(?:^|\s)Q?(\d{1,2})\s*([A-H])\b',t,re.M):

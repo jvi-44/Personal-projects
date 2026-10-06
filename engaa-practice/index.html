@@ -148,6 +148,25 @@ kbd{font:11px var(--f-mono);border:1px solid var(--line);border-bottom-width:2px
 .expl .eyebrow{color:var(--accent)}
 .note{font-size:13px;color:var(--muted);max-width:70ch}
 
+
+/* speed practice */
+.speed{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:end;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px;margin-bottom:36px;box-shadow:var(--shadow)}
+.speed .opts{display:flex;gap:22px;flex-wrap:wrap;min-width:0}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden;flex-wrap:wrap}
+.seg button{border:0;border-right:1px solid var(--line);background:transparent;padding:7px 13px;font-size:14px}
+.seg button:last-child{border-right:0}
+.seg button.on{background:var(--ink);color:var(--surface)}
+.speed .go{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.feedback{margin-top:14px;max-width:860px;border-radius:6px;padding:14px 16px;border:1px solid var(--line);background:var(--surface)}
+.feedback.ok{border-color:var(--ok);background:var(--ok-soft)} .feedback.bad{border-color:var(--bad);background:var(--bad-soft)}
+.feedback h3{font-size:17px}.feedback.ok h3{color:var(--ok)}.feedback.bad h3{color:var(--bad)}
+.feedback p{margin:6px 0 0;max-width:68ch}
+.timer.up .dot{background:var(--muted)}
+.loz.r-ok{background:var(--ok);border-color:var(--ok);color:var(--surface)}.loz.r-bad{background:var(--bad);border-color:var(--bad);color:var(--surface)}
+.loz[disabled]{cursor:default}
+.tag{font:500 11px var(--f-mono);color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:2px 6px}
+@media (max-width:760px){.speed{grid-template-columns:1fr}.speed .go{align-items:stretch}}
 @media (max-width:980px){.years{grid-template-columns:repeat(2,minmax(0,1fr))}.test-grid{grid-template-columns:1fr}aside.navp{position:static}.navgrid{grid-template-columns:repeat(10,1fr)}.rq{grid-template-columns:1fr}}
 @media (max-width:600px){.scan-wrap .scan{min-width:560px}body.testing .topbar{padding-right:0;padding-top:40px}.summary{grid-template-columns:repeat(2,minmax(0,1fr))}.years{grid-template-columns:1fr}.navgrid{grid-template-columns:repeat(8,1fr)}.score-hero{grid-template-columns:1fr}.score-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.loz{width:38px}}
 </style>
@@ -157,8 +176,10 @@ kbd{font:11px var(--f-mono);border:1px solid var(--line);border-bottom-width:2px
 <script>
 (() => {
 const YEARS = [2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023];
-const AVAILABLE = {2016: 41, 2017: 41, 2019: 30, 2020: 30, 2021: 30, 2022: 30, 2023: 30};
+const AVAILABLE = {2016: 41, 2017: 41, 2018: 41, 2019: 30, 2020: 30, 2021: 30, 2022: 30, 2023: 30};
 const PER_Q = 85;
+const TOPIC = {M: 'Maths', P: 'Physics'};
+const DIFF = {E: 'Easy', M: 'Medium', H: 'Hard'};
 const app = document.getElementById('app');
 
 /* ---------- storage: account db when available, browser storage as fallback/cache ---------- */
@@ -169,6 +190,7 @@ const LS = {
 };
 let attempts = LS.get('engaa.attempts', []);
 let active = LS.get('engaa.active', null);
+let speedPrefs = LS.get('engaa.speedPrefs', {topic: 'M', diff: 'E', count: 10});
 let dbCol = null;
 let syncLabel = 'Saved in this browser';
 
@@ -207,7 +229,15 @@ async function loadPaper(y) {
   }
   return papers[y];
 }
+let meta = null;
+const loadMeta = async () => { if (!meta) { const r = await fetch('meta.json'); if (!r.ok) throw new Error('Could not load the question bank.'); meta = await r.json(); } return meta; };
 const qByN = (y, n) => papers[y].find(q => q.n === n);
+/* question ids: plain numbers inside a single-paper attempt, "YYYY-n" strings in speed practice */
+const isSpeed = a => a.mode === 'speed';
+const qOf = (a, id) => isSpeed(a) ? qByN(+String(id).split('-')[0], +String(id).split('-')[1]) : qByN(a.year, id);
+const yearOf = (a, id) => isSpeed(a) ? +String(id).split('-')[0] : a.year;
+const numOf = (a, id) => isSpeed(a) ? +String(id).split('-')[1] : id;
+const ensureLoaded = a => isSpeed(a) ? Promise.all([...new Set(a.qns.map(id => String(id).split('-')[0]))].map(loadPaper)) : loadPaper(a.year);
 
 /* ---------- helpers ---------- */
 const fmt = s => { s = Math.max(0, Math.round(s)); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60; return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(x).padStart(2, '0'); };
@@ -218,6 +248,9 @@ const fullAttempts = y => attempts.filter(a => a.year === y && a.mode === 'full'
 const lastFull = y => fullAttempts(y).sort((a, b) => b.finishedAt - a.finishedAt)[0];
 const mistakesOf = a => a.qns.filter(n => a.answers[n] !== a.key[n]);
 const newId = () => 'a' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+const shuffle = arr => { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; };
+const speedLabel = s => `${s.topic === 'B' ? 'Maths + Physics' : TOPIC[s.topic]} · ${s.diff === 'X' ? 'Mixed difficulty' : DIFF[s.diff]}`;
+const modeLabel = a => a.mode === 'full' ? 'Full paper' : a.mode === 'mistakes' ? 'Mistakes retry' : 'Speed practice';
 
 let view = {name: 'dash'};
 let timerId = null;
@@ -239,6 +272,9 @@ function topbar(right = '') {
 }
 
 /* ---------- dashboard ---------- */
+function speedPool(p) {
+  return (meta || []).filter(([y, n, t, d]) => (p.topic === 'B' || t === p.topic) && (p.diff === 'X' || d === p.diff)).map(([y, n]) => y + '-' + n);
+}
 function renderDash() {
   const full = attempts.filter(a => a.mode === 'full');
   const done = new Set(full.map(a => a.year));
@@ -248,12 +284,13 @@ function renderDash() {
 
   let html = topbar();
   if (active) {
-    const left = (active.deadline - Date.now()) / 1000;
-    html += `<div class="resume"><div><div class="eyebrow">Test in progress</div><div style="margin-top:4px"><b>${active.year}${active.mode === 'mistakes' ? ' mistakes retry' : ' paper'}</b> · ${Object.keys(active.answers).length}/${active.qns.length} answered · <span class="mono">${fmt(left)}</span> left. The clock keeps running.</div></div>
-      <div style="display:flex;gap:8px"><button class="btn primary" data-act="resume">Resume test</button><button class="btn ghost" data-act="abandon">Discard</button></div></div>`;
+    const sp = isSpeed(active);
+    const what = sp ? 'Speed practice · ' + speedLabel(active.settings) : active.year + (active.mode === 'mistakes' ? ' mistakes retry' : ' paper');
+    html += `<div class="resume"><div><div class="eyebrow">${sp ? 'Practice in progress' : 'Test in progress'}</div><div style="margin-top:4px"><b>${esc(what)}</b> · ${Object.keys(active.answers).length}/${active.qns.length} answered${sp ? '' : ` · <span class="mono">${fmt((active.deadline - Date.now()) / 1000)}</span> left. The clock keeps running.`}</div></div>
+      <div style="display:flex;gap:8px"><button class="btn primary" data-act="resume">Resume</button><button class="btn ghost" data-act="abandon">Discard</button></div></div>`;
   }
   html += `<section class="summary" aria-label="Overview">
-    <div><span class="eyebrow">Papers sat</span><b>${done.size}<span class="muted" style="font-size:16px">/7</span></b></div>
+    <div><span class="eyebrow">Papers sat</span><b>${done.size}<span class="muted" style="font-size:16px">/${Object.keys(AVAILABLE).length}</span></b></div>
     <div><span class="eyebrow">Average score</span><b>${avg === null ? '–' : avg + '%'}</b></div>
     <div><span class="eyebrow">Best score</span><b>${best === null ? '–' : best + '%'}</b></div>
     <div><span class="eyebrow">Open mistakes</span><b>${latestMistakes}</b></div></section>`;
@@ -267,7 +304,6 @@ function renderDash() {
     }
     const fa = fullAttempts(y), last = lastFull(y);
     const bestP = fa.length ? Math.max(...fa.map(a => pct(a.score, a.total))) : null;
-    const lastP = last ? pct(last.score, last.total) : null;
     const mist = last ? mistakesOf(last).length : 0;
     html += `<article class="card"><div class="yr"><h3>${y}</h3><span class="mono muted" style="font-size:13px">${n} Qs · ${fmt(n * PER_Q)}</span></div>
       <div class="meter" title="Best score"><i style="width:${bestP || 0}%"></i></div>
@@ -278,6 +314,20 @@ function renderDash() {
   }
   html += `</div>`;
 
+  const allLoaded = !!meta;
+  const pool = allLoaded ? speedPool(speedPrefs).length : null;
+  const seg = (key, opts) => `<div class="seg" role="group">${opts.map(([v, l]) => `<button data-act="pref" data-k="${key}" data-v="${v}" class="${String(speedPrefs[key]) === String(v) ? 'on' : ''}" aria-pressed="${String(speedPrefs[key]) === String(v)}">${l}</button>`).join('')}</div>`;
+  html += `<div class="section-h"><h2>Speed practice</h2><span class="note">Untimed. Random questions from every year, checked as soon as you answer.</span></div>
+  <section class="speed">
+    <div class="opts">
+      <div class="field"><span class="eyebrow">Topic</span>${seg('topic', [['M', 'Maths'], ['P', 'Physics'], ['B', 'Both']])}</div>
+      <div class="field"><span class="eyebrow">Difficulty</span>${seg('diff', [['E', 'Easy'], ['M', 'Medium'], ['H', 'Hard'], ['X', 'Mixed']])}</div>
+      <div class="field"><span class="eyebrow">Questions</span>${seg('count', [[10, '10'], [20, '20'], [30, '30'], [0, 'All']])}</div>
+    </div>
+    <div class="go"><span class="note mono">${pool === null ? 'Loading question bank…' : pool + ' questions match'}</span>
+      <button class="btn primary" data-act="speed" ${active || !pool ? 'disabled' : ''}>Start speed practice</button></div>
+  </section>`;
+
   html += `<div class="section-h"><h2>Attempt history</h2></div>`;
   if (!attempts.length) {
     html += `<div class="tbl-wrap"><div class="empty">No attempts yet. Pick a paper above to sit your first timed test. Your marks and mistakes will appear here.</div></div>`;
@@ -285,20 +335,26 @@ function renderDash() {
     html += `<div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Paper</th><th>Mode</th><th>Score</th><th>Part A</th><th>Part B</th><th>Time used</th><th></th></tr></thead><tbody>`;
     for (const a of [...attempts].sort((x, z) => z.finishedAt - x.finishedAt)) {
       const pa = partScore(a, 'A'), pb = partScore(a, 'B');
-      html += `<tr><td>${dateStr(a.finishedAt)}</td><td class="num">${a.year}</td><td>${a.mode === 'full' ? 'Full paper' : 'Mistakes retry'}</td>
+      html += `<tr><td>${dateStr(a.finishedAt)}</td><td class="num">${isSpeed(a) ? 'All years' : a.year}</td><td>${modeLabel(a)}${isSpeed(a) ? ` <span class="muted">· ${esc(speedLabel(a.settings))}</span>` : ''}</td>
         <td class="num"><b>${a.score}/${a.total}</b> <span class="muted">${pct(a.score, a.total)}%</span></td>
-        <td class="num">${pa.t ? pa.s + '/' + pa.t : '–'}</td><td class="num">${pb.t ? pb.s + '/' + pb.t : '–'}</td>
-        <td class="num">${fmt(a.used)} / ${fmt(a.limit)}${a.timedOut ? ' <span class="pill flag">Time up</span>' : ''}</td>
+        <td class="num">${!isSpeed(a) && pa.t ? pa.s + '/' + pa.t : '–'}</td><td class="num">${!isSpeed(a) && pb.t ? pb.s + '/' + pb.t : '–'}</td>
+        <td class="num">${fmt(a.used)}${a.limit ? ' / ' + fmt(a.limit) : ''}${a.timedOut ? ' <span class="pill flag">Time up</span>' : ''}</td>
         <td><button class="btn small" data-act="review" data-id="${a.id}">Review</button></td></tr>`;
     }
     html += `</tbody></table></div>`;
   }
   app.innerHTML = html;
+  if (!allLoaded) loadMeta().then(() => { if (view.name === 'dash') renderDash(); }).catch(() => {});
 }
 function partScore(a, p) {
   let s = 0, t = 0;
   for (const n of a.qns) if ((a.parts || {})[n] === p) { t++; if (a.answers[n] === a.key[n]) s++; }
   return {s, t};
+}
+function topicScore(a, t) {
+  let s = 0, c = 0;
+  for (const id of a.qns) { const q = qOf(a, id); if (q && q.t === t) { c++; if (a.answers[id] === a.key[id]) s++; } }
+  return {s, t: c};
 }
 
 /* ---------- test ---------- */
@@ -314,47 +370,75 @@ async function startTest(y, mode) {
   LS.set('engaa.active', active);
   go({name: 'test'});
 }
+async function startSpeed() {
+  app.innerHTML = topbar() + `<div class="empty">Loading questions…</div>`;
+  try { await loadMeta(); } catch (e) { app.innerHTML = topbar() + `<div class="empty">${esc(e.message)} <button class="btn small" data-act="home">Back</button></div>`; return; }
+  const settings = {...speedPrefs};
+  let qns = shuffle(speedPool(settings));
+  if (settings.count) qns = qns.slice(0, settings.count);
+  if (!qns.length) return go({name: 'dash'});
+  try { await Promise.all([...new Set(qns.map(id => id.split('-')[0]))].map(loadPaper)); } catch (e) { app.innerHTML = topbar() + `<div class="empty">${esc(e.message)} <button class="btn small" data-act="home">Back</button></div>`; return; }
+  active = {id: newId(), year: 'mixed', mode: 'speed', settings, qns, answers: {}, flags: [], idx: 0, startedAt: Date.now(), limit: 0, deadline: null};
+  LS.set('engaa.active', active);
+  go({name: 'test'});
+}
 function saveActive() { LS.set('engaa.active', active); }
+
+function hsHtml(q, cls) {
+  return q.hs.map((r, i) => { const L = q.o[i]; const c = cls(L); return c === null ? '' :
+    `<${c.tag} class="hs ${c.cls}" ${c.tag === 'button' ? `data-act="pick" data-l="${L}" aria-label="Choose option ${L}"` : ''} style="left:${r[0] * 100}%;top:${r[1] * 100}%;width:${r[2] * 100}%;height:${r[3] * 100}%"></${c.tag}>`; }).join('');
+}
 
 function renderTest() {
   if (!active) return go({name: 'dash'});
-  if (!papers[active.year]) { loadPaper(active.year).then(renderTest).catch(() => go({name: 'dash'})); app.innerHTML = topbar() + '<div class="empty">Loading…</div>'; return; }
-  const n = active.qns[active.idx];
-  const q = qByN(active.year, n);
-  const sel = active.answers[n];
-  const flagged = active.flags.includes(n);
+  const sp = isSpeed(active);
+  const ready = sp ? active.qns.every(id => papers[String(id).split('-')[0]]) : papers[active.year];
+  if (!ready) { app.innerHTML = topbar() + '<div class="empty">Loading…</div>'; ensureLoaded(active).then(renderTest).catch(() => go({name: 'dash'})); return; }
+  const id = active.qns[active.idx];
+  const q = qOf(active, id), y = yearOf(active, id), n = numOf(active, id);
+  const sel = active.answers[id];
+  const locked = sp && !!sel;
+  const flagged = active.flags.includes(id);
   const answered = Object.keys(active.answers).length;
 
-  let hs = '';
-  q.hs.forEach((r, i) => {
-    const L = q.o[i];
-    hs += `<button class="hs ${sel === L ? 'sel' : ''}" data-act="pick" data-l="${L}" aria-label="Choose option ${L}" style="left:${r[0] * 100}%;top:${r[1] * 100}%;width:${r[2] * 100}%;height:${r[3] * 100}%"></button>`;
-  });
-  let nav = '', lastPart = '';
+  const hs = locked
+    ? hsHtml(q, L => L === q.a ? {tag: 'span', cls: 'r-ok'} : L === sel ? {tag: 'span', cls: 'r-bad'} : null)
+    : hsHtml(q, L => ({tag: 'button', cls: sel === L ? 'sel' : ''}));
+  let nav = '', group = '';
   active.qns.forEach((m, i) => {
-    const p = qByN(active.year, m).p;
-    if (p !== lastPart) { nav += `<div class="part-sep">PART ${p}</div>`; lastPart = p; }
-    nav += `<button class="nb ${active.answers[m] ? 'ans' : ''} ${i === active.idx ? 'cur' : ''} ${active.flags.includes(m) ? 'fl' : ''}" data-act="jump" data-i="${i}" aria-label="Question ${m}">${m}</button>`;
+    const mq = qOf(active, m);
+    const g = sp ? '' : 'PART ' + mq.p;
+    if (g !== group) { nav += `<div class="part-sep">${g}</div>`; group = g; }
+    const label = sp ? i + 1 : m;
+    const res = sp && active.answers[m] ? (active.answers[m] === mq.a ? ' style="background:var(--ok);border-color:var(--ok);color:var(--surface)"' : ' style="background:var(--bad);border-color:var(--bad);color:var(--surface)"') : '';
+    nav += `<button class="nb ${active.answers[m] ? 'ans' : ''} ${i === active.idx ? 'cur' : ''} ${active.flags.includes(m) ? 'fl' : ''}"${res} data-act="jump" data-i="${i}" aria-label="Question ${label}">${label}</button>`;
   });
   const unanswered = active.qns.length - answered;
+  const eyebrow = sp ? `Speed practice · ${esc(speedLabel(active.settings))} · from ${y} Q${n}`
+    : `${active.year} · Part ${q.p} · ${q.p === 'A' ? 'Mathematics and Physics' : 'Advanced Mathematics and Advanced Physics'}${active.mode === 'mistakes' ? ' · Mistakes retry' : ''}`;
+  const lozCls = L => locked ? (L === q.a ? 'r-ok' : L === sel ? 'r-bad' : '') : (sel === L ? 'sel' : '');
+  const fb = locked ? `<div class="feedback ${sel === q.a ? 'ok' : 'bad'}" aria-live="polite"><h3>${sel === q.a ? 'Correct' : `Not quite. The answer is ${q.a}`}</h3>
+      <p>${q.ex}</p><div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><span class="tag">${TOPIC[q.t]}</span><span class="tag">${DIFF[q.d]}</span><span class="tag">${y} Q${n}</span></div></div>` : '';
+  const last = active.idx >= active.qns.length - 1;
 
   app.innerHTML = topbar() + `
-  <div class="test-head"><div><div class="eyebrow">${active.year} · Part ${q.p} · ${q.p === 'A' ? 'Mathematics and Physics' : 'Advanced Mathematics and Advanced Physics'}${active.mode === 'mistakes' ? ' · Mistakes retry' : ''}</div>
-    <h2>Question ${n} <span class="muted mono" style="font-size:15px;font-weight:400">(${active.idx + 1} of ${active.qns.length})</span></h2></div></div>
+  <div class="test-head"><div><div class="eyebrow">${eyebrow}</div>
+    <h2>Question ${sp ? active.idx + 1 : n} <span class="muted mono" style="font-size:15px;font-weight:400">(${active.idx + 1} of ${active.qns.length})</span></h2></div></div>
   <div class="test-grid">
     <div class="qpane">
-      <div class="scan-wrap"><div class="scan" style="aspect-ratio:${q.w}/${q.h}"><img src="${q.img}" alt="Question ${n} from the ${active.year} paper" width="${q.w}" height="${q.h}">${hs}</div></div>
-      <div class="sheet"><span class="eyebrow">Your answer</span><div class="lozenges">${[...q.o].map(L => `<button class="loz ${sel === L ? 'sel' : ''}" data-act="pick" data-l="${L}" aria-pressed="${sel === L}">${L}</button>`).join('')}</div>
-        ${sel ? `<button class="btn ghost small" data-act="clear">Clear</button>` : ''}</div>
+      <div class="scan-wrap"><div class="scan ${locked ? 'review' : ''}" style="aspect-ratio:${q.w}/${q.h}"><img src="${q.img}" alt="Question ${n} from the ${y} paper" width="${q.w}" height="${q.h}">${hs}</div></div>
+      <div class="sheet"><span class="eyebrow">Your answer</span><div class="lozenges">${[...q.o].map(L => `<button class="loz ${lozCls(L)}" data-act="pick" data-l="${L}" aria-pressed="${sel === L}" ${locked ? 'disabled' : ''}>${L}</button>`).join('')}</div>
+        ${sel && !sp ? `<button class="btn ghost small" data-act="clear">Clear</button>` : ''}</div>
+      ${fb}
       <div class="qnav"><button class="btn" data-act="prev" ${active.idx === 0 ? 'disabled' : ''}>← Previous</button>
         <button class="btn ${flagged ? 'flagged' : ''}" data-act="flag" aria-pressed="${flagged}">${flagged ? '⚑ Flagged' : '⚐ Flag for review'}</button>
-        ${active.idx < active.qns.length - 1 ? `<button class="btn primary" data-act="next">Next →</button>` : `<button class="btn primary" data-act="ask-submit">Finish →</button>`}</div>
+        ${!last ? `<button class="btn primary" data-act="next">Next →</button>` : `<button class="btn primary" data-act="ask-submit">Finish →</button>`}</div>
     </div>
     <aside class="navp" aria-label="Question navigator">
       <div class="eyebrow">Questions · ${answered}/${active.qns.length} answered</div>
       <div class="navgrid">${nav}</div>
-      <div class="legend"><span><i class="a"></i>Answered</span><span><i></i>Blank</span><span><i class="f"></i>Flagged</span></div>
-      <button class="btn primary" style="width:100%;justify-content:center;margin-top:14px" data-act="ask-submit">Submit test</button>
+      <div class="legend">${sp ? '<span><i style="background:var(--ok);border-color:var(--ok)"></i>Correct</span><span><i style="background:var(--bad);border-color:var(--bad)"></i>Wrong</span>' : '<span><i class="a"></i>Answered</span>'}<span><i></i>Blank</span><span><i class="f"></i>Flagged</span></div>
+      <button class="btn primary" style="width:100%;justify-content:center;margin-top:14px" data-act="ask-submit">${sp ? 'Finish practice' : 'Submit test'}</button>
       <div id="confirm"></div>
       <div class="kbd"><kbd>A</kbd>–<kbd>H</kbd> choose · <kbd>←</kbd><kbd>→</kbd> move · <kbd>M</kbd> flag</div>
     </aside>
@@ -363,11 +447,12 @@ function renderTest() {
 
   clearInterval(timerId); document.querySelector('.timer')?.remove();
   const t = document.createElement('div');
-  t.className = 'timer'; t.setAttribute('role', 'timer'); t.setAttribute('aria-label', 'Time remaining');
+  t.className = 'timer' + (sp ? ' up' : ''); t.setAttribute('role', 'timer'); t.setAttribute('aria-label', sp ? 'Time elapsed' : 'Time remaining');
   t.innerHTML = '<span class="dot"></span><b></b>';
   document.body.appendChild(t);
   const tick = () => {
     if (!active) { clearInterval(timerId); t.remove(); return; }
+    if (isSpeed(active)) { t.querySelector('b').textContent = fmt((Date.now() - active.startedAt) / 1000); return; }
     const left = (active.deadline - Date.now()) / 1000;
     t.querySelector('b').textContent = fmt(left);
     t.classList.toggle('warn', left <= 300 && left > 60);
@@ -377,21 +462,23 @@ function renderTest() {
   tick(); timerId = setInterval(tick, 250);
 }
 function showConfirm(unanswered) {
-  const flagged = active.flags.length;
+  const flagged = active.flags.length, sp = isSpeed(active);
   const el = document.getElementById('confirm'); if (!el) return;
-  el.innerHTML = `<div class="confirm"><b>Submit now?</b><div style="margin-top:4px">${unanswered ? `${unanswered} unanswered` : 'Every question answered'}${flagged ? ` · ${flagged} flagged` : ''}. You can't change answers after submitting.</div>
-    <div class="acts"><button class="btn primary small" data-act="submit">Submit</button><button class="btn small" data-act="cancel-submit">Keep working</button></div></div>`;
+  el.innerHTML = `<div class="confirm"><b>${sp ? 'Finish now?' : 'Submit now?'}</b><div style="margin-top:4px">${unanswered ? `${unanswered} unanswered` : 'Every question answered'}${flagged ? ` · ${flagged} flagged` : ''}.${sp ? ' Unanswered questions count as wrong.' : " You can't change answers after submitting."}</div>
+    <div class="acts"><button class="btn primary small" data-act="submit">${sp ? 'Finish' : 'Submit'}</button><button class="btn small" data-act="cancel-submit">Keep working</button></div></div>`;
 }
 async function submit(timedOut = false) {
   if (!active) return;
   clearInterval(timerId); timerId = null;
   const a = active; active = null; LS.del('engaa.active');
-  const finishedAt = Math.min(Date.now(), a.deadline);
+  const sp = isSpeed(a);
+  const finishedAt = sp ? Date.now() : Math.min(Date.now(), a.deadline);
   const key = {}, parts = {};
   let score = 0;
-  for (const n of a.qns) { const q = qByN(a.year, n); key[n] = q.a; parts[n] = q.p; if (a.answers[n] === q.a) score++; }
+  for (const id of a.qns) { const q = qOf(a, id); key[id] = q.a; parts[id] = q.p; if (a.answers[id] === q.a) score++; }
   const rec = {id: a.id, year: a.year, mode: a.mode, qns: a.qns, answers: a.answers, flags: a.flags, key, parts, score, total: a.qns.length,
-    startedAt: a.startedAt, finishedAt, limit: a.limit, used: Math.min(a.limit, (finishedAt - a.startedAt) / 1000), timedOut: !!timedOut};
+    startedAt: a.startedAt, finishedAt, limit: a.limit, used: sp ? (finishedAt - a.startedAt) / 1000 : Math.min(a.limit, (finishedAt - a.startedAt) / 1000), timedOut: !!timedOut};
+  if (sp) rec.settings = a.settings;
   await persistAttempt(rec);
   go({name: 'review', id: rec.id, filter: 'all'});
 }
@@ -400,29 +487,34 @@ async function submit(timedOut = false) {
 async function renderReview() {
   const a = attempts.find(x => x.id === view.id);
   if (!a) return go({name: 'dash'});
-  if (!papers[a.year]) { app.innerHTML = topbar() + '<div class="empty">Loading…</div>'; try { await loadPaper(a.year); } catch (e) { app.innerHTML = topbar() + `<div class="empty">${esc(e.message)}</div>`; return; } }
+  const sp = isSpeed(a);
+  try { await ensureLoaded(a); } catch (e) { app.innerHTML = topbar() + `<div class="empty">${esc(e.message)}</div>`; return; }
   const status = n => !a.answers[n] ? 'na' : a.answers[n] === a.key[n] ? 'ok' : 'bad';
   const counts = {all: a.qns.length, bad: 0, na: 0, ok: 0, flag: a.flags.length};
   a.qns.forEach(n => counts[status(n)]++);
   const f = view.filter || 'all';
   const shown = a.qns.filter(n => f === 'all' || (f === 'flag' ? a.flags.includes(n) : f === 'wrong' ? status(n) !== 'ok' : status(n) === f));
-  const p = pct(a.score, a.total), pa = partScore(a, 'A'), pb = partScore(a, 'B');
+  const p = pct(a.score, a.total);
+  const s1 = sp ? topicScore(a, 'M') : partScore(a, 'A'), s2 = sp ? topicScore(a, 'P') : partScore(a, 'B');
   const C = 2 * Math.PI * 52;
+  const domId = n => 'rq-' + String(n).replace(/\W/g, '_');
+  const canRetry = !sp && counts.bad + counts.na && a.mode === 'full' && lastFull(a.year)?.id === a.id && !active;
 
   let html = topbar(`<button class="btn" data-act="home">← Dashboard</button>`);
-  html += `<div class="section-h"><div><div class="eyebrow">${a.mode === 'full' ? 'Full paper' : 'Mistakes retry'} · ${dateStr(a.finishedAt)}</div><h2 style="font-size:26px;margin-top:4px">${a.year} results</h2></div>
-    ${counts.bad + counts.na && a.mode === 'full' && lastFull(a.year)?.id === a.id && !active ? `<button class="btn primary" data-act="retry" data-y="${a.year}">Retry ${counts.bad + counts.na} mistake${counts.bad + counts.na > 1 ? 's' : ''}</button>` : ''}</div>
+  html += `<div class="section-h"><div><div class="eyebrow">${modeLabel(a)}${sp ? ' · ' + esc(speedLabel(a.settings)) : ''} · ${dateStr(a.finishedAt)}</div><h2 style="font-size:26px;margin-top:4px">${sp ? 'Speed practice results' : a.year + ' results'}</h2></div>
+    ${canRetry ? `<button class="btn primary" data-act="retry" data-y="${a.year}">Retry ${counts.bad + counts.na} mistake${counts.bad + counts.na > 1 ? 's' : ''}</button>` : ''}
+    ${sp && !active ? `<button class="btn primary" data-act="speed-again">New speed set</button>` : ''}</div>
   <section class="score-hero">
     <svg class="ring" viewBox="0 0 132 132" role="img" aria-label="Score ${p} percent"><circle cx="66" cy="66" r="52" fill="none" stroke="var(--line-soft)" stroke-width="12"/>
       <circle cx="66" cy="66" r="52" fill="none" stroke="var(--accent)" stroke-width="12" stroke-linecap="round" stroke-dasharray="${C * p / 100} ${C}" transform="rotate(-90 66 66)"/>
       <text x="66" y="64" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="26" font-weight="600" fill="var(--ink)">${a.score}/${a.total}</text>
       <text x="66" y="86" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="13" fill="var(--muted)">${p}%</text></svg>
     <div style="min-width:0"><div class="score-stats">
-      <div><span class="eyebrow">Part A</span><b>${pa.t ? pa.s + '/' + pa.t : '–'}</b></div>
-      <div><span class="eyebrow">Part B</span><b>${pb.t ? pb.s + '/' + pb.t : '–'}</b></div>
-      <div><span class="eyebrow">Time used</span><b>${fmt(a.used)}</b><span class="muted mono" style="font-size:12px">of ${fmt(a.limit)}${a.timedOut ? ' · time up' : ''}</span></div>
-      <div><span class="eyebrow">Per question</span><b>${Math.round(a.used / a.total)}s</b><span class="muted mono" style="font-size:12px">target ${PER_Q}s</span></div></div>
-      <div class="strip" aria-label="Question by question">${a.qns.map(n => `<button class="${status(n)}" data-act="goto" data-n="${n}" title="Question ${n}">${n}</button>`).join('')}</div></div>
+      <div><span class="eyebrow">${sp ? 'Maths' : 'Part A'}</span><b>${s1.t ? s1.s + '/' + s1.t : '–'}</b></div>
+      <div><span class="eyebrow">${sp ? 'Physics' : 'Part B'}</span><b>${s2.t ? s2.s + '/' + s2.t : '–'}</b></div>
+      <div><span class="eyebrow">Time used</span><b>${fmt(a.used)}</b><span class="muted mono" style="font-size:12px">${a.limit ? 'of ' + fmt(a.limit) : 'untimed'}${a.timedOut ? ' · time up' : ''}</span></div>
+      <div><span class="eyebrow">Per question</span><b>${Math.round(a.used / a.total)}s</b><span class="muted mono" style="font-size:12px">exam pace ${PER_Q}s</span></div></div>
+      <div class="strip" aria-label="Question by question">${a.qns.map((n, i) => `<button class="${status(n)}" data-act="goto" data-n="${domId(n)}" title="${sp ? yearOf(a, n) + ' Q' + numOf(a, n) : 'Question ' + n}">${sp ? i + 1 : n}</button>`).join('')}</div></div>
   </section>
   <div class="filters" role="tablist">${[['all', 'All'], ['wrong', 'Mistakes'], ['bad', 'Incorrect'], ['na', 'Not answered'], ['ok', 'Correct'], ['flag', 'Flagged']].map(([k, l]) => {
     const c = k === 'wrong' ? counts.bad + counts.na : counts[k];
@@ -431,13 +523,12 @@ async function renderReview() {
 
   if (!shown.length) html += `<div class="tbl-wrap"><div class="empty">Nothing in this filter.</div></div>`;
   for (const n of shown) {
-    const q = qByN(a.year, n), st = status(n), mine = a.answers[n];
-    let hs = '';
-    q.hs.forEach((r, i) => { const L = q.o[i]; const c = L === q.a ? 'r-ok' : L === mine ? 'r-bad' : ''; if (c) hs += `<span class="hs ${c}" style="left:${r[0] * 100}%;top:${r[1] * 100}%;width:${r[2] * 100}%;height:${r[3] * 100}%"></span>`; });
-    html += `<article class="rq ${st}" id="rq-${n}">
-      <div class="rq-head"><h3>Question ${n}</h3><span class="muted mono" style="font-size:12px">Part ${q.p}</span>
+    const q = qOf(a, n), st = status(n), mine = a.answers[n], y = yearOf(a, n), num = numOf(a, n);
+    const hs = hsHtml(q, L => L === q.a ? {tag: 'span', cls: 'r-ok'} : L === mine ? {tag: 'span', cls: 'r-bad'} : null);
+    html += `<article class="rq ${st}" id="${domId(n)}">
+      <div class="rq-head"><h3>${sp ? `${y} · Question ${num}` : 'Question ' + num}</h3><span class="tag">Part ${q.p}</span><span class="tag">${TOPIC[q.t]}</span><span class="tag">${DIFF[q.d]}</span>
         <span class="pill ${st}">${st === 'ok' ? 'Correct' : st === 'bad' ? 'Incorrect' : 'Not answered'}</span>${a.flags.includes(n) ? '<span class="pill flag">Flagged</span>' : ''}</div>
-      <div class="scan-wrap"><div class="scan review" style="aspect-ratio:${q.w}/${q.h}"><img src="${q.img}" alt="Question ${n}" loading="lazy" width="${q.w}" height="${q.h}">${hs}</div></div>
+      <div class="scan-wrap"><div class="scan review" style="aspect-ratio:${q.w}/${q.h}"><img src="${q.img}" alt="Question ${num} from the ${y} paper" loading="lazy" width="${q.w}" height="${q.h}">${hs}</div></div>
       <div style="min-width:0;display:flex;flex-direction:column;gap:12px">
         <div class="answers"><span>Your answer: <b style="color:${st === 'ok' ? 'var(--ok)' : st === 'bad' ? 'var(--bad)' : 'var(--muted)'}">${mine || '—'}</b></span><span>Correct answer: <b style="color:var(--ok)">${q.a}</b></span></div>
         <div class="expl"><div class="eyebrow">Worked solution</div><p>${q.ex}</p></div>
@@ -453,6 +544,9 @@ app.addEventListener('click', e => {
   if (act === 'home') return go({name: 'dash'});
   if (act === 'start') return startTest(+b.dataset.y, 'full');
   if (act === 'retry') return startTest(+b.dataset.y, 'mistakes');
+  if (act === 'speed') return startSpeed();
+  if (act === 'speed-again') { go({name: 'dash'}); document.querySelector('.speed')?.scrollIntoView({block: 'center'}); return; }
+  if (act === 'pref') { const k = b.dataset.k; speedPrefs[k] = k === 'count' ? +b.dataset.v : b.dataset.v; LS.set('engaa.speedPrefs', speedPrefs); return renderDash(); }
   if (act === 'resume') return go({name: 'test'});
   if (act === 'abandon') {
     if (b.dataset.sure) { active = null; LS.del('engaa.active'); return render(); }
@@ -460,12 +554,17 @@ app.addEventListener('click', e => {
   }
   if (act === 'review') return go({name: 'review', id: b.dataset.id, filter: 'all'});
   if (act === 'filter') { view.filter = b.dataset.f; return renderReview(); }
-  if (act === 'goto') { if (view.filter !== 'all') { view.filter = 'all'; renderReview().then(() => document.getElementById('rq-' + b.dataset.n)?.scrollIntoView()); } else document.getElementById('rq-' + b.dataset.n)?.scrollIntoView(); return; }
+  if (act === 'goto') {
+    const jump = () => document.getElementById(b.dataset.n)?.scrollIntoView();
+    if (view.filter !== 'all') { view.filter = 'all'; renderReview().then(jump); } else jump();
+    return;
+  }
   if (!active) return;
-  const n = active.qns[active.idx];
-  if (act === 'pick') { active.answers[n] = b.dataset.l; }
-  else if (act === 'clear') { delete active.answers[n]; }
-  else if (act === 'flag') { active.flags = active.flags.includes(n) ? active.flags.filter(x => x !== n) : [...active.flags, n]; }
+  const id = active.qns[active.idx];
+  const locked = isSpeed(active) && active.answers[id];
+  if (act === 'pick') { if (locked) return; active.answers[id] = b.dataset.l; }
+  else if (act === 'clear') { if (locked) return; delete active.answers[id]; }
+  else if (act === 'flag') { active.flags = active.flags.includes(id) ? active.flags.filter(x => x !== id) : [...active.flags, id]; }
   else if (act === 'prev') { active.idx = Math.max(0, active.idx - 1); view.confirm = false; }
   else if (act === 'next') { active.idx = Math.min(active.qns.length - 1, active.idx + 1); view.confirm = false; }
   else if (act === 'jump') { active.idx = +b.dataset.i; view.confirm = false; }
@@ -477,21 +576,23 @@ app.addEventListener('click', e => {
 });
 document.addEventListener('keydown', e => {
   if (view.name !== 'test' || !active || e.metaKey || e.ctrlKey || e.altKey) return;
-  const n = active.qns[active.idx], q = qByN(active.year, n); if (!q) return;
+  const id = active.qns[active.idx], q = qOf(active, id); if (!q) return;
   const k = e.key.toUpperCase();
-  if (k.length === 1 && q.o.includes(k)) { active.answers[n] = k; }
+  const locked = isSpeed(active) && active.answers[id];
+  if (k.length === 1 && q.o.includes(k)) { if (locked) return; active.answers[id] = k; }
   else if (e.key === 'ArrowRight') { if (active.idx >= active.qns.length - 1) return; active.idx++; view.confirm = false; }
   else if (e.key === 'ArrowLeft') { if (active.idx <= 0) return; active.idx--; view.confirm = false; }
-  else if (k === 'M') { active.flags = active.flags.includes(n) ? active.flags.filter(x => x !== n) : [...active.flags, n]; }
+  else if (k === 'M') { active.flags = active.flags.includes(id) ? active.flags.filter(x => x !== id) : [...active.flags, id]; }
   else return;
   e.preventDefault(); saveActive(); renderTest();
 });
 
 /* ---------- boot ---------- */
-if (active && Date.now() >= active.deadline) {
-  loadPaper(active.year).then(() => submit(true)).catch(() => { active = null; LS.del('engaa.active'); render(); });
+if (active && !isSpeed(active) && Date.now() >= active.deadline) {
+  ensureLoaded(active).then(() => submit(true)).catch(() => { active = null; LS.del('engaa.active'); render(); });
 } else if (active) { view = {name: 'test'}; render(); }
 else render();
 initDb();
 })();
+
 </script>
