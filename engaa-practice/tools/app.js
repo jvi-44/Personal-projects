@@ -65,6 +65,7 @@ const ensureLoaded = a => isSpeed(a) ? Promise.all([...new Set(a.qns.map(id => S
 
 /* ---------- helpers ---------- */
 const fmt = s => { s = Math.max(0, Math.round(s)); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60; return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(x).padStart(2, '0'); };
+const fmtShort = s => { s = Math.round(s || 0); return s < 60 ? s + 's' : Math.floor(s / 60) + 'm ' + String(s % 60).padStart(2, '0') + 's'; };
 const pct = (a, b) => b ? Math.round(100 * a / b) : 0;
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
 const dateStr = t => new Date(t).toLocaleDateString(undefined, {day: 'numeric', month: 'short', year: 'numeric'}) + ', ' + new Date(t).toLocaleTimeString(undefined, {hour: '2-digit', minute: '2-digit'});
@@ -292,6 +293,7 @@ function renderTest() {
   document.body.appendChild(t);
   const tick = () => {
     if (!active) { clearInterval(timerId); t.remove(); return; }
+    trackTime();
     if (isSpeed(active)) { t.querySelector('b').textContent = fmt((Date.now() - active.startedAt) / 1000); return; }
     const left = (active.deadline - Date.now()) / 1000;
     t.querySelector('b').textContent = fmt(left);
@@ -301,6 +303,20 @@ function renderTest() {
   };
   tick(); timerId = setInterval(tick, 250);
 }
+/* per-question timing: time on screen counts toward the question in view; in speed practice it stops once the question is answered */
+let lastSave = 0;
+function trackTime() {
+  if (!active) return;
+  active.times = active.times || {};
+  const now = Date.now();
+  const dt = (now - (active.lastTick || now)) / 1000;
+  active.lastTick = now;
+  if (document.hidden || dt <= 0 || dt > 5) return;
+  const cid = active.qns[active.idx];
+  if (isSpeed(active) && active.answers[cid]) return;
+  active.times[cid] = (active.times[cid] || 0) + dt;
+  if (now - lastSave > 2000) { lastSave = now; saveActive(); }
+}
 function showConfirm(unanswered) {
   const flagged = active.flags.length, sp = isSpeed(active);
   const el = document.getElementById('confirm'); if (!el) return;
@@ -309,6 +325,7 @@ function showConfirm(unanswered) {
 }
 async function submit(timedOut = false) {
   if (!active) return;
+  trackTime();
   clearInterval(timerId); timerId = null;
   const a = active; active = null; LS.del('engaa.active');
   const sp = isSpeed(a);
@@ -320,6 +337,8 @@ async function submit(timedOut = false) {
   const rec = {id: a.id, year: a.year, mode: a.mode, qns: a.qns, answers: a.answers, flags: a.flags, key, parts, score, total: a.qns.length,
     startedAt: a.startedAt, finishedAt, limit: a.limit, used: sp ? (finishedAt - a.startedAt) / 1000 : Math.min(a.limit, (finishedAt - a.startedAt) / 1000), timedOut: !!timedOut};
   if (sp) rec.settings = a.settings;
+  rec.times = {};
+  for (const id of a.qns) rec.times[id] = Math.round(((a.times || {})[id] || 0) * 10) / 10;
   await persistAttempt(rec);
   go({name: 'review', id: rec.id, filter: 'all'});
 }
@@ -355,27 +374,46 @@ async function renderReview() {
       <div><span class="eyebrow">${sp ? 'Physics' : 'Part B'}</span><b>${s2.t ? s2.s + '/' + s2.t : '–'}</b></div>
       <div><span class="eyebrow">Time used</span><b>${fmt(a.used)}</b><span class="muted mono" style="font-size:12px">${a.limit ? 'of ' + fmt(a.limit) : 'untimed'}${a.timedOut ? ' · time up' : ''}</span></div>
       <div><span class="eyebrow">Per question</span><b>${Math.round(a.used / a.total)}s</b><span class="muted mono" style="font-size:12px">exam pace ${PER_Q}s</span></div></div>
-      <div class="strip" aria-label="Question by question">${a.qns.map((n, i) => `<button class="${status(n)}" data-act="goto" data-n="${domId(n)}" title="${sp ? yearOf(a, n) + ' Q' + numOf(a, n) : 'Question ' + n}">${sp ? i + 1 : n}</button>`).join('')}</div></div>
+      <div class="strip" aria-label="Question by question">${a.qns.map((n, i) => `<button class="${status(n)}" data-act="goto" data-n="${domId(n)}" title="${sp ? yearOf(a, n) + ' Q' + numOf(a, n) : 'Question ' + n}${a.times ? ' · ' + fmtShort(a.times[n] || 0) : ''}">${sp ? i + 1 : n}</button>`).join('')}</div></div>
   </section>
   <div class="filters" role="tablist">${[['all', 'All'], ['wrong', 'Mistakes'], ['bad', 'Incorrect'], ['na', 'Not answered'], ['ok', 'Correct'], ['flag', 'Flagged']].map(([k, l]) => {
     const c = k === 'wrong' ? counts.bad + counts.na : counts[k];
     return `<button class="chip ${f === k ? 'on' : ''}" data-act="filter" data-f="${k}" role="tab" aria-selected="${f === k}">${l} <span class="mono">${c}</span></button>`;
   }).join('')}</div>`;
 
+  const hasTimes = !!a.times;
+  const pace = sp ? null : PER_Q;
+  html += `<div class="rlist-tools"><span class="note">${hasTimes ? 'Tap a question to see it with the worked solution. Times show how long you spent on each question.' : 'Tap a question to see it with the worked solution. Per-question times are recorded for attempts from now on.'}</span>
+    <button class="btn small" data-act="expand-all">${view.expandAll ? 'Collapse all' : 'Expand all'}</button></div>`;
   if (!shown.length) html += `<div class="tbl-wrap"><div class="empty">Nothing in this filter.</div></div>`;
+  html += `<div class="rlist">`;
   for (const n of shown) {
     const q = qOf(a, n), st = status(n), mine = a.answers[n], y = yearOf(a, n), num = numOf(a, n);
+    const secs = hasTimes ? a.times[n] : null;
+    const slow = secs !== null && pace && secs > pace;
     const hs = hsHtml(q, L => L === q.a ? {tag: 'span', cls: 'r-ok'} : L === mine ? {tag: 'span', cls: 'r-bad'} : null);
-    html += `<article class="rq ${st}" id="${domId(n)}">
-      <div class="rq-head"><h3>${sp ? `${y} · Question ${num}` : 'Question ' + num}</h3><span class="tag">Part ${q.p}</span><span class="tag">${TOPIC[q.t]}</span><span class="tag">${DIFF[q.d]}</span>
-        <span class="pill ${st}">${st === 'ok' ? 'Correct' : st === 'bad' ? 'Incorrect' : 'Not answered'}</span>${a.flags.includes(n) ? '<span class="pill flag">Flagged</span>' : ''}</div>
-      <div class="scan-wrap"><div class="scan review" style="aspect-ratio:${q.w}/${q.h}"><img src="${q.img}" alt="Question ${num} from the ${y} paper" loading="lazy" width="${q.w}" height="${q.h}">${hs}</div></div>
-      <div style="min-width:0;display:flex;flex-direction:column;gap:12px">
-        <div class="answers"><span>Your answer: <b style="color:${st === 'ok' ? 'var(--ok)' : st === 'bad' ? 'var(--bad)' : 'var(--muted)'}">${mine || '—'}</b></span><span>Correct answer: <b style="color:var(--ok)">${q.a}</b></span></div>
-        <div class="expl"><div class="eyebrow">Worked solution</div><p>${q.ex}</p></div>
-      </div></article>`;
+    const open = view.expandAll || view.open === domId(n);
+    html += `<details class="rrow ${st}" id="${domId(n)}" ${open ? 'open' : ''}>
+      <summary>
+        <span class="rmark" aria-hidden="true">${st === 'ok' ? '✓' : st === 'bad' ? '✗' : '–'}</span>
+        <span class="rtitle"><b>${sp ? `${y} Q${num}` : 'Q' + num}</b><span class="rtags"><span class="tag">${TOPIC[q.t]}</span><span class="tag">${DIFF[q.d]}</span>${a.flags.includes(n) ? '<span class="pill flag">Flagged</span>' : ''}</span></span>
+        <span class="rans">You <b class="${st}">${mine || '—'}</b> · Answer <b class="ok">${q.a}</b></span>
+        <span class="rtime mono ${slow ? 'slow' : ''}" title="Time spent on this question">${secs === null || secs === undefined ? '—' : fmtShort(secs)}</span>
+        <span class="chev" aria-hidden="true"></span>
+      </summary>
+      <div class="rbody">
+        <div class="scan-wrap"><div class="scan review" style="aspect-ratio:${q.w}/${q.h}">${open ? `<img src="${q.img}"` : `<img data-src="${y}-${num}"`} alt="Question ${num} from the ${y} paper" width="${q.w}" height="${q.h}">${hs}</div></div>
+        <div class="expl"><div class="eyebrow">Worked solution</div><p>${q.ex}</p>${slow ? `<p class="note">You spent ${fmtShort(secs)} here, over the ${PER_Q}s exam pace.</p>` : ''}</div>
+      </div></details>`;
   }
+  html += `</div>`;
   app.innerHTML = html;
+  app.querySelectorAll('details.rrow').forEach(d => d.addEventListener('toggle', () => { if (d.open) fillImg(d); }));
+}
+function fillImg(d) {
+  const img = d.querySelector('img[data-src]'); if (!img) return;
+  const [y, n] = img.dataset.src.split('-').map(Number);
+  img.src = qByN(y, n).img; img.removeAttribute('data-src');
 }
 
 /* ---------- events ---------- */
@@ -395,12 +433,14 @@ app.addEventListener('click', e => {
   }
   if (act === 'review') return go({name: 'review', id: b.dataset.id, filter: 'all'});
   if (act === 'filter') { view.filter = b.dataset.f; return renderReview(); }
+  if (act === 'expand-all') { view.expandAll = !view.expandAll; view.open = null; return renderReview(); }
   if (act === 'goto') {
-    const jump = () => document.getElementById(b.dataset.n)?.scrollIntoView();
+    const jump = () => { const d = document.getElementById(b.dataset.n); if (!d) return; d.open = true; fillImg(d); d.scrollIntoView({block: 'start'}); };
     if (view.filter !== 'all') { view.filter = 'all'; renderReview().then(jump); } else jump();
     return;
   }
   if (!active) return;
+  trackTime();
   const id = active.qns[active.idx];
   const locked = isSpeed(active) && active.answers[id];
   if (act === 'pick') { if (locked) return; active.answers[id] = b.dataset.l; }
