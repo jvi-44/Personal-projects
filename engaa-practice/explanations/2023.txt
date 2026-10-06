@@ -1,0 +1,30 @@
+1|Each cylinder’s surface area = 2πr² + 2πr(4r) = 10πr². Ten cylinders give 100πr² = 4πR², so R² = 25r² and R = 5r.
+2|Deceleration a = F/m = 1000/10 000 = 0.10 m s⁻². Stopping distance s = v²/(2a) = 4/0.2 = 20 m.
+3|(q − r)/(s − x) = p − y, so s − x = (q − r)/(p − y). Then x = s − (q − r)/(p − y).
+4|With the switch open, one resistor carries 1.0 A at 1.0 W, so V = 1.0 V and R = 1.0 Ω. Closing the switch adds a 2R branch in parallel. The ammeter’s branch still has 1.0 V across 1.0 Ω, so it still reads 1.0 A. The new branch carries 0.5 A, so the battery supplies 1.5 A × 1.0 V = 1.5 W.
+5|Put W at the origin: M = (0, ⅓), N = (¾, 1), P = (1, ⅕). Shoelace: area = ½|0 + ¾(⅕ − ⅓) + 1(⅓ − 1)| = ½|−1/10 − 2/3| = ½ × 23/30 = 23/60.
+6|E = ½kx²: 0.015 = ½k × 25 × 10⁻⁴ m², so k = 12 N m⁻¹. Here x² = 25 cm², so x = 0.05 m and F = kx = 0.60 N.
+7|In powers of 3: 27<sup>2(x−2)</sup> = 3<sup>6x−12</sup>, 9<sup>2x−3</sup> = 3<sup>4x−6</sup> and 81<sup>3/2</sup> = 3⁶. So (6x − 12) − (4x − 6) = 6, i.e. 2x − 6 = 6 and x = 6.
+8|Weight = pressure × area = 0.45 × 12 = 5.4 N, so the mass is 0.54 kg = 540 g. Density = 540/180 = 3.0 g cm⁻³.
+9|Coach’s new salary = 0.8 × 1.15 = 0.92 of the old player salary. Player’s new salary = 1.38. 0.92/1.38 = 2/3, i.e. 66⅔%.
+10|X = 2N × 2<sup>−t/2</sup> and Y = N × 2<sup>−t/3</sup>. These are equal when 1 − t/2 = −t/3, so t/6 = 1 and t = 6 days.
+11|One repetition covers 400 m in 0.1/6 + 0.2/10 + 0.1/20 = 1/60 + 1/50 + 1/200 = 25/600 = 1/24 h. Average speed = 0.4 km ÷ (1/24) h = 9.6 km h⁻¹.
+12|In equilibrium the same heat flow passes through both layers. The metal conducts well, so it needs only a small temperature drop. The insulator needs a large drop over the same thickness. The graph falls gently, then steeply: A.
+13|The area ratio is 2, so the length ratio is √2 and the volume ratio is 2√2. V(2√2 − 1) = 7√2, so V = 7√2(2√2 + 1)/(8 − 1) = 4 + √2.
+14|Power delivered to the town = 33 000 × 1500 = 4.95 × 10⁷ W. The transformers are ideal, so the cables carry the same power: V = 4.95 × 10⁷/450 = 110 000 V. The step-up ratio is 1500/300 = 5, so the station outputs 22 000 V.
+15|The numerator is 10 000a + 2000a = 12 000a. Dividing by 0.3 gives 40 000a. Squaring: 1.6 × 10⁹ a² = 8 × 10⁹, so a² = 5 and a = ±√5. The difference is 2√5.
+16|Each oscillation a particle travels 4 × 3.0 = 12 cm, and there are 12 oscillations per second. Average speed = 144 cm s⁻¹. The wavelength is a distractor.
+17|PY = 2 × XP = (8, −6), so Y = (−8 + 8, 5 − 6) = (0, −1). Q = Y − QY = (0 − 7, −1 − 6) = (−7, −7).
+18|P = I × (V<sub>X</sub> + V<sub>Y</sub>) = I(10I + 4) = 6. So 5I² + 2I − 3 = 0, i.e. (5I − 3)(I + 1) = 0, and I = 3/5 A.
+19|2<sup>sin x</sup> × 3<sup>−sin x</sup> = (2/3)<sup>sin x</sup>. The base is less than 1, so the expression is largest when sin x = −1, giving (2/3)⁻¹ = 3/2.
+20|Boyle’s law: the pressure at the bottom is 720/90 = 8 atmospheres, so the water adds 7 atm over depth d. At d/2 the pressure is 1 + 3.5 = 4.5 atm, so V = 720/4.5 = 160 cm³.
+21|The factor (x − 3)(x + 2) means f(3) = 0 and f(−2) = 0. 33 + 9a + b = 0 and −12 + 4a + b = 0. Subtracting: 45 + 5a = 0, so a = −9 and b = 48. a + b = 39.
+23|S₉ + S₁₀ = (9a + 36d) + (10a + 45d) = 19a + 81d. S₁₁ = 11a + 55d. Setting them equal: 8a = −26d, so a = −13d/4.
+25|(p − 3)² = 2p(p − 7) gives p² − 8p − 9 = 0, so p = 9 or −1. p = −1 gives −2, −4, −8 (r = 2, which diverges). p = 9 gives 18, 6, 2 with r = ⅓. S∞ = 18/(⅔) = 27.
+27|The 40° inscribed angle stands on arc AD, so arc AD = 80°. The 55° angle (at the top end of the diameter) stands on arc AE (passing D), so arc AE = 110°. That diameter cuts off a semicircle, so arc AB = 180° − 110° = 70°. x stands on arc DAB = 80° + 70° = 150°, so x = 75°.
+29|p = √2. √2x² − 6x = √2(x − 3/√2)² − 9/√2, so q = −3/√2 and r = 4 − 9/√2. Then r − q = 4 − 6/√2 = 4 − 3√2, and p(r − q) = √2(4 − 3√2) = 4√2 − 6.
+31|Let c = 3 − √5; the integrand is x²/c. The limits are symmetric and the integrand is even, so the integral = 2c³/(3c) = 2c²/3. c² = 14 − 6√5, giving (28 − 12√5)/3.
+33|f′(x) = −a/x² − 2b/x³, so f′(1) = −a − 2b = 2. f″(x) = 2a/x³ + 6b/x⁴, so f″(−1) = −2a + 6b = −2, i.e. a = 3b + 1. Substituting: −5b − 1 = 2, so b = −3/5, a = −4/5 and a + b = −7/5.
+35|log₃[(x + 1)(x + 2)/(x(x + 2))] = 2, so (x + 1)/x = 9 and x = 1/8. (Check: both log arguments are positive.)
+37|The general term is ⁸C<sub>k</sub>(2/x)<sup>8−k</sup>(x/4)<sup>k</sup>. The power of x is 2k − 8, which is 0 when k = 4. The term is 70 × 2⁴ × 4⁻⁴ = 70/16 = 35/8.
+39|2x + 3y is the dot product of (2, 3) with a unit vector, so its maximum is |(2, 3)| = √13, at (x, y) = (2, 3)/√13.

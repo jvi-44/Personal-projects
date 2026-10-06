@@ -1,0 +1,30 @@
+1|2a + 3c = 20 and 4a + 4c = 34, so a + c = 8.5. Doubling: 2a + 2c = 17. Subtracting from the first gives c = 3, so a = 5.5. 6a + 2c = 33 + 6 = £39.
+2|Input energy = 30 × 50 = 1500 J. Energy kept in the tip = mcΔθ = 0.0020 × 400 × 200 = 160 J. Lost to surroundings = 1500 − 160 = 1340 J.
+3|P(1) = 3/8, P(2) = 1/8, P(3) = 4/8. A sum of 5 needs 2 then 3 or 3 then 2: 2 × (1/8)(4/8) = 1/8.
+4|Mass number falls by 32, so there are 32/4 = 8 alpha decays. They lower Z by 16, from 92 to 76. To reach 82, Z must rise by 6, so there are 6 β⁻ emissions.
+5|The gradients are 1: −1/3, 2: 1/3, 3: 3 and 4: −2/3. Perpendicular gradients multiply to −1: (−1/3) × 3 = −1, so lines 1 and 3.
+6|P<sub>in</sub> = 400 kV × 2000 A = 800 MW and P<sub>out</sub> = 160 kV × 4000 A = 640 MW, so the efficiency is 80%. Wasted = 160 MW × 60 s = 9.6 × 10⁹ J.
+7|Let u = x/4 + 3: 2u² − u − 36 = 0, so (2u − 9)(u + 4) = 0 and u = 9/2 or −4. Then x = 4(u − 3) = 6 or −28, with sum −22.
+8|Only the 12 cm between the rails carries current. F = BIL = 0.50 × 2.4 × 0.12 = 0.144 N. The mass is 0.40/10 = 0.040 kg, so a = 0.144/0.040 = 3.6 m s⁻². Current flows from the + (top) rail down through the rod; with B into the page, Fleming’s left-hand rule gives a force to the right.
+9|(2x + 3)² − (x − 3)² = 4x² + 12x + 9 − x² + 6x − 9 = 3x² + 18x = 3(x + 3)² − 27. So r = −27.
+10|Momentum (right +): 8 × 4 − 2 × 1 = 30 = 10v, so v = 3 m s⁻¹. KE before = ½ × 8 × 16 + ½ × 2 × 1 = 65 J. KE after = ½ × 10 × 9 = 45 J. The loss is 20 J.
+11|700% more means 8 times as many. N ∝ 1/T³, so T³ must be divided by 8 and T halves: x = 8/2 = 4.
+12|The constant-speed section gives v = (40 − 10)/5 = 6 m s⁻¹, which is the speed at 5 s. Average a = 6/5 = 1.2 m s⁻², so average F = 800 × 1.2 = 960 N.
+13|Sale price S = 0.75P. The customer’s guess is 1.25S = 0.9375P, which is 0.0625P too low. 0.0625P = 15, so P = £240.
+14|λ = v/f = 2v. At t = 0 a peak is at Q, and the next peak is λ behind it, i.e. (λ − 6) behind P. It reaches P after (λ − 6)/v = 0.80 s. So 2v − 6 = 0.8v and v = 5.0 m s⁻¹.
+15|In triangle PQS: QS = √(y² − x²). In triangle QSR: sin 61° = QS/z, so z = √(y² − x²)/sin 61°.
+16|Energy available = initial KE + GPE lost = ½ × 80 × 40² + 80 × 10 × 2000 = 64 000 + 1 600 000 J. Final KE = ½ × 80 × 25 = 1000 J. Work against drag = 1 664 000 − 1000 = 1 663 000 J.
+17|The distance between the points is √(2² + 4²) = 2√5. Largest square: this is a side, so the perimeter is 8√5. Smallest square: this is a diagonal, so the side is 2√5/√2 = √10 and the perimeter is 4√10 = 4√5√2. Difference = 4√5(2 − √2).
+18|At release the extension is 0.20 m, so the spring stores ½ × 20 × 0.2² = 0.40 J. Rising 0.20 m back to natural length gains mgh = 0.05 × 10 × 0.2 = 0.10 J of GPE. KE = 0.30 J = ½ × 0.05 × v², so v² = 12 and v = √12 m s⁻¹.
+19|The roots differ by √(discriminant)/a = √(p² + 32)/2 = 6. So p² + 32 = 144 and p = √112 = 4√7.
+20|a = F/m with F constant and m falling at a constant rate, so a increases. da/dt = Fk/m², which grows as m shrinks. So a is increasing at an increasing rate.
+21|f(1) = 0 gives a + b = 7. f(2) = 0 gives 16 + 8a + 4b − 24 + 4 = 0, so 2a + b = 1. Solving: a = −6, b = 13.
+23|Between x = 1 and 3 the curve is above y = −x. Area = ∫₁³(½x² + x)dx = [x³/6 + x²/2]₁³ = (4.5 + 4.5) − (1/6 + ½) = 25/3.
+25|Reflecting in y = x swaps x and y, so the line y = mx + c becomes x = my + c. Its gradient is 1/m.
+27|S₂₀ = 10(2a + 19d) = 50 and S₄₀ = 50 − 50 = 0 = 20(2a + 39d). So 2a = −39d, and then −20d = 5 gives d = −¼. S₁₀₀ = 50(2a + 99d) = 50(−39d + 99d) = 50 × 60d = −750.
+29|L: c = 4 − 2m. The perpendicular through (2, 4) has y-intercept 4 + 2/m. The triangle’s base on the y-axis is (4 + 2/m) − (4 − 2m) = 2m + 2/m, and its height is 2. Area = 2m + 2/m = 5, so 2m² − 5m + 2 = 0 and m = 2 or ½. Both keep c ≥ 0; the larger is 2.
+31|ar² = 4 and ar⁴ = 2 give r² = ½ and a = 8, with r = +1/√2 for one GP and −1/√2 for the other. The difference in sums is 8/(1 − k) − 8/(1 + k) = 16k/(1 − k²) with k = 1/√2, i.e. 16k/(½) = 32/√2 = 16√2.
+33|dy/dx = 3x² + 6√5px + 3p must have two distinct roots: (6√5p)² − 36p &gt; 0, so 180p² − 36p &gt; 0, i.e. 36p(5p − 1) &gt; 0. This gives p &lt; 0 or p &gt; 0.2.
+35|Factor out cos x: cos x(14cos²x + 10sin²x − 13) = cos x(4cos²x − 3) = 0. So cos x = 0 (2 solutions per 2π) or cos x = ±√3/2 (4 solutions per 2π), giving 6 per 2π. Over the 4π range that is 12.
+37|Let L = log₁₀x. Since log x² = 2L, the equation is 4L² + L − 3 = 0, i.e. (4L − 3)(L + 1) = 0, so L = ¾ or −1. Product of roots = 10<sup>¾</sup> × 10<sup>−1</sup> = 10<sup>−¼</sup>.
+39|dy/dx = −4 + 6x<sup>½</sup> − 2x. With u = √x this is −2u² + 6u − 4, a downward parabola with its maximum at u = 3/2: −4.5 + 9 − 4 = ½.

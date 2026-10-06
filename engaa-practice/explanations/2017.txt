@@ -1,0 +1,41 @@
+1|√12 = 2√3, so the numerator is (3√3)² = 27 and the denominator is (√3)² = 3. 27/3 = 9.
+2|The car decelerates only between 110 s and 130 s (30 → 20 m s⁻¹). Distance = area = ½(30 + 20) × 20 = 500 m.
+3|2x² + x − 15 ≥ 0 factorises as (2x − 5)(x + 3) ≥ 0. A positive quadratic is ≥ 0 outside its roots: x ≤ −3 or x ≥ 2.5.
+4|Convection happens because heated water expands (3). The same mass then occupies more volume, so its density falls (2), and the less dense water rises. The mass of a fixed volume actually decreases, so 1 is false. Answer: 2 and 3 only.
+5|(y + 5)/3 = (x/2 − 1)², so x/2 − 1 = ±√[(y + 5)/3]. Then x = 2 ± 2√[(y + 5)/3].
+6|Useful energy = mgh = 1200 × 10 × 1.0 = 12 kJ. The input is 28 kJ, so 28 − 12 = 16 kJ is lost in total. The 75% figure covers only the motor’s own losses; the other causes account for the rest.
+7|2x + 5y = P and 3x + 2y = Q. Eliminate x with 3 × first − 2 × second: 15y − 4y = 3P − 2Q. So y = (3P − 2Q)/11.
+8|If the source is d from the midpoint, one ray travels 2d further than the other. 2d = cΔt = 3.0 × 10⁸ × 4.0 × 10⁻¹⁰ = 0.12 m, so d = 0.060 m = 6.0 cm.
+9|P = kQ²: 2 = 16k, so k = ⅛. Q = c/R: 2 = c/5, so c = 10. P = ⅛ × (10/R)² = 100/(8R²) = 25/(2R²).
+10|Nucleon numbers balance: 1 + 239 = w + y + z × 1, so z = 240 − (w + y). Proton numbers give 94 = 54 + x, so x = 40, which rules out the other options.
+11|x²(9x² − 4) = x²(3x − 2)(3x + 2), and 2 − 3x = −(3x − 2). The fraction simplifies to −(3x + 2)/x = −3 − 2/x. So 2 − (−3 − 2/x) = 5 + 2/x.
+12|Useful power = mgh/t = 20 × 10 × 6.0/5.0 = 240 W. Input power = 240/0.8 = 300 W. I = P/V = 300/12 = 25 A.
+13|Base 2: 2<sup>3+2x</sup> × 2<sup>2x</sup> × 2<sup>−3x</sup> = 2<sup>3+x</sup>, and 4√2 = 2<sup>2.5</sup>. So 3 + x = 2.5 and x = −0.5.
+14|β⁻ decay raises Z by 1 with no mass change; α decay lowers A by 4 and Z by 2. While A is still P (before the α), Z can only be Q, Q+1, Q+2 or Q+3. It can never be Q − 1. After the α (A = P − 4), Z can be Q − 2, Q − 1, Q or Q + 1, depending on when the α happens.
+15|Girls = 3X. Spanish girls = 35 − Y. German girls = 3X − X − (35 − Y) = 2X + Y − 35. German boys = 2Y. Total German = 2X + 3Y − 35.
+16|The atom and nucleus have essentially the same mass. Density ∝ 1/r³, so atom/nucleus density = (r<sub>nucleus</sub>/r<sub>atom</sub>)³ = (3.0 × 10⁴)⁻³.
+17|360/n − 360/(n + 3) = 4 gives 1080 = 4n(n + 3), so n² + 3n − 270 = 0. This factorises as (n + 18)(n − 15) = 0, so n = 15.
+18|Graph 1: t₁ is at a peak and t₂ is at the second trough after it, which is 1½ periods later. So T = 2(t₂ − t₁)/3. Graph 2: x₁ is a trough and x₂ the next crest, half a wavelength apart, so λ = 2(x₂ − x₁). v = λ/T = 3(x₂ − x₁)/(t₂ − t₁).
+19|From R, the lighthouse is on bearing 040°, so angle CRL = 40° (C is due north of R). CR = CL makes the triangle isosceles: angle CLR = 40° and angle RCL = 100°. From C, R is due south (180°), and L is 100° round towards the east: bearing 180° − 100° = 080°.
+20|I = P/V = 150/12 = 12.5 A. Q = It = 12.5 × 20 × 60 = 15 000 C.
+21|At 4:40 the minute hand is at 240°. The hour hand moves 0.5° per minute, so it is at 120° + 40 × 0.5° = 140°. The angle between them is 100°.
+22|Both stop, so the total momentum was zero. Freight mass = 3 × 130 + 7 × 30 = 600 t, so 600 × 2 = M × 5 and M = 240 t. Then 240 = 2 × 70 + 10n, so n = 10.
+23|x(x − 1)/[(x + 4)(x + 3)] = ⅓ gives 3x² − 3x = x² + 7x + 12. So x² − 5x − 6 = 0, i.e. (x − 6)(x + 1) = 0, and x = 6.
+24|(1) KE = ½ × 72 × 5² = 900 J, not 1800 J ✗. (2) Rate of GPE loss = mgv = 720 × 5 = 3600 J s⁻¹ ✓. (3) Both forces act on the same body, so they are balanced forces, not a third-law pair ✗. 2 only.
+25|The top corners of the square are at (±x/2, x) from O, so r² = x²/4 + x² = 5x²/4. Semicircle area = ½πr² = 5πx²/8. Shaded = 5πx²/8 − x² = (5π − 8)x²/8.
+26|In 6 h, X goes through 2 half-lives (¼ left) and Y through 3 half-lives (⅛ left). With N of each at the start, the remaining X and Y is N(¼ + ⅛) = 3N/8 out of 2N, i.e. 3/16. Everything else, 13/16, is Z (each decay gives one Z atom).
+27|Cross-sectional area = π(5² − 4²) = 9π cm². Volume = 9π × 16 = 144π cm³. Mass = 8 × 144π = 1152π g.
+28|KE ∝ mv². Ratio = (4/5) × 1.5² = 0.8 × 2.25 = 1.80.
+29|(3 + √3)/(6 − 2√3) = (3 + √3)/[2(3 − √3)]. Multiply top and bottom by (3 + √3): (12 + 6√3)/12 = 1 + √3/2. Squaring gives 1 + √3 + ¾ = 7/4 + √3. So 1 − (7/4 + √3) = −¾ − √3.
+31|sin x = −½ gives x = 7π/6, 11π/6, … and cos 2x = ½ gives x = π/6, 5π/6, 7π/6, 11π/6, …. The smallest common solution is k = 7π/6. In [0, 7π/6] the solutions are π/6, 5π/6 and 7π/6: 3 values.
+33|3<sup>2x+1</sup> = 3·(3<sup>x</sup>)². So 3(3<sup>x</sup>)² − 6(3<sup>x</sup>) = 0 gives 3<sup>x</sup>(3·3<sup>x</sup> − 6) = 0. Since 3<sup>x</sup> &gt; 0, 3<sup>x</sup> = 2 and x = log₃2.
+35|Long arc: r(2π − π/6) = 11πr/6 = 22π, so r = 12 mm. Major sector area = ½ × 12² × 11π/6 = 132π. The rest of the shape is triangle OPS (the small sector between OQ and OR lies inside it). OP = 18 + 12 = 30, so its area = ½ × 30² × sin(π/6) = 225. Total = 132π + 225.
+37|log₂y = 3p and log₂z = −2q. log₂(y³/z²) = 3(3p) − 2(−2q) = 9p + 4q.
+39|dy/dx = 3x² + 2px + q has roots 2 and 4, so it equals 3(x − 2)(x − 4) = 3x² − 18x + 24. Comparing coefficients: 2p = −18 gives p = −9, and q = 24. (The positive x² coefficient confirms the max at 2 and the min at 4.)
+41|Area = ½ × 4x × (8 − 3x) × sin 60° = √3(8x − 3x²). This is maximised at x = 8/6 = 4/3, giving √3 × (4/3) × 4 = 16√3/3.
+43|dy/dx = 18(2 + 3x)⁵. The x³ term of (2 + 3x)⁵ is ⁵C₃ × 2² × (3x)³ = 10 × 4 × 27x³ = 1080x³. 18 × 1080 = 19 440.
+45|1/(1 − ½sin 2x) = 4/3 gives sin 2x = ½. For π ≤ x ≤ 2π, 2x runs over [2π, 4π], so 2x = 2π + π/6 or 2π + 5π/6. Then x = 13π/12 or 17π/12. (|r| ≤ ½, so the series does converge.)
+47|u₂ = 2p + 3, u₃ = 2p² + 3p + 3 and u₄ = 2p³ + 3p² + 3p + 3 = −7. So 2p³ + 3p² + 3p + 10 = 0, and p = −2 works. The terms are 2, −1, 5, −7, with sum −1.
+49|x = 1 is a root of the numerator, which factorises as (x − 1)²(x − 4). (x − 1)² ≥ 0, so the sign depends on (x − 4)/x, with x ≠ 1. (x − 4)/x &gt; 0 when x &lt; 0 or x &gt; 4.
+51|A stretch with factor ½ parallel to the x-axis gives sin 2x. Translating by π/4 in the negative x-direction replaces x with x + π/4: y = sin(2x + π/2).
+53|Perpendicular lines need (2p² − p)(p − 2) = −1, i.e. 2p³ − 5p² + 2p + 1 = 0. p = 1 is a root, leaving (p − 1)(2p² − 3p − 1) = 0. Then p = (3 ± √17)/4, and the greatest root is (3 + 4.12)/4 ≈ 1.78, closest to 1.75.

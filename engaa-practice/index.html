@@ -1,0 +1,497 @@
+<title>ENGAA Section 1 Practice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@600;700&display=swap">
+<style>
+/* Layout: exam-hall answer sheet — a ruled paper ground, the question "scan" as a white sheet, OMR lozenges in sheet-red for answers */
+:root{
+  --bg:#F3F4F6; --surface:#FFFFFF; --ink:#16191F; --muted:#5A6170; --line:#D9DCE2; --line-soft:#E8EAEE;
+  --accent:#B3263E; --accent-soft:#F7E3E7; --accent-ink:#FFFFFF;
+  --ok:#1D7A4C; --ok-soft:#DDF1E6; --bad:#B42318; --bad-soft:#FBE3E0; --flag:#A86400; --flag-soft:#FBEBD0;
+  --scan:#FFFFFF; --shadow:0 1px 2px rgba(20,24,31,.06),0 4px 16px rgba(20,24,31,.05);
+  --f-display:"IBM Plex Sans Condensed","Arial Narrow",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#101216; --surface:#181B21; --ink:#E7E9ED; --muted:#9BA2AE; --line:#2B3038; --line-soft:#22262D;
+  --accent:#F0718A; --accent-soft:#3A1E26; --accent-ink:#1A0A0E;
+  --ok:#53C48E; --ok-soft:#173326; --bad:#F27B70; --bad-soft:#3A1B18; --flag:#F0B451; --flag-soft:#3A2B12;
+  --scan:#FFFFFF; --shadow:0 1px 2px rgba(0,0,0,.4); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101216; --surface:#181B21; --ink:#E7E9ED; --muted:#9BA2AE; --line:#2B3038; --line-soft:#22262D;
+  --accent:#F0718A; --accent-soft:#3A1E26; --accent-ink:#1A0A0E;
+  --ok:#53C48E; --ok-soft:#173326; --bad:#F27B70; --bad-soft:#3A1B18; --flag:#F0B451; --flag-soft:#3A2B12;
+  --scan:#FFFFFF; --shadow:0 1px 2px rgba(0,0,0,.4); color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--f-body);margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:20px 64px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:-.005em}
+.eyebrow{font:600 11px/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+
+/* top bar */
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-bottom:16px;border-bottom:1px solid var(--line);margin-bottom:24px}
+.brand{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.brand h1{font-size:26px;font-weight:700}
+.brand .code{font:500 12px var(--f-mono);color:var(--accent);border:1px solid var(--accent);padding:2px 6px;border-radius:3px}
+.sync{font:12px var(--f-mono);color:var(--muted)}
+
+/* buttons */
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:8px 14px;font-weight:500;display:inline-flex;align-items:center;gap:6px;min-height:38px}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(1.07)}
+.btn.ghost{background:transparent}
+.btn.small{padding:5px 10px;min-height:32px;font-size:13px}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+
+/* dashboard */
+.summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-bottom:28px}
+.summary div{background:var(--surface);padding:14px 16px;min-width:0}
+.summary b{display:block;font:600 26px/1.15 var(--f-mono);font-variant-numeric:tabular-nums;margin-top:6px}
+.resume{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:var(--accent-soft);border:1px solid var(--accent);border-radius:8px;padding:12px 16px;margin-bottom:24px}
+.section-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 12px;flex-wrap:wrap}
+.section-h h2{font-size:20px}
+.years{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:36px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0;box-shadow:var(--shadow)}
+.card.na{box-shadow:none;background:transparent;border-style:dashed}
+.card .yr{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.card .yr h3{font:700 30px/1 var(--f-display)}
+.meter{height:6px;border-radius:3px;background:var(--line-soft);overflow:hidden}
+.meter i{display:block;height:100%;background:var(--accent);border-radius:3px}
+.kv{display:grid;grid-template-columns:1fr auto;gap:2px 10px;font-size:13px}
+.kv dt{color:var(--muted)} .kv dd{margin:0;font-family:var(--f-mono);font-variant-numeric:tabular-nums;text-align:right}
+.card .acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--line-soft);white-space:nowrap}
+th{font:600 11px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+tr:last-child td{border-bottom:0}
+td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.empty{padding:28px 16px;text-align:center;color:var(--muted)}
+.pill{display:inline-block;font:600 11px/1 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;padding:4px 7px;border-radius:4px;border:1px solid currentColor}
+.pill.ok{color:var(--ok);background:var(--ok-soft);border-color:transparent}
+.pill.bad{color:var(--bad);background:var(--bad-soft);border-color:transparent}
+.pill.flag{color:var(--flag);background:var(--flag-soft);border-color:transparent}
+.pill.na{color:var(--muted);background:var(--line-soft);border-color:transparent}
+
+/* test */
+.timer{position:fixed;top:calc(env(safe-area-inset-top,0px) + 12px);right:16px;z-index:20;display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 14px 6px 10px;box-shadow:0 4px 18px rgba(0,0,0,.12)}
+.timer .dot{width:8px;height:8px;border-radius:50%;background:var(--ok)}
+.timer b{font:600 20px/1 var(--f-mono);font-variant-numeric:tabular-nums}
+.timer.warn .dot{background:var(--flag)} .timer.warn b{color:var(--flag)}
+.timer.crit .dot{background:var(--bad);animation:blink 1s steps(2) infinite} .timer.crit b{color:var(--bad)}
+@keyframes blink{50%{opacity:.2}}
+@media (prefers-reduced-motion:reduce){.timer.crit .dot{animation:none}}
+.test-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.test-head h2{font-size:24px}
+.test-grid{display:grid;grid-template-columns:minmax(0,1fr) 272px;gap:20px;align-items:start}
+.qpane{min-width:0}
+body.testing .topbar{padding-right:132px}
+.scan-wrap{overflow-x:auto;max-width:860px;border-radius:6px}
+.scan{position:relative;background:var(--scan);border:1px solid var(--line);border-radius:6px;overflow:hidden;max-width:860px}
+.scan img{display:block;width:100%;height:auto}
+.hs{position:absolute;border:0;background:transparent;border-radius:4px;padding:0}
+.hs:hover{background:rgba(179,38,62,.08);box-shadow:inset 0 0 0 1px rgba(179,38,62,.35)}
+.hs.sel{background:rgba(179,38,62,.12);box-shadow:inset 0 0 0 2px #B3263E}
+.hs.r-ok{background:rgba(29,122,76,.14);box-shadow:inset 0 0 0 2px #1D7A4C}
+.hs.r-bad{background:rgba(180,35,24,.12);box-shadow:inset 0 0 0 2px #B42318}
+.review .hs{cursor:default}.review .hs:hover{background:transparent;box-shadow:none}
+.review .hs.r-ok:hover{background:rgba(29,122,76,.14);box-shadow:inset 0 0 0 2px #1D7A4C}
+.review .hs.r-bad:hover{background:rgba(180,35,24,.12);box-shadow:inset 0 0 0 2px #B42318}
+.sheet{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:14px;padding:12px 14px;background:var(--surface);border:1px solid var(--line);border-radius:6px;max-width:860px}
+.lozenges{display:flex;gap:8px;flex-wrap:wrap}
+.loz{width:44px;height:30px;border-radius:15px;border:1.5px solid var(--accent);background:transparent;color:var(--accent);font:600 14px var(--f-mono);display:grid;place-items:center}
+.loz:hover{background:var(--accent-soft)}
+.loz.sel{background:var(--accent);color:var(--accent-ink)}
+.qnav{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:16px;max-width:860px}
+.btn.flagged{border-color:var(--flag);color:var(--flag);background:var(--flag-soft)}
+aside.navp{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 64px);min-width:0}
+.navgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin:10px 0 12px}
+.nb{position:relative;aspect-ratio:1;border:1px solid var(--line);border-radius:4px;background:transparent;font:500 12px var(--f-mono);padding:0}
+.nb.ans{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.nb.cur{outline:2px solid var(--accent);outline-offset:1px}
+.nb.fl::after{content:"";position:absolute;top:2px;right:2px;width:7px;height:7px;border-radius:50%;background:var(--flag)}
+.legend{display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;border:1px solid var(--line);vertical-align:-1px;margin-right:4px}
+.legend i.a{background:var(--ink);border-color:var(--ink)} .legend i.f{background:var(--flag);border-radius:50%;border-color:var(--flag)}
+.part-sep{grid-column:1/-1;font:600 10px var(--f-mono);letter-spacing:.1em;color:var(--muted);margin-top:4px}
+.confirm{margin-top:12px;padding:12px;border:1px solid var(--accent);background:var(--accent-soft);border-radius:6px;font-size:14px}
+.confirm .acts{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.kbd{font:11px var(--f-mono);color:var(--muted);margin-top:12px;line-height:1.7}
+kbd{font:11px var(--f-mono);border:1px solid var(--line);border-bottom-width:2px;border-radius:3px;padding:0 4px;background:var(--bg)}
+
+/* results */
+.score-hero{display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:20px;margin-bottom:20px}
+.ring{width:132px;height:132px}
+.score-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.score-stats b{display:block;font:600 22px var(--f-mono);font-variant-numeric:tabular-nums}
+.strip{display:flex;flex-wrap:wrap;gap:4px;margin-top:14px}
+.strip button{width:28px;height:28px;border-radius:4px;border:0;font:600 11px var(--f-mono);padding:0}
+.strip .ok{background:var(--ok-soft);color:var(--ok)} .strip .bad{background:var(--bad-soft);color:var(--bad)} .strip .na{background:var(--line-soft);color:var(--muted)}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:13px}
+.chip.on{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.rq{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;margin-bottom:16px;display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:18px;scroll-margin-top:16px}
+.rq.bad{border-left:4px solid var(--bad)} .rq.ok{border-left:4px solid var(--ok)} .rq.na{border-left:4px solid var(--line)}
+.rq-head{grid-column:1/-1;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.rq-head h3{font-size:18px}
+.answers{display:flex;gap:16px;flex-wrap:wrap;font-size:14px}
+.answers b{font-family:var(--f-mono)}
+.expl{border-top:1px solid var(--line-soft);padding-top:12px;min-width:0}
+.expl p{margin:6px 0 0;max-width:62ch}
+.expl .eyebrow{color:var(--accent)}
+.note{font-size:13px;color:var(--muted);max-width:70ch}
+
+@media (max-width:980px){.years{grid-template-columns:repeat(2,minmax(0,1fr))}.test-grid{grid-template-columns:1fr}aside.navp{position:static}.navgrid{grid-template-columns:repeat(10,1fr)}.rq{grid-template-columns:1fr}}
+@media (max-width:600px){.scan-wrap .scan{min-width:560px}body.testing .topbar{padding-right:0;padding-top:40px}.summary{grid-template-columns:repeat(2,minmax(0,1fr))}.years{grid-template-columns:1fr}.navgrid{grid-template-columns:repeat(8,1fr)}.score-hero{grid-template-columns:1fr}.score-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.loz{width:38px}}
+</style>
+
+<div class="wrap" id="app"></div>
+
+<script>
+(() => {
+const YEARS = [2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023];
+const AVAILABLE = {2016: 41, 2017: 41, 2019: 30, 2020: 30, 2021: 30, 2022: 30, 2023: 30};
+const PER_Q = 85;
+const app = document.getElementById('app');
+
+/* ---------- storage: account db when available, browser storage as fallback/cache ---------- */
+const LS = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
+  del(k) { try { localStorage.removeItem(k); } catch (e) {} }
+};
+let attempts = LS.get('engaa.attempts', []);
+let active = LS.get('engaa.active', null);
+let dbCol = null;
+let syncLabel = 'Saved in this browser';
+
+async function initDb() {
+  try {
+    if (!window.claude || !window.claude.use) return;
+    const [db, user] = await Promise.all([claude.use('db'), claude.use('user')]);
+    if (!db || !user) return;
+    const id = await user.id();
+    if (!id) return;
+    dbCol = db.collection('data/users/' + id);
+    const snap = await dbCol.get();
+    const remote = snap.docs.map(d => d.data()).filter(a => a && a.id);
+    const byId = new Map(remote.map(a => [a.id, a]));
+    for (const a of attempts) if (!byId.has(a.id)) { byId.set(a.id, a); try { await dbCol.doc(a.id).set(a); } catch (e) {} }
+    attempts = [...byId.values()].sort((a, b) => a.finishedAt - b.finishedAt);
+    LS.set('engaa.attempts', attempts);
+    syncLabel = 'Synced to your account';
+    if (view.name !== 'test') render();
+    else { const s = document.querySelector('.sync'); if (s) s.textContent = syncLabel; }
+  } catch (e) { /* stay on browser storage */ }
+}
+async function persistAttempt(a) {
+  attempts.push(a);
+  LS.set('engaa.attempts', attempts);
+  if (dbCol) { try { await dbCol.doc(a.id).set(a); } catch (e) { syncLabel = 'Saved in this browser (account sync failed)'; } }
+}
+
+/* ---------- paper data ---------- */
+const papers = {};
+async function loadPaper(y) {
+  if (!papers[y]) {
+    const r = await fetch('paper-' + y + '.json');
+    if (!r.ok) throw new Error('Could not load the ' + y + ' paper.');
+    papers[y] = await r.json();
+  }
+  return papers[y];
+}
+const qByN = (y, n) => papers[y].find(q => q.n === n);
+
+/* ---------- helpers ---------- */
+const fmt = s => { s = Math.max(0, Math.round(s)); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60; return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(x).padStart(2, '0'); };
+const pct = (a, b) => b ? Math.round(100 * a / b) : 0;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+const dateStr = t => new Date(t).toLocaleDateString(undefined, {day: 'numeric', month: 'short', year: 'numeric'}) + ', ' + new Date(t).toLocaleTimeString(undefined, {hour: '2-digit', minute: '2-digit'});
+const fullAttempts = y => attempts.filter(a => a.year === y && a.mode === 'full');
+const lastFull = y => fullAttempts(y).sort((a, b) => b.finishedAt - a.finishedAt)[0];
+const mistakesOf = a => a.qns.filter(n => a.answers[n] !== a.key[n]);
+const newId = () => 'a' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+
+let view = {name: 'dash'};
+let timerId = null;
+
+function go(v) { view = v; render(); window.scrollTo(0, 0); }
+
+function render() {
+  clearInterval(timerId); timerId = null;
+  document.querySelector('.timer')?.remove();
+  document.body.classList.toggle('testing', view.name === 'test');
+  if (view.name === 'test') return renderTest();
+  if (view.name === 'review') return renderReview();
+  renderDash();
+}
+
+function topbar(right = '') {
+  return `<header class="topbar"><div class="brand"><h1>ENGAA Section 1 Practice</h1><span class="code">D564/11</span></div>
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><span class="sync">${esc(syncLabel)}</span>${right}</div></header>`;
+}
+
+/* ---------- dashboard ---------- */
+function renderDash() {
+  const full = attempts.filter(a => a.mode === 'full');
+  const done = new Set(full.map(a => a.year));
+  const avg = full.length ? Math.round(full.reduce((s, a) => s + pct(a.score, a.total), 0) / full.length) : null;
+  const best = full.length ? Math.max(...full.map(a => pct(a.score, a.total))) : null;
+  const latestMistakes = Object.keys(AVAILABLE).reduce((s, y) => { const a = lastFull(+y); return s + (a ? mistakesOf(a).length : 0); }, 0);
+
+  let html = topbar();
+  if (active) {
+    const left = (active.deadline - Date.now()) / 1000;
+    html += `<div class="resume"><div><div class="eyebrow">Test in progress</div><div style="margin-top:4px"><b>${active.year}${active.mode === 'mistakes' ? ' mistakes retry' : ' paper'}</b> · ${Object.keys(active.answers).length}/${active.qns.length} answered · <span class="mono">${fmt(left)}</span> left. The clock keeps running.</div></div>
+      <div style="display:flex;gap:8px"><button class="btn primary" data-act="resume">Resume test</button><button class="btn ghost" data-act="abandon">Discard</button></div></div>`;
+  }
+  html += `<section class="summary" aria-label="Overview">
+    <div><span class="eyebrow">Papers sat</span><b>${done.size}<span class="muted" style="font-size:16px">/7</span></b></div>
+    <div><span class="eyebrow">Average score</span><b>${avg === null ? '–' : avg + '%'}</b></div>
+    <div><span class="eyebrow">Best score</span><b>${best === null ? '–' : best + '%'}</b></div>
+    <div><span class="eyebrow">Open mistakes</span><b>${latestMistakes}</b></div></section>`;
+
+  html += `<div class="section-h"><h2>Past papers</h2><span class="note">Questions crossed out in the papers are removed. You get ${PER_Q} s per question.</span></div><div class="years">`;
+  for (const y of YEARS) {
+    const n = AVAILABLE[y];
+    if (!n) {
+      html += `<article class="card na"><div class="yr"><h3 class="muted">${y}</h3><span class="pill na">Not uploaded</span></div><p class="note" style="margin:0">Upload the ${y} Section 1 paper and answer key to add it here.</p></article>`;
+      continue;
+    }
+    const fa = fullAttempts(y), last = lastFull(y);
+    const bestP = fa.length ? Math.max(...fa.map(a => pct(a.score, a.total))) : null;
+    const lastP = last ? pct(last.score, last.total) : null;
+    const mist = last ? mistakesOf(last).length : 0;
+    html += `<article class="card"><div class="yr"><h3>${y}</h3><span class="mono muted" style="font-size:13px">${n} Qs · ${fmt(n * PER_Q)}</span></div>
+      <div class="meter" title="Best score"><i style="width:${bestP || 0}%"></i></div>
+      <dl class="kv"><dt>Best</dt><dd>${bestP === null ? '–' : bestP + '%'}</dd><dt>Last</dt><dd>${last ? last.score + '/' + last.total : '–'}</dd><dt>Attempts</dt><dd>${fa.length}</dd></dl>
+      <div class="acts"><button class="btn primary small" data-act="start" data-y="${y}" ${active ? 'disabled title="Finish or discard the test in progress first"' : ''}>${fa.length ? 'Retake' : 'Start'}</button>
+      ${last ? `<button class="btn small" data-act="review" data-id="${last.id}">Review</button>` : ''}
+      ${mist ? `<button class="btn small" data-act="retry" data-y="${y}" ${active ? 'disabled' : ''}>Retry ${mist} mistake${mist > 1 ? 's' : ''}</button>` : ''}</div></article>`;
+  }
+  html += `</div>`;
+
+  html += `<div class="section-h"><h2>Attempt history</h2></div>`;
+  if (!attempts.length) {
+    html += `<div class="tbl-wrap"><div class="empty">No attempts yet. Pick a paper above to sit your first timed test. Your marks and mistakes will appear here.</div></div>`;
+  } else {
+    html += `<div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Paper</th><th>Mode</th><th>Score</th><th>Part A</th><th>Part B</th><th>Time used</th><th></th></tr></thead><tbody>`;
+    for (const a of [...attempts].sort((x, z) => z.finishedAt - x.finishedAt)) {
+      const pa = partScore(a, 'A'), pb = partScore(a, 'B');
+      html += `<tr><td>${dateStr(a.finishedAt)}</td><td class="num">${a.year}</td><td>${a.mode === 'full' ? 'Full paper' : 'Mistakes retry'}</td>
+        <td class="num"><b>${a.score}/${a.total}</b> <span class="muted">${pct(a.score, a.total)}%</span></td>
+        <td class="num">${pa.t ? pa.s + '/' + pa.t : '–'}</td><td class="num">${pb.t ? pb.s + '/' + pb.t : '–'}</td>
+        <td class="num">${fmt(a.used)} / ${fmt(a.limit)}${a.timedOut ? ' <span class="pill flag">Time up</span>' : ''}</td>
+        <td><button class="btn small" data-act="review" data-id="${a.id}">Review</button></td></tr>`;
+    }
+    html += `</tbody></table></div>`;
+  }
+  app.innerHTML = html;
+}
+function partScore(a, p) {
+  let s = 0, t = 0;
+  for (const n of a.qns) if ((a.parts || {})[n] === p) { t++; if (a.answers[n] === a.key[n]) s++; }
+  return {s, t};
+}
+
+/* ---------- test ---------- */
+async function startTest(y, mode) {
+  app.innerHTML = topbar() + `<div class="empty">Loading the ${y} paper…</div>`;
+  let data;
+  try { data = await loadPaper(y); } catch (e) { app.innerHTML = topbar() + `<div class="empty">${esc(e.message)} Check your connection and try again. <button class="btn small" data-act="home">Back</button></div>`; return; }
+  let qns = data.map(q => q.n);
+  if (mode === 'mistakes') { const last = lastFull(y); qns = last ? mistakesOf(last) : []; }
+  if (!qns.length) return go({name: 'dash'});
+  const now = Date.now();
+  active = {id: newId(), year: y, mode, qns, answers: {}, flags: [], idx: 0, startedAt: now, limit: qns.length * PER_Q, deadline: now + qns.length * PER_Q * 1000};
+  LS.set('engaa.active', active);
+  go({name: 'test'});
+}
+function saveActive() { LS.set('engaa.active', active); }
+
+function renderTest() {
+  if (!active) return go({name: 'dash'});
+  if (!papers[active.year]) { loadPaper(active.year).then(renderTest).catch(() => go({name: 'dash'})); app.innerHTML = topbar() + '<div class="empty">Loading…</div>'; return; }
+  const n = active.qns[active.idx];
+  const q = qByN(active.year, n);
+  const sel = active.answers[n];
+  const flagged = active.flags.includes(n);
+  const answered = Object.keys(active.answers).length;
+
+  let hs = '';
+  q.hs.forEach((r, i) => {
+    const L = q.o[i];
+    hs += `<button class="hs ${sel === L ? 'sel' : ''}" data-act="pick" data-l="${L}" aria-label="Choose option ${L}" style="left:${r[0] * 100}%;top:${r[1] * 100}%;width:${r[2] * 100}%;height:${r[3] * 100}%"></button>`;
+  });
+  let nav = '', lastPart = '';
+  active.qns.forEach((m, i) => {
+    const p = qByN(active.year, m).p;
+    if (p !== lastPart) { nav += `<div class="part-sep">PART ${p}</div>`; lastPart = p; }
+    nav += `<button class="nb ${active.answers[m] ? 'ans' : ''} ${i === active.idx ? 'cur' : ''} ${active.flags.includes(m) ? 'fl' : ''}" data-act="jump" data-i="${i}" aria-label="Question ${m}">${m}</button>`;
+  });
+  const unanswered = active.qns.length - answered;
+
+  app.innerHTML = topbar() + `
+  <div class="test-head"><div><div class="eyebrow">${active.year} · Part ${q.p} · ${q.p === 'A' ? 'Mathematics and Physics' : 'Advanced Mathematics and Advanced Physics'}${active.mode === 'mistakes' ? ' · Mistakes retry' : ''}</div>
+    <h2>Question ${n} <span class="muted mono" style="font-size:15px;font-weight:400">(${active.idx + 1} of ${active.qns.length})</span></h2></div></div>
+  <div class="test-grid">
+    <div class="qpane">
+      <div class="scan-wrap"><div class="scan" style="aspect-ratio:${q.w}/${q.h}"><img src="${q.img}" alt="Question ${n} from the ${active.year} paper" width="${q.w}" height="${q.h}">${hs}</div></div>
+      <div class="sheet"><span class="eyebrow">Your answer</span><div class="lozenges">${[...q.o].map(L => `<button class="loz ${sel === L ? 'sel' : ''}" data-act="pick" data-l="${L}" aria-pressed="${sel === L}">${L}</button>`).join('')}</div>
+        ${sel ? `<button class="btn ghost small" data-act="clear">Clear</button>` : ''}</div>
+      <div class="qnav"><button class="btn" data-act="prev" ${active.idx === 0 ? 'disabled' : ''}>← Previous</button>
+        <button class="btn ${flagged ? 'flagged' : ''}" data-act="flag" aria-pressed="${flagged}">${flagged ? '⚑ Flagged' : '⚐ Flag for review'}</button>
+        ${active.idx < active.qns.length - 1 ? `<button class="btn primary" data-act="next">Next →</button>` : `<button class="btn primary" data-act="ask-submit">Finish →</button>`}</div>
+    </div>
+    <aside class="navp" aria-label="Question navigator">
+      <div class="eyebrow">Questions · ${answered}/${active.qns.length} answered</div>
+      <div class="navgrid">${nav}</div>
+      <div class="legend"><span><i class="a"></i>Answered</span><span><i></i>Blank</span><span><i class="f"></i>Flagged</span></div>
+      <button class="btn primary" style="width:100%;justify-content:center;margin-top:14px" data-act="ask-submit">Submit test</button>
+      <div id="confirm"></div>
+      <div class="kbd"><kbd>A</kbd>–<kbd>H</kbd> choose · <kbd>←</kbd><kbd>→</kbd> move · <kbd>M</kbd> flag</div>
+    </aside>
+  </div>`;
+  if (view.confirm) showConfirm(unanswered);
+
+  clearInterval(timerId); document.querySelector('.timer')?.remove();
+  const t = document.createElement('div');
+  t.className = 'timer'; t.setAttribute('role', 'timer'); t.setAttribute('aria-label', 'Time remaining');
+  t.innerHTML = '<span class="dot"></span><b></b>';
+  document.body.appendChild(t);
+  const tick = () => {
+    if (!active) { clearInterval(timerId); t.remove(); return; }
+    const left = (active.deadline - Date.now()) / 1000;
+    t.querySelector('b').textContent = fmt(left);
+    t.classList.toggle('warn', left <= 300 && left > 60);
+    t.classList.toggle('crit', left <= 60);
+    if (left <= 0) submit(true);
+  };
+  tick(); timerId = setInterval(tick, 250);
+}
+function showConfirm(unanswered) {
+  const flagged = active.flags.length;
+  const el = document.getElementById('confirm'); if (!el) return;
+  el.innerHTML = `<div class="confirm"><b>Submit now?</b><div style="margin-top:4px">${unanswered ? `${unanswered} unanswered` : 'Every question answered'}${flagged ? ` · ${flagged} flagged` : ''}. You can't change answers after submitting.</div>
+    <div class="acts"><button class="btn primary small" data-act="submit">Submit</button><button class="btn small" data-act="cancel-submit">Keep working</button></div></div>`;
+}
+async function submit(timedOut = false) {
+  if (!active) return;
+  clearInterval(timerId); timerId = null;
+  const a = active; active = null; LS.del('engaa.active');
+  const finishedAt = Math.min(Date.now(), a.deadline);
+  const key = {}, parts = {};
+  let score = 0;
+  for (const n of a.qns) { const q = qByN(a.year, n); key[n] = q.a; parts[n] = q.p; if (a.answers[n] === q.a) score++; }
+  const rec = {id: a.id, year: a.year, mode: a.mode, qns: a.qns, answers: a.answers, flags: a.flags, key, parts, score, total: a.qns.length,
+    startedAt: a.startedAt, finishedAt, limit: a.limit, used: Math.min(a.limit, (finishedAt - a.startedAt) / 1000), timedOut: !!timedOut};
+  await persistAttempt(rec);
+  go({name: 'review', id: rec.id, filter: 'all'});
+}
+
+/* ---------- review ---------- */
+async function renderReview() {
+  const a = attempts.find(x => x.id === view.id);
+  if (!a) return go({name: 'dash'});
+  if (!papers[a.year]) { app.innerHTML = topbar() + '<div class="empty">Loading…</div>'; try { await loadPaper(a.year); } catch (e) { app.innerHTML = topbar() + `<div class="empty">${esc(e.message)}</div>`; return; } }
+  const status = n => !a.answers[n] ? 'na' : a.answers[n] === a.key[n] ? 'ok' : 'bad';
+  const counts = {all: a.qns.length, bad: 0, na: 0, ok: 0, flag: a.flags.length};
+  a.qns.forEach(n => counts[status(n)]++);
+  const f = view.filter || 'all';
+  const shown = a.qns.filter(n => f === 'all' || (f === 'flag' ? a.flags.includes(n) : f === 'wrong' ? status(n) !== 'ok' : status(n) === f));
+  const p = pct(a.score, a.total), pa = partScore(a, 'A'), pb = partScore(a, 'B');
+  const C = 2 * Math.PI * 52;
+
+  let html = topbar(`<button class="btn" data-act="home">← Dashboard</button>`);
+  html += `<div class="section-h"><div><div class="eyebrow">${a.mode === 'full' ? 'Full paper' : 'Mistakes retry'} · ${dateStr(a.finishedAt)}</div><h2 style="font-size:26px;margin-top:4px">${a.year} results</h2></div>
+    ${counts.bad + counts.na && a.mode === 'full' && lastFull(a.year)?.id === a.id && !active ? `<button class="btn primary" data-act="retry" data-y="${a.year}">Retry ${counts.bad + counts.na} mistake${counts.bad + counts.na > 1 ? 's' : ''}</button>` : ''}</div>
+  <section class="score-hero">
+    <svg class="ring" viewBox="0 0 132 132" role="img" aria-label="Score ${p} percent"><circle cx="66" cy="66" r="52" fill="none" stroke="var(--line-soft)" stroke-width="12"/>
+      <circle cx="66" cy="66" r="52" fill="none" stroke="var(--accent)" stroke-width="12" stroke-linecap="round" stroke-dasharray="${C * p / 100} ${C}" transform="rotate(-90 66 66)"/>
+      <text x="66" y="64" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="26" font-weight="600" fill="var(--ink)">${a.score}/${a.total}</text>
+      <text x="66" y="86" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="13" fill="var(--muted)">${p}%</text></svg>
+    <div style="min-width:0"><div class="score-stats">
+      <div><span class="eyebrow">Part A</span><b>${pa.t ? pa.s + '/' + pa.t : '–'}</b></div>
+      <div><span class="eyebrow">Part B</span><b>${pb.t ? pb.s + '/' + pb.t : '–'}</b></div>
+      <div><span class="eyebrow">Time used</span><b>${fmt(a.used)}</b><span class="muted mono" style="font-size:12px">of ${fmt(a.limit)}${a.timedOut ? ' · time up' : ''}</span></div>
+      <div><span class="eyebrow">Per question</span><b>${Math.round(a.used / a.total)}s</b><span class="muted mono" style="font-size:12px">target ${PER_Q}s</span></div></div>
+      <div class="strip" aria-label="Question by question">${a.qns.map(n => `<button class="${status(n)}" data-act="goto" data-n="${n}" title="Question ${n}">${n}</button>`).join('')}</div></div>
+  </section>
+  <div class="filters" role="tablist">${[['all', 'All'], ['wrong', 'Mistakes'], ['bad', 'Incorrect'], ['na', 'Not answered'], ['ok', 'Correct'], ['flag', 'Flagged']].map(([k, l]) => {
+    const c = k === 'wrong' ? counts.bad + counts.na : counts[k];
+    return `<button class="chip ${f === k ? 'on' : ''}" data-act="filter" data-f="${k}" role="tab" aria-selected="${f === k}">${l} <span class="mono">${c}</span></button>`;
+  }).join('')}</div>`;
+
+  if (!shown.length) html += `<div class="tbl-wrap"><div class="empty">Nothing in this filter.</div></div>`;
+  for (const n of shown) {
+    const q = qByN(a.year, n), st = status(n), mine = a.answers[n];
+    let hs = '';
+    q.hs.forEach((r, i) => { const L = q.o[i]; const c = L === q.a ? 'r-ok' : L === mine ? 'r-bad' : ''; if (c) hs += `<span class="hs ${c}" style="left:${r[0] * 100}%;top:${r[1] * 100}%;width:${r[2] * 100}%;height:${r[3] * 100}%"></span>`; });
+    html += `<article class="rq ${st}" id="rq-${n}">
+      <div class="rq-head"><h3>Question ${n}</h3><span class="muted mono" style="font-size:12px">Part ${q.p}</span>
+        <span class="pill ${st}">${st === 'ok' ? 'Correct' : st === 'bad' ? 'Incorrect' : 'Not answered'}</span>${a.flags.includes(n) ? '<span class="pill flag">Flagged</span>' : ''}</div>
+      <div class="scan-wrap"><div class="scan review" style="aspect-ratio:${q.w}/${q.h}"><img src="${q.img}" alt="Question ${n}" loading="lazy" width="${q.w}" height="${q.h}">${hs}</div></div>
+      <div style="min-width:0;display:flex;flex-direction:column;gap:12px">
+        <div class="answers"><span>Your answer: <b style="color:${st === 'ok' ? 'var(--ok)' : st === 'bad' ? 'var(--bad)' : 'var(--muted)'}">${mine || '—'}</b></span><span>Correct answer: <b style="color:var(--ok)">${q.a}</b></span></div>
+        <div class="expl"><div class="eyebrow">Worked solution</div><p>${q.ex}</p></div>
+      </div></article>`;
+  }
+  app.innerHTML = html;
+}
+
+/* ---------- events ---------- */
+app.addEventListener('click', e => {
+  const b = e.target.closest('[data-act]'); if (!b || b.disabled) return;
+  const act = b.dataset.act;
+  if (act === 'home') return go({name: 'dash'});
+  if (act === 'start') return startTest(+b.dataset.y, 'full');
+  if (act === 'retry') return startTest(+b.dataset.y, 'mistakes');
+  if (act === 'resume') return go({name: 'test'});
+  if (act === 'abandon') {
+    if (b.dataset.sure) { active = null; LS.del('engaa.active'); return render(); }
+    b.dataset.sure = '1'; b.textContent = 'Discard answers?'; b.classList.add('primary'); return;
+  }
+  if (act === 'review') return go({name: 'review', id: b.dataset.id, filter: 'all'});
+  if (act === 'filter') { view.filter = b.dataset.f; return renderReview(); }
+  if (act === 'goto') { if (view.filter !== 'all') { view.filter = 'all'; renderReview().then(() => document.getElementById('rq-' + b.dataset.n)?.scrollIntoView()); } else document.getElementById('rq-' + b.dataset.n)?.scrollIntoView(); return; }
+  if (!active) return;
+  const n = active.qns[active.idx];
+  if (act === 'pick') { active.answers[n] = b.dataset.l; }
+  else if (act === 'clear') { delete active.answers[n]; }
+  else if (act === 'flag') { active.flags = active.flags.includes(n) ? active.flags.filter(x => x !== n) : [...active.flags, n]; }
+  else if (act === 'prev') { active.idx = Math.max(0, active.idx - 1); view.confirm = false; }
+  else if (act === 'next') { active.idx = Math.min(active.qns.length - 1, active.idx + 1); view.confirm = false; }
+  else if (act === 'jump') { active.idx = +b.dataset.i; view.confirm = false; }
+  else if (act === 'ask-submit') { view.confirm = true; }
+  else if (act === 'cancel-submit') { view.confirm = false; }
+  else if (act === 'submit') { return submit(false); }
+  saveActive(); renderTest();
+  if (act === 'ask-submit') document.getElementById('confirm')?.scrollIntoView({block: 'nearest'});
+});
+document.addEventListener('keydown', e => {
+  if (view.name !== 'test' || !active || e.metaKey || e.ctrlKey || e.altKey) return;
+  const n = active.qns[active.idx], q = qByN(active.year, n); if (!q) return;
+  const k = e.key.toUpperCase();
+  if (k.length === 1 && q.o.includes(k)) { active.answers[n] = k; }
+  else if (e.key === 'ArrowRight') { if (active.idx >= active.qns.length - 1) return; active.idx++; view.confirm = false; }
+  else if (e.key === 'ArrowLeft') { if (active.idx <= 0) return; active.idx--; view.confirm = false; }
+  else if (k === 'M') { active.flags = active.flags.includes(n) ? active.flags.filter(x => x !== n) : [...active.flags, n]; }
+  else return;
+  e.preventDefault(); saveActive(); renderTest();
+});
+
+/* ---------- boot ---------- */
+if (active && Date.now() >= active.deadline) {
+  loadPaper(active.year).then(() => submit(true)).catch(() => { active = null; LS.del('engaa.active'); render(); });
+} else if (active) { view = {name: 'test'}; render(); }
+else render();
+initDb();
+})();
+</script>

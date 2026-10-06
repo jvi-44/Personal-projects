@@ -1,0 +1,30 @@
+1|(5x²y)⁻³ = 5⁻³x⁻⁶y⁻³. Multiplying: 5 × 5 × 5⁻³ = 1/5, x<sup>1−6+2</sup> = x⁻³ and y<sup>2−3+1</sup> = y⁰. The result is 1/(5x³).
+2|At constant temperature pV is constant, so V ∝ 1/p. The mass is fixed, so density ∝ p. A 20% pressure rise gives 1.20ρ.
+3|3/q = 4/r − p/2 = (8 − pr)/(2r), so q = 6r/(8 − pr).
+4|Input voltage = 3000/12.5 = 240 V. The ideal output voltage is 240 × 25/100 = 60 V. Output power = 60 × 40 = 2400 W, so the efficiency is 2400/3000 = 80%.
+5|P: 2π(x/2)² + πxy = πx²/2 + πxy. Q: πy²/2 + πxy. The curved surfaces are equal, so the difference is (π/2)(x² − y²).
+6|k = F/x = 5.0/0.02 = 250 N m⁻¹. E = ½kx² = ½ × 250 × 0.02² = 0.05 J.
+7|Both prices end at 1.1 × 0.9 = 0.9 × 1.1 = 0.99 of the original, so both are lower.
+8|P = V²/R<sub>total</sub>. With one lamp shorted, the resistance drops from 20R to 19R at the same V, so the power becomes (20/19)P.
+9|SQ = √(8² − 4²) = √48 = 4√3. RQ is ¾ of SQ, i.e. 3√3, so RQ² = 27. PQ = √(64 − 27) = √37.
+10|The gradient of the momentum graph is the resultant force: 12 × 10⁶/4 = 3.0 × 10⁶ N. Motor force = resultant + friction = 3.0 × 10⁶ + 1.8 × 10⁷ = 2.1 × 10⁷ N.
+11|x² − 4x + 5 = 2x + c gives x² − 6x + (5 − c) = 0. The roots differ by √(36 − 4(5 − c)) = √(16 + 4c) = 8, so 16 + 4c = 64 and c = 12.
+12|The ship meets crests at a relative speed of 8 + 3 = 11 m s⁻¹, one every 8.0 s. So λ = 11 × 8 = 88 m.
+13|y = (√3/2 − 1)/(½) = √3 − 2. (√3 − 2)³ = 3√3 − 3(3)(2) + 3√3(4) − 8 = 15√3 − 26.
+14|The resistor takes 0.25 × 8 = 2.0 V, leaving 4.0 V across the lamp at 0.25 A. A filament’s resistance rises with current, so on a V–I graph V curves upwards (gets steeper). That is graph B.
+15|With r red sweets, P(no green) = r(r − 1)/(9 × 8) = 5/12, so r(r − 1) = 30 and r = 6. There are 3 green, so P(two green) = (3 × 2)/72 = 1/12.
+16|Start with N of each. After 4T, X has had 4 half-lives (N/16 left), so R = N + 15N/16 = 31N/16. Y has had 2 half-lives (N/4 left), so S = N + 3N/4 = 28N/16. R/S = 31/28.
+17|The smaller cuboid’s space diagonal is √77/2, so its square is 77/4. Then 2² + 3² + x² = 77/4, giving x² = 77/4 − 13 = 25/4 and x = 5/2.
+18|Melting the ice takes 20 × 300 = 6000 J. Heat lost by the warm water = heat to melt the ice + heat to warm the meltwater: 180 × 4 × (25 − T) = 6000 + 20 × 4 × T. So 18 000 − 720T = 6000 + 80T, 800T = 12 000 and T = 15.0 °C.
+19|Distance in km = m/x. Litres used = m/(xf). Cost = mp/(xf) pence = mp/(100fx) pounds.
+20|Pulse speed v = 2L/t₂. The crack is d from the start, where t₁ = 2d/v, so d = Lt₁/t₂. Distance from crack to far end = L − Lt₁/t₂ = (t₂ − t₁)L/t₂.
+21|Expand first: y = 4x − 2 + 1/(4x). So dy/dx = 4 − 1/(4x²). At x = ½: 4 − 1/(4 × ¼) = 3.
+23|S<sub>n+1</sub> − S<sub>n−1</sub> = u<sub>n</sub> + u<sub>n+1</sub> = [a + (n − 1)d] + [a + nd] = 2a + (2n − 1)d.
+25|x² + 4x + 3 = 1 gives x² + 4x + 2 = 0, with two roots −2 ± √2. x² + 4x + 3 = −1 gives (x + 2)² = 0, so x = −2. That makes 3 distinct solutions.
+27|The chord x = 1 in a circle of radius 2 is at distance 1 from the centre, so the half-angle θ has cos θ = ½. θ = π/3, and the angle at the centre is 2π/3. Segment = ½r²(φ − sin φ) = 2(2π/3 − √3/2) = 4π/3 − √3.
+29|Mean = ⅓log₁₀(27 × 64 × 216) = ⅓log₁₀(3³ × 4³ × 6³) = ⅓log₁₀(72³) = log₁₀72.
+31|On 0 &lt; x &lt; π/2, cos decreases and sin increases. So the largest cos is cos 0.5 and the largest sin is sin 1. cos 0.5 = sin(π/2 − 0.5) = sin(1.07), which is more than sin 1. So cos 0.5 is the largest.
+33|a/(1 − r) = 8/5 and ar/(1 − r²) = 3/5. Dividing gives r/(1 + r) = 3/8, so r = 3/5. Then a = (8/5)(2/5) = 16/25, and a + r = 16/25 + 15/25 = 31/25.
+35|x² − 2x − 8 = (x − 4)(x + 2), so the cubic is (x − 4)²(x + 2), and the quadratic is −(x − 4)². Setting them equal: (x − 4)²(x + 3) = 0, so x = 4 or x = −3. That gives 2 distinct points.
+37|Rationalise each term: 3/(√a + √(a − 6)) = ½(√a − √(a − 6)). With a = 27, 24, …, 9 the sum telescopes to ½(√27 + √24 − √6 − √3) = ½(2√3 + √6) = √3(1 + √2/2).
+39|With S at x = a, area = (15 − a)√a. Differentiate: −√a + (15 − a)/(2√a) = 0, so 15 − 3a = 0 and a = 5. Maximum area = 10√5.
