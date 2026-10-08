@@ -1,0 +1,20 @@
+1|(2cos²θ − 3)(cos²θ − 1) = 0. cos²θ = 3/2 is impossible, so cos θ = ±1, giving θ = 0, π, 2π: 3 solutions.
+2|Completing the square: (x − p)² + (y − 3)² = 2p² − 8p. This is a circle only if 2p² − 8p &gt; 0, so p &lt; 0 or p &gt; 4.
+3|f = ½ax² + bx + c. f(0) = 1 gives c = 1. f(1) = 2 gives a + 2b = 2. ∫₀¹f = 1 gives a/6 + b/2 = 0. So b = −2 and a = 6.
+4|Same angle θ: rθ = 6, so the smaller area is 3r and the larger is 3(r + 3)²/r. Their difference of 21 gives r = 9. The perimeters are 24 and 2(12) + 8 = 32, a difference of 8.
+5|From x₂ = 5: 5(3 + q) = 3 + p. From x₃ = 7: 7(5 + q) = 5 + p. So q = −9 and p = −33. x₄ = (7 − 33)/(7 − 9) = 13.
+6|∫x dx = ½[(log₂20)² − (log₂5)²] = ½(2 + log₂5)² − ½(log₂5)² = 2 + 2log₂5 = log₂100.
+7|y = x² − 4|x| − 12 is symmetric and crosses the axis at ±6. Area = 2∫₀⁶(12 + 4x − x²)dx = 2(72 + 72 − 72) = 144.
+8|S₃₀ − S₂₀ = kS₁₀ gives r³⁰ − r²⁰ = k(r¹⁰ − 1), so k = r²⁰. With integer r &gt; 1, the smallest k is 2²⁰.
+9|Substitute g = f − 2sin x into fg = cos²x: f² − 2sin x·f − cos²x = 0, so f = sin x ± 1. The smallest possible value is −2.
+10|A translation of y = x³ has the form (x − a)³ + b. II matches with a = 3, b = 24. I has the wrong constant term for a = 1, and III has the wrong x³ coefficient. So II only.
+11|log₁₀3<sup>1−n</sup> = (1 − n)log₁₀3, and Σ(1 − n) for n = 1 to 100 = −(0 + 1 + … + 99) = −4950. The sum is −4950 log₁₀3.
+12|The minimum of y<sub>k</sub> is at (k/2, k²/2 + 4k + 3). That is least when k = −4, giving the point (−2, −5), so a + b = −7.
+13|Expanding and simplifying gives 4/x − x = √2, where x = a³b³. So x² + √2x − 4 = 0, giving x = √2 or −2√2. The least value is a³b³ = −2√2 = −(√2)³, so ab = −√2.
+14|½ × 36 sin 2θ = 9√3 with 2θ obtuse, so 2θ = 120°. Then PQ = 6√3 and O is 3 from PQ. R is furthest from PQ on the far side: height 6 + 3 = 9, area = ½ × 6√3 × 9 = 27√3.
+15|A rectangle with corners at x = ±a has height (8 − 2a²) − (a² − 2) = 10 − 3a², so A = 20a − 6a³. A′ = 0 gives a² = 10/9, and A<sub>max</sub> = (2√10/3)(20/3) = 40√10/9.
+16|7x⁴ − 6x² + 1 = 0 gives cos² = (3 ± √2)/7, so sin² = (4 ∓ √2)/7. The quartic with roots ±sin θ, ±sin β is x⁴ − (8/7)x² + 2/7 = 0, i.e. 7x⁴ − 8x² + 2 = 0.
+17|For two triangles (the ambiguous case), the side opposite 30° must be shorter than the other given side but longer than (other side) × sin 30°. x − 1 &lt; −x² + 6x − 5 gives 1 &lt; x &lt; 4, and 2(x − 1) &gt; −x² + 6x − 5 gives x &gt; 3. So 3 &lt; x &lt; 4.
+18|f = x²(x − 1)²(x − 2) has double roots at 0 and 1. g = −p(x − q)²(x − r)² ≤ 0 must dip into both valleys of f for every p &gt; 0, which needs q &lt; 1 &lt; r ≤ 2. The quintic also guarantees a 5th crossing for x &lt; 0. That is option B.
+19|Since 2² + 3² &lt; 25, the centre (a, b) is always inside C₁. C₂ (radius 4) meets C₁ (radius 5) unless its centre is within 1 of the origin. P = (24 − π)/24.
+20|By symmetry take a ≥ 0. For a &gt; 1 there are 4 intersections, for a = 1 there are 3, for 0 &lt; a &lt; 1 there are 4, and for a = 0 there is 1. So 2 is the smallest impossible number.

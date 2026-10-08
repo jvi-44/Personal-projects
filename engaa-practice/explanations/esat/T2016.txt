@@ -1,0 +1,20 @@
+1|Compare coefficients of (ax + b)³ = a³x³ + 3a²bx² + 3ab²x + b³ with 8x³ − px² + 18x − 3√3. a³ = 8 gives a = 2. b³ = −3√3 = −(√3)³ gives b = −√3. Then −p = 3a²b = 3 × 4 × (−√3) = −12√3, so p = 12√3.
+2|Dividing by (x + 2) (only the x³, x² and x terms are needed) gives 3x³ + 13x² + 8x + a = (x + 2)(3x² + 7x − 6). And 3x² + 7x − 6 = (x + 3)(3x − 2), so the factorisation is (x + 2)(x + 3)(3x − 2).
+3|y = 2x⁻², so dy/dx = −4x⁻³, which is −4 at (1, 2). The normal has gradient ¼: y − 2 = ¼(x − 1). It meets the axes at P(−7, 0) and Q(0, 7/4). PQ = √(49 + 49/16) = (7/4)√17.
+4|Work out the first few terms: a₁ = −3, a₂ = 3, a₃ = −3, … The terms alternate, so each pair sums to 0. The first 38 terms cancel, leaving a₃₉ = −3.
+5|y = x² − 1 crosses the axis at ±1, so split the integral into three pieces. ∫₋₂⁻¹ = 4/3, ∫₋₁¹ = −4/3 (below the axis, area 4/3) and ∫₁² = 4/3. Total area = 4.
+6|Red fractions: P is 3/10, Q is 1/5, R is x. Mixed 12 : 5 : 3, the mixture is ¼ red. So 12(3/10) + 5(1/5) + 3x = 20 × ¼ = 5, giving 3x = 2/5 and x = 2/15 = 13⅓%.
+7|Take 300 members: 180 women and 120 men. ⅖ of the men (48) play cricket, and they are ⅓ of the cricketers. So there are 144 cricketers, 96 of them women. That leaves 180 − 96 = 84 women who play tennis. P = 84/300 = 7/25.
+8|Write cos² 2x = 1 − sin² 2x. The equation becomes sin² 2x − √3 sin 2x + ¾ = 0, so (sin 2x − √3/2)² = 0 and sin 2x = √3/2. For 0 ≤ 2x ≤ 720°: 2x = 60°, 120°, 420°, 480°. The largest x is 240°.
+9|The original circle has centre (5, 4) and radius √5. Translate: (2, 4). Reflect in the x-axis: (2, −4). Enlarging by scale factor 4 about that centre makes the radius 4√5. The equation is (x − 2)² + (y + 4)² = 80.
+10|x tan x = 1 means tan x = 1/x (x = 0 is not a solution). Sketch y = tan x and y = 1/x on −2π ≤ x ≤ 2π: they cross 4 times.
+11|Let y = 2<sup>2x</sup>: y² − 8y + 12 = 0, so y = 6 or 2. The larger root gives 2<sup>2p</sup> = 6, so p = log 6/(2 log 2), and the smaller gives q = ½. p − q = (log 6 − log 2)/(2 log 2) = log 3/log 4.
+12|For a cylinder of half-height h and radius r in a sphere of radius 5: r² = 25 − h², so V = 2πh(25 − h²). dV/dh = 2π(25 − 3h²) = 0 gives h = 5/√3. Then V<sub>max</sub> = 2π × (50/3) × (5/√3) = 500π/(3√3).
+13|dy/dx = 15(x² − 4)(x² + 2), so the stationary points are at x = ±2. y(−2) &gt; 0 (a maximum) and y(2) &lt; 0 (a minimum). The curve crosses the x-axis 3 times.
+14|The GPs have ratios R and r with first terms 4, so 4R + 4r = 3 and 4R² + 4r² = 45/16. That gives R + r = ¾ and R² + r² = 5/16, so the ratios are ¼ and ½. The sums to infinity are 16/3 + 8 = 40/3.
+15|y = 2x³ − 7ax² + 4a²x + 8a³, so the gradient at x = 1 is 4a² − 14a + 6 = 4(a − 7/4)² − 25/4. Its least value is −25/4.
+16|The log equations give 2(y − 1) = x² and y − 3x + 2 = 0. Substitute x = (y + 2)/3: y² − 14y + 22 = 0, so y = 7 ± 3√3. Both satisfy x &gt; 0 and y &gt; 1.
+17|y = (1 + 2cos x)cos 2x. The factors change sign at x = 2π/3 and at π/4, 3π/4. A sign table shows y &lt; 0 for π/4 &lt; x &lt; 2π/3 and 3π/4 &lt; x &lt; π.
+18|y = x<sup>−2/3</sup> − x<sup>1/3</sup>/3, so dy/dx = −⅓x<sup>−5/3</sup>(2 + x). Checking signs: dy/dx &gt; 0 for x &lt; −2 and for x &gt; 0. (The paper's option says x ≤ −2, which the official solution accepts.)
+19|The x³ coefficient of (1 + 2x + 3x²)⁶ is 15 × 2 × (2 × 3) + 20 × 2³ = 180 + 160 = 340. The x⁴ coefficient of (1 − ax²)⁵ is 10a². 340 = 2 × 10a² gives a = ±√17.
+20|Unfold the faces to compare the two candidate routes. Over the base then face ORS: PT² = 15² + (20 + 5√3)² = 700 + 200√3. Across face OPS then to T: PT² = (15√3)² + 5² = 700. The shortest is √700 = 10√7.

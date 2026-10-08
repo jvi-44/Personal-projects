@@ -1,0 +1,20 @@
+1|∫₀¹(ax + b)dx = a/2 + b = 1 and ∫₀¹(ax² + bx)dx = a/3 + b/2 = 1. So a + 2b = 2 and 2a + 3b = 6, giving b = −2, a = 6 and a + b = 4.
+2|No intersection means x² + (5 − m)x + 9 = 0 has no roots: (5 − m)² − 36 &lt; 0, so (m − 11)(m + 1) &lt; 0 and −1 &lt; m &lt; 11.
+3|Split into unit intervals: ∫₀³ = 6, ∫₁³ = 5, ∫₂³ = 3, ∫₄³ = −4, ∫₅³ = −9. The total is 1.
+4|The terms are ±(√3/2)/2ⁿ with alternating signs: (√3/2)(1 − ½ + ¼ − …) = (√3/2)(2/3) = √3/3.
+5|The square has side 10. Corner triangles: MRU and OST are ½x² each, and NRS and PTU are ½(10 − x)² each. Rectangle = 100 − x² − (10 − x)² = 2x(10 − x).
+6|The coefficient of xᵏ is ¹²Cₖ2<sup>12−k</sup>3ᵏ. It has a factor 3 when k ≥ 1 and a factor 4 when k ≤ 10. k = 11 works too, since ¹²C₁₁ = 12. So k = 1 to 11: 11 terms.
+7|P = 4Q gives 2ˣ + 4 = 4(2<sup>2x−2</sup> − 2<sup>x+2</sup> + 16) = 2<sup>2x</sup> − 16 × 2ˣ + 64. With u = 2ˣ: u² − 17u + 60 = 0, so u = 5 or 12. The largest x is log₂12.
+8|Cosine rule with XY = √3a, YZ = a and X = 30°: XZ² − 3a·XZ + 2a² = 0, so XZ = a or 2a. Area ∝ XZ, so the ratio is 2 : 1.
+9|1 + 3cos 3θ = ±2 means cos 3θ = ⅓ (3 values of 3θ in [0°, 540°]) or cos 3θ = −1 (3θ = 180°, 540°). That is 5 solutions.
+10|∫₋₂²√(4 − x²)dx is a semicircle: 2π. The trapezium rule with strips of width 1 gives ½(0 + 2√3 + 4 + 2√3 + 0) = 2 + 2√3. Difference = 2(π − 1 − √3).
+11|y = x² − 6x has its minimum at (3, −9). f(kx) moves it to x = 3/k, and f(x − c) moves it to x = 3 + c. Setting these equal: k = 3/(3 + c).
+12|Multiply by 4<sup>sin²x</sup>: tan²x = 2sin²x, so sin²x(1 − 2cos²x) = 0. sin x = 0 gives 3 solutions and cos x = ±1/√2 gives 4 more: 7 in total.
+13|The centres (2, 1) and (4, −5) are √40 = 2√10 apart, and both radii are 4. The maximum distance PQ is 8 + 2√10.
+14|f′ = 2x(x + 2m), so the stationary values are f(0) = n and f(−2m) = n + (8/3)m³. Three roots need them on opposite sides of the axis (m &gt; 0): −(8/3)m³ &lt; n &lt; 0.
+15|The extremes are a and 1/a, which must differ by 3. a − 1/a = 3 gives a = (3 + √13)/2, and 1/a − a = 3 gives a = (−3 + √13)/2. Their sum is √13.
+16|The right angle can be at A (k = 33/4), at B (k = −8), or at C ((k − 3)(k + 1) = −12, so k = 5 or −3). The sum is 33/4 − 8 + 5 − 3 = 9/4.
+17|Cₙ: (x − n)² + (y − n)² = 2n², with area 2πn². All the circles touch at the origin, so each ring Cₙ₊₁ − Cₙ has area 2π(2n + 1). Summing over n = 1, 3, …, 99: 2π(3 + 7 + … + 199) = 10100π.
+18|r = 2k/7 needs |r| &lt; 1, so k = −3 to 3. Then S = 28/(7 − 2k) &gt; 3 gives k &gt; −7/6, i.e. k = −1, 0, 1, 2, 3. P = 5/11.
+19|dy/dx = |6x|. For x ≥ 0, y = 3x² + c, and for x &lt; 0, y = −3x² + c (continuous at 0). So f(x) = 3x|x|.
+20|g(u) = u² − u = (u − ½)² − ¼ with u = f(x) ∈ [−2, 2]. The minimum is −¼ (at u = ½) and the maximum is 6 (at u = −2). The difference is 25/4.

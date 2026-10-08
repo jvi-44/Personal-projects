@@ -1,0 +1,20 @@
+1|Expand both circle equations (same r) and subtract: 10x − 6y − 8 = 0, i.e. 5x − 3y = 4. (This is also the perpendicular bisector of the centres.)
+2|dy/dx = 3x² − 6 = 0 gives α = −√2 and β = √2. ∫(x³ − 6x + 3)dx from −√2 to √2: the odd terms cancel, leaving 3(2√2) = 6√2.
+3|AP ½, ½ + d, ½ + 2d and GP ½, ½r, ½r². ½ + d + ½r = ½ gives d = −r/2. Then ½ + 2d + ½r² = 1/8 gives 4r² − 8r + 3 = 0, so r = ½ (convergent). S∞ = ½/(1 − ½) = 1.
+4|With u = 2ˣ: u² − 8u + 4 = (u − 4)² − 12. The minimum is −12, attained at x = 2.
+5|f(9) = f(3)², f(16) = 16 and f(24) = 8f(3). So f(3)² + 16 − 8f(3) = 0, i.e. (f(3) − 4)² = 0, giving f(3) = 4.
+6|Write sin²x = 1 − cos²x. The denominator becomes (cos x + 2)(cos x + 3), so f = 1/(cos x + 2). Its maximum is 1 (cos x = −1) and minimum ⅓, a difference of 2/3.
+7|xf(x) &gt; 0 means f has the same sign as x. ∫₋₂²f = 4 and ∫₋₂²|f| = 8 give ∫₀²f = 6. f(|x|) mirrors the right half, so ∫₋₂⁰f(|x|)dx = ∫₀²f = 6.
+8|Each tangency gives a zero discriminant: (b − 2)² = 4(c − 3) and (b − 4)² = 4(c + 2). Subtracting: b = −2, then c = 7. b − c = −9.
+9||x| + |y| = 1 is a square with vertices (±1, 0) and (0, ±1). Its area is 4 × ½ = 2.
+10|Three strips of width ½ on [½, 2]: ¼[f(½) + 2f(1) + 2f(3/2) + f(2)] with f = 2log₁₀x. This gives ¼(4log 3 − 4log 2) = log₁₀(3/2).
+11|f′(x) = (1/7)x<sup>−6/7</sup>(5x − 1)(3x − 1), which is negative for 1/5 &lt; x &lt; 1/3. That interval has length 2/15, which is 2/15 of (0, 1).
+12|x⁴ − p²x² = (x² − p²/2)² − p⁴/4 has minimum −p⁴/4 = −9, so p² = 6. Then x² − px + 6 has minimum 6 − p²/4 = 9/2.
+13|∫₀ʳf = 1 + 2 + … + r = r(r + 1)/2. Summing the triangular numbers for r = 1 to 8: 1 + 3 + 6 + 10 + 15 + 21 + 28 + 36 = 120.
+14|Sketch y = (x + 1)(3 − x), a parabola with maximum (1, 4), and y = 2(1 − cos πx), which ranges from 0 to 4 with period 2. They can only meet for −1 ≤ x ≤ 3: once at (1, 4), once in (−1, 0) and once in (2, 3). That is 3 solutions.
+15|Each ∫₀¹f(2<sup>r−1</sup>x)dx is a row of identical triangles filling half of the unit square, so each equals ½. The 10 terms give 5.
+16|The 4th term from each end has the same coefficient only if n = 6. Then 15a⁴b² = 105 and 20a³b³ = 210, so a⁴b² = 7 and a³b³ = 21/2. Dividing gives a/b = 2/3, so (a/b)² = 4/9.
+17|sin(x² + y²) = ½ gives circles with r² = π/6 × (1, 5, 13, 17, 25, 29, 37, 41). The radii ∝ √ of these: about 1, 2, 3.6, 4.1, 5, 5.4, 6.1, 6.4. They are widely spaced at first, then closer together: graph A.
+18|x = (y − 3)² + 2 has its vertex at (2, 3), 4 units right of P. Rotating 90° clockwise about P puts the vertex 4 below P at (−2, −1), with the parabola opening downwards: y = −(x + 2)² − 1 = −x² − 4x − 5.
+19|4<sup>cos θ</sup> × 60° must be 60°, 120° or 240° (4<sup>cos θ</sup> ≤ 4), so cos θ = 0, ½ or 1. In increasing order, θ = 0°, 60°, 90°, 270°, … Exactly three solutions in [0, x] needs 90 ≤ x &lt; 270.
+20|Combining the logs gives (x + 5)² + (y − 1)² = 36. But the logs need x &gt; y, x &lt; 1 and y &gt; −5. The line y = x cuts the circle at (1, 1) and (−5, −5), leaving a quarter-circle. Length = ¼ × 12π = 3π.

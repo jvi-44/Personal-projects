@@ -1,0 +1,45 @@
+1|Subtract 6: −14 &lt; −x/2. Multiply by −2 and flip the inequality: x &lt; 28.
+2|(√3 − √2)² = 3 − 2√3√2 + 2 = 5 − 2√2√3.
+3|Make R match: Q:R = 15:6 and R:S = 6:20. So Q:S = 15:20 = 3:4.
+4|The total age goes from 20 × 28 = 560 to 22 × 30 = 660. The two new members add 100 years in total, a mean of 50.
+5|Value after 2 years = 15 000 × 0.8² = £9600. The reduction is £5400.
+6|B is 4 km west of A. The angle between BA (east, 090°) and BC (060°) is 30°, and at A the angle between AB (west) and AC (330°) is 60°. So angle C is 90° and BC = 4cos 30° = 2√3 km.
+7|x = k/√y with k = 8 × 3 = 24. When x = 6, √y = 4, so y = 16.
+8|Area = ½(PQ + RS) × QR = ½(2x + 4)x = x(x + 2) = 120, so x = 10 and RS = x + 5 = 15 cm.
+9|3ab² − a = b² + 2, so b²(3a − 1) = a + 2 and b = ±√[(a + 2)/(3a − 1)].
+10|The 5 m edge becomes the circumference: r = 5/(2π). V = πr²h = π × 25/(4π²) × 10 = 125/(2π) m³.
+11|(4 − x²)/(x² − 2x) = −(x − 2)(x + 2)/(x(x − 2)) = −1 − 2/x. So the expression is 3 − 2/x.
+12|There are 74 boys. Tennis: 24 boys and 12 girls. Archery girls = 46 − 12 − 25 = 9, so archery boys = 27 − 9 = 18. Swimming boys = 74 − 24 − 18 = 32. P = 32/74 = 16/37.
+13|In base 3: 3<sup>4n+2</sup> × 3<sup>4−3n</sup> ÷ 3<sup>6−3n</sup> = 3<sup>4n</sup>.
+14|The exterior angle 360/n is angle RQT, and triangle QRT is isosceles. So x = 180 − 720/n, which gives n = 720/(180 − x).
+15|P = (3/5)(9/50) + (2/5)(9/300) = 27/250 + 3/250 = 30/250 = 3/25.
+16|x² + (a − 1)x + (b − 1) = 0 has roots 2 and 4. So a − 1 = −6 and b − 1 = 8, giving a = −5, b = 9.
+17|Side = √(2.5² + 1.5²) = √8.5. Scale factor = √68/√8.5 = √8 = 2√2.
+18|Gradient = (−1 − (1 − p))/(2p + 1 − 7) = (p − 2)/(2(p − 3)). This is positive (and finite) when p &lt; 2 or p &gt; 3.
+19|Expansion stretches the waves: wavelength increases. Since c = fλ, frequency decreases.
+20|Mass number falls by 4, so 1 alpha (Z − 2). Z must end unchanged, so 2 β⁻ emissions (each Z + 1).
+21|Rate ∝ A(T₂ − T₁)/l. Raising both temperatures by 10 °C keeps the difference the same, so the rate is unchanged (H).
+22|The gradient is 5. (1) KE vs v is a curve ✗. (2) PE/h gradient = mg = 200 ✗. (3) v/t gradient = a = 100/20 = 5 ✓. (4) W/d gradient = F = 5 N ✓. So 3 and 4.
+23|Fission is triggered by a neutron, and A and Z must balance. Diagram 2: 236 = 137 + 96 + 3 and 92 = 54 + 38 ✓. Diagram 1 uses a proton ✗. Diagram 3: 87 + 145 + 3 = 235 ≠ 236 ✗. So 2 only.
+24|The current is largest at the minimum variable resistance: I = 24/8 = 3 A. P = I²R = 9 × 5 = 45 W.
+25|Switch open: 60 Ω (top branch) in parallel with 30 Ω gives 20 Ω, so I = 0.60 A. Switch closed: one top resistor is shorted, leaving 30 Ω ∥ 30 Ω = 15 Ω, so I = 0.80 A. The reading increases by 0.20 A.
+26|P ∝ R²T⁴: factor 100² × (½)⁴ = 625. 4.0 × 10²⁶ × 625 = 2.5 × 10²⁹ W.
+27|Each oscillation a particle moves 4 × amplitude = 12 cm. 5 Hz for 60 s is 300 oscillations, so 3600 cm. The wavelength is a distractor.
+28|Rope tension: T − mg = ma, so T = 5(10 + 0.8) = 54 N. Both sides of the rope pull down on the pulley, so the coupling holds 2T = 108 N.
+29|Heater power = 180/180 s = 1.0 W. I = 6/15 = 0.4 A, so Q = It = 72 C and V = E/Q = 180/72 = 2.5 V.
+30|Volume = 1000 − 25 × 10 = 750 cm³. Mass = 3.0 kg = 3000 g. Density = 3000/750 = 4.0 g cm⁻³.
+31|Convection needs a temperature difference with the air, so P and Q (30 °C in a 20 °C room). The hottest dull ball, S, emits radiation fastest.
+32|Area 0–20 s = 80 m forwards and 20–30 s = 10 m back. Distance = 90 m, displacement = 70 m, average speed = 90/30 = 3.0 m s⁻¹.
+33|X decays steadily from its maximum. Y starts at 0, rises as X decays, then falls; because its half-life is longer, it decays more slowly and ends above X. Only graph A shows this.
+34|Per unit volume: tin mass 0.1Y and copper mass 0.9X. Tin fraction = 0.1Y/(0.1Y + 0.9X) = Y/(9X + Y), times 100.
+35|Momentum is conserved from rest, so the α and Th have equal p, and KE = p²/2m splits inversely with mass. α gets 234/(234 + 4) × E = 234E/238.
+36|Echo times are 96/320 = 0.30 s and 160/320 = 0.50 s. The click period must divide both, so the first match is 0.10 s, i.e. 10 Hz.
+73|x = 2: 8 + 4p + 2q + p² = 0. x = 1: 1 + p + q + p² = −3.5. Eliminating q gives −(p − 1)² = 0, so p = 1 only.
+75|Side 6, so the circle has centre (−2, 3) and radius 3. (x + 2)² + (y − 3)² = 9 expands to x² + y² + 4x − 6y + 4 = 0.
+77|8r⁴ = 2 gives r⁴ = ¼, and a positive sixth term means r = 1/√2. S∞ = 8/(1 − 1/√2) = 8√2/(√2 − 1) = 8(2 + √2).
+79|Tangent length = √(400 − 100) = 10√3. The kite area is 100√3, and the angle at C is 2 × 60° = 120°, so the sector is 100π/3. Shaded = (100/3)(3√3 − π).
+81|tan θ sin θ = sin²θ/cos θ. Multiply by cos θ: 7cos²θ − 3(1 − cos²θ) = cos θ, so 10cos²θ − cos θ − 3 = 0 and (5cos θ − 3)(2cos θ + 1) = 0. So cos θ = 3/5 or −½.
+83|3x² − (a + 2)x + 3 = 0 needs (a + 2)² − 36 &gt; 0, so a &lt; −8 or a &gt; 4.
+85|Perpendicular means p = −1/m. L is at −3/m and M at 2m, so 2m + 3/m = 5, giving m = 3/2 (since m &gt; 1). Then p = −2/3 and m + p = 5/6.
+87|f′(x) = 3x² − a² ≥ 0 when x ≤ −a/√3 or x ≥ a/√3.
+89|Translate: y = (x − 4)² + 3. Reflect in y = −1 (y → −2 − y): y = −5 − (x − 4)².

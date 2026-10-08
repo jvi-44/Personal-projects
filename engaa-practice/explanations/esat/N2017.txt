@@ -1,0 +1,45 @@
+1|√12 = 2√3, so the numerator is (3√3)² = 27 and the denominator is (√3)² = 3. 27/3 = 9.
+2|2x² + x − 15 ≥ 0 factorises as (2x − 5)(x + 3) ≥ 0, so x ≤ −3 or x ≥ 2.5.
+3|(y + 5)/3 = (x/2 − 1)², so x/2 − 1 = ±√[(y + 5)/3] and x = 2 ± 2√[(y + 5)/3].
+4|2x + 5y = P and 3x + 2y = Q. 3P − 2Q = 11y, so y = (3P − 2Q)/11.
+5|P = Q²/8 (since 2 = 16k) and Q = 10/R. So P = 100/(8R²) = 25/(2R²).
+6|7n + 1 &gt; 99 − n² means n² + 7n − 98 &gt; 0, i.e. (n + 14)(n − 7) &gt; 0. So n &gt; 7, and the smallest integer is n = 8.
+7|x²(3x − 2)(3x + 2)/(x³(2 − 3x)) = −(3x + 2)/x = −3 − 2/x. So 2 − (−3 − 2/x) = 5 + 2/x.
+8|Base OR = 3a/2 and height = a + 1. Area = 3a(a + 1)/2 = 9 gives a² + a − 6 = 0, so a = 2. Then R = (3, 0) and Q = (4, 3), and P = Q − R = (1, 3).
+9|In base 2: 2<sup>3+2x</sup> × 2<sup>2x</sup> × 2<sup>−3x</sup> = 2<sup>3+x</sup> = 2<sup>2.5</sup>, so x = −0.5.
+10|Girls = 3X, Spanish girls = 35 − Y, so German girls = 3X − X − (35 − Y) = 2X + Y − 35. Add the 2Y German boys: 2X + 3Y − 35.
+11|360/n − 360/(n + 3) = 4 gives n² + 3n − 270 = 0, i.e. (n + 18)(n − 15) = 0. So n = 15.
+12|From R, L is on bearing 040°, so angle CRL = 40°. CR = CL makes triangle CRL isosceles, so angle RCL = 100°. From C, R is at 180° and L is 100° round towards the east: 080°.
+13|At 4:40 the minute hand is at 240° and the hour hand at 120° + 40 × 0.5° = 140°. The angle between them is 100°.
+14|Large-cake cost = 6.80/1.7 = £4.00. A half-size cake has ⅛ of the volume, so it costs £0.50, and 6 cost £3.00. Profit = 6.50 − 3.00 = £3.50.
+15|x(x − 1)/((x + 4)(x + 3)) = ⅓ gives x² − 5x − 6 = 0, so x = 6.
+16|r² = x² + (x/2)² = 5x²/4, so the semicircle has area 5πx²/8. Shaded = 5πx²/8 − x² = (5π − 8)x²/8.
+17|Volume = π(5² − 4²) × 16 = 144π cm³. Mass = 8 × 144π = 1152π g.
+18|The distance between opposite sides is twice the apothem, so the apothem is 6. Side = 6 × 2/√3 = 4√3. Area = 6 × (√3/4)(4√3)² = 72√3.
+19|The car decelerates only from 110 s to 130 s (30 → 20 m s⁻¹). Area = ½(30 + 20) × 20 = 500 m.
+20|Heated water expands (3), so a fixed mass becomes less dense (2) and rises. The mass of a fixed volume decreases, so 1 is wrong. 2 and 3 only.
+21|f = v/λ. Sound: wave 3 gives 3000 Hz, which is audible; waves 1 and 2 are ultrasonic. Light: wave 4 gives 6 × 10¹⁴ Hz, which is visible. So waves 3 and 4.
+22|I = Q/t = 60/30 = 2 A. R = V/I = 10/2 = 5.0 Ω.
+23|Useful energy = mgh = 12 kJ. Total lost = 28 − 12 = 16 kJ (the 75% only covers the motor's own losses).
+24|The path difference is 2d = cΔt = 3 × 10⁸ × 4 × 10⁻¹⁰ = 0.12 m, so d = 6.0 cm.
+25|Nucleons: 1 + 239 = w + y + z, so z = 240 − (w + y). Protons: 94 = 54 + x, so x = 40, which rules out the other options.
+26|Useful power = mgh/t = 20 × 10 × 6/5 = 240 W. Input = 240/0.8 = 300 W, so I = 300/12 = 25 A.
+27|While A is still P (before the α), Z can only rise through β⁻ decays: Q to Q + 3. So (P, Q − 1) can never occur. After the α, Q − 2 to Q + 1 are all possible.
+28|The atom's mass is essentially all in its nucleus. Density ∝ 1/r³, so atom/nucleus = (3.0 × 10⁴)⁻³.
+29|Graph 1: from t₁ (a crest) to t₂ (the second trough after it) is 1½ periods, so T = 2(t₂ − t₁)/3. Graph 2: x₁ (trough) to x₂ (crest) is half a wavelength, so λ = 2(x₂ − x₁). v = λ/T = 3(x₂ − x₁)/(t₂ − t₁).
+30|I = P/V = 12.5 A. Q = It = 12.5 × 1200 = 15 000 C.
+31|Both trains stop, so the total momentum was zero. Freight mass = 390 + 210 = 600 t, so 600 × 2 = M × 5 and M = 240 t. Then 240 = 140 + 10n, so n = 10.
+32|(1) kg m s⁻¹ ÷ m s⁻¹ = kg ✓. (4) N ÷ m s⁻² = kg ✓. (2) gives newtons and (3) gives kg m⁻⁶. So 1 and 4.
+33|(1) KE = ½ × 72 × 25 = 900 J ✗. (2) Rate of GPE loss = mgv = 720 × 5 = 3600 J s⁻¹ ✓. (3) Both forces act on the same body, so they are not a third-law pair ✗. 2 only.
+34|In 6 h, X goes through 2 half-lives (¼ left) and Y through 3 (⅛ left). With N of each at the start, 3N/8 of the 2N atoms are still X or Y, i.e. 3/16. So Z is 13/16.
+35|KE ∝ mv²: (4/5) × 1.5² = 1.80.
+36|12 W in 12 Ω gives V² = 144, so V = 12 V across both resistors (parallel). P(4 Ω) = 144/4 = 36 W. (Check: 1 A + 3 A = 4 A.)
+73|(3 + √3)/(6 − 2√3) = 1 + √3/2 after rationalising. Squared: 7/4 + √3. So 1 − (7/4 + √3) = −3/4 − √3.
+75|sin x = −½ and cos 2x = ½ first agree at k = 7π/6. In [0, 7π/6], the solutions of either equation are π/6, 5π/6 and 7π/6: 3 values.
+77|3·(3ˣ)² − 6·3ˣ = 0 gives 3ˣ = 2 (3ˣ ≠ 0), so x = log₃2.
+79|dy/dx = 3x² + 2px + q = 3(x − 2)(x − 4) = 3x² − 18x + 24. So p = −9 and q = 24.
+81|dy/dx = 18(2 + 3x)⁵. The x³ term of (2 + 3x)⁵ is ⁵C₃ × 2² × 27x³ = 1080x³. 18 × 1080 = 19 440.
+83|1/(1 − ½sin 2x) = 4/3 gives sin 2x = ½. For 2π ≤ 2x ≤ 4π: 2x = 13π/6 or 17π/6, so x = 13π/12 or 17π/12.
+85|u₂ = 2p + 3, u₃ = 2p² + 3p + 3 and u₄ = 2p³ + 3p² + 3p + 3 = −7. p = −2 works, giving 2, −1, 5, −7 with sum −1.
+87|The numerator is (x − 1)²(x − 4). Since (x − 1)² ≥ 0 (and x ≠ 1), the sign follows (x − 4)/x: positive for x &lt; 0 or x &gt; 4.
+89|Perpendicular: (2p² − p)(p − 2) = −1, so 2p³ − 5p² + 2p + 1 = 0 = (p − 1)(2p² − 3p − 1). The largest root is (3 + √17)/4 ≈ 1.78, closest to 1.75.

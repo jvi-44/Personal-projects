@@ -2,6 +2,9 @@
 const YEARS = [2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023];
 const AVAILABLE = {2016: 41, 2017: 41, 2018: 41, 2019: 30, 2020: 30, 2021: 30, 2022: 30, 2023: 30};
 const PER_Q = 85;
+const ESAT_SEC = 2400, ESAT_PACE = 89;
+const SRC = {E: 'ENGAA', N: 'NSAA', T: 'TMUA'};
+const BANK = {L: 'Unused ESAT questions', A: 'All ESAT questions', E: 'ENGAA questions'};
 const TOPIC = {M: 'Maths', P: 'Physics'};
 const DIFF = {E: 'Easy', M: 'Medium', H: 'Hard'};
 const app = document.getElementById('app');
@@ -14,7 +17,7 @@ const LS = {
 };
 let attempts = LS.get('engaa.attempts', []);
 let active = LS.get('engaa.active', null);
-let speedPrefs = Object.assign({topic: 'M', diff: 'E'}, LS.get('engaa.speedPrefs', {}));
+let speedPrefs = Object.assign({topic: 'M', diff: 'E', bank: 'L'}, LS.get('engaa.speedPrefs', {}));
 let dbCol = null;
 let syncLabel = 'Saved in this browser';
 
@@ -50,24 +53,33 @@ async function persistAttempt(a) {
 }
 
 /* ---------- paper data ---------- */
+/* papers are keyed "E2016" (ENGAA), "N2016" (NSAA maths & physics), "T2016" (TMUA paper 1); a question's global id is "N2019-12" */
 const papers = {};
-async function loadPaper(y) {
-  if (!papers[y]) {
-    const el = document.getElementById('paper-' + y);
-    if (!el) throw new Error('The ' + y + ' paper is missing from this page.');
-    papers[y] = JSON.parse(el.textContent);
+async function loadPaper(key) {
+  if (!papers[key]) {
+    const el = document.getElementById('paper-' + key);
+    if (!el) throw new Error('The ' + key + ' paper is missing from this page.');
+    papers[key] = JSON.parse(el.textContent);
   }
-  return papers[y];
+  return papers[key];
 }
-let meta = null;
-const loadMeta = async () => { if (!meta) meta = JSON.parse(document.getElementById('meta').textContent); return meta; };
-const qByN = (y, n) => papers[y].find(q => q.n === n);
-/* question ids: plain numbers inside a single-paper attempt, "YYYY-n" strings in speed practice */
+const readJson = id => JSON.parse(document.getElementById(id).textContent);
+let meta = null, esatMeta = null, mocks = null;
+const loadMeta = async () => { if (!meta) { meta = readJson('meta').map(([y, n, t, d]) => ['E' + y + '-' + n, t, d, 'E', 0]); esatMeta = readJson('esatmeta'); mocks = readJson('mocks'); } return meta; };
+const parseGid = g => { const m = /^([ENT])(\d{4})-(\d+)$/.exec(g); return {src: m[1], year: +m[2], n: +m[3], key: m[1] + m[2]}; };
+const Q = g => { const p = parseGid(g); return papers[p.key] && papers[p.key].find(q => q.n === p.n); };
+/* attempts store ids differently: ENGAA paper attempts use plain question numbers, older speed sets "2016-12", newer sets and mocks global ids */
 const isSpeed = a => a.mode === 'speed';
-const qOf = (a, id) => isSpeed(a) ? qByN(+String(id).split('-')[0], +String(id).split('-')[1]) : qByN(a.year, id);
-const yearOf = (a, id) => isSpeed(a) ? +String(id).split('-')[0] : a.year;
-const numOf = (a, id) => isSpeed(a) ? +String(id).split('-')[1] : id;
-const ensureLoaded = a => isSpeed(a) ? Promise.all([...new Set(a.qns.map(id => String(id).split('-')[0]))].map(loadPaper)) : loadPaper(a.year);
+const isEsat = a => a.mode === 'esat';
+const isEngaaPaper = a => a.mode === 'full' || a.mode === 'mistakes';
+const gidOf = (a, id) => isEngaaPaper(a) ? 'E' + a.year + '-' + id : /^\d{4}-\d+$/.test(String(id)) ? 'E' + id : String(id);
+const qOf = (a, id) => Q(gidOf(a, id));
+const yearOf = (a, id) => parseGid(gidOf(a, id)).year;
+const numOf = (a, id) => parseGid(gidOf(a, id)).n;
+const srcOf = (a, id) => SRC[parseGid(gidOf(a, id)).src];
+const ensureLoaded = a => Promise.all([...new Set(a.qns.map(id => parseGid(gidOf(a, id)).key))].map(loadPaper));
+const paceOf = a => isEsat(a) ? ESAT_PACE : isSpeed(a) ? null : PER_Q;
+const secRange = a => { const s = a.secStarts[a.sec]; return [s, a.secStarts[a.sec + 1] ?? a.qns.length]; };
 
 /* ---------- helpers ---------- */
 const fmt = s => { s = Math.max(0, Math.round(s)); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60; return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(x).padStart(2, '0'); };
@@ -77,12 +89,14 @@ const pct = (a, b) => b ? Math.round(100 * a / b) : 0;
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
 const dateStr = t => new Date(t).toLocaleDateString(undefined, {day: 'numeric', month: 'short', year: 'numeric'}) + ', ' + new Date(t).toLocaleTimeString(undefined, {hour: '2-digit', minute: '2-digit'});
 const fullAttempts = y => attempts.filter(a => a.year === y && a.mode === 'full');
+const mockAttempts = k => attempts.filter(a => a.mode === 'esat' && a.mock === k);
 const lastFull = y => fullAttempts(y).sort((a, b) => b.finishedAt - a.finishedAt)[0];
 const mistakesOf = a => a.qns.filter(n => a.answers[n] !== a.key[n]);
 const newId = () => 'a' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 const shuffle = arr => { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; };
-const speedLabel = s => `${s.topic === 'B' ? 'Maths + Physics' : TOPIC[s.topic]} · ${s.diff === 'X' ? 'Mixed difficulty' : DIFF[s.diff]}`;
-const modeLabel = a => a.mode === 'full' ? 'Full paper' : a.mode === 'mistakes' ? 'Mistakes retry' : 'Speed practice';
+const speedLabel = s => `${s.bank ? BANK[s.bank] : 'ENGAA questions'} · ${s.topic === 'B' ? 'Maths + Physics' : TOPIC[s.topic]} · ${s.diff === 'X' ? 'Mixed difficulty' : DIFF[s.diff]}`;
+const modeLabel = a => a.mode === 'full' ? 'ENGAA paper' : a.mode === 'mistakes' ? 'ENGAA mistakes retry' : a.mode === 'esat' ? 'ESAT mock' : 'Speed practice';
+const attemptTitle = a => isEsat(a) ? (mocks?.[a.mock]?.name || 'ESAT mock') : isSpeed(a) ? 'Speed practice' : 'ENGAA ' + a.year;
 
 let view = {name: 'dash'};
 let timerId = null;
@@ -99,84 +113,101 @@ function render() {
 }
 
 function topbar(right = '') {
-  return `<header class="topbar"><div class="brand"><h1>ENGAA Section 1 Practice</h1><span class="code">D564/11</span></div>
+  return `<header class="topbar"><div class="brand"><h1>ESAT &amp; ENGAA Practice</h1><span class="code">Maths 1 · Physics · Maths 2</span></div>
     <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><span class="sync">${esc(syncLabel)}</span>${right}</div></header>`;
 }
 
 /* ---------- dashboard ---------- */
 function speedPool(p) {
-  return (meta || []).filter(([y, n, t, d]) => (p.topic === 'B' || t === p.topic) && (p.diff === 'X' || d === p.diff)).map(([y, n]) => y + '-' + n);
+  const bank = p.bank || 'E';
+  const src = bank === 'E' ? (meta || []) : (esatMeta || []).filter(r => bank === 'A' || r[4]);
+  return src.filter(([g, t, d]) => (p.topic === 'B' || t === p.topic) && (p.diff === 'X' || d === p.diff)).map(r => r[0]);
 }
 function renderDash() {
+  if (!meta) { app.innerHTML = topbar() + '<div class="empty">Loading question bank…</div>'; loadMeta().then(() => { if (view.name === 'dash') renderDash(); }).catch(e => { app.innerHTML = topbar() + `<div class="empty">${esc(e.message)}</div>`; }); return; }
   const full = attempts.filter(a => a.mode === 'full');
-  const done = new Set(full.map(a => a.year));
-  const avg = full.length ? Math.round(full.reduce((s, a) => s + pct(a.score, a.total), 0) / full.length) : null;
-  const best = full.length ? Math.max(...full.map(a => pct(a.score, a.total))) : null;
+  const mk = attempts.filter(a => a.mode === 'esat');
+  const doneE = new Set(full.map(a => a.year)), doneM = new Set(mk.map(a => a.mock));
+  const bestMock = mk.length ? Math.max(...mk.map(a => pct(a.score, a.total))) : null;
   const latestMistakes = Object.keys(AVAILABLE).reduce((s, y) => { const a = lastFull(+y); return s + (a ? mistakesOf(a).length : 0); }, 0);
+  const lock = active ? 'disabled title="Finish or discard the test in progress first"' : '';
 
   let html = topbar();
   if (active) {
-    const sp = isSpeed(active);
-    const what = sp ? 'Speed practice · ' + speedLabel(active.settings) : active.year + (active.mode === 'mistakes' ? ' mistakes retry' : ' paper');
-    const pz = !!active.pausedAt;
-    html += `<div class="resume"><div><div class="eyebrow">${pz ? 'Paused' : sp ? 'Practice in progress' : 'Test in progress'}</div><div style="margin-top:4px"><b>${esc(what)}</b> · ${Object.keys(active.answers).length}/${active.qns.length} answered · ${sp ? `<span class="mono">${fmt(elapsedOf(active))}</span> elapsed` : `<span class="mono">${fmt(remainingOf(active))}</span> left`}${pz ? '. The clock is stopped until you resume.' : sp ? '' : '. The clock is still running.'}</div></div>
+    const sp = isSpeed(active), es = isEsat(active), pz = !!active.pausedAt;
+    const what = sp ? 'Speed practice · ' + speedLabel(active.settings) : es ? `${mocks[active.mock].name} · Section ${active.sec + 1} of 3 (${active.secNames[active.sec]})` : active.year + (active.mode === 'mistakes' ? ' ENGAA mistakes retry' : ' ENGAA paper');
+    html += `<div class="resume"><div><div class="eyebrow">${pz ? 'Paused' : sp ? 'Practice in progress' : 'Test in progress'}</div><div style="margin-top:4px"><b>${esc(what)}</b> · ${Object.keys(active.answers).length}/${active.qns.length} answered · ${sp ? `<span class="mono">${fmt(elapsedOf(active))}</span> elapsed` : `<span class="mono">${fmt(remainingOf(active))}</span> left${es ? ' in this section' : ''}`}${pz ? '. The clock is stopped until you resume.' : sp ? '' : '. The clock is still running.'}</div></div>
       <div style="display:flex;gap:8px"><button class="btn primary" data-act="resume">Resume</button><button class="btn ghost" data-act="abandon">Discard</button></div></div>`;
   }
   html += `<section class="summary" aria-label="Overview">
-    <div><span class="eyebrow">Papers sat</span><b>${done.size}<span class="muted" style="font-size:16px">/${Object.keys(AVAILABLE).length}</span></b></div>
-    <div><span class="eyebrow">Average score</span><b>${avg === null ? '–' : avg + '%'}</b></div>
-    <div><span class="eyebrow">Best score</span><b>${best === null ? '–' : best + '%'}</b></div>
-    <div><span class="eyebrow">Open mistakes</span><b>${latestMistakes}</b></div></section>`;
+    <div><span class="eyebrow">ESAT mocks sat</span><b>${doneM.size}<span class="muted" style="font-size:16px">/${mocks.length}</span></b></div>
+    <div><span class="eyebrow">Best mock</span><b>${bestMock === null ? '–' : bestMock + '%'}</b></div>
+    <div><span class="eyebrow">ENGAA papers sat</span><b>${doneE.size}<span class="muted" style="font-size:16px">/${Object.keys(AVAILABLE).length}</span></b></div>
+    <div><span class="eyebrow">Open ENGAA mistakes</span><b>${latestMistakes}</b></div></section>`;
 
-  html += `<div class="section-h"><h2>Past papers</h2><span class="note">Questions crossed out in the papers are removed. You get ${PER_Q} s per question.</span></div><div class="years">`;
+  html += `<div class="section-h"><h2>ESAT mocks</h2><span class="note">Three timed sections of 27 questions and 40 minutes each: Mathematics 1 and Physics from NSAA, Mathematics 2 from TMUA.</span></div><div class="years mocks">`;
+  mocks.forEach((m, k) => {
+    const ma = mockAttempts(k), last = ma.sort((a, b) => b.finishedAt - a.finishedAt)[0];
+    const bestP = ma.length ? Math.max(...ma.map(a => pct(a.score, a.total))) : null;
+    const yrs = [...new Set(m.sections.flatMap(s => s.qns.map(g => parseGid(g).year)))].sort();
+    html += `<article class="card"><div class="yr"><h3>Mock ${k + 1}</h3><span class="mono muted" style="font-size:13px">81 Qs · 2:00:00</span></div>
+      <div class="meter" title="Best score"><i style="width:${bestP || 0}%"></i></div>
+      <dl class="kv"><dt>Best</dt><dd>${bestP === null ? '–' : bestP + '%'}</dd><dt>Last</dt><dd>${last ? last.score + '/' + last.total : '–'}</dd><dt>Attempts</dt><dd>${ma.length}</dd></dl>
+      <div class="note" style="font-size:12px">Questions from ${yrs[0]}–${yrs[yrs.length - 1]}</div>
+      <div class="acts"><button class="btn primary small" data-act="mock" data-k="${k}" ${lock}>${ma.length ? 'Retake' : 'Start'}</button>
+      ${last ? `<button class="btn small" data-act="review" data-id="${last.id}">Review</button>` : ''}</div></article>`;
+  });
+  html += `</div>`;
+
+  const pool = speedPool(speedPrefs).length;
+  const seg = (key, opts) => `<div class="seg" role="group">${opts.map(([v, l]) => `<button data-act="pref" data-k="${key}" data-v="${v}" class="${String(speedPrefs[key]) === String(v) ? 'on' : ''}" aria-pressed="${String(speedPrefs[key]) === String(v)}">${l}</button>`).join('')}</div>`;
+  html += `<div class="section-h"><h2>Speed practice</h2><span class="note">Untimed. One random question at a time, marked as soon as you answer. By default it draws on the NSAA and TMUA questions that aren't in any mock.</span></div>
+  <section class="speed">
+    <div class="opts">
+      <div class="field"><span class="eyebrow">Questions from</span>${seg('bank', [['L', 'Unused ESAT'], ['A', 'All ESAT'], ['E', 'ENGAA']])}</div>
+      <div class="field"><span class="eyebrow">Topic</span>${seg('topic', [['M', 'Maths'], ['P', 'Physics'], ['B', 'Both']])}</div>
+      <div class="field"><span class="eyebrow">Difficulty</span>${seg('diff', [['E', 'Easy'], ['M', 'Medium'], ['H', 'Hard'], ['X', 'Mixed']])}</div>
+    </div>
+    <div class="go"><span class="note mono">${pool} questions in this set</span>
+      <button class="btn primary" data-act="speed" ${active || !pool ? 'disabled' : ''}>Start speed practice</button></div>
+  </section>`;
+
+  html += `<div class="section-h"><h2>ENGAA past papers</h2><span class="note">Questions crossed out in the papers are removed. You get ${PER_Q} s per question.</span></div><div class="years">`;
   for (const y of YEARS) {
     const n = AVAILABLE[y];
-    if (!n) {
-      html += `<article class="card na"><div class="yr"><h3 class="muted">${y}</h3><span class="pill na">Not uploaded</span></div><p class="note" style="margin:0">Upload the ${y} Section 1 paper and answer key to add it here.</p></article>`;
-      continue;
-    }
     const fa = fullAttempts(y), last = lastFull(y);
     const bestP = fa.length ? Math.max(...fa.map(a => pct(a.score, a.total))) : null;
     const mist = last ? mistakesOf(last).length : 0;
     html += `<article class="card"><div class="yr"><h3>${y}</h3><span class="mono muted" style="font-size:13px">${n} Qs · ${fmt(n * PER_Q)}</span></div>
       <div class="meter" title="Best score"><i style="width:${bestP || 0}%"></i></div>
       <dl class="kv"><dt>Best</dt><dd>${bestP === null ? '–' : bestP + '%'}</dd><dt>Last</dt><dd>${last ? last.score + '/' + last.total : '–'}</dd><dt>Attempts</dt><dd>${fa.length}</dd></dl>
-      <div class="acts"><button class="btn primary small" data-act="start" data-y="${y}" ${active ? 'disabled title="Finish or discard the test in progress first"' : ''}>${fa.length ? 'Retake' : 'Start'}</button>
+      <div class="acts"><button class="btn primary small" data-act="start" data-y="${y}" ${lock}>${fa.length ? 'Retake' : 'Start'}</button>
       ${last ? `<button class="btn small" data-act="review" data-id="${last.id}">Review</button>` : ''}
       ${mist ? `<button class="btn small" data-act="retry" data-y="${y}" ${active ? 'disabled' : ''}>Retry ${mist} mistake${mist > 1 ? 's' : ''}</button>` : ''}</div></article>`;
   }
   html += `</div>`;
 
-  const allLoaded = !!meta;
-  const pool = allLoaded ? speedPool(speedPrefs).length : null;
-  const seg = (key, opts) => `<div class="seg" role="group">${opts.map(([v, l]) => `<button data-act="pref" data-k="${key}" data-v="${v}" class="${String(speedPrefs[key]) === String(v) ? 'on' : ''}" aria-pressed="${String(speedPrefs[key]) === String(v)}">${l}</button>`).join('')}</div>`;
-  html += `<div class="section-h"><h2>Speed practice</h2><span class="note">Untimed. One random question at a time from every year, marked as soon as you answer. Keep pressing Next for more.</span></div>
-  <section class="speed">
-    <div class="opts">
-      <div class="field"><span class="eyebrow">Topic</span>${seg('topic', [['M', 'Maths'], ['P', 'Physics'], ['B', 'Both']])}</div>
-      <div class="field"><span class="eyebrow">Difficulty</span>${seg('diff', [['E', 'Easy'], ['M', 'Medium'], ['H', 'Hard'], ['X', 'Mixed']])}</div>
-    </div>
-    <div class="go"><span class="note mono">${pool === null ? 'Loading question bank…' : pool + ' questions in this set'}</span>
-      <button class="btn primary" data-act="speed" ${active || !pool ? 'disabled' : ''}>Start speed practice</button></div>
-  </section>`;
-
   html += `<div class="section-h"><h2>Attempt history</h2></div>`;
   if (!attempts.length) {
-    html += `<div class="tbl-wrap"><div class="empty">No attempts yet. Pick a paper above to sit your first timed test. Your marks and mistakes will appear here.</div></div>`;
+    html += `<div class="tbl-wrap"><div class="empty">No attempts yet. Start an ESAT mock or an ENGAA paper above. Your marks and mistakes will appear here.</div></div>`;
   } else {
-    html += `<div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Paper</th><th>Mode</th><th>Score</th><th>Part A</th><th>Part B</th><th>Time used</th><th></th></tr></thead><tbody>`;
+    html += `<div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Paper</th><th>Mode</th><th>Score</th><th>Breakdown</th><th>Time used</th><th></th></tr></thead><tbody>`;
     for (const a of [...attempts].sort((x, z) => z.finishedAt - x.finishedAt)) {
-      const pa = partScore(a, 'A'), pb = partScore(a, 'B');
-      html += `<tr><td>${dateStr(a.finishedAt)}</td><td class="num">${isSpeed(a) ? 'All years' : a.year}</td><td>${modeLabel(a)}${isSpeed(a) ? ` <span class="muted">· ${esc(speedLabel(a.settings))}</span>` : ''}</td>
+      html += `<tr><td>${dateStr(a.finishedAt)}</td><td>${esc(attemptTitle(a))}</td><td>${modeLabel(a)}${isSpeed(a) ? ` <span class="muted">· ${esc(speedLabel(a.settings))}</span>` : ''}</td>
         <td class="num"><b>${a.score}/${a.total}</b> <span class="muted">${pct(a.score, a.total)}%</span></td>
-        <td class="num">${!isSpeed(a) && pa.t ? pa.s + '/' + pa.t : '–'}</td><td class="num">${!isSpeed(a) && pb.t ? pb.s + '/' + pb.t : '–'}</td>
-        <td class="num">${fmt(a.used)}${a.limit ? ' / ' + fmt(a.limit) : ''}${a.timedOut ? ' <span class="pill flag">Time up</span>' : ''}</td>
+        <td class="num">${breakdown(a).map(b => `${b.label} ${b.s}/${b.t}`).join(' · ') || '–'}</td>
+        <td class="num">${fmt(a.used)}${a.limit ? ' / ' + fmt(isEsat(a) ? a.limit * 3 : a.limit) : ''}${a.timedOut ? ' <span class="pill flag">Time up</span>' : ''}</td>
         <td><button class="btn small" data-act="review" data-id="${a.id}">Review</button></td></tr>`;
     }
     html += `</tbody></table></div>`;
   }
   app.innerHTML = html;
-  if (!allLoaded) loadMeta().then(() => { if (view.name === 'dash') renderDash(); }).catch(() => {});
+}
+/* per-part scores: ENGAA Part A/B, mock sections, or maths/physics for speed sets */
+function breakdown(a) {
+  if (isEsat(a)) return (a.sections || []).map(s => ({label: s.short, ...partScore(a, s.name)}));
+  if (isSpeed(a)) return [['Maths', 'M'], ['Physics', 'P']].map(([l, t]) => ({label: l, ...topicScore(a, t)})).filter(b => b.t);
+  return [['A', 'A'], ['B', 'B']].map(([l, p]) => ({label: 'Part ' + l, ...partScore(a, p)})).filter(b => b.t);
 }
 function partScore(a, p) {
   let s = 0, t = 0;
@@ -185,7 +216,7 @@ function partScore(a, p) {
 }
 function topicScore(a, t) {
   let s = 0, c = 0;
-  for (const id of a.qns) { const q = qOf(a, id); if (q && q.t === t) { c++; if (a.answers[id] === a.key[id]) s++; } }
+  for (const id of a.qns) { const qt = (a.topics || {})[id] || qOf(a, id)?.t; if (qt === t) { c++; if (a.answers[id] === a.key[id]) s++; } }
   return {s, t: c};
 }
 
@@ -193,7 +224,7 @@ function topicScore(a, t) {
 async function startTest(y, mode) {
   app.innerHTML = topbar() + `<div class="empty">Loading the ${y} paper…</div>`;
   let data;
-  try { data = await loadPaper(y); } catch (e) { app.innerHTML = topbar() + `<div class="empty">${esc(e.message)} Check your connection and try again. <button class="btn small" data-act="home">Back</button></div>`; return; }
+  try { data = await loadPaper('E' + y); } catch (e) { app.innerHTML = topbar() + `<div class="empty">${esc(e.message)} Check your connection and try again. <button class="btn small" data-act="home">Back</button></div>`; return; }
   let qns = data.map(q => q.n);
   if (mode === 'mistakes') { const last = lastFull(y); qns = last ? mistakesOf(last) : []; }
   if (!qns.length) return go({name: 'dash'});
@@ -202,14 +233,40 @@ async function startTest(y, mode) {
   LS.set('engaa.active', active);
   go({name: 'test'});
 }
+async function startMock(k) {
+  app.innerHTML = topbar() + `<div class="empty">Loading the mock…</div>`;
+  await loadMeta();
+  const m = mocks[k];
+  const qns = m.sections.flatMap(s => s.qns);
+  try { await Promise.all([...new Set(qns.map(g => parseGid(g).key))].map(loadPaper)); } catch (e) { app.innerHTML = topbar() + `<div class="empty">${esc(e.message)} <button class="btn small" data-act="home">Back</button></div>`; return; }
+  const starts = []; let c = 0; for (const s of m.sections) { starts.push(c); c += s.qns.length; }
+  const now = Date.now();
+  active = {id: newId(), year: 'esat', mode: 'esat', mock: k, qns, secStarts: starts, secNames: m.sections.map(s => s.name), sec: 0, secUsed: [], secTimedOut: [],
+    answers: {}, flags: [], idx: 0, startedAt: now, limit: ESAT_SEC, deadline: now + ESAT_SEC * 1000};
+  saveActive();
+  go({name: 'test'});
+}
+/* end the current mock section (on request or when its 40 minutes run out) and open the next one */
+function nextSection(timedOut) {
+  trackTime();
+  const left = Math.max(0, remainingOf(active));
+  active.secUsed[active.sec] = Math.min(ESAT_SEC, ESAT_SEC - left);
+  active.secTimedOut[active.sec] = !!timedOut;
+  if (active.sec >= active.secStarts.length - 1) return submit(!!timedOut);
+  active.sec++; active.idx = active.secStarts[active.sec];
+  if (active.pausedAt) { active.pausedMs = (active.pausedMs || 0) + (Date.now() - active.pausedAt); active.pausedAt = null; }
+  active.deadline = Date.now() + ESAT_SEC * 1000; active.lastTick = Date.now();
+  view.confirm = false; view.secDone = timedOut ? 'time' : 'done';
+  saveActive(); renderTest(); window.scrollTo(0, 0);
+}
 async function startSpeed() {
   app.innerHTML = topbar() + `<div class="empty">Loading questions…</div>`;
   try { await loadMeta(); } catch (e) { app.innerHTML = topbar() + `<div class="empty">${esc(e.message)} <button class="btn small" data-act="home">Back</button></div>`; return; }
-  const settings = {topic: speedPrefs.topic, diff: speedPrefs.diff};
+  const settings = {topic: speedPrefs.topic, diff: speedPrefs.diff, bank: speedPrefs.bank || 'L'};
   const first = pickNext(settings, []);
   if (!first) return go({name: 'dash'});
   const qns = [first];
-  try { await loadPaper(+first.split('-')[0]); } catch (e) { app.innerHTML = topbar() + `<div class="empty">${esc(e.message)} <button class="btn small" data-act="home">Back</button></div>`; return; }
+  try { await loadPaper(parseGid(first).key); } catch (e) { app.innerHTML = topbar() + `<div class="empty">${esc(e.message)} <button class="btn small" data-act="home">Back</button></div>`; return; }
   active = {id: newId(), year: 'mixed', mode: 'speed', settings, qns, answers: {}, flags: [], idx: 0, startedAt: Date.now(), limit: 0, deadline: null};
   LS.set('engaa.active', active);
   go({name: 'test'});
@@ -220,12 +277,13 @@ function pickNext(settings, seen) {
   return left.length ? left[Math.floor(Math.random() * left.length)] : null;
 }
 async function advance() {
+  if (isEsat(active)) { if (active.idx < secRange(active)[1] - 1) { active.idx++; return true; } return false; }
   if (active.idx < active.qns.length - 1) { active.idx++; return true; }
   if (!isSpeed(active)) return false;
   await loadMeta();
   const id = pickNext(active.settings, active.qns);
   if (!id) return false;
-  await loadPaper(+id.split('-')[0]);
+  await loadPaper(parseGid(id).key);
   active.qns.push(id); active.idx++;
   return true;
 }
@@ -259,43 +317,50 @@ function hsHtml(q, cls) {
 
 function renderTest() {
   if (!active) return go({name: 'dash'});
-  const sp = isSpeed(active);
-  const ready = sp ? active.qns.every(id => papers[String(id).split('-')[0]]) : papers[active.year];
+  const sp = isSpeed(active), es = isEsat(active), pace = paceOf(active);
+  const ready = active.qns.every(id => papers[parseGid(gidOf(active, id)).key]);
   if (!ready) { app.innerHTML = topbar() + '<div class="empty">Loading…</div>'; ensureLoaded(active).then(renderTest).catch(() => go({name: 'dash'})); return; }
   const id = active.qns[active.idx];
   const q = qOf(active, id), y = yearOf(active, id), n = numOf(active, id);
   const sel = active.answers[id];
   const locked = sp && !!sel;
   const flagged = active.flags.includes(id);
-  const answered = Object.keys(active.answers).length;
+  const [s0, s1] = es ? secRange(active) : [0, active.qns.length];
+  const secQns = active.qns.slice(s0, s1);
+  const answered = secQns.filter(m => active.answers[m]).length;
 
   const hs = locked
     ? hsHtml(q, L => L === q.a ? {tag: 'span', cls: 'r-ok'} : L === sel ? {tag: 'span', cls: 'r-bad'} : null)
     : hsHtml(q, L => ({tag: 'button', cls: sel === L ? 'sel' : ''}));
   let nav = '', group = '';
-  active.qns.forEach((m, i) => {
+  secQns.forEach((m, k) => {
+    const i = s0 + k;
     const mq = qOf(active, m);
-    const g = sp ? '' : 'PART ' + mq.p;
+    const g = sp ? '' : es ? active.secNames[active.sec].toUpperCase() : 'PART ' + mq.p;
     if (g !== group) { nav += `<div class="part-sep">${g}</div>`; group = g; }
-    const label = sp ? i + 1 : m;
+    const label = (sp || es) ? k + 1 : m;
     const res = sp && active.answers[m] ? (active.answers[m] === mq.a ? ' style="background:var(--ok);border-color:var(--ok);color:#fff"' : ' style="background:var(--bad);border-color:var(--bad);color:#fff"') : '';
     const tm = qTime(active, m);
-    nav += `<button class="nb ${active.answers[m] ? 'ans' : ''} ${i === active.idx ? 'cur' : ''} ${active.flags.includes(m) ? 'fl' : ''} ${!sp && tm > PER_Q ? 'over' : ''}"${res} data-act="jump" data-i="${i}" aria-label="Question ${label}, ${fmtShort(tm)} spent"><span>${label}</span><small class="nt" data-i="${i}">${tm >= 1 ? fmtClock(tm) : ''}</small></button>`;
+    nav += `<button class="nb ${active.answers[m] ? 'ans' : ''} ${i === active.idx ? 'cur' : ''} ${active.flags.includes(m) ? 'fl' : ''} ${pace && tm > pace ? 'over' : ''}"${res} data-act="jump" data-i="${i}" aria-label="Question ${label}, ${fmtShort(tm)} spent"><span>${label}</span><small class="nt" data-i="${i}">${tm >= 1 ? fmtClock(tm) : ''}</small></button>`;
   });
-  const unanswered = active.qns.length - answered;
-  const eyebrow = sp ? `Speed practice · ${esc(speedLabel(active.settings))} · from ${y} Q${n}`
+  const unanswered = secQns.length - answered;
+  const eyebrow = sp ? `Speed practice · ${esc(speedLabel(active.settings))} · from ${srcOf(active, id)} ${y} Q${n}`
+    : es ? `${esc(mocks[active.mock].name)} · Section ${active.sec + 1} of 3 · ${active.secNames[active.sec]}`
     : `${active.year} · Part ${q.p} · ${q.p === 'A' ? 'Mathematics and Physics' : 'Advanced Mathematics and Advanced Physics'}${active.mode === 'mistakes' ? ' · Mistakes retry' : ''}`;
   const lozCls = L => locked ? (L === q.a ? 'r-ok' : L === sel ? 'r-bad' : '') : (sel === L ? 'sel' : '');
   const fb = locked ? `<div class="feedback ${sel === q.a ? 'ok' : 'bad'}" aria-live="polite"><h3>${sel === q.a ? 'Correct' : `Not quite. The answer is ${q.a}`}</h3>
-      <p>${q.ex}</p><div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><span class="tag">${TOPIC[q.t]}</span><span class="tag">${DIFF[q.d]}</span><span class="tag">${y} Q${n}</span></div></div>` : '';
-  const last = active.idx >= active.qns.length - 1;
+      <p>${q.ex}</p><div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><span class="tag">${TOPIC[q.t]}</span><span class="tag">${DIFF[q.d]}</span><span class="tag">${srcOf(active, id)} ${y} Q${n}</span></div></div>` : '';
+  const last = active.idx >= s1 - 1;
+  const lastSec = !es || active.sec >= active.secStarts.length - 1;
+  const steps = es ? `<ol class="steps">${active.secNames.map((nm, k) => `<li class="${k < active.sec ? 'done' : k === active.sec ? 'now' : ''}"><span>${k < active.sec ? '✓' : k + 1}</span>${nm}</li>`).join('')}</ol>` : '';
+  const secNote = es && view.secDone ? `<div class="secnote" role="status">${view.secDone === 'time' ? 'Time ran out on the last section.' : 'Section submitted.'} <b>${active.secNames[active.sec]}</b> has started with 40 minutes on the clock.</div>` : '';
   const poolLeft = sp && meta ? speedPool(active.settings).length - active.qns.length : 1;
 
   app.innerHTML = topbar() + `
   <div class="test-head"><div><div class="eyebrow">${eyebrow}</div>
-    <h2>Question ${sp ? active.idx + 1 : n}<span class="qclock ${locked ? 'done' : ''}" id="qclock" title="Time on this question"><i aria-hidden="true"></i><b>${fmtClock(qTime(active, id))}</b></span> <span class="muted mono" style="font-size:15px;font-weight:400">${sp ? `(${Object.keys(active.answers).filter(k => active.answers[k] === qOf(active, k)?.a).length} correct so far)` : `(${active.idx + 1} of ${active.qns.length})`}</span></h2></div></div>
+    <h2>Question ${sp ? active.idx + 1 : es ? active.idx - s0 + 1 : n}<span class="qclock ${locked ? 'done' : ''}" id="qclock" title="Time on this question"><i aria-hidden="true"></i><b>${fmtClock(qTime(active, id))}</b></span> <span class="muted mono" style="font-size:15px;font-weight:400">${sp ? `(${Object.keys(active.answers).filter(k => active.answers[k] === qOf(active, k)?.a).length} correct so far)` : `(${active.idx - s0 + 1} of ${secQns.length})`}</span></h2></div>${steps}</div>${secNote}
   ${active.pausedAt ? `<section class="paused" role="dialog" aria-labelledby="ph"><div class="eyebrow">Paused</div><h2 id="ph">Your paper is paused</h2>
-    <p>${sp ? `Elapsed time is frozen at <b class="mono">${fmt(elapsedOf(active))}</b>.` : `The clock is stopped with <b class="mono">${fmt(remainingOf(active))}</b> left.`} ${Object.keys(active.answers).length} of ${active.qns.length} ${sp ? 'answered' : 'answered so far'}. Your answers and times are saved, so you can close this page and come back later.</p>
+    <p>${sp ? `Elapsed time is frozen at <b class="mono">${fmt(elapsedOf(active))}</b>.` : `The clock is stopped with <b class="mono">${fmt(remainingOf(active))}</b> left${es ? ' in ' + active.secNames[active.sec] : ''}.`} ${Object.keys(active.answers).length} of ${active.qns.length} ${sp ? 'answered' : 'answered so far'}. Your answers and times are saved, so you can close this page and come back later.</p>
     <div class="acts"><button class="btn primary" data-act="unpause">Resume</button><button class="btn" data-act="exit">Back to dashboard</button></div></section>` : ''}
   <div class="test-grid" ${active.pausedAt ? 'hidden' : ''}>
     <div class="qpane">
@@ -303,16 +368,16 @@ function renderTest() {
       <div class="sheet"><span class="eyebrow">Your answer</span><div class="lozenges">${[...q.o].map(L => `<button class="loz ${lozCls(L)}" data-act="pick" data-l="${L}" aria-pressed="${sel === L}" ${locked ? 'disabled' : ''}>${L}</button>`).join('')}</div>
         ${sel && !sp ? `<button class="btn ghost small" data-act="clear">Clear</button>` : ''}</div>
       ${fb}
-      <div class="qnav"><button class="btn" data-act="prev" ${active.idx === 0 ? 'disabled' : ''}>← Previous</button>
+      <div class="qnav"><button class="btn" data-act="prev" ${active.idx === s0 ? 'disabled' : ''}>← Previous</button>
         <button class="btn ${flagged ? 'flagged' : ''}" data-act="flag" aria-pressed="${flagged}">${flagged ? '⚑ Flagged' : '⚐ Flag for review'}</button>
         ${sp ? (last && poolLeft === 0 ? `<button class="btn primary" data-act="ask-submit">No more questions · Finish</button>` : `<button class="btn primary" data-act="next">Next question →</button>`)
-            : !last ? `<button class="btn primary" data-act="next">Next →</button>` : `<button class="btn primary" data-act="ask-submit">Finish →</button>`}</div>
+            : !last ? `<button class="btn primary" data-act="next">Next →</button>` : `<button class="btn primary" data-act="ask-submit">${es ? (lastSec ? 'Finish mock →' : 'Finish section →') : 'Finish →'}</button>`}</div>
     </div>
     <aside class="navp" aria-label="Question navigator">
-      <div class="eyebrow">${sp ? `Questions · ${answered} answered` : `Questions · ${answered}/${active.qns.length} answered`}</div>
+      <div class="eyebrow">${sp ? `Questions · ${answered} answered` : `Questions · ${answered}/${secQns.length} answered`}</div>
       <div class="navgrid">${nav}</div>
       <div class="legend">${sp ? '<span><i style="background:var(--ok);border-color:var(--ok)"></i>Correct</span><span><i style="background:var(--bad);border-color:var(--bad)"></i>Wrong</span>' : '<span><i class="a"></i>Answered</span>'}<span><i></i>Blank</span><span><i class="f"></i>Flagged</span></div>
-      <button class="btn primary" style="width:100%;justify-content:center;margin-top:14px" data-act="ask-submit">${sp ? 'Finish practice' : 'Submit test'}</button>
+      <button class="btn primary" style="width:100%;justify-content:center;margin-top:14px" data-act="ask-submit">${sp ? 'Finish practice' : es ? (lastSec ? 'Submit mock' : 'Finish section') : 'Submit test'}</button>
       <div id="confirm"></div>
       <button class="btn" style="width:100%;justify-content:center;margin-top:8px" data-act="pause">❚❚ Pause and save</button>
       <div class="kbd"><kbd>A</kbd>–<kbd>H</kbd> choose · <kbd>←</kbd><kbd>→</kbd> move · <kbd>M</kbd> flag · <kbd>P</kbd> pause</div>
@@ -332,15 +397,16 @@ function renderTest() {
     trackTime();
     const cid = active.qns[active.idx], qt = qTime(active, cid);
     const qc = document.getElementById('qclock');
-    if (qc) { qc.querySelector('b').textContent = fmtClock(qt); qc.classList.toggle('over', !isSpeed(active) && qt > PER_Q); }
+    const pc = paceOf(active);
+    if (qc) { qc.querySelector('b').textContent = fmtClock(qt); qc.classList.toggle('over', !!pc && qt > pc); }
     const nt = document.querySelector(`.nt[data-i="${active.idx}"]`);
-    if (nt) { nt.textContent = qt >= 1 ? fmtClock(qt) : ''; nt.parentElement.classList.toggle('over', !isSpeed(active) && qt > PER_Q); }
+    if (nt) { nt.textContent = qt >= 1 ? fmtClock(qt) : ''; nt.parentElement.classList.toggle('over', !!pc && qt > pc); }
     if (isSpeed(active)) { t.querySelector('b').textContent = fmt(elapsedOf(active)); return; }
     const left = remainingOf(active);
     t.querySelector('b').textContent = fmt(left);
     t.classList.toggle('warn', left <= 300 && left > 60);
     t.classList.toggle('crit', left <= 60);
-    if (left <= 0 && !active.pausedAt) submit(true);
+    if (left <= 0 && !active.pausedAt) { if (isEsat(active)) nextSection(true); else submit(true); }
   };
   tick(); timerId = setInterval(tick, 250);
 }
@@ -362,6 +428,12 @@ function trackTime() {
 function showConfirm(unanswered) {
   const flagged = active.flags.length, sp = isSpeed(active);
   const el = document.getElementById('confirm'); if (!el) return;
+  if (isEsat(active)) {
+    const lastSec = active.sec >= active.secStarts.length - 1, nm = active.secNames[active.sec];
+    el.innerHTML = `<div class="confirm"><b>${lastSec ? 'Submit the mock?' : `Finish ${nm}?`}</b><div style="margin-top:4px">${unanswered ? `${unanswered} unanswered in this section` : 'Every question in this section answered'}. ${lastSec ? "You can't change answers after submitting." : `You can't come back to ${nm}, and the next section starts straight away.`}</div>
+      <div class="acts"><button class="btn primary small" data-act="submit">${lastSec ? 'Submit mock' : 'Finish section'}</button><button class="btn small" data-act="cancel-submit">Keep working</button></div></div>`;
+    return;
+  }
   el.innerHTML = `<div class="confirm"><b>${sp ? 'Finish now?' : 'Submit now?'}</b><div style="margin-top:4px">${sp ? `${Object.keys(active.answers).length} answered${flagged ? ` · ${flagged} flagged` : ''}. Questions you skipped won't be counted.` : `${unanswered ? `${unanswered} unanswered` : 'Every question answered'}${flagged ? ` · ${flagged} flagged` : ''}. You can't change answers after submitting.`}</div>
     <div class="acts"><button class="btn primary small" data-act="submit">${sp ? 'Finish' : 'Submit'}</button><button class="btn small" data-act="cancel-submit">Keep working</button></div></div>`;
 }
@@ -373,13 +445,23 @@ async function submit(timedOut = false) {
   const sp = isSpeed(a);
   if (sp) { a.qns = a.qns.filter(id => a.answers[id]); a.flags = a.flags.filter(id => a.answers[id]); if (!a.qns.length) return go({name: 'dash'}); }
   if (a.pausedAt) { const d = Date.now() - a.pausedAt; if (a.deadline) a.deadline += d; a.pausedMs = (a.pausedMs || 0) + d; a.pausedAt = null; }
-  const finishedAt = sp ? Date.now() : Math.min(Date.now(), a.deadline);
-  const key = {}, parts = {};
+  const es = isEsat(a);
+  const finishedAt = (sp || es) ? Date.now() : Math.min(Date.now(), a.deadline);
+  const key = {}, parts = {}, topics = {};
   let score = 0;
-  for (const id of a.qns) { const q = qOf(a, id); key[id] = q.a; parts[id] = q.p; if (a.answers[id] === q.a) score++; }
+  a.qns.forEach((id, i) => {
+    const q = qOf(a, id); key[id] = q.a; topics[id] = q.t; if (a.answers[id] === q.a) score++;
+    parts[id] = es ? a.secNames[a.secStarts.filter(s => s <= i).length - 1] : q.p;
+  });
   const rec = {id: a.id, year: a.year, mode: a.mode, qns: a.qns, answers: a.answers, flags: a.flags, key, parts, score, total: a.qns.length,
     startedAt: a.startedAt, finishedAt, limit: a.limit, used: sp ? (finishedAt - a.startedAt - (a.pausedMs || 0)) / 1000 : Math.max(0, Math.min(a.limit, a.limit - (a.deadline - finishedAt) / 1000)), timedOut: !!timedOut};
   if (sp) rec.settings = a.settings;
+  rec.topics = topics;
+  if (es) {
+    const short = {'Mathematics 1': 'M1', 'Physics': 'PH', 'Mathematics 2': 'M2'};
+    rec.mock = a.mock; rec.limit = ESAT_SEC; rec.used = a.secUsed.reduce((s, x) => s + (x || 0), 0); rec.timedOut = a.secTimedOut.some(Boolean);
+    rec.sections = a.secNames.map((nm, k) => ({name: nm, short: short[nm] || nm, used: a.secUsed[k] || 0, timedOut: !!a.secTimedOut[k]}));
+  }
   rec.times = {};
   for (const id of a.qns) rec.times[id] = Math.round(((a.times || {})[id] || 0) * 10) / 10;
   await persistAttempt(rec);
@@ -398,13 +480,14 @@ async function renderReview() {
   const f = view.filter || 'all';
   const shown = a.qns.filter(n => f === 'all' || (f === 'flag' ? a.flags.includes(n) : f === 'wrong' ? status(n) !== 'ok' : status(n) === f));
   const p = pct(a.score, a.total);
-  const s1 = sp ? topicScore(a, 'M') : partScore(a, 'A'), s2 = sp ? topicScore(a, 'P') : partScore(a, 'B');
+  const es = isEsat(a), pace = paceOf(a);
+  const parts = breakdown(a);
   const C = 2 * Math.PI * 52;
   const domId = n => 'rq-' + String(n).replace(/\W/g, '_');
   const canRetry = !sp && counts.bad + counts.na && a.mode === 'full' && lastFull(a.year)?.id === a.id && !active;
 
   let html = topbar(`<button class="btn" data-act="home">← Dashboard</button>`);
-  html += `<div class="section-h"><div><div class="eyebrow">${modeLabel(a)}${sp ? ' · ' + esc(speedLabel(a.settings)) : ''} · ${dateStr(a.finishedAt)}</div><h2 style="font-size:26px;margin-top:4px">${sp ? 'Speed practice results' : a.year + ' results'}</h2></div>
+  html += `<div class="section-h"><div><div class="eyebrow">${modeLabel(a)}${sp ? ' · ' + esc(speedLabel(a.settings)) : ''} · ${dateStr(a.finishedAt)}</div><h2 style="font-size:26px;margin-top:4px">${esc(attemptTitle(a))} results</h2></div>
     ${canRetry ? `<button class="btn primary" data-act="retry" data-y="${a.year}">Retry ${counts.bad + counts.na} mistake${counts.bad + counts.na > 1 ? 's' : ''}</button>` : ''}
     ${sp && !active ? `<button class="btn primary" data-act="speed-again">New speed set</button>` : ''}</div>
   <section class="score-hero">
@@ -413,11 +496,10 @@ async function renderReview() {
       <text x="66" y="64" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="26" font-weight="600" fill="var(--ink)">${a.score}/${a.total}</text>
       <text x="66" y="86" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="13" fill="var(--muted)">${p}%</text></svg>
     <div style="min-width:0"><div class="score-stats">
-      <div><span class="eyebrow">${sp ? 'Maths' : 'Part A'}</span><b>${s1.t ? s1.s + '/' + s1.t : '–'}</b></div>
-      <div><span class="eyebrow">${sp ? 'Physics' : 'Part B'}</span><b>${s2.t ? s2.s + '/' + s2.t : '–'}</b></div>
-      <div><span class="eyebrow">Time used</span><b>${fmt(a.used)}</b><span class="muted mono" style="font-size:12px">${a.limit ? 'of ' + fmt(a.limit) : 'untimed'}${a.timedOut ? ' · time up' : ''}</span></div>
-      <div><span class="eyebrow">Per question</span><b>${Math.round(a.used / a.total)}s</b><span class="muted mono" style="font-size:12px">exam pace ${PER_Q}s</span></div></div>
-      <div class="strip" aria-label="Question by question">${a.qns.map((n, i) => `<button class="${status(n)}" data-act="goto" data-n="${domId(n)}" title="${sp ? yearOf(a, n) + ' Q' + numOf(a, n) : 'Question ' + n}${a.times ? ' · ' + fmtShort(a.times[n] || 0) : ''}">${sp ? i + 1 : n}</button>`).join('')}</div></div>
+      ${parts.map((b, k) => `<div><span class="eyebrow">${es ? esc(a.sections[k].name) : b.label}</span><b>${b.s}/${b.t}</b>${es ? `<span class="muted mono" style="font-size:12px">${fmt(a.sections[k].used)} of 40:00${a.sections[k].timedOut ? ' · time up' : ''}</span>` : ''}</div>`).join('')}
+      <div><span class="eyebrow">Time used</span><b>${fmt(a.used)}</b><span class="muted mono" style="font-size:12px">${a.limit ? 'of ' + fmt(es ? a.limit * 3 : a.limit) : 'untimed'}${a.timedOut && !es ? ' · time up' : ''}</span></div>
+      ${parts.length < 3 ? `<div><span class="eyebrow">Per question</span><b>${Math.round(a.used / a.total)}s</b><span class="muted mono" style="font-size:12px">${pace ? 'exam pace ' + pace + 's' : 'untimed'}</span></div>` : ''}</div>
+      <div class="strip" aria-label="Question by question">${a.qns.map((n, i) => `<button class="${status(n)}" data-act="goto" data-n="${domId(n)}" title="${isEngaaPaper(a) ? 'Question ' + n : srcOf(a, n) + ' ' + yearOf(a, n) + ' Q' + numOf(a, n)}${a.times ? ' · ' + fmtShort(a.times[n] || 0) : ''}">${isEngaaPaper(a) ? n : i + 1}</button>`).join('')}</div></div>
   </section>
   <div class="filters" role="tablist">${[['all', 'All'], ['wrong', 'Mistakes'], ['bad', 'Incorrect'], ['na', 'Not answered'], ['ok', 'Correct'], ['flag', 'Flagged']].map(([k, l]) => {
     const c = k === 'wrong' ? counts.bad + counts.na : counts[k];
@@ -425,12 +507,13 @@ async function renderReview() {
   }).join('')}</div>`;
 
   const hasTimes = !!a.times;
-  const pace = sp ? null : PER_Q;
   html += `<div class="rlist-tools"><span class="note">${hasTimes ? 'Tap a question to see it with the worked solution. Times show how long you spent on each question.' : 'Tap a question to see it with the worked solution. Per-question times are recorded for attempts from now on.'}</span>
     <button class="btn small" data-act="expand-all">${view.expandAll ? 'Collapse all' : 'Expand all'}</button></div>`;
   if (!shown.length) html += `<div class="tbl-wrap"><div class="empty">Nothing in this filter.</div></div>`;
   html += `<div class="rlist">`;
+  let lastPart = null;
   for (const n of shown) {
+    if (es && a.parts[n] !== lastPart) { lastPart = a.parts[n]; html += `<div class="part-sep" style="margin-top:8px">${esc(lastPart)}</div>`; }
     const q = qOf(a, n), st = status(n), mine = a.answers[n], y = yearOf(a, n), num = numOf(a, n);
     const secs = hasTimes ? a.times[n] : null;
     const slow = secs !== null && pace && secs > pace;
@@ -439,14 +522,14 @@ async function renderReview() {
     html += `<details class="rrow ${st}" id="${domId(n)}" ${open ? 'open' : ''}>
       <summary>
         <span class="rmark" aria-hidden="true">${st === 'ok' ? '✓' : st === 'bad' ? '✗' : '–'}</span>
-        <span class="rtitle"><b>${sp ? `${y} Q${num}` : 'Q' + num}</b><span class="rtags"><span class="tag">${TOPIC[q.t]}</span><span class="tag">${DIFF[q.d]}</span>${a.flags.includes(n) ? '<span class="pill flag">Flagged</span>' : ''}</span></span>
+        <span class="rtitle"><b>${isEngaaPaper(a) ? 'Q' + num : `${a.qns.indexOf(n) + 1}. ${srcOf(a, n)} ${y} Q${num}`}</b><span class="rtags"><span class="tag">${TOPIC[q.t]}</span><span class="tag">${DIFF[q.d]}</span>${a.flags.includes(n) ? '<span class="pill flag">Flagged</span>' : ''}</span></span>
         <span class="rans">You <b class="${st}">${mine || '—'}</b> · Answer <b class="ok">${q.a}</b></span>
         <span class="rtime mono ${slow ? 'slow' : ''}" title="Time spent on this question">${secs === null || secs === undefined ? '—' : fmtShort(secs)}</span>
         <span class="chev" aria-hidden="true"></span>
       </summary>
       <div class="rbody">
-        <div class="scan-wrap"><div class="scan review" style="aspect-ratio:${q.w}/${q.h}">${open ? `<img src="${q.img}"` : `<img data-src="${y}-${num}"`} alt="Question ${num} from the ${y} paper" width="${q.w}" height="${q.h}">${hs}</div></div>
-        <div class="expl"><div class="eyebrow">Worked solution</div><p>${q.ex}</p>${slow ? `<p class="note">You spent ${fmtShort(secs)} here, over the ${PER_Q}s exam pace.</p>` : ''}</div>
+        <div class="scan-wrap"><div class="scan review" style="aspect-ratio:${q.w}/${q.h}">${open ? `<img src="${q.img}"` : `<img data-src="${gidOf(a, n)}"`} alt="Question ${num} from the ${y} paper" width="${q.w}" height="${q.h}">${hs}</div></div>
+        <div class="expl"><div class="eyebrow">Worked solution</div><p>${q.ex}</p>${slow ? `<p class="note">You spent ${fmtShort(secs)} here, over the ${pace}s exam pace.</p>` : ''}</div>
       </div></details>`;
   }
   html += `</div>`;
@@ -455,8 +538,7 @@ async function renderReview() {
 }
 function fillImg(d) {
   const img = d.querySelector('img[data-src]'); if (!img) return;
-  const [y, n] = img.dataset.src.split('-').map(Number);
-  img.src = qByN(y, n).img; img.removeAttribute('data-src');
+  img.src = Q(img.dataset.src).img; img.removeAttribute('data-src');
 }
 
 /* ---------- events ---------- */
@@ -469,6 +551,7 @@ function handleAct(b) {
   if (act === 'exit') { pauseActive(); return go({name: 'dash'}); }
   if (act === 'home') return go({name: 'dash'});
   if (act === 'start') return startTest(+b.dataset.y, 'full');
+  if (act === 'mock') return startMock(+b.dataset.k);
   if (act === 'retry') return startTest(+b.dataset.y, 'mistakes');
   if (act === 'speed') return startSpeed();
   if (act === 'speed-again') { go({name: 'dash'}); document.querySelector('.speed')?.scrollIntoView({block: 'center'}); return; }
@@ -488,17 +571,18 @@ function handleAct(b) {
   }
   if (!active || active.pausedAt) return;
   trackTime();
+  view.secDone = null;
   const id = active.qns[active.idx];
   const locked = isSpeed(active) && active.answers[id];
   if (act === 'pick') { if (locked) return; active.answers[id] = b.dataset.l; }
   else if (act === 'clear') { if (locked) return; delete active.answers[id]; }
   else if (act === 'flag') { active.flags = active.flags.includes(id) ? active.flags.filter(x => x !== id) : [...active.flags, id]; }
-  else if (act === 'prev') { active.idx = Math.max(0, active.idx - 1); view.confirm = false; }
+  else if (act === 'prev') { active.idx = Math.max(isEsat(active) ? secRange(active)[0] : 0, active.idx - 1); view.confirm = false; }
   else if (act === 'next') { view.confirm = false; advance().then(() => { saveActive(); renderTest(); window.scrollTo(0, 0); }); return; }
   else if (act === 'jump') { active.idx = +b.dataset.i; view.confirm = false; }
   else if (act === 'ask-submit') { view.confirm = true; }
   else if (act === 'cancel-submit') { view.confirm = false; }
-  else if (act === 'submit') { return submit(false); }
+  else if (act === 'submit') { return isEsat(active) ? nextSection(false) : submit(false); }
   saveActive(); renderTest();
   if (act === 'ask-submit') document.getElementById('confirm')?.scrollIntoView({block: 'nearest'});
 }
@@ -511,7 +595,7 @@ document.addEventListener('keydown', e => {
   const locked = isSpeed(active) && active.answers[id];
   if (k.length === 1 && q.o.includes(k)) { if (locked) return; active.answers[id] = k; }
   else if (e.key === 'ArrowRight') { e.preventDefault(); view.confirm = false; advance().then(ok => { if (ok) { saveActive(); renderTest(); } }); return; }
-  else if (e.key === 'ArrowLeft') { if (active.idx <= 0) return; active.idx--; view.confirm = false; }
+  else if (e.key === 'ArrowLeft') { if (active.idx <= (isEsat(active) ? secRange(active)[0] : 0)) return; active.idx--; view.confirm = false; }
   else if (k === 'M') { active.flags = active.flags.includes(id) ? active.flags.filter(x => x !== id) : [...active.flags, id]; }
   else return;
   e.preventDefault(); saveActive(); renderTest();
@@ -520,7 +604,7 @@ document.addEventListener('keydown', e => {
 /* ---------- boot ---------- */
 if (active && active.pausedAt) { render(); loadMeta().catch(() => {}); }
 else if (active && !isSpeed(active) && Date.now() >= active.deadline) {
-  ensureLoaded(active).then(() => submit(true)).catch(() => { active = null; LS.del('engaa.active'); render(); });
+  loadMeta().then(() => ensureLoaded(active)).then(() => { if (isEsat(active)) { view = {name: 'test'}; nextSection(true); } else submit(true); }).catch(() => { active = null; LS.del('engaa.active'); render(); });
 } else if (active) { view = {name: 'test'}; loadMeta().catch(() => {}).then(render); }
 else render();
 initDb();

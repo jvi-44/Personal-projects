@@ -1,0 +1,20 @@
+1|Split the fraction: ∫₁⁴(3x<sup>−3/2</sup> − 2x<sup>−1/2</sup>)dx = [−6x<sup>−1/2</sup> − 4x<sup>1/2</sup>]₁⁴ = (−3 − 8) − (−6 − 4) = −1.
+2|S₅ = S₈ means u₆ + u₇ + u₈ = 0, so 3a + 18d = 0 and a = −6d.
+3|The centres are (−2, 3) and (7, −6), 9√2 apart. The radii are 3√2 and √2. Shortest gap = 9√2 − 3√2 − √2 = 5√2.
+4|Substitute y = a − x: x² + 2ax − 4 = 0. Its discriminant 4a² + 16 is always positive, so there are always two distinct real solutions.
+5|Remainder theorem: R = f(−2) and S = f(−3), so R − S = 19 − 5a + b. Make a as small and b as large as allowed: a = 1, b = 3, giving 17.
+6|cos 2x ≠ 0 here, so the equation becomes tan 2x = 1/x. Sketching y = tan 2x and y = 1/x on 0 ≤ x ≤ 2π, they cross once on each of the 4 positive branches: 4 solutions.
+7|x⁶ coefficient of (1 + kx²)⁷: ⁷C₃k³ = 35k³. x⁶ coefficient of (k + x)¹⁰: ¹⁰C₆k⁴ = 210k⁴. Setting them equal: k = 35/210 = 1/6.
+8|a/(1 − r) = 6 and a²/(1 − r²) = 12. Dividing gives a/(1 + r) = 2, so a = 6 − 6r = 2 + 2r. Then r = ½ and a = 3. Sum of cubes = a³/(1 − r³) = 27/(7/8) = 216/7.
+9|dy/dx = 6(x − 2)(x + 1). The turning points are (−1, 7 + c) and (2, c − 20). Three distinct roots need one above the axis and one below: −7 &lt; c &lt; 20.
+10||2 − x| ≤ 6 gives −4 ≤ x ≤ 8 and |y + 2| ≤ 4 gives −6 ≤ y ≤ 2. The largest |xy| is 8 × 6 = 48.
+11|At (p, 10 − p²) the tangent gradient is −2p, so the normal is y = x/(2p) − ½ + 10 − p². Its intercept is 5 when p² = 9/2, and m &gt; 0 needs p &gt; 0, so p = 3/√2 = 3√2/2.
+12|Label the areas A (above, 0 to p), B (below, p to q) and C (above, q to r). A − B + C = 0, A − B = −2 and −B + C = −3. So A = 3, B = 5, C = 2, and the total area is 10.
+13|A local minimum of f is where f′ = 0 and f′ goes from negative to positive. On the graph of f′ that is point C.
+14|Substitute both points: log₂p = 3m + 4 and 4 = m log₂p + 4, so m log₂p = 0. Either m = 0 (p = 16) or log₂p = 0 (p = 1). That is 2 values of p.
+15|Let y = 3<sup>x/2</sup>: y² − 9y + 20 = 0, so y = 4 or 5. Then x = 2log₃4 or 2log₃5, with sum 2log₃20.
+16|The vertex is (−b/2, 2 − b²/4). Distance² = b²/4 + (2 − b²/4)² = B²/16 − 3B/4 + 4 with B = b². This is least at B = 6, giving 7/4, so the minimum distance is √7/2.
+17|With n and m items: 15n + 20m = 16n + 17m, so n = 3m. Combined mean = (45m + 20m)/(4m) = 65/4 = 16¼.
+18|The lines of symmetry are where sin(2x − 4π/3) = ±1. The value +1 first occurs at x = 11π/12 and the value −1 at x = 5π/12, so the smallest is 5π/12.
+19|The two triangles share the height from B, and the area ratio 3 : 1 gives AC₂ = 3AC₁. Use the cosine rule in both: 49 = AC² + 100 − 20AC cos θ. Subtracting the two gives AC₁ = 5cos θ. Then 49 = 100 − 75cos²θ, so cos θ = √17/5.
+20|Pair sin²k° with sin²(90 − k)° = cos²k°. 2S = 91 × 1, so S = 45.5.

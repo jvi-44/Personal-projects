@@ -1,7 +1,13 @@
-# ENGAA Section 1 Practice
+# ESAT & ENGAA Practice
 
-A timed practice app for the ENGAA Section 1 past papers (2016–2023). It has clickable answer options, a live timer (85 s per question), question flagging, a dashboard of marks, mistake review, worked solutions and an untimed speed practice mode filtered by topic and difficulty.
+A single-page practice app:
 
-- `index.html` is the app. All question images, answer keys and explanations are embedded in the page, so it works without fetching extra files. `tools/app.js` is the app script.
-- `tools/` rebuilds the data from the PDFs: run `keys.py`, then `extract.py`, then `build.py` from a folder that contains `pdfs/` and `explanations/` (named `expl/` in the scripts).
-- Questions that are crossed out in the papers are found automatically and left out.
+- **ESAT mocks**: five timed mocks, each with three sections of 27 questions and 40 minutes. Mathematics 1 and Physics come from NSAA Section 1 (2016–2023, maths and physics parts only); Mathematics 2 comes from TMUA Paper 1 (2016–2023).
+- **ENGAA past papers** (2016–2023): 85 s per question, with crossed-out questions removed.
+- **Speed practice**: untimed and endless. By default it uses the NSAA/TMUA questions that aren't in any mock.
+
+Every mode has pause and resume, live per-question timers, flagging, a review list colour-coded right/wrong with time per question, and worked solutions.
+
+- `index.html` is the app, with all question images, keys and explanations embedded. `tools/app.js` is its script.
+- `explanations/` holds the ENGAA solutions; `explanations/esat/` holds the NSAA (`N*.txt`, written from the answer keys) and TMUA (`T*.txt`, condensed from the official worked answers) solutions.
+- `tools/` rebuilds the ENGAA data, and `tools/esat/` the NSAA/TMUA data and the mock allocation (`build_esat.py`, with a fixed seed).

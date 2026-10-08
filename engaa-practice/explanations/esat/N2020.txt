@@ -1,0 +1,40 @@
+1|2n − 5 goes up by 2 each time. 2n − 5 = 17 gives n = 11.
+2|2a + 3c = 20 and 4a + 4c = 34, so a + c = 8.5. Doubling: 2a + 2c = 17. Subtracting from the first gives c = 3, so a = 5.5. 6a + 2c = 33 + 6 = £39.
+3|The quarter circle centred at P has area πx²/4, and the semicircle on PS (radius x/2) has area πx²/8. Shaded = πx²/4 − πx²/8 = πx²/8.
+4|P(1) = 3/8, P(2) = 1/8, P(3) = 4/8. A sum of 5 needs 2 then 3 or 3 then 2: 2 × (1/8)(4/8) = 1/8.
+5|The gradients are 1: −1/3, 2: 1/3, 3: 3 and 4: −2/3. Perpendicular gradients multiply to −1: (−1/3) × 3 = −1, so lines 1 and 3.
+6|Each week 40% remains: 5000 × 0.4³ = 320 cm³.
+7|Let u = x/4 + 3: 2u² − u − 36 = 0, so (2u − 9)(u + 4) = 0 and u = 9/2 or −4. Then x = 4(u − 3) = 6 or −28, with sum −22.
+8|Sine rule: 8/sin 60° = 2R. Circumference = 2πR = 8π/sin 60°.
+9|a ÷ (b/c) = ac/b and (a/b) ÷ c = a/(bc). Their difference is (ac² − a)/(bc) = a(c² − 1)/(bc).
+10|(2x + 3)² − (x − 3)² = 4x² + 12x + 9 − x² + 6x − 9 = 3x² + 18x = 3(x + 3)² − 27. So r = −27.
+11|700% more means 8 times as many. N ∝ 1/T³, so T³ must be divided by 8 and T halves: x = 8/2 = 4.
+12|Combined mean = (10 × 36 + 20 × 48)/30 = 44. The combined range is at least the larger single range, so it is ≥ 21.
+13|R/Y = (R/B)(B/Y) = (18/5)(p/3) = 6p/5. This equals 12/5, so p = 2.
+14|Sale price S = 0.75P. The customer’s guess is 1.25S = 0.9375P, which is 0.0625P too low. 0.0625P = 15, so P = £240.
+15|P(no evens in four numbers) = (½)⁴ = 1/16, so P(at least one even) = 15/16.
+16|In triangle PQS: QS = √(y² − x²). In triangle QSR: sin 61° = QS/z, so z = √(y² − x²)/sin 61°.
+17|The distance between the points is √(2² + 4²) = 2√5. Largest square: this is a side, so the perimeter is 8√5. Smallest square: this is a diagonal, so the side is 2√5/√2 = √10 and the perimeter is 4√10 = 4√5√2. Difference = 4√5(2 − √2).
+18|The roots differ by √(discriminant)/a = √(p² + 32)/2 = 6. So p² + 32 = 144 and p = √112 = 4√7.
+19|Cone: h = 5x/2, so V = (1/3)πx²(5x/2) = 5πx³/6. Hemisphere: (2/3)π(y/2)³ = πy³/12. Ratio = (5/6)(12)x³/y³ = 10x³/y³.
+20|Rotating 90° clockwise about O sends (a, b) to (b, −a): M → (5, −2) and N → (−1, 3), with midpoint (2, 0.5). The translation must move this to (7, −2.5): vector (5, −3).
+21|Input energy = 30 × 50 = 1500 J. Energy kept in the tip = mcΔθ = 0.0020 × 400 × 200 = 160 J. Lost to surroundings = 1500 − 160 = 1340 J.
+22|The same element has the same number of protons, but a different isotope has a different number of neutrons. An opposite charge means the electron count must be on the other side of the proton number. Option B is the only diagram that matches all three.
+23|At the same temperature the mean speed is unchanged (v). Halving the volume doubles the number density, so collisions with the piston are twice as frequent: 2f.
+24|The angle of incidence (ray to normal) equals the angle between the wavefronts and the boundary, so it is θ, and the angle of refraction is φ. The peaks bend closer to the boundary (φ &lt; θ), so the wave is slower in Y and faster in X.
+25|Mass number falls by 32, so there are 32/4 = 8 alpha decays. They lower Z by 16, from 92 to 76. To reach 82, Z must rise by 6, so there are 6 β⁻ emissions.
+26|Shiny surfaces are poor emitters and poor absorbers of radiation, so 1 is wrong and 3 is right. Radiation does cross a vacuum (the vacuum stops conduction and convection), so 2 is wrong. 3 only.
+27|The secondary voltage stays at 12 V, so L still draws the same current. Primary power = 240 × 0.10 = 24 W = 12 × I<sub>L</sub>, so I<sub>L</sub> = 2.0 A. A second identical lamp doubles the power, so the primary current becomes 0.20 A.
+28|P<sub>in</sub> = 400 kV × 2000 A = 800 MW and P<sub>out</sub> = 160 kV × 4000 A = 640 MW, so the efficiency is 80%. Wasted = 160 MW × 60 s = 9.6 × 10⁹ J.
+29|At 10 °C the thermistor is about 400 Ω and the total is 12/0.025 = 480 Ω, so the fixed resistor is 80 Ω. At 80 °C the thermistor is about 40 Ω, the total is 120 Ω, and I = 100 mA.
+30|Only the 12 cm between the rails carries current. F = BIL = 0.50 × 2.4 × 0.12 = 0.144 N. The mass is 0.40/10 = 0.040 kg, so a = 0.144/0.040 = 3.6 m s⁻². Current flows from the + (top) rail down through the rod; with B into the page, Fleming’s left-hand rule gives a force to the right.
+31|Visible light spans f = c/λ ≈ 4.0 × 10¹⁴ to 7.5 × 10¹⁴ Hz. The source's range (6 × 10¹² to 6 × 10¹⁴ Hz) covers infrared and part of the visible range, but none of the UV.
+32|Momentum (right +): 8 × 4 − 2 × 1 = 30 = 10v, so v = 3 m s⁻¹. KE before = ½ × 8 × 16 + ½ × 2 × 1 = 65 J. KE after = ½ × 10 × 9 = 45 J. The loss is 20 J.
+33|The constant-speed section gives v = (40 − 10)/5 = 6 m s⁻¹, which is the speed at 5 s. Average a = 6/5 = 1.2 m s⁻², so average F = 800 × 1.2 = 960 N.
+34|The box holds 6 × 5 × 3 = 90 cubes of 8 cm³ each: 30 concrete and 60 steel. Mass = 30 × 16 + 60 × 64 = 480 + 3840 = 4320 g.
+35|λ = v/f = 2v. At t = 0 a peak is at Q, and the next peak is λ behind it, i.e. (λ − 6) behind P. It reaches P after (λ − 6)/v = 0.80 s. So 2v − 6 = 0.8v and v = 5.0 m s⁻¹.
+36|Let S be the source rate and b the background. S + b = 910, and after 2 half-lives S/4 + b = 238. So S = 896 and b = 14. After 600 minutes in total (5 half-lives), S/32 = 28, so the reading is 28 + 14 = 42 cpm.
+37|At terminal speed: weight = upthrust + drag, so ρ<sub>S</sub>Vg = ρ<sub>L</sub>Vg + krv. That gives v = Vg(ρ<sub>S</sub> − ρ<sub>L</sub>)/(rk).
+38|Energy available = initial KE + GPE lost = ½ × 80 × 40² + 80 × 10 × 2000 = 64 000 + 1 600 000 J. Final KE = ½ × 80 × 25 = 1000 J. Work against drag = 1 664 000 − 1000 = 1 663 000 J.
+39|At release the extension is 0.20 m, so the spring stores ½ × 20 × 0.2² = 0.40 J. Rising 0.20 m back to natural length gains mgh = 0.05 × 10 × 0.2 = 0.10 J of GPE. KE = 0.30 J = ½ × 0.05 × v², so v² = 12 and v = √12 m s⁻¹.
+40|a = F/m with F constant and m falling at a constant rate, so a increases. da/dt = Fk/m², which grows as m shrinks. So a is increasing at an increasing rate.

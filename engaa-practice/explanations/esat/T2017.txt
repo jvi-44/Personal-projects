@@ -1,0 +1,20 @@
+1|dy/dx = 3x² − 2x⁻³ + 3x⁻², so y = x³ + x⁻² − 3x⁻¹ + c. y = 5 at x = 1 gives 5 = 1 + 1 − 3 + c, so c = 6.
+2|f(x) = 4x⁻² − 2x⁻³ + ¼x⁻⁴. f′(x) = −8x⁻³ + 6x⁻⁴ − x⁻⁵ and f″(x) = 24x⁻⁴ − 24x⁻⁵ + 5x⁻⁶. So f″(1) = 5.
+3|l: y = 6 − 2x meets the x-axis at 3. The perpendicular through (−6, 0) is y = ½x + 3. They intersect at x = 6/5, y = 18/5. The triangle has base 9, so its area is ½ × 9 × 18/5 = 81/5.
+4|By the remainder theorem, f(−1) = (3 − 8 − 3)(−p − 1) = 8(p + 1) = 24, so p = 2.
+5|x² − 8x + 12 &lt; 0 gives 2 &lt; x &lt; 6, and 3x − 8 &gt; x gives x &gt; 4, so S is 4 &lt; x &lt; 6. That is the solution set of (x − 4)(x − 6) &lt; 0, i.e. x² − 10x + 24 &lt; 0.
+6|The radius to the point of tangency is perpendicular to the tangent, which gives similar right-angled triangles. Tangent length from (20, 0) = √(400 − 144) = 16, and k/20 = 12/16, so k = 15. (Equivalently, the tangent's gradient is −¾.)
+7|AP: p, p + d, p + 2d = p, q, p². GP: p, pr, pr² = p, p², q, so r = p and q = p³. Then p³ − p = d and p² − p = 2d, so 2p³ − p² − p = 0 and p = −½ (since p &lt; 0). So d = 3/8 and S₁₀ = 5(−1 + 27/8) = 95/8.
+8|You need both factors to have the same sign. 1 − 2sin x ≥ 0 on [0, π/6] ∪ [5π/6, π] and cos x ≥ 0 on [0, π/2]. Both are ≥ 0 on 0 ≤ x ≤ π/6, and both are ≤ 0 on π/2 ≤ x ≤ 5π/6.
+9|Completing the square: (x − 9)² + (y − 11)² = 24, so r² = 24. A regular hexagon is 6 equilateral triangles of side r, with area 6 × (√3/4) × 24 = 36√3.
+10|f′(−1) = −6p² − 6p − 3, so the normal's gradient is M = 1/(3(2p² + 2p + 1)). 2p² + 2p + 1 = 2(p + ½)² + ½ has minimum ½, so M<sub>max</sub> = 1/(3 × ½) = 2/3.
+11|Work out terms: 7, 3, 1, −5, 7, 3, 1, −5, … The sequence repeats with period 4, and 100 is a multiple of 4, so x₁₀₀ = x₄ = −5.
+12|Shifting left by 2 gives ∫₀²f(x + 2)dx = ∫₂⁴f(x)dx = A. So ∫₀²[f(x + 2) + 1]dx = A + 2.
+13|x⁴ coefficient: 5ab⁴. x² coefficient: 10a³b². 5ab⁴ = 80a³b² gives b² = 16a², so b = 4a. With positive integers, the smallest a + b is 1 + 4 = 5.
+14|Let a = 2ˣ and b = 2ʸ: a + 3b = 3 and a² − 9b² = (a + 3b)(a − 3b) = 6, so a − 3b = 2. Then a = 5/2 and b = 1/6, and p − q = log₂(a/b) = log₂15.
+15|f″ = −4 &lt; 0, so the curve is concave and the trapezium rule underestimates (1). It also underestimates (2), which is just a translation. Case (3) reflects the graph (y = 12 − f(x + 1)), making it convex, so the rule overestimates.
+16|f′(x) = 6(x + 2). g′(x) = 3(x + 1)(x + 3), which is positive for x &lt; −3 or x &gt; −1. One is increasing and the other decreasing when the derivatives have opposite signs: x ≤ −3 or −2 ≤ x ≤ −1.
+17|F(n) = (1/n)∫₀ⁿ(n − x)dx = n/2, so G(n) = ½ Σ r = n(n + 1)/4. You need n(n + 1) &gt; 600: 24 × 25 = 600 is not enough and 25 × 26 = 650 is, so n = 25.
+18|The translation gives log₁₀x + 2. The stretch gives log₁₀(x/k) = log₁₀x − log₁₀k. These are equal when log₁₀k = −2, so k = 0.01.
+19|The roots of x² + bcx + c³ are c × (roots of x² + bx + c), i.e. pc and qc. Since c &lt; 0 and p &lt; q, qc &lt; pc. The solution is qc &lt; x &lt; pc.
+20|Cosine rule: cos θ = (a + d)(a − 3d)/(2a(a + d)) = (a − 3d)/(2a). With 3d &gt; 2a, cos θ &lt; −½, so θ &gt; 120°. The triangle inequality forces d &lt; a, which keeps θ &lt; 180°.

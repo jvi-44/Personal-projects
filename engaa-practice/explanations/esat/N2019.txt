@@ -1,0 +1,45 @@
+1|(a + b)² − (a − b)² = 4ab, so the value is 4√7√3 = 4√21.
+2|Multiply by 6: 3(3x − 2) − 4(x − 4) &lt; 6x, so 5x + 10 &lt; 6x and x &gt; 10.
+3|(3 − y)/4 = (1 − x/2)², so 1 − x/2 = ±√[(3 − y)/4]. Then x = 2 ± 2√[(3 − y)/4].
+4|R ∝ v². A 20% speed increase multiplies R by 1.2² = 1.44, a 44% increase.
+5|(2, 6): 4p + 2q = 6. (4, −4): 16p + 4q = −4. Doubling the first gives 8p + 4q = 12; subtracting from the second gives 8p = −16. So p = −2, q = 7 and q − p = 9.
+6|3x² − 2x − 1 = (3x + 1)(x − 1), so the fraction becomes 1/[x(x − 1)]. Then 4 − 1/[x(x − 1)] = [4x(x − 1) − 1]/[x(x − 1)] = (4x² − 4x − 1)/[x(x − 1)].
+7|Volume ∝ r³. A 25% smaller radius gives 192 × 0.75³ = 192 × 27/64 = 81 cm³.
+8|Pythagoras: (x + 4)² + (2x + 2)² = 9x², so 5x² + 16x + 20 = 9x². Then 4x² − 16x − 20 = 0, i.e. x² − 4x − 5 = 0, giving x = 5. The legs are 9 and 12, so the area is ½ × 9 × 12 = 54 cm².
+9|In base 3: 3<sup>4x−2</sup> × 3<sup>−3x</sup> = 3<sup>4x</sup>, so x − 2 = 4x and x = −2/3.
+10|Rhombus area = ½ × PR × QS: ½(3x + 2)(8 − 2x) = 11, which simplifies to 3x² − 10x + 3 = 0. So x = 3 or ⅓, giving PR = 11 or 3. The difference is 8.
+11|PR = 5 (3-4-5 triangle). Put R at the origin with PRT along the x-axis. The foot of Q is 4cos(∠QRP) = 4 × 4/5 = 3.2 from R, and Q is 4 × 3/5 = 2.4 high. S is the mirror image, so QS = 2 × 3.2 = 6.4 cm.
+12|p:q:r = 20:28:77 (total 125), so multiply by 3: p = 60, r = 231 and p + r = 291.
+13|P: y = (2/3)x + 4, so p = 4. Q: −1 = 4 + q, so q = −5. p − q = 9.
+14|R − P = (6, 3). Rotating 90° clockwise gives (3, −6), so R moves to (7, −1). Reflecting in the x-axis gives (7, 1).
+15|P(A) = ¼ and P(B) = ¾. P(red) = ¼ × 6/10 + ¾ × 3/15 = 0.15 + 0.15 = 3/10.
+16|TR = TU and angle RTU = 210° − 180° = 30°, so the base angles are 75°. From R, T is on bearing 030°. Turning a further 75° clockwise gives the bearing of U: 105°.
+17|The new number is above the old mean, so the mean must rise (2 ✓). The median could equal an existing number (e.g. when two middle values are equal), so 1 need not hold. The new number could lie inside the old range, so 3 need not hold. 2 only.
+18|Volume = ⅓ × 144h = 48h. Slant height of each face = √(h² + 36), so surface area = 144 + 4 × ½ × 12√(h² + 36). Setting 48h = 144 + 24√(h² + 36) gives 2h − 6 = √(h² + 36). Squaring: 3h² = 24h, so h = 8.
+19|One full oscillation covers 4 amplitudes, so A = 5.6/4 = 1.4 cm. The peak-to-peak spacing is the wavelength: 8.4 cm.
+20|Work = 10 × 25 × 10 × 1.5 = 3750 J (the 2.0 m horizontal distance needs no work against gravity). Power = 3750/150 s = 25 W.
+21|At 8.0 mA the graph gives 1.2 V across the diode. The resistor has 6.0 − 1.2 = 4.8 V across it, so R = 4.8/0.0080 = 600 Ω.
+22|All EM waves travel at c in a vacuum, so the speed ratio is 1.0. f = c/λ, so the frequency ratio is 1.0 × 10⁻⁸. P’s wavelength is 10⁸ times Q’s. Microwaves (~1 cm) and X-rays (~10⁻¹⁰ m) fit this; microwave and radio wavelengths are far too close.
+23|ΔT = 54 000/(0.80 × 900) = 75 °C, so the final temperature is −21 + 75 = 54 °C.
+24|(1) Tension ∝ extension, not length ✗. (2) Tension and weight act on the same body, so they are not a third-law pair ✗. (3) E = ½kx², so doubling x quadruples E ✓. 3 only.
+25|Boyle’s law: p₂ = 1.0 × 10⁵ × (2.0 × 10⁻³)/(4.0 × 10⁻⁴) = 5.0 × 10⁵ Pa. The water supplies 5.0 × 10⁵ − 1.0 × 10⁵ = 4.0 × 10⁵ Pa = ρgh. So h = 4.0 × 10⁵/(1000 × 10) = 40 m.
+26|I<sub>s</sub>/I<sub>p</sub> = N<sub>p</sub>/N<sub>s</sub>, so I<sub>s</sub> = 4.0 × 240/4800 = 0.20 A. Heat in the cables = I²R = 0.04 × 1500 = 60 W.
+27|The flat (melting) section runs from 15 s to 60 s: 45 s × 60 W = 2700 J. m = 2700/100 = 27 g.
+28|Rate of conduction ∝ (area × temperature difference)/length ∝ d²(90 − θ)/l. The lowest rate needs the smallest d (4.0 cm), the longest l (0.80 m) and the smallest difference (θ = 40 °C). That is F.
+29|Reversing the current changes the reading by 4 g, i.e. a force change of 2F = 0.04 N, so F = BIL = 0.02 N. B = 0.02/(2.0 × 0.05) = 0.20 T.
+30|With a alphas and b betas, a + b = 7 and a &gt; b, so (a, b) = (4, 3), (5, 2), (6, 1) or (7, 0). The changes are A − 4a and Z − 2a + b: (A−16, Z−5), (A−20, Z−8), (A−24, Z−11), (A−28, Z−14). Only Z − 8, A − 20 appears in the table.
+31|½ × 4v² = 32 gives v = 4, and ½ × 4v² = 200 gives v = 10. a = 6/3 = 2 m s⁻², so F = 8.0 N.
+32|Each resistor is R. The parallel part (R with 2R) is 2R/3. The voltmeter reads across one of the two bottom resistors, so that branch has 2.0 V, and so does the whole parallel section. Current = 2/(2R/3) = 3/R, so each outer resistor has 3 V. Battery = 3 + 2 + 3 = 8.0 V.
+33|KE = ½(1000)(20²) + ½(2000)(10²) = 300 kJ. Momentum = 20 000 − 20 000 = 0, so both stop. Each craft loses 20 000 kg m s⁻¹ of momentum in 0.10 s, so F = 200 kN.
+34|Total distance = ½(15)(16) + 60(16) + ½(10)(16) = 1160 m, of which 960 m is at constant velocity. 960/1160 = 24/29.
+35|Cross-section = 22² − (22/7) × 7² = 484 − 154 = 330 cm². Volume = 330 × 100 = 33 000 cm³. Mass = 0.100 × 33 000 = 3300 g = 3.30 kg.
+36|6 years is 2 half-lives, so N/4 of X remains. The 3N/4 that decayed became Y, so Y = N + 3N/4 = 7N/4. Ratio X : Y = 1 : 7.
+73|The line y = (4 − x)/2 meets x = 0 at y = 2 and x = −6 at y = 5, and it stays above y = 0. The shape is a trapezium with parallel sides 2 and 5 and width 6. Area = ½(2 + 5) × 6 = 21.
+75|dy/dx = 3x² + 2px + q has roots −1 and 3, so it equals 3(x + 1)(x − 3) = 3x² − 6x − 9. Then 2p = −6 and p = −3.
+77|tan x sin x = sin²x/cos x. Multiply by cos x: 7cos²x + 1 − cos²x = 5cos x, so 6cos²x − 5cos x + 1 = 0. Then cos x = ½ (tan x = √3) or cos x = ⅓ (sin x = 2√2/3, tan x = 2√2).
+79|The circumradius of an equilateral triangle with side 8 is 8/√3, so the circle’s area is 64π/3. The triangle’s area is (√3/4) × 64 = 16√3. Shaded = 64π/3 − 16√3 = (16/3)(4π − 3√3).
+81|Let u = 5<sup>x</sup>. Since 5<sup>2x+1</sup> = 5u², the equation is 15u² − u − 2 = 0, i.e. (5u − 2)(3u + 1) = 0. u &gt; 0, so u = 2/5 and x = log₅(2/5).
+83|Let a = ∫₋₂² f and b = ∫₂⁴ f. Then 2a + b = 4, and 5a − (a + b) = 7 gives 4a − b = 7. Adding: 6a = 11, so a = 11/6 and b = 4 − 11/3 = ⅓.
+85|f(x) = ∫₀ˣ(3 + 2t)⁷dt, so the x⁴ coefficient of f is ¼ × (x³ coefficient of (3 + 2x)⁷). That coefficient is ⁷C₃ × 3⁴ × 2³ = 35 × 81 × 8 = 22 680, and 22 680/4 = 5670.
+87|Solve as simultaneous equations in tan α and sin β. Triple the first and add: 14tan α = 14, so tan α = 1 and α = 45°. Then sin β = ½, so β = 30° or 150°. β = 150° would leave no room for θ, so β = 30° and θ = 180 − 45 − 30 = 105°.
+89|x = −1 is a root: (x + 1)(x² − 3x − 4) = (x + 1)²(x − 4). The squared factor is never negative and the expression is 0 at x = −1, so it is &gt; 0 exactly when x &gt; 4.

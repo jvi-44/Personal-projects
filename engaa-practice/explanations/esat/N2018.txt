@@ -1,0 +1,45 @@
+1|Women who passed = 200 − 143 = 57. Men who passed = 167 − 57 = 110.
+2|V = 2√2x³ and SA = 2x²(2 + 3√2). V = 2 × SA gives 2√2x = 4(2 + 3√2), so x = 2√2 + 6.
+3|The line 2x + 3y + 1 = 0 has gradient −2/3. The points give gradient (p + 1)/(1 − 2p). Setting −2/3: 3p + 3 = 4p − 2, so p = 5.
+4|With QR = w and PQ = 2w: 2w² = 96, so w² = 48. The diagonal is a diameter: d² = 5w² = 240, so r = √60 = 2√15.
+5|N = kT² with 64 = 256k, so k = ¼. The expected number on the warm day is 256 − 31 = 225 = T²/4, so T² = 900 and T = 30.
+6|Volumes scale as (5/4)³ = 125/64. 320 × 125/64 = 625 cm³.
+7|np = 2q + 10(n − 2), so n(p − 10) = 2q − 20 and n = 2(q − 10)/(p − 10).
+8|The two lines meet at x = 6. On x = 0 they reach y = 10 and y = −23 (a base of 33). Area = ½ × 33 × 6 = 99.
+9|Volume scales by 40⁻³: 12π × 10⁶ cm³ ÷ 64 000 = 187.5π cm³. Mass = (4/3) × 187.5π = 250π g.
+10|The pentagon's interior angle is 108°, so angle TSU = 108° − 60° = 48°. ST = SU, so angle STU = (180° − 48°)/2 = 66°.
+11|×2.25 then ×0.6 gives m = 1.35 = 27/20.
+12|0.8a = (2/3)b gives a/b = 5/6, so x − y = 5 − 6 = −1.
+13|Q = 5(sin 65°, cos 65°) ≈ (4.53, 2.11) and R = Q + 5(sin 155°, cos 155°) ≈ (6.64, −2.42). The vector from R to P is (−6.64, 2.42), which points 20° north of west: a bearing of 290°.
+14|(3n − 1)/(7n + 5) = ⅓ gives n = 4, so 33 students. Tomato only = (3n + 1) − n = 9. P = 9/33 = 3/11.
+15|Alternate segment: angle SQP = 75°. Since QS = QP, angle QSP = 52.5°. Angle PSO = 90° − 75° = 15°, so angle QSO = 52.5° − 15° = 37.5°.
+16|½b(b + 3) = 14 gives b = 4 and h = 7. s² = 49 + 4 = 53, so s ≈ 7.3, between 7 and 8.
+17|p + q = 2 and 4p + q = 17 give p = 5 and q = −3. (p − q)/(p + q) = 8/2 = 4.
+18|At most one red sweet is ever taken, so you need at least two greens: the first two must both be green. P = 6/12 × 5/11 = 5/22.
+19|5 alphas lower Z by 10 and 2 β⁻ raise it by 2, so Y has 8 fewer protons.
+20|V = 0.20 × 30 = 6.0 V. Without R₃: I = 6/27 = 0.22 A.
+21|UV wavelengths are below 400 nm, so its frequency is above 3 × 10⁸/400 × 10⁻⁹ = 7.5 × 10¹⁴ Hz. That is a minimum frequency.
+22|Distance = ½(20)(12) + 60(12) + ½(40)(12) = 1080 m. Average speed = 1080/120 = 9.0 m s⁻¹.
+23|95% of 100 W × 600 s = 57 000 J is wasted.
+24|Conduction rate ∝ A(T₁ − T₂)/l.
+25|Electrical energy = 400 × 1250 × 4.0 = 2.0 MJ. 45% becomes KE: 900 000 J.
+26|KE = p²/2m, so m = 24²/(2 × 96) = 3.0 kg.
+27|The count levels off at 20 counts per minute (background). The source's own rate is 100 at the start and falls to 50 (a reading of 70) at about 40 minutes.
+28|mg − 12 = ma gives 10m − 12 = 2m, so m = 1.5 kg.
+29|Each oscillation covers 4 × 4.0 = 16 cm, and there are 200 oscillations in 20 s. 200 × 0.16 m = 32 m.
+30|C + V = 290 and C + 0.9V = 270, so 0.1V = 20, V = 200 and C = 90 g.
+31|Terminal speed is the gradient of the straight part: 100 m/2 s = 50 m s⁻¹. Then k × 50² = 1000, so k = 0.40.
+32|Same f: 1.5f − 1.2f = 18 gives f = 60 Hz. New speed = 1.2 × 60 = 72 cm s⁻¹.
+33|Nucleons: 1 + 235 = 88 + 145 + n, so 3 neutrons. La has Z = 92 − 35 = 57, and β⁻ decay makes it 58.
+34|X ∥ Y = R/2 in series with Z = R, so the total is 3R/2, and X gets ⅓ of the battery voltage. V²/(1.5R) = 18 gives V²/R = 27. P<sub>X</sub> = (V/3)²/R = 3.0 W.
+35|At 2.0 A the lamp has about 6 V (from the graph) and the resistor 8 V, so the supply is 14 V. With R = 0 the lamp takes all 14 V, and the graph gives I ≈ 3.0 A. P ≈ 14 × 3 = 42 W.
+36|X and Y are equally far from the epicentre, but it need not lie between them. Z is 240 km further from the epicentre than X and Y are, which fixes neither Z's distance from X and Y nor makes them equal. None must be true.
+73|9 − x² = 5 at x = ±2. Area = ∫₋₂²(4 − x²)dx = 16 − 16/3 = 32/3.
+75|sin θ(2sin²θ − 1) = 0. sin θ = 0 gives 0 and π, and sin θ = ±1/√2 gives −π/4, π/4 and 3π/4. That is 5 solutions.
+77|Gradient 6x − 2 = 1 at x = ½, where y = ¾. The tangent y = x + k passes through (½, ¾), so k = ¼.
+79|a + 12d = 6a gives 12d = 5a, and a + 10d = 2(a + 4d) − 1 gives a = 2d + 1. So d = 2.5 and a = 6, and the 3rd term is 11.
+81|The sum is log₂ of a telescoping product: (5/4)(6/5)…(64/63) = 64/4 = 16. log₂16 = 4.
+83|The centre is (−3, 2) and the radius is √5. Centre-to-P distance = √(tangent² + r²) = √(75 + 5) = 4√5. Shortest distance to the circle = 4√5 − √5 = 3√5.
+85|(1 − 2x)⁵(1 + 2x)⁵ = (1 − 4x²)⁵, which has only even powers of x. The x³ coefficient is 0.
+87|∫₀²xᵐdx = 2<sup>m+1</sup>/(m + 1) and ∫₀²x<sup>m+1</sup>dx = 2<sup>m+2</sup>/(m + 2). Dividing the second by the first: 2(m + 1)/(m + 2) = (32√2/9)/(16√2/7) = 14/9. So 9m + 9 = 7m + 14 and m = 5/2.
+89|2x²y = 576, so y = 288/x². Surface area = 4x² + 6xy = 4x² + 1728/x. Setting the derivative to zero: 8x = 1728/x², so x = 6 and y = 8. (This stationary point is actually a minimum.) The faces are 72, 96 and 48 cm², so the largest is 96 cm².

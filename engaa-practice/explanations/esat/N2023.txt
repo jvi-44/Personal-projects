@@ -1,0 +1,40 @@
+1|Each cylinder’s surface area = 2πr² + 2πr(4r) = 10πr². Ten cylinders give 100πr² = 4πR², so R² = 25r² and R = 5r.
+2|(1) Both sides equal (47 × 71)/(93 × 33) ✓. (2) Both equal 0.53 × 84 = 0.84 × 53 ✓. (3) 12 ≠ 18 ✗. So 1 and 2.
+3|(q − r)/(s − x) = p − y, so s − x = (q − r)/(p − y). Then x = s − (q − r)/(p − y).
+4|Sum = 72, so 2x + y = 19. Median = (x + y)/2 = 7.25, so x + y = 14.5. Then x = 4.5, which appears twice, so the mode is 4.5.
+5|Put W at the origin: M = (0, ⅓), N = (¾, 1), P = (1, ⅕). Shoelace: area = ½|0 + ¾(⅕ − ⅓) + 1(⅓ − 1)| = ½|−1/10 − 2/3| = ½ × 23/30 = 23/60.
+6|4(x − 2)/((x + 6)(x − 2)) × x(x − 6)(x + 6)/(x − 6) = 4x.
+7|In powers of 3: 27<sup>2(x−2)</sup> = 3<sup>6x−12</sup>, 9<sup>2x−3</sup> = 3<sup>4x−6</sup> and 81<sup>3/2</sup> = 3⁶. So (6x − 12) − (4x − 6) = 6, i.e. 2x − 6 = 6 and x = 6.
+8|x = (6 ± √60)/6 = 1 ± √15/3. 3p + 2q = 5 + (3 − 2)√15/3 = 5 + √15/3.
+9|Coach’s new salary = 0.8 × 1.15 = 0.92 of the old player salary. Player’s new salary = 1.38. 0.92/1.38 = 2/3, i.e. 66⅔%.
+10|tan θ = √2: the sides are k and √2k with hypotenuse √3k = 3√6, so k = 3√2. Area = ½ × k × √2k = (√2/2) × 18 = 9√2.
+11|One repetition covers 400 m in 0.1/6 + 0.2/10 + 0.1/20 = 1/60 + 1/50 + 1/200 = 25/600 = 1/24 h. Average speed = 0.4 km ÷ (1/24) h = 9.6 km h⁻¹.
+12|The given line has gradient ¾, so the perpendicular gradient is −4/3. (2q − 6)/(q + 2) = −4/3 gives 10q = 10, so q = 1.
+13|The area ratio is 2, so the length ratio is √2 and the volume ratio is 2√2. V(2√2 − 1) = 7√2, so V = 7√2(2√2 + 1)/(8 − 1) = 4 + √2.
+14|y = 180/x², so y = 80 gives x = 1.5. z = 0.2x = 0.3.
+15|The numerator is 10 000a + 2000a = 12 000a. Dividing by 0.3 gives 40 000a. Squaring: 1.6 × 10⁹ a² = 8 × 10⁹, so a² = 5 and a = ±√5. The difference is 2√5.
+16|x² + 6x + 7 = (x + 3)² − 2 has minimum −2, so V<sub>min</sub> = 10⁻² = 0.01.
+17|PY = 2 × XP = (8, −6), so Y = (−8 + 8, 5 − 6) = (0, −1). Q = Y − QY = (0 − 7, −1 − 6) = (−7, −7).
+18|a + d = 2(a + 7d) gives a = −13d. The 5th term is a + 4d = −9d = 9/4, so d = −¼ and a = 13/4. The 20th term is a + 19d = −6/4 = −3/2.
+19|2<sup>sin x</sup> × 3<sup>−sin x</sup> = (2/3)<sup>sin x</sup>. The base is less than 1, so the expression is largest when sin x = −1, giving (2/3)⁻¹ = 3/2.
+20|Either way, the second bag ends up with x + 4 counters. P(yellow) = (3/5)(2/(x + 4)) + (2/5)(3/(x + 4)) = 12/(5(x + 4)) = 0.2, so x = 8. P(red) = 8/12 = 2/3.
+21|Moon gravity g = W/m, and v² = 2gh, so v = √(2Wh/m).
+22|Deceleration a = F/m = 1000/10 000 = 0.10 m s⁻². Stopping distance s = v²/(2a) = 4/0.2 = 20 m.
+23|E = I²Rt = 0.25 × 8.0 × 300 = 600 J.
+24|With the switch open, one resistor carries 1.0 A at 1.0 W, so V = 1.0 V and R = 1.0 Ω. Closing the switch adds a 2R branch in parallel. The ammeter’s branch still has 1.0 V across 1.0 Ω, so it still reads 1.0 A. The new branch carries 0.5 A, so the battery supplies 1.5 A × 1.0 V = 1.5 W.
+25|Total distance = 8.5 × 20 = 170 m = 5t + 10(20 − t), so 5t = 30 and t = 6.0 s.
+26|E = ½kx²: 0.015 = ½k × 25 × 10⁻⁴ m², so k = 12 N m⁻¹. Here x² = 25 cm², so x = 0.05 m and F = kx = 0.60 N.
+27|X has Z = 2 × 2 = 4 and A = 4 × 3 = 12. β⁻ decay raises Z by 1 and leaves A unchanged: ¹²₅Z.
+28|Weight = pressure × area = 0.45 × 12 = 5.4 N, so the mass is 0.54 kg = 540 g. Density = 540/180 = 3.0 g cm⁻³.
+29|Rotating X clockwise by (45° − θ) turns the reflected ray through 2(45° − θ). To send the ray back out horizontally, Y must turn the same way through half that angle: clockwise through 45° − θ.
+30|X = 2N × 2<sup>−t/2</sup> and Y = N × 2<sup>−t/3</sup>. These are equal when 1 − t/2 = −t/3, so t/6 = 1 and t = 6 days.
+31|Before T, only the first stone moves: separation = ½gt², a curve. After T, the speed difference stays at gT, so the separation grows linearly. That is graph A.
+32|In equilibrium the same heat flow passes through both layers. The metal conducts well, so it needs only a small temperature drop. The insulator needs a large drop over the same thickness. The graph falls gently, then steeply: A.
+33|Melting all the ice needs 10 × 330 = 3300 J, but cooling the water to 0 °C releases only 20 × 4.2 × 30 = 2520 J. Some ice stays solid, so T = 0 °C.
+34|Power delivered to the town = 33 000 × 1500 = 4.95 × 10⁷ W. The transformers are ideal, so the cables carry the same power: V = 4.95 × 10⁷/450 = 110 000 V. The step-up ratio is 1500/300 = 5, so the station outputs 22 000 V.
+35|In the glass the wavelength is ⅔L, so a thickness t holds 3t/(2L) wavelengths instead of t/L. The extra is t/(2L) = 10, so t = 20L.
+36|Each oscillation a particle travels 4 × 3.0 = 12 cm, and there are 12 oscillations per second. Average speed = 144 cm s⁻¹. The wavelength is a distractor.
+37|Current flows round the ring from X to Y. Where the current runs parallel to the field (top and bottom) there is no force. The left and right sides carry current in opposite vertical directions, so they feel equal and opposite forces into and out of the page. The ring turns about an axis in the plane of the page, perpendicular to the field.
+38|P = I × (V<sub>X</sub> + V<sub>Y</sub>) = I(10I + 4) = 6. So 5I² + 2I − 3 = 0, i.e. (5I − 3)(I + 1) = 0, and I = 3/5 A.
+39|Floating, 0.8L is submerged. Pushing down a further L/10 adds an upthrust of ρ<sub>w</sub>gL²(L/10) on a mass of 0.8ρ<sub>w</sub>L³. a = g/(10 × 0.8) = 1.25 m s⁻².
+40|Boyle’s law: the pressure at the bottom is 720/90 = 8 atmospheres, so the water adds 7 atm over depth d. At d/2 the pressure is 1 + 3.5 = 4.5 atm, so V = 720/4.5 = 160 cm³.
