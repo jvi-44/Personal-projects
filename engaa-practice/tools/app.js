@@ -27,7 +27,13 @@ async function initDb() {
     if (!id) return;
     dbCol = db.collection('data/users/' + id);
     const snap = await dbCol.get();
-    const remote = snap.docs.map(d => d.data()).filter(a => a && a.id);
+    const docs = snap.docs.map(d => ({id: d.id, data: d.data()}));
+    const remote = docs.filter(d => d.id !== 'current').map(d => d.data).filter(a => a && a.id && a.qns);
+    const cur = docs.find(d => d.id === 'current')?.data;
+    if (cur && (cur.updatedAt || 0) > ((active && active.updatedAt) || 0)) {
+      active = cur.active || null;
+      if (active) LS.set('engaa.active', active); else LS.del('engaa.active');
+    } else if (active) pushActive(true);
     const byId = new Map(remote.map(a => [a.id, a]));
     for (const a of attempts) if (!byId.has(a.id)) { byId.set(a.id, a); try { await dbCol.doc(a.id).set(a); } catch (e) {} }
     attempts = [...byId.values()].sort((a, b) => a.finishedAt - b.finishedAt);
@@ -65,6 +71,7 @@ const ensureLoaded = a => isSpeed(a) ? Promise.all([...new Set(a.qns.map(id => S
 
 /* ---------- helpers ---------- */
 const fmt = s => { s = Math.max(0, Math.round(s)); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60; return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(x).padStart(2, '0'); };
+const fmtClock = s => { s = Math.floor(s || 0); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
 const fmtShort = s => { s = Math.round(s || 0); return s < 60 ? s + 's' : Math.floor(s / 60) + 'm ' + String(s % 60).padStart(2, '0') + 's'; };
 const pct = (a, b) => b ? Math.round(100 * a / b) : 0;
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
@@ -111,7 +118,8 @@ function renderDash() {
   if (active) {
     const sp = isSpeed(active);
     const what = sp ? 'Speed practice · ' + speedLabel(active.settings) : active.year + (active.mode === 'mistakes' ? ' mistakes retry' : ' paper');
-    html += `<div class="resume"><div><div class="eyebrow">${sp ? 'Practice in progress' : 'Test in progress'}</div><div style="margin-top:4px"><b>${esc(what)}</b> · ${Object.keys(active.answers).length}/${active.qns.length} answered${sp ? '' : ` · <span class="mono">${fmt((active.deadline - Date.now()) / 1000)}</span> left. The clock keeps running.`}</div></div>
+    const pz = !!active.pausedAt;
+    html += `<div class="resume"><div><div class="eyebrow">${pz ? 'Paused' : sp ? 'Practice in progress' : 'Test in progress'}</div><div style="margin-top:4px"><b>${esc(what)}</b> · ${Object.keys(active.answers).length}/${active.qns.length} answered · ${sp ? `<span class="mono">${fmt(elapsedOf(active))}</span> elapsed` : `<span class="mono">${fmt(remainingOf(active))}</span> left`}${pz ? '. The clock is stopped until you resume.' : sp ? '' : '. The clock is still running.'}</div></div>
       <div style="display:flex;gap:8px"><button class="btn primary" data-act="resume">Resume</button><button class="btn ghost" data-act="abandon">Discard</button></div></div>`;
   }
   html += `<section class="summary" aria-label="Overview">
@@ -221,7 +229,28 @@ async function advance() {
   active.qns.push(id); active.idx++;
   return true;
 }
-function saveActive() { LS.set('engaa.active', active); }
+function saveActive() { if (!active) return; active.updatedAt = Date.now(); LS.set('engaa.active', active); pushActive(false); }
+/* the in-progress test is mirrored to the account (debounced) so a paused paper can be picked up again later */
+let pushTimer = null;
+function pushActive(now) {
+  if (!dbCol) return;
+  clearTimeout(pushTimer);
+  const send = () => dbCol.doc('current').set({active: active || null, updatedAt: (active && active.updatedAt) || Date.now()}).catch(() => {});
+  if (now) send(); else pushTimer = setTimeout(send, 3000);
+}
+function clearActive() { active = null; LS.del('engaa.active'); if (dbCol) { clearTimeout(pushTimer); dbCol.doc('current').set({active: null, updatedAt: Date.now()}).catch(() => {}); } }
+const elapsedOf = a => (Date.now() - a.startedAt - (a.pausedMs || 0) - (a.pausedAt ? Date.now() - a.pausedAt : 0)) / 1000;
+const remainingOf = a => ((a.pausedAt || Date.now()) - a.deadline) / -1000;
+const qTime = (a, id) => ((a.times || {})[id] || 0);
+function pauseActive() { if (active && !active.pausedAt) { trackTime(); active.pausedAt = Date.now(); saveActive(); pushActive(true); } }
+function resumeActive() {
+  if (!active || !active.pausedAt) return;
+  const d = Date.now() - active.pausedAt;
+  if (active.deadline) active.deadline += d;
+  active.pausedMs = (active.pausedMs || 0) + d;
+  active.pausedAt = null; active.lastTick = Date.now();
+  saveActive();
+}
 
 function hsHtml(q, cls) {
   return q.hs.map((r, i) => { const L = q.o[i]; const c = cls(L); return c === null ? '' :
@@ -250,7 +279,8 @@ function renderTest() {
     if (g !== group) { nav += `<div class="part-sep">${g}</div>`; group = g; }
     const label = sp ? i + 1 : m;
     const res = sp && active.answers[m] ? (active.answers[m] === mq.a ? ' style="background:var(--ok);border-color:var(--ok);color:#fff"' : ' style="background:var(--bad);border-color:var(--bad);color:#fff"') : '';
-    nav += `<button class="nb ${active.answers[m] ? 'ans' : ''} ${i === active.idx ? 'cur' : ''} ${active.flags.includes(m) ? 'fl' : ''}"${res} data-act="jump" data-i="${i}" aria-label="Question ${label}">${label}</button>`;
+    const tm = qTime(active, m);
+    nav += `<button class="nb ${active.answers[m] ? 'ans' : ''} ${i === active.idx ? 'cur' : ''} ${active.flags.includes(m) ? 'fl' : ''} ${!sp && tm > PER_Q ? 'over' : ''}"${res} data-act="jump" data-i="${i}" aria-label="Question ${label}, ${fmtShort(tm)} spent"><span>${label}</span><small class="nt" data-i="${i}">${tm >= 1 ? fmtClock(tm) : ''}</small></button>`;
   });
   const unanswered = active.qns.length - answered;
   const eyebrow = sp ? `Speed practice · ${esc(speedLabel(active.settings))} · from ${y} Q${n}`
@@ -263,8 +293,11 @@ function renderTest() {
 
   app.innerHTML = topbar() + `
   <div class="test-head"><div><div class="eyebrow">${eyebrow}</div>
-    <h2>Question ${sp ? active.idx + 1 : n} <span class="muted mono" style="font-size:15px;font-weight:400">${sp ? `(${Object.keys(active.answers).filter(k => active.answers[k] === qOf(active, k)?.a).length} correct so far)` : `(${active.idx + 1} of ${active.qns.length})`}</span></h2></div></div>
-  <div class="test-grid">
+    <h2>Question ${sp ? active.idx + 1 : n}<span class="qclock ${locked ? 'done' : ''}" id="qclock" title="Time on this question"><i aria-hidden="true"></i><b>${fmtClock(qTime(active, id))}</b></span> <span class="muted mono" style="font-size:15px;font-weight:400">${sp ? `(${Object.keys(active.answers).filter(k => active.answers[k] === qOf(active, k)?.a).length} correct so far)` : `(${active.idx + 1} of ${active.qns.length})`}</span></h2></div></div>
+  ${active.pausedAt ? `<section class="paused" role="dialog" aria-labelledby="ph"><div class="eyebrow">Paused</div><h2 id="ph">Your paper is paused</h2>
+    <p>${sp ? `Elapsed time is frozen at <b class="mono">${fmt(elapsedOf(active))}</b>.` : `The clock is stopped with <b class="mono">${fmt(remainingOf(active))}</b> left.`} ${Object.keys(active.answers).length} of ${active.qns.length} ${sp ? 'answered' : 'answered so far'}. Your answers and times are saved, so you can close this page and come back later.</p>
+    <div class="acts"><button class="btn primary" data-act="unpause">Resume</button><button class="btn" data-act="exit">Back to dashboard</button></div></section>` : ''}
+  <div class="test-grid" ${active.pausedAt ? 'hidden' : ''}>
     <div class="qpane">
       <div class="scan-wrap"><div class="scan ${locked ? 'review' : ''}" style="aspect-ratio:${q.w}/${q.h}"><img src="${q.img}" alt="Question ${n} from the ${y} paper" width="${q.w}" height="${q.h}">${hs}</div></div>
       <div class="sheet"><span class="eyebrow">Your answer</span><div class="lozenges">${[...q.o].map(L => `<button class="loz ${lozCls(L)}" data-act="pick" data-l="${L}" aria-pressed="${sel === L}" ${locked ? 'disabled' : ''}>${L}</button>`).join('')}</div>
@@ -281,7 +314,8 @@ function renderTest() {
       <div class="legend">${sp ? '<span><i style="background:var(--ok);border-color:var(--ok)"></i>Correct</span><span><i style="background:var(--bad);border-color:var(--bad)"></i>Wrong</span>' : '<span><i class="a"></i>Answered</span>'}<span><i></i>Blank</span><span><i class="f"></i>Flagged</span></div>
       <button class="btn primary" style="width:100%;justify-content:center;margin-top:14px" data-act="ask-submit">${sp ? 'Finish practice' : 'Submit test'}</button>
       <div id="confirm"></div>
-      <div class="kbd"><kbd>A</kbd>–<kbd>H</kbd> choose · <kbd>←</kbd><kbd>→</kbd> move · <kbd>M</kbd> flag</div>
+      <button class="btn" style="width:100%;justify-content:center;margin-top:8px" data-act="pause">❚❚ Pause and save</button>
+      <div class="kbd"><kbd>A</kbd>–<kbd>H</kbd> choose · <kbd>←</kbd><kbd>→</kbd> move · <kbd>M</kbd> flag · <kbd>P</kbd> pause</div>
     </aside>
   </div>`;
   if (view.confirm) showConfirm(unanswered);
@@ -289,17 +323,24 @@ function renderTest() {
   clearInterval(timerId); document.querySelector('.timer')?.remove();
   const t = document.createElement('div');
   t.className = 'timer' + (sp ? ' up' : ''); t.setAttribute('role', 'timer'); t.setAttribute('aria-label', sp ? 'Time elapsed' : 'Time remaining');
-  t.innerHTML = '<span class="dot"></span><b></b>';
+  t.innerHTML = `<span class="dot"></span><b></b><button class="tbtn" data-act="${active.pausedAt ? 'unpause' : 'pause'}" aria-label="${active.pausedAt ? 'Resume' : 'Pause'}">${active.pausedAt ? '▶' : '❚❚'}</button>`;
+  t.addEventListener('click', e => { const b = e.target.closest('[data-act]'); if (b) handleAct(b); });
+  t.classList.toggle('is-paused', !!active.pausedAt);
   document.body.appendChild(t);
   const tick = () => {
     if (!active) { clearInterval(timerId); t.remove(); return; }
     trackTime();
-    if (isSpeed(active)) { t.querySelector('b').textContent = fmt((Date.now() - active.startedAt) / 1000); return; }
-    const left = (active.deadline - Date.now()) / 1000;
+    const cid = active.qns[active.idx], qt = qTime(active, cid);
+    const qc = document.getElementById('qclock');
+    if (qc) { qc.querySelector('b').textContent = fmtClock(qt); qc.classList.toggle('over', !isSpeed(active) && qt > PER_Q); }
+    const nt = document.querySelector(`.nt[data-i="${active.idx}"]`);
+    if (nt) { nt.textContent = qt >= 1 ? fmtClock(qt) : ''; nt.parentElement.classList.toggle('over', !isSpeed(active) && qt > PER_Q); }
+    if (isSpeed(active)) { t.querySelector('b').textContent = fmt(elapsedOf(active)); return; }
+    const left = remainingOf(active);
     t.querySelector('b').textContent = fmt(left);
     t.classList.toggle('warn', left <= 300 && left > 60);
     t.classList.toggle('crit', left <= 60);
-    if (left <= 0) submit(true);
+    if (left <= 0 && !active.pausedAt) submit(true);
   };
   tick(); timerId = setInterval(tick, 250);
 }
@@ -311,6 +352,7 @@ function trackTime() {
   const now = Date.now();
   const dt = (now - (active.lastTick || now)) / 1000;
   active.lastTick = now;
+  if (active.pausedAt) return;
   if (document.hidden || dt <= 0 || dt > 5) return;
   const cid = active.qns[active.idx];
   if (isSpeed(active) && active.answers[cid]) return;
@@ -327,15 +369,16 @@ async function submit(timedOut = false) {
   if (!active) return;
   trackTime();
   clearInterval(timerId); timerId = null;
-  const a = active; active = null; LS.del('engaa.active');
+  const a = active; clearActive();
   const sp = isSpeed(a);
   if (sp) { a.qns = a.qns.filter(id => a.answers[id]); a.flags = a.flags.filter(id => a.answers[id]); if (!a.qns.length) return go({name: 'dash'}); }
+  if (a.pausedAt) { const d = Date.now() - a.pausedAt; if (a.deadline) a.deadline += d; a.pausedMs = (a.pausedMs || 0) + d; a.pausedAt = null; }
   const finishedAt = sp ? Date.now() : Math.min(Date.now(), a.deadline);
   const key = {}, parts = {};
   let score = 0;
   for (const id of a.qns) { const q = qOf(a, id); key[id] = q.a; parts[id] = q.p; if (a.answers[id] === q.a) score++; }
   const rec = {id: a.id, year: a.year, mode: a.mode, qns: a.qns, answers: a.answers, flags: a.flags, key, parts, score, total: a.qns.length,
-    startedAt: a.startedAt, finishedAt, limit: a.limit, used: sp ? (finishedAt - a.startedAt) / 1000 : Math.min(a.limit, (finishedAt - a.startedAt) / 1000), timedOut: !!timedOut};
+    startedAt: a.startedAt, finishedAt, limit: a.limit, used: sp ? (finishedAt - a.startedAt - (a.pausedMs || 0)) / 1000 : Math.max(0, Math.min(a.limit, a.limit - (a.deadline - finishedAt) / 1000)), timedOut: !!timedOut};
   if (sp) rec.settings = a.settings;
   rec.times = {};
   for (const id of a.qns) rec.times[id] = Math.round(((a.times || {})[id] || 0) * 10) / 10;
@@ -417,18 +460,22 @@ function fillImg(d) {
 }
 
 /* ---------- events ---------- */
-app.addEventListener('click', e => {
-  const b = e.target.closest('[data-act]'); if (!b || b.disabled) return;
+app.addEventListener('click', e => { const b = e.target.closest('[data-act]'); if (b) handleAct(b); });
+function handleAct(b) {
+  if (b.disabled) return;
   const act = b.dataset.act;
+  if (act === 'pause') { pauseActive(); return renderTest(); }
+  if (act === 'unpause') { resumeActive(); return renderTest(); }
+  if (act === 'exit') { pauseActive(); return go({name: 'dash'}); }
   if (act === 'home') return go({name: 'dash'});
   if (act === 'start') return startTest(+b.dataset.y, 'full');
   if (act === 'retry') return startTest(+b.dataset.y, 'mistakes');
   if (act === 'speed') return startSpeed();
   if (act === 'speed-again') { go({name: 'dash'}); document.querySelector('.speed')?.scrollIntoView({block: 'center'}); return; }
   if (act === 'pref') { const k = b.dataset.k; speedPrefs[k] = b.dataset.v; LS.set('engaa.speedPrefs', speedPrefs); return renderDash(); }
-  if (act === 'resume') return go({name: 'test'});
+  if (act === 'resume') { resumeActive(); return go({name: 'test'}); }
   if (act === 'abandon') {
-    if (b.dataset.sure) { active = null; LS.del('engaa.active'); return render(); }
+    if (b.dataset.sure) { clearActive(); return render(); }
     b.dataset.sure = '1'; b.textContent = 'Discard answers?'; b.classList.add('primary'); return;
   }
   if (act === 'review') return go({name: 'review', id: b.dataset.id, filter: 'all'});
@@ -439,7 +486,7 @@ app.addEventListener('click', e => {
     if (view.filter !== 'all') { view.filter = 'all'; renderReview().then(jump); } else jump();
     return;
   }
-  if (!active) return;
+  if (!active || active.pausedAt) return;
   trackTime();
   const id = active.qns[active.idx];
   const locked = isSpeed(active) && active.answers[id];
@@ -454,9 +501,11 @@ app.addEventListener('click', e => {
   else if (act === 'submit') { return submit(false); }
   saveActive(); renderTest();
   if (act === 'ask-submit') document.getElementById('confirm')?.scrollIntoView({block: 'nearest'});
-});
+}
 document.addEventListener('keydown', e => {
   if (view.name !== 'test' || !active || e.metaKey || e.ctrlKey || e.altKey) return;
+  if (e.key.toUpperCase() === 'P') { e.preventDefault(); if (active.pausedAt) resumeActive(); else pauseActive(); return renderTest(); }
+  if (active.pausedAt) return;
   const id = active.qns[active.idx], q = qOf(active, id); if (!q) return;
   const k = e.key.toUpperCase();
   const locked = isSpeed(active) && active.answers[id];
@@ -469,7 +518,8 @@ document.addEventListener('keydown', e => {
 });
 
 /* ---------- boot ---------- */
-if (active && !isSpeed(active) && Date.now() >= active.deadline) {
+if (active && active.pausedAt) { render(); loadMeta().catch(() => {}); }
+else if (active && !isSpeed(active) && Date.now() >= active.deadline) {
   ensureLoaded(active).then(() => submit(true)).catch(() => { active = null; LS.del('engaa.active'); render(); });
 } else if (active) { view = {name: 'test'}; loadMeta().catch(() => {}).then(render); }
 else render();
