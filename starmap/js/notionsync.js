@@ -20,7 +20,7 @@ export function dayLines(blocks) {
   for (const b of [...blocks].sort((a, c) => a.start - c.start)) {
     const time = `\\[${P.notionTime(b.start)}-${P.notionTime(b.end)}\\]`;
     if (b.type === "primary" || b.type === "secondary") out.push({ text: `${time} ${b.type === "primary" ? "★ " : ""}${esc(b.title)}${b.chunk ? ` (${b.chunk})` : ""}`, checked: !!b.done });
-    else if (b.type === "fixed") out.push({ text: `${time} ${esc(b.title)}`, checked: !!b.done });
+    else if (b.type === "fixed" && !/^(sleep|nap)\b/i.test(b.title)) out.push({ text: `${time} ${esc(b.title)}`, checked: !!b.done }); // rest isn't a to-do
     else if (b.type === "admin") (b.items?.length ? b.items : [b.title]).forEach((t) => out.push({ text: `${time} ${esc(t)}`, checked: !!b.done }));
   }
   return out;

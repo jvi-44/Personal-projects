@@ -8,8 +8,17 @@ const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const IN_ARTIFACT = typeof window !== "undefined" && !!window.ARTIFACT;
-const today = () => P.iso(new Date());
-const nowMin = () => { const d = new Date(); return d.getHours() * 60 + d.getMinutes(); };
+/* "Today" is the day you're living: after midnight, a day planned to run late is still today. */
+function clockNow() {
+  const n = new Date(), m = n.getHours() * 60 + n.getMinutes(), d = P.iso(n), prev = P.addDays(d, -1), pd = S.days[prev];
+  if (pd?.plan && m < 12 * 60) {
+    const end = Math.max(bnd(prev).sleep, ...pd.plan.blocks.filter((b) => b.type !== "flex" && !b.done).map((b) => b.end));
+    if (end > P.DAY + m) return { d: prev, m: m + P.DAY };
+  }
+  return { d, m };
+}
+const today = () => clockNow().d;
+const nowMin = () => clockNow().m;
 const PLACE = (k) => C.PLACES[k] || C.PLACES.home;
 const SEG = [["morning", "Morning"], ["afternoon", "Afternoon"], ["evening", "Evening"]];
 const DOW3 = (d) => P.DOW[P.parseISO(d).getDay()].slice(0, 3);
@@ -22,7 +31,7 @@ const blankTask = (id) => ({ id, title: "", min: 60, kind: "auto", when: "any", 
 const defaultSettings = () => ({ ...structuredClone(P.DEFAULT_SETTINGS), routinesOn: { morning: true, evening: true }, places: { morning: "home", afternoon: "home", evening: "home" } });
 const FIRST_WEEK = "2026-09-27";
 function fresh() {
-  return { settings: defaultSettings(), pool: [], weeks: { [FIRST_WEEK]: { theme: "After Prelims", notion: { title: "ЩΣΣK After Prelims", state: "linked" } } }, days: {}, habits: {}, placeMemory: {}, ui: { scope: "today", notionOpen: true }, savedAt: 0 };
+  return { settings: defaultSettings(), pool: [], memory: [], weeks: { [FIRST_WEEK]: { theme: "After Prelims", notion: { title: "ЩΣΣK After Prelims", state: "linked" } } }, days: {}, habits: {}, placeMemory: {}, ui: { scope: "today", notionOpen: true }, savedAt: 0 };
 }
 function migrate(s) {
   const f = fresh();
@@ -34,6 +43,23 @@ function migrate(s) {
     }
   }
   for (const dd of Object.values(out.days)) for (const t of [...(dd.inputs?.primary || []), ...(dd.inputs?.secondary || [])]) { t.when ||= "any"; delete t.where; }
+  out.memory = Array.isArray(s.memory) ? s.memory : [];
+  const wake0 = P.hm(out.settings.wake) ?? 300;
+  for (const dd of Object.values(out.days)) {
+    // the last check-in reply becomes the start of the day's check-in log
+    if (!dd.checkins) dd.checkins = dd.checkinReply ? [{ at: dd.checkinReply.at, clock: null, text: "", reply: dd.checkinReply.text, tip: dd.checkinReply.tip || "", ai: true }] : [];
+    delete dd.checkinReply;
+    dd.memo ||= [];
+    // blocks placed before wake-up were meant for after midnight (the schedule couldn't say so before)
+    const night = new Set(out.settings.eveningRoutine.map(([, t]) => t));
+    let shifted = 0;
+    if (!dd.inputs?.wake) for (const b of dd.plan?.blocks || []) if (b.type !== "flex" && !b.done && b.start < P.DAY && (b.start < wake0 || (b.type === "routine" && night.has(b.title) && b.start < 12 * 60))) { b.start += P.DAY; b.end += P.DAY; shifted = Math.max(shifted, b.end); }
+    if (dd.plan) dd.plan.blocks = dd.plan.blocks.filter((b) => !(b.type === "flex" && b.start < wake0)); // free time is recomputed
+    if (shifted && dd.inputs && !dd.inputs.sleep) { // that night ran late on purpose: bedtime follows its last block
+      dd.inputs.sleep = P.clockX(shifted);
+      dd.plan.warnings = (dd.plan.warnings || []).filter((w) => !/past bedtime/.test(w));
+    }
+  }
   // routine ticks made before the habit tracker existed become habit entries
   for (const [d, dd] of Object.entries(out.days)) for (const b of dd.plan?.blocks || []) {
     if (b.type !== "routine" || !b.done) continue;
@@ -49,18 +75,23 @@ function load() {
   return migrate(s || {});
 }
 let S = load();
-let cur = today();
 let selected = -1, openRow = null, openItem = null, aiOn = false, busy = 0, notionOn = false;
 let notionLive = {}; // weekKey → {days, at} read back from Notion
 
-const eff = () => ({ ...S.settings, morningRoutine: S.settings.routinesOn.morning ? S.settings.morningRoutine : [], eveningRoutine: S.settings.routinesOn.evening ? S.settings.eveningRoutine : [] });
+/* Settings for a day: your usual ones, plus any bedtime, wake-up or work window a check-in set for it. */
+function eff(d = null) {
+  const i = d ? S.days[d]?.inputs : null;
+  return { ...S.settings, ...(i?.wake ? { wake: i.wake } : {}), ...(i?.sleep ? { sleep: i.sleep } : {}), window: i?.window || null, morningRoutine: S.settings.routinesOn.morning ? S.settings.morningRoutine : [], eveningRoutine: S.settings.routinesOn.evening ? S.settings.eveningRoutine : [] };
+}
+function bnd(d) { return P.bounds(eff(d)); }
+let cur = today(); // after eff/bnd: "today" can depend on last night's bedtime
 function day(d = cur) {
   if (!S.days[d]) {
     const mem = S.placeMemory[P.parseISO(d).getDay()];
-    S.days[d] = { inputs: { primary: [0, 1, 2].map((i) => blankTask(`p${i}-${d}`)), secondary: [0, 1, 2].map((i) => blankTask(`s${i}-${d}`)), adminText: "", fixedText: "", locations: { ...(mem || S.settings.places) }, energy: "ok", reflection: "", notes: "" }, plan: null, ai: null, aiNudges: [], nudges: [], shown: [] };
+    S.days[d] = { inputs: { primary: [0, 1, 2].map((i) => blankTask(`p${i}-${d}`)), secondary: [0, 1, 2].map((i) => blankTask(`s${i}-${d}`)), adminText: "", fixedText: "", locations: { ...(mem || S.settings.places) }, energy: "ok", reflection: "", notes: "" }, plan: null, ai: null, aiNudges: [], nudges: [], shown: [], checkins: [], memo: [] };
   }
   const dd = S.days[d];
-  dd.aiNudges ||= []; dd.nudges ||= []; dd.shown ||= [];
+  dd.aiNudges ||= []; dd.nudges ||= []; dd.shown ||= []; dd.checkins ||= []; dd.memo ||= [];
   for (const k of ["primary", "secondary"]) while (dd.inputs[k].length < 3) dd.inputs[k].push(blankTask(`${k[0]}${dd.inputs[k].length}-${d}-${Date.now()}`));
   return dd;
 }
@@ -123,15 +154,15 @@ function rebuild(d = cur, { from = null, fresh: forceFresh = false } = {}) {
     const keep = dd.plan.blocks.filter((b) => b.type !== "flex" && (!b.taskId || (ids.has(b.taskId) && !(moving.has(b.taskId) && !b.done))) && !(adminChanged && b.type === "admin"));
     const sched = {}; keep.forEach((b) => { if (b.taskId) sched[b.taskId] = (sched[b.taskId] || 0) + b.end - b.start; });
     const only = (arr) => arr.map((t) => (moving.has(t.id) ? t : { ...t, done: true }));
-    const res = P.generatePlan({ ...inp, primary: only(inp.primary), secondary: only(inp.secondary), admin: adminChanged ? inp.admin : [] }, eff(), { fill: true, frozen: keep, doneMin: sched, from: isToday ? Math.ceil(nowMin() / 5) * 5 : 0 });
-    dd.plan = { ...dd.plan, blocks: P.refillFlex(res.blocks, eff()), warnings: res.warnings, adminText: inp.adminText };
+    const res = P.generatePlan({ ...inp, primary: only(inp.primary), secondary: only(inp.secondary), admin: adminChanged ? inp.admin : [] }, eff(d), { fill: true, frozen: keep, doneMin: sched, from: isToday ? Math.ceil(nowMin() / 5) * 5 : 0 });
+    dd.plan = { ...dd.plan, blocks: P.refillFlex(res.blocks, eff(d)), warnings: res.warnings, adminText: inp.adminText };
   } else {
     const started = dd.plan?.blocks.some((b) => b.done);
-    const at = from ?? (isToday && dd.plan && (started || nowMin() > P.hm(S.settings.wake) + 20) ? nowMin() : null);
+    const at = from ?? (isToday && dd.plan && (started || nowMin() > bnd(d).wake + 20) ? nowMin() : null);
     // times Vi set herself survive every re-plan
     const locked = (dd.plan?.blocks || []).filter((b) => b.locked && (!b.taskId || ids.has(b.taskId)));
     const lockedMin = {}; locked.forEach((b) => { if (b.taskId) lockedMin[b.taskId] = (lockedMin[b.taskId] || 0) + b.end - b.start; });
-    const res = at != null && dd.plan ? P.replan(inp, eff(), dd.plan.blocks, at) : P.generatePlan(inp, eff(), { frozen: locked.map((b) => ({ ...b })), doneMin: lockedMin });
+    const res = at != null && dd.plan ? P.replan(inp, eff(d), dd.plan.blocks, at) : P.generatePlan(inp, eff(d), { frozen: locked.map((b) => ({ ...b })), doneMin: lockedMin });
     dd.plan = { blocks: res.blocks, warnings: res.warnings, stats: res.stats, manual: false, adminText: inp.adminText };
   }
   dd.plan.generatedAt = Date.now();
@@ -142,11 +173,21 @@ function rebuild(d = cur, { from = null, fresh: forceFresh = false } = {}) {
 function commit(d = cur, { plan = true } = {}) { if (plan) rebuild(d); save(d); renderAll(); }
 function editPlan(d, blocks, msg) {
   const dd = day(d);
-  dd.plan = { ...(dd.plan || { warnings: [] }), blocks: P.refillFlex(blocks, eff()), manual: true, generatedAt: Date.now() };
-  const late = blocks.filter((b) => b.type !== "flex" && b.end > P.hm(S.settings.sleep));
-  dd.plan.warnings = late.length ? [`${late.map((b) => b.title).slice(0, 2).join(", ")} now run${late.length === 1 ? "s" : ""} past bedtime.`] : [];
+  dd.plan = { ...(dd.plan || { warnings: [] }), blocks: P.refillFlex(blocks, eff(d)), manual: true, generatedAt: Date.now() };
+  dd.plan.warnings = planWarnings(d, blocks);
   refreshNudges(d); save(d); renderAll();
   if (msg) toast(msg);
+}
+function planWarnings(d, blocks) {
+  const b = bnd(d), out = [], name = (xs) => xs.map((x) => `“${x.title}”`).slice(0, 2).join(", ");
+  const late = blocks.filter((x) => x.type !== "flex" && !x.done && x.end > b.sleep);
+  if (late.length) out.push(`${name(late)} run${late.length === 1 ? "s" : ""} past bedtime (${P.pretty(b.sleep)}).`);
+  if (b.window) {
+    const outside = blocks.filter((x) => ["primary", "secondary", "admin"].includes(x.type) && !x.done && (x.start < b.window.start || x.end > b.window.end));
+    if (outside.length) out.push(`${name(outside)} sit${outside.length === 1 ? "s" : ""} outside your ${P.pretty(b.window.start)}–${P.pretty(b.window.end)} window.`);
+  }
+  for (const [x, y] of P.clashes(blocks).slice(0, 2)) out.push(`“${x.title}” and “${y.title}” overlap. Both have times you set, so change one of them.`);
+  return out;
 }
 function dayProgress(d) {
   const ts = tasksOf(d).filter((t) => t.title);
@@ -286,14 +327,15 @@ async function planMyDay(form) {
   try {
     tasksOf(d).forEach((t) => delete t.needsPlace);
     dd.plan = dd.plan ? { ...dd.plan, manual: false } : null;
-    rebuild(d, { fresh: true, from: d === today() && nowMin() > P.hm(S.settings.wake) + 20 ? nowMin() : null });
+    rebuild(d, { fresh: true, from: d === today() && nowMin() > bnd(d).wake + 20 ? nowMin() : null });
     if (!dd.plan) return;
-    const out = await C.planDay({ date: d, locations: inp.locations, energy: inp.energy, notes: inp.notes, wake: S.settings.wake, sleep: S.settings.sleep, blocks: blocksOf(d), tasks: tasksOf(d).filter((t) => t.title).map((t) => ({ ...t, tier: tierOf(d, t) })) });
+    const b = bnd(d), now = d === today() ? nowMin() : null;
+    const out = await C.planDay({ date: d, locations: inp.locations, energy: inp.energy, notes: inp.notes, ...b, now, history: dd.checkins, blocks: blocksOf(d), tasks: tasksOf(d).filter((t) => t.title).map((t) => ({ ...t, tier: tierOf(d, t) })), ...memoryFor(d) });
     dd.ai = { theme: out.theme, description: out.description, tip: out.tip };
     for (const x of out.taskTips || []) { const t = tasksOf(d).find((t) => t.id === x.id); if (t) { if (x.tip) t.tip = x.tip; if (x.doneWhen) t.doneWhen = x.doneWhen; } }
     for (const b of blocksOf(d)) { const t = b.taskId && tasksOf(d).find((t) => t.id === b.taskId); if (t && b.tip !== null && t.tip) b.tip = t.tip; }
-    const changed = (out.changes?.length || out.add?.length) ? C.applyChanges(blocksOf(d), out) : null;
-    if (changed) { dd.plan.blocks = P.refillFlex(changed, eff()); dd.plan.manual = true; }
+    const changed = (out.changes?.length || out.add?.length) ? C.applyChanges(blocksOf(d), out, { now: now ?? undefined, wake: b.wake }) : null;
+    if (changed) { dd.plan.blocks = P.refillFlex(changed, eff(d)); dd.plan.manual = true; dd.plan.warnings = planWarnings(d, changed); }
     dd.aiNudges = (out.reminders || []).map((r) => { const b = r.block && blocksOf(d).find((x) => x.id === r.block); return { id: `ai-${r.at}-${Math.random().toString(36).slice(2, 5)}`, at: r.at, text: r.text, block: b ? b.id : null, offset: b ? r.at - b.start : 0, src: "ai" }; });
     refreshNudges(d); save(d); renderAll();
     $("#dayDialog").close();
@@ -301,16 +343,57 @@ async function planMyDay(form) {
   } finally { thinking(-1); btn.disabled = false; }
 }
 
+/* ───────────── coach memory: check-in log, notes, day rules ───────────── */
+const noteId = () => `m${Date.now().toString(36).slice(-4)}${Math.random().toString(36).slice(2, 4)}`;
+// notes for a day: its own, plus ongoing ones from earlier days
+const notesFor = (d) => [...day(d).memo.map((n) => ({ ...n, scope: "today" })), ...S.memory.filter((n) => n.from <= d).map((n) => ({ ...n, scope: "ongoing" }))];
+function recentCheckins(d) {
+  const out = [];
+  for (let i = 3; i >= 1; i--) { const p = P.addDays(d, -i); for (const h of S.days[p]?.checkins || []) if (h.text) out.push({ date: `${DOW3(p)} ${P.shortDate(p)}`, clock: h.clock, text: h.text }); }
+  return out.slice(-6);
+}
+const memoryFor = (d) => ({ memory: notesFor(d), recent: recentCheckins(d) });
+function remember(d, add = [], forget = []) {
+  const dd = day(d), gone = new Set(forget);
+  dd.memo = dd.memo.filter((n) => !gone.has(n.id));
+  S.memory = S.memory.filter((n) => !gone.has(n.id));
+  const known = new Set([...dd.memo, ...S.memory].map((n) => n.text.toLowerCase()));
+  for (const r of add || []) {
+    const text = String(r.text || "").trim();
+    if (!text || known.has(text.toLowerCase())) continue;
+    known.add(text.toLowerCase());
+    if (r.scope === "ongoing") S.memory.push({ id: noteId(), text, from: d }); else dd.memo.push({ id: noteId(), text });
+  }
+  if (S.memory.length > 12) S.memory.splice(0, S.memory.length - 12);
+}
+function setDayRules(d, x = {}) {
+  const i = day(d).inputs;
+  if (x.sleep) i.sleep = x.sleep;
+  if (x.wake) i.wake = x.wake;
+  if (x.window === null) delete i.window; else if (x.window) i.window = x.window;
+}
+
 async function checkIn() {
   const box = $("#checkinText"), text = box.value.trim(); if (!text) return box.focus();
   const d = cur, dd = day(d);
   if (!dd.plan) { toast("Plan the day first, then check in."); return; }
+  const b = bnd(d), now = d === today() ? nowMin() : b.wake;
   thinking(+1); $("#checkinGo").disabled = true;
   try {
-    const res = await C.checkin(text, { now: d === today() ? nowMin() : P.hm(S.settings.wake), blocks: blocksOf(d), locations: dd.inputs.locations, energy: dd.inputs.energy, sleep: S.settings.sleep });
-    dd.checkinReply = { text: res.reply, tip: res.tip || "", at: Date.now() };
-    if (res.blocks) { box.value = ""; editPlan(d, res.blocks); } else { save(d); renderDay(); }
-  } finally { thinking(-1); const b = $("#checkinGo"); if (b) b.disabled = false; }
+    const res = await C.checkin(text, {
+      date: d, now, blocks: blocksOf(d), locations: dd.inputs.locations, energy: dd.inputs.energy, fixedText: dd.inputs.fixedText, ...b,
+      tasks: tasksOf(d).filter((t) => t.title).map((t) => ({ title: t.title, tier: tierOf(d, t), min: t.min, done: prog(t, d) >= 1 })),
+      history: dd.checkins, ...memoryFor(d),
+    });
+    if (res.error) { toast(res.reply, 5000); return; } // keep the message so it can be sent again
+    dd.checkins.push({ at: Date.now(), clock: now, text, reply: res.reply, tip: res.tip || "", ai: !!res.ai });
+    if (dd.checkins.length > 40) dd.checkins.splice(0, dd.checkins.length - 40);
+    remember(d, res.remember, res.forget);
+    const dayChanged = !!Object.keys(res.day || {}).length;
+    setDayRules(d, res.day);
+    box.value = "";
+    if (res.blocks || dayChanged) editPlan(d, res.blocks || blocksOf(d)); else { save(d); renderAll(); }
+  } finally { thinking(-1); const btn = $("#checkinGo"); if (btn) btn.disabled = false; }
 }
 
 let weekCtl = null;
@@ -361,7 +444,7 @@ function applyWeek(k, res, days, seeds) {
     dd.ai = r.theme || r.description ? { theme: r.theme, description: r.description, tip: r.tip } : null;
     dd.aiNudges = [];
     if (dd.plan) dd.plan.manual = false;
-    rebuild(din.date, { fresh: true, from: din.date === today() && nowMin() > P.hm(S.settings.wake) + 20 ? nowMin() : null });
+    rebuild(din.date, { fresh: true, from: din.date === today() && nowMin() > bnd(din.date).wake + 20 ? nowMin() : null });
     save(din.date);
   }
   S.pool.forEach((s) => { if (seedIds.has(s.id)) s.scheduled = res.days.filter((d) => [...d.primary, ...d.secondary].some((t) => t.seedId === s.id) || (d.admin || []).some((a) => a.title === s.title)).map((d) => d.date); });
@@ -481,15 +564,16 @@ function renderDay() {
   };
 
   // schedule items with reminders woven in
-  const all = P.itemsOf(blocks);
+  const all = P.itemsOf(blocks), dayEnd = bnd(d).sleep;
   const tipsFor = (it) => (dd.nudges || []).filter((n) => (n.block && it.blocks.some((b) => b.id === n.block)) || (!n.block && n.at >= it.start - 10 && n.at < it.end));
-  let nowPlaced = !isToday;
+  let nowPlaced = !isToday, midPlaced = false;
   const sched = all.map((it, idx) => {
     let pre = "";
+    if (!midPlaced && it.start >= P.DAY) { midPlaced = true; pre += `<li class="midnight"><span>Midnight · into ${DOW3(P.addDays(d, 1))}</span></li>`; }
     if (!nowPlaced && it.end > now) { nowPlaced = true; pre += `<li class="now" aria-label="Now"><span>${P.pretty(now)}</span></li>`; }
     const first = it.blocks[0], isRoutine = it.kind === "routine", open = openItem === it.key;
     const done = it.blocks.every((b) => b.done), live = isToday && it.start <= now && now < it.end;
-    const late = it.end > P.hm(S.settings.sleep);
+    const late = it.end > dayEnd;
     let title, meta, body;
     if (isRoutine) {
       const n = it.blocks.filter((b) => b.done).length;
@@ -536,11 +620,30 @@ function renderDay() {
       <details class="addevent"><summary>Add to schedule</summary><form id="addEvent" class="grid3"><label class="span2">What<input name="t" required placeholder="Call with mentor"></label><label>Start<input type="time" name="s" required></label><label>End<input type="time" name="e" required></label><button class="gold" type="submit">Add</button></form></details></section>
       <section class="checkin"><h4>Check in</h4>
         <div class="seg" role="radiogroup" aria-label="Energy">${["low", "ok", "high"].map((k) => `<button role="radio" aria-checked="${inp.energy === k}" data-energy="${k}">${{ low: "Low energy", ok: "Okay", high: "Buzzing" }[k]}</button>`).join("")}</div>
-        <textarea id="checkinText" rows="2" placeholder="Tell me what changed: “woke up late, start from 8:30”, “move ESAT paper to 3pm”, “skip gym”, “add dentist at 4 for 45 min”"></textarea>
+        ${memoryHtml(d)}
+        ${threadHtml(dd)}
+        <textarea id="checkinText" rows="2" placeholder="Tell me what changed: “woke up late, start from 8:30”, “move ESAT paper to 3pm”, “sleep 4–11pm, then all tasks 11pm–6am”, “remember: school till 3:30”"></textarea>
         <div class="acts"><button class="gold" id="checkinGo">Update my day</button><button id="replanNow">${isToday ? "Re-plan from now" : "Rebuild day"}</button></div>
-        ${dd.checkinReply ? `<div class="reply"><p>${esc(dd.checkinReply.text)}</p>${dd.checkinReply.tip ? `<p class="tip">💡 ${esc(dd.checkinReply.tip)}</p>` : ""}</div>` : ""}
         <label class="wide">Reflection<textarea id="reflection" rows="2" placeholder="What worked today? What carries over?">${esc(inp.reflection)}</textarea></label></section>`
       : `<p class="hintline">Plant a task below and your day grows itself around your routines, in priority order.</p>`}`;
+}
+
+/* What the coach is holding on to for this day: day rules and notes, each removable. */
+function memoryHtml(d) {
+  const i = day(d).inputs, b = bnd(d), chips = [];
+  const after = (m) => (m >= P.DAY ? ` <em>${DOW3(P.addDays(d, 1))}</em>` : "");
+  if (i.sleep) chips.push(`<span class="mchip rule">🌙 Bed ${P.pretty(b.sleep)}${after(b.sleep)}<button class="x" data-unrule="sleep" aria-label="Back to your usual bedtime">✕</button></span>`);
+  if (i.wake) chips.push(`<span class="mchip rule">☀ Up ${P.pretty(b.wake)}<button class="x" data-unrule="wake" aria-label="Back to your usual wake-up">✕</button></span>`);
+  if (b.window) chips.push(`<span class="mchip rule">⏳ Tasks ${P.pretty(b.window.start)}–${P.pretty(b.window.end)}${after(b.window.end)}<button class="x" data-unrule="window" aria-label="Clear the work window">✕</button></span>`);
+  for (const n of notesFor(d)) chips.push(`<span class="mchip">${esc(n.text)}${n.scope === "ongoing" ? ` <em>ongoing</em>` : ""}<button class="x" data-forget="${n.id}" aria-label="Forget this">✕</button></span>`);
+  return chips.length ? `<div class="memory"><small>Coach remembers</small><div class="mchips">${chips.join("")}</div></div>` : "";
+}
+function threadHtml(dd) {
+  const log = dd.checkins || [];
+  if (!log.length) return "";
+  const one = (h) => `${h.text ? `<p class="you"><span>${h.clock != null ? P.pretty(h.clock) : ""}</span>${esc(h.text)}</p>` : ""}<p>${esc(h.reply)}</p>${h.tip ? `<p class="tip">💡 ${esc(h.tip)}</p>` : ""}`;
+  const last = log[log.length - 1], earlier = log.slice(0, -1);
+  return `${earlier.length ? `<details class="earlier"><summary>Earlier check-ins (${earlier.length})</summary>${earlier.map((h) => `<div class="reply past">${one(h)}</div>`).join("")}</details>` : ""}<div class="reply">${one(last)}</div>`;
 }
 
 function renderWeek() {
@@ -741,6 +844,8 @@ document.addEventListener("click", (e) => {
   if (ds.remove) { const t = tasksOf().find((x) => x.id === ds.remove); return t && removeTask(t); }
   if (ds.item) { openItem = openItem === ds.item ? null : ds.item; return renderDay(); }
   if (ds.imove) { const [key, dir] = ds.imove.split("|"), b = blocksOf(), out = P.moveItem(b, key, +dir); if (out === b) return toast("The neighbouring item has a time you set, so it stays put. Change this item's time instead."); return editPlan(cur, out); }
+  if (ds.forget) { remember(cur, [], [ds.forget]); save(cur); renderDay(); return toast("Forgotten."); }
+  if (ds.unrule) { delete day(cur).inputs[ds.unrule]; editPlan(cur, blocksOf(cur)); return toast(ds.unrule === "window" ? "Work window cleared." : "Back to your usual times."); }
   if (ds.iunlock) { const it = P.itemsOf(blocksOf()).find((x) => x.key === ds.iunlock); it?.blocks.forEach((b) => delete b.locked); save(cur); renderDay(); return toast("Unlocked: re-plans can move it again."); }
   if (ds.iremove) { openItem = null; return editPlan(cur, P.removeItem(blocksOf(), ds.iremove), "Removed from today's schedule. The task stays in your list."); }
   if (ds.energy) { day().inputs.energy = ds.energy; save(cur); return renderDay(); }
@@ -768,7 +873,7 @@ document.addEventListener("click", (e) => {
     case "peekNotion": return peekNotion(P.weekStart(cur));
     case "notionToggle": S.ui.notionOpen = !S.ui.notionOpen; save(); return renderNotion();
     case "replanNow": rebuild(cur, { fresh: true, from: cur === today() ? nowMin() : null }); save(cur); renderAll(); return toast("Re-planned in priority order");
-    case "replanPriority": rebuild(cur, { fresh: true, from: cur === today() && nowMin() > P.hm(S.settings.wake) + 20 ? nowMin() : null }); save(cur); renderAll(); return toast("Schedule rebuilt from your priorities");
+    case "replanPriority": rebuild(cur, { fresh: true, from: cur === today() && nowMin() > bnd(cur).wake + 20 ? nowMin() : null }); save(cur); renderAll(); return toast("Schedule rebuilt from your priorities");
     case "checkinGo": return checkIn();
     case "closeFocus": return select(-1);
     case "resetView": return selected >= 0 ? select(-1) : scene.resetView();
@@ -789,7 +894,9 @@ document.addEventListener("change", (e) => {
   }
   if (ds.istart || ds.iend) {
     const key = ds.istart || ds.iend, it = P.itemsOf(blocksOf()).find((x) => x.key === key); if (!it) return;
-    const s = ds.istart ? P.hm(el.value) : it.start, en = ds.iend ? P.hm(el.value) : it.blocks.length === 1 ? it.end + (s - it.start) : null;
+    const w = bnd(cur).wake, s = ds.istart ? P.dayTime(P.hm(el.value), w) : it.start;
+    let en = ds.iend ? P.dayTime(P.hm(el.value), w) : it.blocks.length === 1 ? it.end + (s - it.start) : null;
+    if (ds.iend && en != null && en <= s && en + P.DAY <= P.SPAN) en += P.DAY;
     if (s == null) return;
     if (en != null && en <= s) return toast("End has to be after start.");
     return editPlan(cur, P.setItemTime(blocksOf(), key, s, en), "Updated. Later items moved forward where needed.");
@@ -810,7 +917,9 @@ $("#confirmForm").addEventListener("submit", (e) => { e.preventDefault(); const 
 document.addEventListener("submit", (e) => {
   if (e.target.id !== "addEvent") return;
   e.preventDefault();
-  const f = e.target, s = P.hm(f.s.value), en = P.hm(f.e.value), title = f.t.value.trim();
+  const f = e.target, w = bnd(cur).wake, s = P.dayTime(P.hm(f.s.value), w), title = f.t.value.trim();
+  let en = P.dayTime(P.hm(f.e.value), w);
+  if (s != null && en != null && en <= s) en += P.DAY;
   if (s == null || en == null || en <= s || !title) return toast("Give it a name, a start and a later end.");
   const b = { id: `e-${Date.now().toString(36)}`, type: "fixed", locked: true, start: s, end: en, title, loc: day().inputs.locations[s < P.hm(S.settings.lunch) ? "morning" : s < P.hm(S.settings.dinner) ? "afternoon" : "evening"], done: false, desc: "Added by you." };
   editPlan(cur, P.setItemTime([...blocksOf(), b], b.id, s, en), `Added “${title}” at ${P.pretty(s)}.`);

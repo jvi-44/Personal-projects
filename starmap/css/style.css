@@ -264,6 +264,23 @@ label small { color: var(--faint); font-size: 11px; }
 .now::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; border-top: 1px solid var(--leaf); box-shadow: 0 0 8px var(--leaf); }
 .now span { position: relative; margin-left: 8px; padding: 0 8px; border-radius: 999px; font-size: 10.5px; font-weight: 700; color: #0d2a14; background: var(--leaf); }
 .checkin { margin-top: 16px; padding-top: 6px; border-top: 1px solid var(--line); }
+.midnight { list-style: none; position: relative; height: 18px; margin: 6px 0; }
+.midnight::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; border-top: 1px dashed var(--iris); opacity: .6; }
+.midnight span { position: relative; margin-left: 8px; padding: 1px 9px; border-radius: 999px; font-size: 10.5px; font-weight: 600; color: var(--iris); background: var(--sheet); border: 1px solid rgba(185, 168, 255, .35); }
+.memory { margin-top: 10px; }
+.memory > small { display: block; color: var(--faint); font-size: 11px; letter-spacing: .04em; text-transform: uppercase; margin-bottom: 5px; }
+.mchips { display: flex; flex-wrap: wrap; gap: 5px; }
+.mchip { display: inline-flex; align-items: center; gap: 4px; max-width: 100%; padding: 3px 4px 3px 10px; border-radius: 999px; font-size: 12px; line-height: 1.35; color: var(--ink); background: rgba(185, 168, 255, .1); border: 1px solid rgba(185, 168, 255, .28); }
+.mchip.rule { background: rgba(255, 190, 59, .1); border-color: rgba(255, 190, 59, .3); }
+.mchip em { font-style: normal; font-size: 10.5px; color: var(--dim); }
+.mchip .x { flex: none; padding: 0 6px; border: 0; background: transparent; color: var(--faint); font-size: 11px; line-height: 1.6; }
+.mchip .x:hover { color: var(--ink); }
+.reply .you { color: var(--dim); margin-bottom: 6px; }
+.reply .you span { color: var(--faint); font-size: 11px; margin-right: 6px; font-variant-numeric: tabular-nums; }
+.reply.past { background: rgba(255, 255, 255, .03); border-color: var(--line); }
+.earlier { margin-top: 10px; }
+.earlier summary { cursor: pointer; color: var(--dim); font-size: 12px; }
+.earlier .reply { margin-top: 6px; }
 .seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 4px; border-radius: 12px; background: rgba(0, 0, 0, .25); margin-top: 6px; }
 .seg button { border: 0; background: transparent; padding: 6px; font-size: 12.5px; color: var(--dim); }
 .seg button[aria-checked="true"] { background: rgba(255, 244, 225, .1); color: var(--ink); }

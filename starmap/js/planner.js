@@ -3,15 +3,29 @@
 // energy-aware, buffer-rich day, and can re-plan the remainder mid-day.
 
 export const CELL = 5; // minutes per scheduling cell
-const DAY = 24 * 60;
+export const DAY = 24 * 60;
+export const SPAN = 36 * 60; // a day can run past midnight: "25:30" is 1:30am that night
 
 /* ───────────── time helpers ───────────── */
 export const hm = (s) => {
-  const m = /^(\d{1,2})[:.](\d{2})$/.exec(String(s).trim());
-  return m ? Math.min(DAY, +m[1] * 60 + +m[2]) : null;
+  const m = /^(\d{1,2})[:.](\d{2})$/.exec(String(s ?? "").trim());
+  return m && +m[2] < 60 ? Math.min(SPAN, +m[1] * 60 + +m[2]) : null;
 };
 export const pad = (n) => String(n).padStart(2, "0");
 export const clock = (min) => `${pad(Math.floor(min / 60) % 24)}:${pad(min % 60)}`;
+// unwrapped clock for stored day times and the coach: 25:30 = 1:30am after midnight
+export const clockX = (min) => `${pad(Math.floor(min / 60))}:${pad(min % 60)}`;
+/* A day's waking span. Bedtime at or before wake means after midnight. */
+export function bounds(settings = DEFAULT_SETTINGS) {
+  const wake = hm(settings.wake) ?? 300;
+  let sleep = hm(settings.sleep) ?? 1350;
+  if (sleep <= wake) sleep += DAY;
+  const w = settings.window && hm(settings.window.start) != null && hm(settings.window.end) != null ? { start: hm(settings.window.start), end: hm(settings.window.end) } : null;
+  if (w && w.end <= w.start) w.end += DAY;
+  return { wake, sleep: Math.min(SPAN, Math.max(sleep, w ? w.end : 0)), window: w };
+}
+/* A clock time typed for a day: anything before wake-up belongs to that night, after midnight. */
+export const dayTime = (min, wake) => (min != null && min < wake && min + DAY <= SPAN ? min + DAY : min);
 export const pretty = (min) => {
   const h = Math.floor(min / 60) % 24, m = min % 60;
   return `${h % 12 || 12}${m ? ":" + pad(m) : ""} ${h < 12 ? "am" : "pm"}`;
@@ -145,13 +159,53 @@ const BREAKS = [
 ];
 
 /* ───────────── parsing helpers for inputs ───────────── */
+/* "3pm", "3:30 pm", "15:30", "3.30", "noon" → minutes of day. A bare "3" means 3pm; with `ref`
+ * (minutes now) a bare "9" said at 8pm means 9pm. Returns null when it isn't a time. */
+export const TIME_SRC = "(noon|midday|midnight|\\d{1,2}(?:[:.]\\d{2})?\\s*(?:am|pm|a\\.m\\.|p\\.m\\.)?)";
+export function parseClock(str, ref = null, { morning = false } = {}) {
+  const s = String(str).trim().toLowerCase().replace(/\./g, (c, i, all) => (/\d/.test(all[i - 1] || "") && /\d/.test(all[i + 1] || "") ? ":" : ""));
+  if (/^(noon|midday)$/.test(s)) return 720;
+  if (s === "midnight") return DAY;
+  const m = /^(\d{1,2})(?::(\d{2}))?\s*(am|pm)?$/.exec(s);
+  if (!m) return null;
+  let h = +m[1]; const min = +(m[2] || 0);
+  if (h > 23 || min > 59) return null;
+  if (m[3] === "pm" && h < 12) h += 12;
+  if (m[3] === "am" && h === 12) h = 0;
+  if (!m[3] && !morning && !(m[1].length === 2 && m[1][0] === "0") && h < 12) { // no am/pm: read it the way people say it
+    if (h < 7) h += 12;
+    else if (ref != null && h * 60 + min < ref - 30 && (h + 12) * 60 + min >= ref - 30) h += 12;
+  }
+  return h * 60 + min;
+}
+/* "2-4pm", "11pm to 6am", "14:00–15:30" → {start, end}; an end before the start runs past midnight. */
+export function parseRange(a, b, ref = null) {
+  const pm = /p\.?m/i.test(b) && !/[ap]\.?m/i.test(a), am = /a\.?m/i.test(b) && !/[ap]\.?m/i.test(a);
+  let start = parseClock(a, ref);
+  const end0 = parseClock(b, ref);
+  if (start == null || end0 == null) return null;
+  if (pm && start < 12 * 60 && start + 12 * 60 <= end0) start += 12 * 60; // "2-4pm"
+  if (am && start >= 12 * 60 && start - 12 * 60 < end0) start -= 12 * 60; // "9-11am"
+  let end = end0;
+  if (end <= start) end += DAY;
+  return { start, end };
+}
+
+const cap = (t) => t.replace(/^\w/, (c) => c.toUpperCase());
 export function parseFixed(text) {
-  // lines like "14:00-15:30 Physics lesson @school"
+  // "14:00-15:30 Physics lesson @school", "Physics 2-3:30pm", "get home at 4pm", "dentist at 4 for 45 min"
+  const T = TIME_SRC, R = `${T}\\s*(?:-|–|—|to|till|until)\\s*${T}`, LOC = "(?:\\s*@\\s*(\\w+))?$";
   return String(text || "").split("\n").map((l) => l.trim()).filter(Boolean).map((line) => {
-    const m = /^(\d{1,2}[:.]\d{2})\s*[-–]\s*(\d{1,2}[:.]\d{2})\s+(.+?)(?:\s*@\s*(\w+))?$/.exec(line);
-    if (!m) return null;
-    const start = hm(m[1]), end = hm(m[2]);
-    return start != null && end != null && end > start ? { start, end, title: m[3].trim(), loc: (m[4] || "").toLowerCase() || null } : null;
+    let m, r = null, title, loc;
+    if ((m = new RegExp(`^(?:from\\s+)?${R}\\s+(.+?)${LOC}`, "i").exec(line))) { r = parseRange(m[1], m[2]); title = m[3]; loc = m[4]; }
+    else if ((m = new RegExp(`^(.+?)\\s+(?:from\\s+|between\\s+)?${R}${LOC}`, "i").exec(line))) { r = parseRange(m[2], m[3]); title = m[1]; loc = m[4]; }
+    else if ((m = new RegExp(`^(.+?)\\s+(?:at|by|from)\\s+${T}(?:\\s+for\\s+(\\d+(?:\\.\\d+)?)\\s*(h|hrs?|hours?|m|mins?|minutes?))?${LOC}`, "i").exec(line))) {
+      const s = parseClock(m[2]);
+      if (s != null) r = { start: s, end: s + (m[3] ? Math.round(parseFloat(m[3]) * (/^h/i.test(m[4]) ? 60 : 1)) : 30) };
+      title = m[1]; loc = m[5];
+    }
+    if (!r || !title) return null;
+    return { start: r.start, end: Math.min(SPAN, r.end), title: cap(title.trim()), loc: (loc || "").toLowerCase() || null };
   }).filter(Boolean);
 }
 
@@ -175,7 +229,7 @@ export const routineToText = (r) => r.map(([m, t]) => `${m} | ${t}`).join("\n");
 /* ───────────── the timeline grid ───────────── */
 class Grid {
   constructor(from = 0) {
-    this.n = DAY / CELL;
+    this.n = SPAN / CELL;
     this.owner = new Array(this.n).fill(null);
     this.loc = new Array(this.n).fill("home");
     this.seg = new Array(this.n).fill("morning");
@@ -192,7 +246,7 @@ class Grid {
     for (let i = a; i < b && i < this.n; i++) this.owner[i] = tag;
   }
   // earliest free spot >= startMin (search forward, then backward) that fits len
-  spot(startMin, len, { forward = 90, backward = 60, before = DAY } = {}) {
+  spot(startMin, len, { forward = 90, backward = 60, before = SPAN } = {}) {
     for (let d = 0; d <= forward; d += CELL) {
       const s = startMin + d;
       if (s + len <= before && this.runFree(s, len)) return s;
@@ -227,7 +281,7 @@ export function generatePlan(inputs, settings = DEFAULT_SETTINGS, opts = {}) {
   const S = { ...DEFAULT_SETTINGS, ...settings };
   const from = opts.from || 0;
   const frozen = opts.frozen || [];
-  const wake = hm(S.wake), sleep = hm(S.sleep);
+  const { wake, sleep, window: win } = bounds(S);
   const L = { morning: "home", afternoon: "home", evening: "home", ...(inputs.locations || {}) };
   const energy = inputs.energy || "ok";
   const grid = new Grid(from);
@@ -347,7 +401,7 @@ export function generatePlan(inputs, settings = DEFAULT_SETTINGS, opts = {}) {
   const adminTotal = adminItems.reduce((a, b) => a + (b.min || 10), 0);
 
   // keep at least 45 minutes free for flex; squeeze secondaries if needed
-  const freeCells = grid.owner.filter((o) => o === null).length * CELL;
+  const freeCells = grid.owner.filter((o, i) => o === null && (!win || (i * CELL >= win.start && i * CELL < win.end))).length * CELL;
   const need = () => jobs.reduce((a, j) => a + j.chunks.reduce((x, y) => x + y + 10, 0), 0) + (adminTotal ? adminTotal + 10 : 0);
   let guard = 0;
   while (need() > freeCells - 45 && guard++ < 40) {
@@ -368,6 +422,7 @@ export function generatePlan(inputs, settings = DEFAULT_SETTINGS, opts = {}) {
       if (!ok) continue;
       sc /= len / CELL;
       if (pref && pref !== "any" && l0 !== pref) sc -= 0.25;
+      if (win && (s < win.start || s + len > win.end)) sc -= 2;
       if (needBreak && !grid.runFree(s + len, brk)) sc -= 0.02; // slight preference for a break slot
       sc -= (s / DAY) * 0.03; // tie-break earlier
       if (!best || sc > best.sc) best = { s, sc, loc: l0 };
@@ -376,9 +431,9 @@ export function generatePlan(inputs, settings = DEFAULT_SETTINGS, opts = {}) {
   };
 
   // earliest free run of `len` minutes at one location, starting at or after `min`, optionally inside a part of the day
-  const findSeq = (len, pref, min) => {
+  const findSeq = (len, pref, min, max = SPAN) => {
     const cells = len / CELL;
-    for (let i = Math.ceil(Math.max(min, wake, from) / CELL); i + cells <= grid.n; i++) {
+    for (let i = Math.ceil(Math.max(min, wake, from) / CELL); i + cells <= grid.n && i * CELL + len <= max; i++) {
       if (!grid.runFree(i * CELL, len)) continue;
       const l0 = grid.loc[i];
       let ok = true;
@@ -387,15 +442,18 @@ export function generatePlan(inputs, settings = DEFAULT_SETTINGS, opts = {}) {
     }
     return null;
   };
-  const overflow = [];
+  const overflow = [], outside = new Set();
   // tasks with a chosen part of the day claim it first; the rest follow priority order through the day
   const hasPref = (j) => ["morning", "afternoon", "evening"].includes(j.task.when);
   const order = [...jobs].sort((a, b) => (hasPref(b) - hasPref(a)) || (a.tier === b.tier ? a.order - b.order : a.tier === "primary" ? -1 : 1));
-  let breakN = 0, cursor = Math.max(routineEnd, from);
+  let breakN = 0, cursor = win ? Math.max(win.start, from) : Math.max(routineEnd, from);
   for (const job of order) {
     const pref = ["morning", "afternoon", "evening"].includes(job.task.when) ? job.task.when : null;
     job.chunks.forEach((len, ci) => {
-      const run = (pref && findSeq(len, pref, from)) || findSeq(len, null, pref ? from : cursor) || findSeq(len, null, from);
+      // a work window Vi asked for beats time-of-day preferences
+      let run = win && (findSeq(len, null, Math.max(cursor, win.start), win.end) || findSeq(len, null, win.start, win.end));
+      if (win && !run) outside.add(job.task.title);
+      run ||= (pref && findSeq(len, pref, from)) || findSeq(len, null, pref ? from : cursor) || findSeq(len, null, from);
       if (!run) { overflow.push({ task: job.task, min: len }); return; }
       place(run.s, len, "task");
       if (!pref) cursor = Math.max(cursor, run.s + len);
@@ -444,6 +502,7 @@ export function generatePlan(inputs, settings = DEFAULT_SETTINGS, opts = {}) {
 
   blocks.sort((a, b) => a.start - b.start || a.end - b.end);
   if (overflow.length) warnings.push(...overflow.map((o) => `Not enough room for “${o.task.title}” (${o.min}m). Move it to tomorrow or shrink something.`));
+  if (outside.size) warnings.push(`${[...outside].slice(0, 2).join(", ")} didn't fit inside your ${pretty(win.start)}–${pretty(win.end)} window.`);
 
   const focusMin = blocks.filter((b) => ["primary", "secondary"].includes(b.type) && !b.frozen).reduce((a, b) => a + b.end - b.start, 0);
   const flexMin = blocks.filter((b) => b.type === "flex").reduce((a, b) => a + b.end - b.start, 0);
@@ -552,13 +611,16 @@ export function moveItem(blocks, key, dir) {
 }
 
 /* Set an item's start (and, for a single block, its end) and push what follows. */
-export function setItemTime(blocks, key, start, end = null) {
+export function setItemTime(blocks, key, start, end = null, { lock = true } = {}) {
   const items = itemsOf(clone(blocks));
   const it = items.find((x) => x.key === key);
   if (!it) return blocks;
-  if (end != null && it.blocks.length === 1 && end > start) { it.blocks[0].start = start; it.blocks[0].end = end; it.start = start; it.end = end; }
-  else shiftItem(it, start - it.start);
-  it.blocks.forEach((b) => (b.locked = true)); // a time Vi sets is kept exactly
+  if (end != null && end > start) { // the block gets exactly start–end; its break follows it
+    let t = end;
+    it.blocks.forEach((b, i) => { if (i === 0) { b.start = start; b.end = end; } else { const l = b.end - b.start; b.start = t; b.end = t + l; t = b.end; } });
+    it.start = start; it.end = t;
+  } else shiftItem(it, start - it.start);
+  if (lock) it.blocks.forEach((b) => (b.locked = true)); // a time Vi sets is kept exactly
   return flatten(resolve(items, key));
 }
 
@@ -569,6 +631,40 @@ export function shiftFrom(blocks, fromMin, delta) {
   if (!first) return blocks;
   shiftItem(first, delta);
   return flatten(resolve(items, first.key));
+}
+
+/* Lay unfinished tasks out inside a work window, in priority order, around whatever already
+ * holds its place there. Nothing changes if every task is already inside. */
+const rankOf = (it) => { const b = it.blocks[0], n = +(/#(\d+)/.exec(b.tag || "")?.[1] || 9); return (b.type === "primary" ? 0 : b.type === "secondary" ? 10 : 20) + n; };
+export function packWindow(blocks, start, end, now = 0, { all = false } = {}) {
+  const items = itemsOf(clone(blocks));
+  // "all tasks" also moves tasks pinned earlier; otherwise times Vi set stay put
+  const movable = (it) => ["primary", "secondary", "admin"].includes(it.kind) && !it.blocks.some((b) => b.done || (b.locked && !all));
+  if (!items.some((it) => movable(it) && (it.start < start || it.end > end))) return blocks;
+  const queue = items.filter(movable).sort((a, b) => rankOf(a) - rankOf(b));
+  const held = items.filter((it) => !queue.includes(it));
+  const core = (it) => it.blocks[0].end - it.blocks[0].start;
+  // fill each gap with the highest-priority task that fits; a break may go if it's all that doesn't
+  let s = Math.max(start, Math.ceil(now / CELL) * CELL);
+  for (let g = 0; queue.length && g < 400; g++) {
+    const inside = held.find((f) => f.start <= s && f.end > s);
+    if (inside) { s = inside.end; continue; }
+    const next = held.filter((f) => f.start >= s).sort((a, b) => a.start - b.start)[0];
+    const gap = next ? next.start - s : Infinity;
+    const i = queue.findIndex((it) => core(it) <= gap);
+    if (i < 0) { s = next.end; continue; }
+    const [it] = queue.splice(i, 1);
+    if (it.end - it.start > gap) { it.blocks = it.blocks.slice(0, 1); it.end = it.start + core(it); }
+    shiftItem(it, s - it.start); it.blocks.forEach((b) => delete b.locked); held.push(it); s = it.end;
+  }
+  return flatten(items);
+}
+
+/* Pairs of blocks that overlap (both kept where they are, e.g. two times Vi set). */
+export function clashes(blocks) {
+  const b = blocks.filter((x) => x.type !== "flex").sort((x, y) => x.start - y.start), out = [];
+  for (let i = 0; i < b.length; i++) for (let j = i + 1; j < b.length && b[j].start < b[i].end; j++) out.push([b[i], b[j]]);
+  return out;
 }
 
 export function removeItem(blocks, key) {
@@ -583,8 +679,7 @@ export function dropOrphanBreaks(blocks) {
 }
 /* Recompute flex buffers in every gap of 15+ minutes between wake and sleep. */
 export function refillFlex(blocks, settings = DEFAULT_SETTINGS) {
-  const S = { ...DEFAULT_SETTINGS, ...settings };
-  const wake = hm(S.wake), sleep = hm(S.sleep);
+  const { wake, sleep } = bounds({ ...DEFAULT_SETTINGS, ...settings });
   const rest = dropOrphanBreaks(clone(blocks).filter((b) => b.type !== "flex")).sort((a, b) => a.start - b.start);
   const out = [...rest];
   let t = wake;
