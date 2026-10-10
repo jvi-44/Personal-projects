@@ -2,7 +2,7 @@
 2|(1) Both sides equal (47 × 71)/(93 × 33) ✓. (2) Both equal 0.53 × 84 = 0.84 × 53 ✓. (3) 12 ≠ 18 ✗. So 1 and 2.
 3|(q − r)/(s − x) = p − y, so s − x = (q − r)/(p − y). Then x = s − (q − r)/(p − y).
 4|Sum = 72, so 2x + y = 19. Median = (x + y)/2 = 7.25, so x + y = 14.5. Then x = 4.5, which appears twice, so the mode is 4.5.
-5|Put W at the origin: M = (0, ⅓), N = (¾, 1), P = (1, ⅕). Shoelace: area = ½|0 + ¾(⅕ − ⅓) + 1(⅓ − 1)| = ½|−1/10 − 2/3| = ½ × 23/30 = 23/60.
+5|Put W at the origin: M = (0, ⅓), N = (¾, 1), P = (1, ⅕). Shoelace (either direction works, because you take the absolute value; clockwise just gives a negative signed area): ½|(0·1 − ¾·⅓) + (¾·⅕ − 1·1) + (1·⅓ − 0·⅕)| = ½|−¼ − 17/20 + ⅓| = ½ × 46/60 = 23/60. Check by subtraction: the square (1) minus triangle XMN (¼), triangle NYP (1/10) and trapezium WMPZ (½(⅓ + ⅕) = 4/15) leaves 23/60.
 6|4(x − 2)/((x + 6)(x − 2)) × x(x − 6)(x + 6)/(x − 6) = 4x.
 7|In powers of 3: 27<sup>2(x−2)</sup> = 3<sup>6x−12</sup>, 9<sup>2x−3</sup> = 3<sup>4x−6</sup> and 81<sup>3/2</sup> = 3⁶. So (6x − 12) − (4x − 6) = 6, i.e. 2x − 6 = 6 and x = 6.
 8|x = (6 ± √60)/6 = 1 ± √15/3. 3p + 2q = 5 + (3 − 2)√15/3 = 5 + √15/3.

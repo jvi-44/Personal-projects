@@ -2,7 +2,7 @@
 2|Deceleration a = F/m = 1000/10 000 = 0.10 m s⁻². Stopping distance s = v²/(2a) = 4/0.2 = 20 m.
 3|(q − r)/(s − x) = p − y, so s − x = (q − r)/(p − y). Then x = s − (q − r)/(p − y).
 4|With the switch open, one resistor carries 1.0 A at 1.0 W, so V = 1.0 V and R = 1.0 Ω. Closing the switch adds a 2R branch in parallel. The ammeter’s branch still has 1.0 V across 1.0 Ω, so it still reads 1.0 A. The new branch carries 0.5 A, so the battery supplies 1.5 A × 1.0 V = 1.5 W.
-5|Put W at the origin: M = (0, ⅓), N = (¾, 1), P = (1, ⅕). Shoelace: area = ½|0 + ¾(⅕ − ⅓) + 1(⅓ − 1)| = ½|−1/10 − 2/3| = ½ × 23/30 = 23/60.
+5|Put W at the origin: M = (0, ⅓), N = (¾, 1), P = (1, ⅕). Shoelace (either direction works, because you take the absolute value; clockwise just gives a negative signed area): ½|(0·1 − ¾·⅓) + (¾·⅕ − 1·1) + (1·⅓ − 0·⅕)| = ½|−¼ − 17/20 + ⅓| = ½ × 46/60 = 23/60. Check by subtraction: the square (1) minus triangle XMN (¼), triangle NYP (1/10) and trapezium WMPZ (½(⅓ + ⅕) = 4/15) leaves 23/60.
 6|E = ½kx²: 0.015 = ½k × 25 × 10⁻⁴ m², so k = 12 N m⁻¹. Here x² = 25 cm², so x = 0.05 m and F = kx = 0.60 N.
 7|In powers of 3: 27<sup>2(x−2)</sup> = 3<sup>6x−12</sup>, 9<sup>2x−3</sup> = 3<sup>4x−6</sup> and 81<sup>3/2</sup> = 3⁶. So (6x − 12) − (4x − 6) = 6, i.e. 2x − 6 = 6 and x = 6.
 8|Weight = pressure × area = 0.45 × 12 = 5.4 N, so the mass is 0.54 kg = 540 g. Density = 540/180 = 3.0 g cm⁻³.
