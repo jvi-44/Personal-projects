@@ -92,10 +92,12 @@ const fullAttempts = y => attempts.filter(a => a.year === y && a.mode === 'full'
 const mockAttempts = k => attempts.filter(a => a.mode === 'esat' && a.mock === k);
 const lastFull = y => fullAttempts(y).sort((a, b) => b.finishedAt - a.finishedAt)[0];
 const mistakesOf = a => a.qns.filter(n => a.answers[n] !== a.key[n]);
+/* retries only bring back the questions left blank in the latest full attempt */
+const blanksOf = a => a.qns.filter(n => !a.answers[n]);
 const newId = () => 'a' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 const shuffle = arr => { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; };
 const speedLabel = s => `${s.bank ? BANK[s.bank] : 'ENGAA questions'} · ${s.topic === 'B' ? 'Maths + Physics' : TOPIC[s.topic]} · ${s.diff === 'X' ? 'Mixed difficulty' : DIFF[s.diff]}`;
-const modeLabel = a => a.mode === 'full' ? 'ENGAA paper' : a.mode === 'mistakes' ? 'ENGAA mistakes retry' : a.mode === 'esat' ? 'ESAT mock' : 'Speed practice';
+const modeLabel = a => a.mode === 'full' ? 'ENGAA paper' : a.mode === 'mistakes' ? 'ENGAA unanswered retry' : a.mode === 'esat' ? 'ESAT mock' : 'Speed practice';
 const attemptTitle = a => isEsat(a) ? (mocks?.[a.mock]?.name || 'ESAT mock') : isSpeed(a) ? 'Speed practice' : 'ENGAA ' + a.year;
 
 let view = {name: 'dash'};
@@ -135,7 +137,7 @@ function renderDash() {
   let html = topbar();
   if (active) {
     const sp = isSpeed(active), es = isEsat(active), pz = !!active.pausedAt;
-    const what = sp ? 'Speed practice · ' + speedLabel(active.settings) : es ? `${mocks[active.mock].name} · Section ${active.sec + 1} of 3 (${active.secNames[active.sec]})` : active.year + (active.mode === 'mistakes' ? ' ENGAA mistakes retry' : ' ENGAA paper');
+    const what = sp ? 'Speed practice · ' + speedLabel(active.settings) : es ? `${mocks[active.mock].name} · Section ${active.sec + 1} of 3 (${active.secNames[active.sec]})` : active.year + (active.mode === 'mistakes' ? ' ENGAA unanswered retry' : ' ENGAA paper');
     html += `<div class="resume"><div><div class="eyebrow">${pz ? 'Paused' : sp ? 'Practice in progress' : 'Test in progress'}</div><div style="margin-top:4px"><b>${esc(what)}</b> · ${Object.keys(active.answers).length}/${active.qns.length} answered · ${sp ? `<span class="mono">${fmt(elapsedOf(active))}</span> elapsed` : `<span class="mono">${fmt(remainingOf(active))}</span> left${es ? ' in this section' : ''}`}${pz ? '. The clock is stopped until you resume.' : sp ? '' : '. The clock is still running.'}</div></div>
       <div style="display:flex;gap:8px"><button class="btn primary" data-act="resume">Resume</button><button class="btn ghost" data-act="abandon">Discard</button></div></div>`;
   }
@@ -177,13 +179,13 @@ function renderDash() {
     const n = AVAILABLE[y];
     const fa = fullAttempts(y), last = lastFull(y);
     const bestP = fa.length ? Math.max(...fa.map(a => pct(a.score, a.total))) : null;
-    const mist = last ? mistakesOf(last).length : 0;
+    const blank = last ? blanksOf(last).length : 0;
     html += `<article class="card"><div class="yr"><h3>${y}</h3><span class="mono muted" style="font-size:13px">${n} Qs · ${fmt(n * PER_Q)}</span></div>
       <div class="meter" title="Best score"><i style="width:${bestP || 0}%"></i></div>
       <dl class="kv"><dt>Best</dt><dd>${bestP === null ? '–' : bestP + '%'}</dd><dt>Last</dt><dd>${last ? last.score + '/' + last.total : '–'}</dd><dt>Attempts</dt><dd>${fa.length}</dd></dl>
       <div class="acts"><button class="btn primary small" data-act="start" data-y="${y}" ${lock}>${fa.length ? 'Retake' : 'Start'}</button>
       ${last ? `<button class="btn small" data-act="review" data-id="${last.id}">Review</button>` : ''}
-      ${mist ? `<button class="btn small" data-act="retry" data-y="${y}" ${active ? 'disabled' : ''}>Retry ${mist} mistake${mist > 1 ? 's' : ''}</button>` : ''}</div></article>`;
+      ${blank ? `<button class="btn small" data-act="retry" data-y="${y}" ${active ? 'disabled' : ''}>Retry ${blank} unanswered</button>` : ''}</div></article>`;
   }
   html += `</div>`;
 
@@ -226,7 +228,7 @@ async function startTest(y, mode) {
   let data;
   try { data = await loadPaper('E' + y); } catch (e) { app.innerHTML = topbar() + `<div class="empty">${esc(e.message)} Check your connection and try again. <button class="btn small" data-act="home">Back</button></div>`; return; }
   let qns = data.map(q => q.n);
-  if (mode === 'mistakes') { const last = lastFull(y); qns = last ? mistakesOf(last) : []; }
+  if (mode === 'mistakes') { const last = lastFull(y); qns = last ? blanksOf(last) : []; }
   if (!qns.length) return go({name: 'dash'});
   const now = Date.now();
   active = {id: newId(), year: y, mode, qns, answers: {}, flags: [], idx: 0, startedAt: now, limit: qns.length * PER_Q, deadline: now + qns.length * PER_Q * 1000};
@@ -346,7 +348,7 @@ function renderTest() {
   const unanswered = secQns.length - answered;
   const eyebrow = sp ? `Speed practice · ${esc(speedLabel(active.settings))} · from ${srcOf(active, id)} ${y} Q${n}`
     : es ? `${esc(mocks[active.mock].name)} · Section ${active.sec + 1} of 3 · ${active.secNames[active.sec]}`
-    : `${active.year} · Part ${q.p} · ${q.p === 'A' ? 'Mathematics and Physics' : 'Advanced Mathematics and Advanced Physics'}${active.mode === 'mistakes' ? ' · Mistakes retry' : ''}`;
+    : `${active.year} · Part ${q.p} · ${q.p === 'A' ? 'Mathematics and Physics' : 'Advanced Mathematics and Advanced Physics'}${active.mode === 'mistakes' ? ' · Unanswered retry' : ''}`;
   const lozCls = L => locked ? (L === q.a ? 'r-ok' : L === sel ? 'r-bad' : '') : (sel === L ? 'sel' : '');
   const fb = locked ? `<div class="feedback ${sel === q.a ? 'ok' : 'bad'}" aria-live="polite"><h3>${sel === q.a ? 'Correct' : `Not quite. The answer is ${q.a}`}</h3>
       <p>${q.ex}</p><div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><span class="tag">${TOPIC[q.t]}</span><span class="tag">${DIFF[q.d]}</span><span class="tag">${srcOf(active, id)} ${y} Q${n}</span></div></div>` : '';
@@ -484,11 +486,11 @@ async function renderReview() {
   const parts = breakdown(a);
   const C = 2 * Math.PI * 52;
   const domId = n => 'rq-' + String(n).replace(/\W/g, '_');
-  const canRetry = !sp && counts.bad + counts.na && a.mode === 'full' && lastFull(a.year)?.id === a.id && !active;
+  const canRetry = !sp && counts.na && a.mode === 'full' && lastFull(a.year)?.id === a.id && !active;
 
   let html = topbar(`<button class="btn" data-act="home">← Dashboard</button>`);
   html += `<div class="section-h"><div><div class="eyebrow">${modeLabel(a)}${sp ? ' · ' + esc(speedLabel(a.settings)) : ''} · ${dateStr(a.finishedAt)}</div><h2 style="font-size:26px;margin-top:4px">${esc(attemptTitle(a))} results</h2></div>
-    ${canRetry ? `<button class="btn primary" data-act="retry" data-y="${a.year}">Retry ${counts.bad + counts.na} mistake${counts.bad + counts.na > 1 ? 's' : ''}</button>` : ''}
+    ${canRetry ? `<button class="btn primary" data-act="retry" data-y="${a.year}">Retry ${counts.na} unanswered</button>` : ''}
     ${sp && !active ? `<button class="btn primary" data-act="speed-again">New speed set</button>` : ''}</div>
   <section class="score-hero">
     <svg class="ring" viewBox="0 0 132 132" role="img" aria-label="Score ${p} percent"><circle cx="66" cy="66" r="52" fill="none" stroke="var(--line-soft)" stroke-width="12"/>
