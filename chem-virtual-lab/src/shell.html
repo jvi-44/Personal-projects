@@ -1,0 +1,245 @@
+<title>Chem Virtual Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+/* Layout: a lab-notebook register of 10 topics → a bench "stage" (3D) beside a notebook column (steps + diagrams).
+   Colour carries meaning: blue = verb, magenta = quantity, green = apparatus, amber = safety. */
+:root {
+  --paper: #eef2ef; --card: #fafbfa; --ink: #15211d; --muted: #586862; --line: #d0dad5; --soft: #e1e9e5;
+  --accent: #1d5fa6; --on-accent: #ffffff; --qty: #9e2c66; --app: #23704a; --warn: #a9531a;
+  --stage: #1a2427; --stage-ink: #e9f1ee;
+  --f-display: "Familjen Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0e1513; --card: #141d1b; --ink: #e2ebe7; --muted: #95a6a0; --line: #283430; --soft: #1b2623;
+    --accent: #7cb0f0; --on-accent: #0b1522; --qty: #e889bb; --app: #6ccb9b; --warn: #eda066; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0e1513; --card: #141d1b; --ink: #e2ebe7; --muted: #95a6a0; --line: #283430; --soft: #1b2623;
+  --accent: #7cb0f0; --on-accent: #0b1522; --qty: #e889bb; --app: #6ccb9b; --warn: #eda066; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { background: var(--paper); color: var(--ink); }
+body { font: 15px/1.55 var(--f-body); -webkit-font-smoothing: antialiased; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+h1, h2, h3, h4 { font-family: var(--f-display); text-wrap: balance; margin: 0; letter-spacing: -0.01em; }
+.eyebrow { font: 600 11px/1.3 var(--f-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 0; }
+.kv { color: var(--accent); font-weight: 600; }
+.kq { color: var(--qty); font-weight: 600; font-variant-numeric: tabular-nums; }
+.ka { color: var(--app); font-weight: 600; }
+sub, sup { font-size: 0.72em; line-height: 0; }
+
+/* top bar */
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; display: flex; align-items: center; gap: 16px; padding: 10px 20px; background: color-mix(in srgb, var(--paper) 88%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+.brand { display: flex; align-items: center; gap: 10px; background: none; border: 0; padding: 4px 2px; cursor: pointer; font: 700 17px/1 var(--f-display); letter-spacing: -0.01em; }
+.brand svg { width: 22px; height: 22px; color: var(--accent); }
+.crumbs { margin-left: auto; font: 500 12px/1.3 var(--f-mono); color: var(--muted); text-align: right; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* dashboard */
+.dash { max-width: 1160px; margin: 0 auto; padding: 28px 20px 64px; }
+.dash-head { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 28px; align-items: end; padding-bottom: 26px; border-bottom: 2px solid var(--ink); }
+.dash-head h1 { font-size: clamp(2.3rem, 5.6vw, 4.2rem); line-height: 0.95; font-weight: 700; }
+.dash-head .lede { margin: 14px 0 0; max-width: 58ch; color: var(--muted); font-size: 1.02rem; }
+.key { display: grid; gap: 8px; font-size: 13px; }
+.key h4 { font: 600 11px/1.3 var(--f-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.key-row { display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.key-row span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+.topics { list-style: none; margin: 0; padding: 0; }
+.topic { display: grid; grid-template-columns: 72px minmax(0, 1fr) 170px; gap: 8px 22px; padding: 22px 0; border-bottom: 1px solid var(--line); align-items: start; }
+.t-num { font: 600 34px/1 var(--f-mono); color: var(--accent); font-variant-numeric: tabular-nums; display: flex; flex-direction: column; gap: 10px; }
+.t-num svg { width: 30px; height: 30px; color: var(--muted); }
+.t-body h2 { font-size: 1.45rem; font-weight: 700; }
+.t-sum { margin: 6px 0 0; color: var(--muted); max-width: 70ch; }
+.t-user { margin: 10px 0 0; padding: 0; list-style: none; display: grid; gap: 3px; font-size: 13.5px; max-width: 78ch; }
+.t-user li { padding-left: 14px; position: relative; }
+.t-user li::before { content: ""; position: absolute; left: 2px; top: 0.62em; width: 5px; height: 5px; border-radius: 50%; background: var(--line); }
+.mine { display: inline-block; margin-left: 8px; font: 600 10px/1 var(--f-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--app); vertical-align: middle; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.chip { display: inline-flex; align-items: baseline; gap: 8px; padding: 7px 12px; border: 1px solid var(--line); background: var(--card); border-radius: 999px; cursor: pointer; text-align: left; transition: border-color .15s, background .15s; }
+.chip:hover { border-color: var(--accent); }
+.chip b { font: 600 11px/1 var(--f-mono); color: var(--accent); letter-spacing: 0.03em; }
+.chip i { font-style: normal; font-size: 11px; color: var(--muted); font-family: var(--f-mono); }
+.t-prog { font: 500 12px/1.4 var(--f-mono); color: var(--muted); padding-top: 6px; }
+.meter { height: 6px; border-radius: 3px; background: var(--soft); overflow: hidden; margin-bottom: 6px; }
+.meter > span { display: block; height: 100%; background: var(--app); border-radius: 3px; }
+
+/* lab */
+.lab { padding: 16px 20px 48px; max-width: 1500px; margin: 0 auto; }
+.lab-head { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; margin-bottom: 14px; }
+.back { background: none; border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; cursor: pointer; font-size: 13px; }
+.back:hover { border-color: var(--accent); }
+.lh-title { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.lh-num { font: 600 26px/1 var(--f-mono); color: var(--accent); }
+.lh-title h2 { font-size: clamp(1.2rem, 2.4vw, 1.6rem); font-weight: 700; }
+.tabs { display: flex; gap: 6px; overflow-x: auto; margin-left: auto; max-width: 100%; padding-bottom: 2px; }
+.tab { flex: none; border: 1px solid var(--line); background: var(--card); border-radius: 8px; padding: 7px 11px; cursor: pointer; font-size: 13px; text-align: left; }
+.tab b { font: 600 11px/1 var(--f-mono); color: var(--accent); margin-right: 6px; }
+.tab[aria-selected="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.tab[aria-selected="true"] b { color: inherit; }
+.lab-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(330px, 1fr); gap: 20px; align-items: start; }
+.stage-col { min-width: 0; display: grid; gap: 12px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 64px); }
+.stage { position: relative; width: 100%; aspect-ratio: 16 / 10; max-height: 70vh; border-radius: 12px; overflow: hidden; background: var(--stage); }
+.stage canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+.ov-top { position: absolute; left: 12px; top: 12px; right: 12px; display: flex; align-items: flex-start; gap: 10px; pointer-events: none; }
+.ov-step { flex: none; font: 600 12px/1 var(--f-mono); color: #0d1a15; background: #9cf0c2; padding: 6px 8px; border-radius: 6px; }
+.ov-title { font: 600 15px/1.3 var(--f-display); color: var(--stage-ink); background: rgba(10, 18, 16, 0.6); padding: 5px 10px; border-radius: 6px; max-width: 70%; }
+.ov-hint { position: absolute; right: 12px; bottom: 10px; font: 500 11px/1 var(--f-mono); color: rgba(233, 241, 238, 0.6); pointer-events: none; }
+.ov-fail { position: absolute; inset: 0; display: grid; place-items: center; padding: 24px; text-align: center; color: var(--stage-ink); font-size: 14px; }
+.controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.btn { border: 1px solid var(--line); background: var(--card); border-radius: 8px; padding: 8px 12px; cursor: pointer; font-size: 13.5px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; }
+.btn:hover { border-color: var(--accent); }
+.btn:disabled { opacity: 0.4; cursor: default; }
+.btn.primary { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.btn[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.dots { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; padding: 0 4px; }
+.dot { width: 22px; height: 22px; border-radius: 6px; border: 1px solid var(--line); background: var(--card); cursor: pointer; font: 600 10px/1 var(--f-mono); color: var(--muted); padding: 0; }
+.dot.seen { background: var(--soft); }
+.dot[aria-current="step"] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.grow { flex: 1; }
+.qcard { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; }
+.qcard summary { cursor: pointer; font: 600 12px/1.4 var(--f-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.qcard .q { margin: 10px 0 12px; max-width: 80ch; }
+.tamp { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.tamp div { border-top: 2px solid var(--ink); padding-top: 6px; font-size: 13px; }
+.tamp b { display: block; font: 700 18px/1.1 var(--f-display); }
+.tamp b span { font: 500 11px/1 var(--f-mono); color: var(--muted); margin-left: 4px; letter-spacing: 0.02em; }
+
+/* notebook column */
+.notes { min-width: 0; display: grid; gap: 14px; }
+.cur { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px 18px 16px; position: relative; }
+.cur-head { display: flex; gap: 14px; align-items: flex-start; }
+.cur-num { font: 600 38px/0.9 var(--f-mono); color: var(--accent); font-variant-numeric: tabular-nums; }
+.cur-head h3 { font-size: 1.3rem; font-weight: 700; margin-top: 4px; }
+.cur-body { margin-top: 12px; transition: filter .25s; }
+.cur-text { margin: 0; font-size: 1.04rem; line-height: 1.6; }
+.callout { margin-top: 12px; padding: 10px 12px; border-radius: 8px; background: var(--soft); font-size: 14px; }
+.callout .lbl { display: block; font: 600 10.5px/1 var(--f-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 5px; }
+.callout.safe .lbl { color: var(--warn); }
+.callout p { margin: 0; }
+.reveal { position: absolute; left: 50%; top: 58%; transform: translate(-50%, -50%); z-index: 2; }
+.recall .cur:not(.shown) .cur-body, .recall .cur:not(.shown) .dgs { filter: blur(7px); user-select: none; pointer-events: none; }
+.recall .steplist li:not(.on) .st-t { filter: blur(4px); }
+.recall .ov-title { display: none; }
+.dgs { display: grid; gap: 12px; margin-top: 14px; transition: filter .25s; }
+.dg { border-top: 1px solid var(--line); padding-top: 12px; min-width: 0; }
+.dg h4 { font: 600 11px/1.3 var(--f-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+.calc { margin: 0; padding: 0; list-style: none; display: grid; gap: 4px; font-variant-numeric: tabular-nums; font-size: 14px; }
+.calc li { padding: 3px 0 3px 10px; border-left: 2px solid var(--soft); }
+.calc li b { color: var(--qty); }
+.tbl { overflow-x: auto; }
+.tbl table { border-collapse: collapse; width: 100%; font-size: 13px; font-variant-numeric: tabular-nums; }
+.tbl th, .tbl td { border: 1px solid var(--line); padding: 5px 8px; text-align: left; vertical-align: top; }
+.tbl th { background: var(--soft); font-weight: 600; }
+.cap { margin: 6px 0 0; font-size: 12.5px; color: var(--muted); }
+.dg ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; font-size: 14px; }
+.plot { width: 100%; height: auto; max-width: 440px; display: block; }
+.plot .ax { stroke: var(--ink); stroke-width: 1.2; fill: none; }
+.plot .gl { stroke: var(--line); stroke-width: 1; }
+.plot .ln { stroke: var(--accent); stroke-width: 2; fill: none; }
+.plot .ln2 { stroke: var(--qty); stroke-width: 2; fill: none; }
+.plot .dash { stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 4 4; fill: none; }
+.plot .pt { stroke: var(--ink); stroke-width: 1.4; fill: none; }
+.plot text { fill: var(--muted); font: 500 10.5px var(--f-mono); }
+.plot .tl { fill: var(--ink); font: 600 11px var(--f-body); }
+.plot .box { fill: var(--card); stroke: var(--ink); stroke-width: 1.2; }
+.plot .arr { stroke: var(--ink); stroke-width: 1.4; fill: none; }
+.plot .hd { fill: var(--ink); }
+.steplist { list-style: none; margin: 0; padding: 0; background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.steplist li + li { border-top: 1px solid var(--line); }
+.steplist button { width: 100%; display: grid; grid-template-columns: 30px minmax(0, 1fr) 18px; gap: 8px; align-items: baseline; padding: 9px 14px; background: none; border: 0; cursor: pointer; text-align: left; font-size: 14px; }
+.steplist button:hover { background: var(--soft); }
+.st-n { font: 600 12px/1 var(--f-mono); color: var(--muted); }
+.st-c { color: var(--app); font-size: 12px; }
+.steplist li.on button { background: var(--soft); }
+.steplist li.on .st-n { color: var(--accent); }
+.steplist li.on .st-t { font-weight: 600; }
+.cheat { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; }
+.cheat summary { cursor: pointer; font: 600 12px/1.4 var(--f-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.cheat ul { margin: 10px 0 0; padding-left: 18px; display: grid; gap: 5px; font-size: 14px; }
+.foot { margin-top: 28px; font-size: 12.5px; color: var(--muted); }
+
+@media (max-width: 980px) {
+  .lab-grid { grid-template-columns: minmax(0, 1fr); }
+  .stage-col { position: static; }
+  .tabs { margin-left: 0; }
+}
+@media (max-width: 760px) {
+  .dash-head { grid-template-columns: minmax(0, 1fr); }
+  .topic { grid-template-columns: 48px minmax(0, 1fr); }
+  .t-num { font-size: 24px; }
+  .t-prog { grid-column: 2; }
+  .tamp { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stage { aspect-ratio: 4 / 3.4; }
+  .ov-title { max-width: 100%; font-size: 13px; }
+  .bar, .dash, .lab { padding-left: 16px; padding-right: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<header class="bar">
+  <button class="brand" id="home" aria-label="Chem Virtual Lab home">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6M10 3v6l-5.5 9.2A2 2 0 0 0 6.2 21h11.6a2 2 0 0 0 1.7-2.8L14 9V3"/><path d="M7.5 15h9"/></svg>
+    <span>Chem Virtual Lab</span>
+  </button>
+  <div class="crumbs" id="crumbs">H2 Chemistry · planning practicals</div>
+</header>
+
+<main id="dash" class="dash">
+  <section class="dash-head">
+    <div>
+      <p class="eyebrow">H2 Chemistry · Paper 4 planning</p>
+      <h1>Chem Virtual Lab</h1>
+      <p class="lede">Every worked example from your planning notes as a 3D bench. Step forwards and back to watch each procedure play out, then switch on recall mode to say the step before you reveal it.</p>
+    </div>
+    <div class="key">
+      <h4>Colour code in every step</h4>
+      <div class="key-row"><span><i class="sw" style="background:var(--accent)"></i><span class="kv">verb</span></span><span><i class="sw" style="background:var(--qty)"></i><span class="kq">quantity &amp; chemical</span></span><span><i class="sw" style="background:var(--app)"></i><span class="ka">apparatus</span></span></div>
+      <h4 style="margin-top:6px">On the bench</h4>
+      <div class="key-row"><span>Drag to orbit</span><span>Scroll or pinch to zoom</span><span>← → to step</span></div>
+    </div>
+  </section>
+  <ol class="topics" id="topics"></ol>
+  <p class="foot">Sample readings in the animations (balance, burette, thermometer) are illustrative values chosen to match each worked example's calculations.</p>
+</main>
+
+<main id="lab" class="lab" hidden>
+  <div class="lab-head">
+    <button class="back" id="back">← All topics</button>
+    <div class="lh-title"><span class="lh-num" id="lhNum">01</span><div><p class="eyebrow" id="lhTopic">Topic</p><h2 id="lhName">Example</h2></div></div>
+    <div class="tabs" id="tabs" role="tablist" aria-label="Worked examples"></div>
+  </div>
+  <div class="lab-grid">
+    <section class="stage-col">
+      <div class="stage" id="stage">
+        <canvas id="cv" aria-label="3D animation of the current step"></canvas>
+        <div class="ov-top"><span class="ov-step" id="ovStep">1 / 1</span><span class="ov-title" id="ovTitle"></span></div>
+        <div class="ov-hint">drag · zoom</div>
+        <div class="ov-fail" id="ovFail" hidden>The 3D view could not start in this browser. The steps, diagrams and calculations still work.</div>
+      </div>
+      <div class="controls">
+        <button class="btn" id="prev" aria-label="Previous step">← Back</button>
+        <button class="btn primary" id="next" aria-label="Next step">Next →</button>
+        <div class="dots" id="dots" role="group" aria-label="Jump to step"></div>
+        <span class="grow"></span>
+        <button class="btn" id="replay" title="Replay this step (R)">↻ Replay</button>
+        <button class="btn" id="auto" aria-pressed="false" title="Play every step in turn">▶ Auto-play</button>
+        <button class="btn" id="labels" aria-pressed="true">Labels</button>
+        <button class="btn" id="recall" aria-pressed="false" title="Hide step text until you reveal it">Recall mode</button>
+        <button class="btn" id="view" title="Reset camera">Reset view</button>
+      </div>
+      <details class="qcard" id="qcard" open><summary>Question &amp; TAMP</summary><div id="qbody"></div></details>
+    </section>
+    <aside class="notes" id="notes">
+      <article class="cur" id="cur"></article>
+      <ol class="steplist" id="steplist"></ol>
+      <details class="cheat" id="cheat"><summary id="cheatSum">Topic summary</summary><ul id="cheatList"></ul></details>
+    </aside>
+  </div>
+</main>
