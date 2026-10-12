@@ -44,7 +44,7 @@ function plot(o) {
   const X = v => m.l + (v - o.xr[0]) / (o.xr[1] - o.xr[0]) * (w - m.l - m.r);
   const Y = v => h - m.b - (v - o.yr[0]) / (o.yr[1] - o.yr[0]) * (h - m.t - m.b);
   let s = '<svg class="plot" viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="' + (o.title || 'graph') + '">';
-  for (const t of (o.yt || [])) s += '<line class="gl" x1="' + m.l + '" x2="' + (w - m.r) + '" y1="' + Y(t) + '" y2="' + Y(t) + '"/>';
+  for (const t of (o.yt || [])) { const v = Array.isArray(t) ? t[0] : t; s += '<line class="gl" x1="' + m.l + '" x2="' + (w - m.r) + '" y1="' + Y(v) + '" y2="' + Y(v) + '"/>'; }
   s += '<line class="ax" x1="' + m.l + '" y1="' + (h - m.b) + '" x2="' + (w - m.r) + '" y2="' + (h - m.b) + '"/><line class="ax" x1="' + m.l + '" y1="' + m.t + '" x2="' + m.l + '" y2="' + (h - m.b) + '"/>';
   for (const t of (o.xt || [])) { const v = Array.isArray(t) ? t[0] : t, lab = Array.isArray(t) ? t[1] : t; s += '<line class="ax" x1="' + X(v) + '" x2="' + X(v) + '" y1="' + (h - m.b) + '" y2="' + (h - m.b + 4) + '"/><text x="' + X(v) + '" y="' + (h - m.b + 15) + '" text-anchor="middle">' + lab + '</text>'; }
   for (const t of (o.yt || [])) { const v = Array.isArray(t) ? t[0] : t, lab = Array.isArray(t) ? t[1] : t; s += '<text x="' + (m.l - 6) + '" y="' + (Y(v) + 3.5) + '" text-anchor="end">' + lab + '</text>'; }

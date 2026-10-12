@@ -24,6 +24,7 @@
   --accent: #7cb0f0; --on-accent: #0b1522; --qty: #e889bb; --app: #6ccb9b; --warn: #eda066; color-scheme: dark;
 }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html, body { background: var(--paper); color: var(--ink); }
 body { font: 15px/1.55 var(--f-body); -webkit-font-smoothing: antialiased; }
 button { font: inherit; color: inherit; }
@@ -37,7 +38,7 @@ sub, sup { font-size: 0.72em; line-height: 0; }
 
 /* top bar */
 .bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; display: flex; align-items: center; gap: 16px; padding: 10px 20px; background: color-mix(in srgb, var(--paper) 88%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
-.brand { display: flex; align-items: center; gap: 10px; background: none; border: 0; padding: 4px 2px; cursor: pointer; font: 700 17px/1 var(--f-display); letter-spacing: -0.01em; }
+.brand { white-space: nowrap; flex: none; display: flex; align-items: center; gap: 10px; background: none; border: 0; padding: 4px 2px; cursor: pointer; font: 700 17px/1 var(--f-display); letter-spacing: -0.01em; }
 .brand svg { width: 22px; height: 22px; color: var(--accent); }
 .crumbs { margin-left: auto; font: 500 12px/1.3 var(--f-mono); color: var(--muted); text-align: right; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
@@ -167,7 +168,8 @@ sub, sup { font-size: 0.72em; line-height: 0; }
 
 @media (max-width: 980px) {
   .lab-grid { grid-template-columns: minmax(0, 1fr); }
-  .stage-col { position: static; }
+  .stage-col { position: static; display: contents; }
+  .stage { order: 1; } .controls { order: 2; } .notes { order: 3; } .qcard { order: 4; }
   .tabs { margin-left: 0; }
 }
 @media (max-width: 760px) {
@@ -179,6 +181,7 @@ sub, sup { font-size: 0.72em; line-height: 0; }
   .stage { aspect-ratio: 4 / 3.4; }
   .ov-title { max-width: 100%; font-size: 13px; }
   .bar, .dash, .lab { padding-left: 16px; padding-right: 16px; }
+  .crumbs { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>

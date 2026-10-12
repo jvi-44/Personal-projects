@@ -24,6 +24,7 @@
   --accent: #7cb0f0; --on-accent: #0b1522; --qty: #e889bb; --app: #6ccb9b; --warn: #eda066; color-scheme: dark;
 }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html, body { background: var(--paper); color: var(--ink); }
 body { font: 15px/1.55 var(--f-body); -webkit-font-smoothing: antialiased; }
 button { font: inherit; color: inherit; }
@@ -37,7 +38,7 @@ sub, sup { font-size: 0.72em; line-height: 0; }
 
 /* top bar */
 .bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; display: flex; align-items: center; gap: 16px; padding: 10px 20px; background: color-mix(in srgb, var(--paper) 88%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
-.brand { display: flex; align-items: center; gap: 10px; background: none; border: 0; padding: 4px 2px; cursor: pointer; font: 700 17px/1 var(--f-display); letter-spacing: -0.01em; }
+.brand { white-space: nowrap; flex: none; display: flex; align-items: center; gap: 10px; background: none; border: 0; padding: 4px 2px; cursor: pointer; font: 700 17px/1 var(--f-display); letter-spacing: -0.01em; }
 .brand svg { width: 22px; height: 22px; color: var(--accent); }
 .crumbs { margin-left: auto; font: 500 12px/1.3 var(--f-mono); color: var(--muted); text-align: right; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
@@ -167,7 +168,8 @@ sub, sup { font-size: 0.72em; line-height: 0; }
 
 @media (max-width: 980px) {
   .lab-grid { grid-template-columns: minmax(0, 1fr); }
-  .stage-col { position: static; }
+  .stage-col { position: static; display: contents; }
+  .stage { order: 1; } .controls { order: 2; } .notes { order: 3; } .qcard { order: 4; }
   .tabs { margin-left: 0; }
 }
 @media (max-width: 760px) {
@@ -179,6 +181,7 @@ sub, sup { font-size: 0.72em; line-height: 0; }
   .stage { aspect-ratio: 4 / 3.4; }
   .ov-title { max-width: 100%; font-size: 13px; }
   .bar, .dash, .lab { padding-left: 16px; padding-right: 16px; }
+  .crumbs { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
@@ -443,7 +446,7 @@ class Actor {
 }
 
 /* ---------- apparatus library ---------- */
-const T = {};
+const T = {}; const TYPES = T;
 const CF_WALL = [[0.42, 0.0], [0.45, 0.04], [0.44, 0.12], [0.17, 0.92], [0.15, 1.0], [0.15, 1.3]];
 function bubbles(A, rate, dt, y0, top, rmax, col) {
   A.emit('bub', rate, dt, () => { const r = Math.random() * rmax, a = Math.random() * TAU; spawn({ k: 'bub', p: A.w(Math.cos(a) * r, y0, Math.sin(a) * r), v: v3(0, rnd(0.45, 0.8), 0), life: 4, top: A.w(0, top, 0).y, size: rnd(0.012, 0.024), col: col || '#ffffff', op: 0.65 }); });
@@ -985,7 +988,7 @@ function resize() {
 }
 function fitCam(c) {
   const p = v3(c[0], c[1], c[2]), t = v3(c[3], c[4], c[5]);
-  const asp = camera.aspect || 1.6; if (asp < 1.45) { const k = Math.pow(1.45 / asp, 0.85); p.sub(t).multiplyScalar(k).add(t); }
+  const asp = camera.aspect || 1.6; if (asp < 1.45) { const k = Math.pow(1.45 / asp, 1.35); p.sub(t).multiplyScalar(k).add(t); }
   return [p, t];
 }
 function setCam(c, instant) {
@@ -1098,7 +1101,7 @@ function loop() {
 /* Content · helpers + topics 1–4.
    Text markup: ~verb~  «quantity»  ‹apparatus›  $chem formula$ (digits → subscripts, ^2+ → superscript). */
 const C = {
-  w: '#cfe3f2', mo_y: '#f0c22e', mo_o: '#ee8a2a', tp_b: '#5d9fe6', tp_pb: '#a8cdf2', kmn: '#6a1b62', pink: '#f1b3cf',
+  w: '#cfe3f2', mo_y: '#f0c22e', mo_o: '#e8661c', tp_b: '#5d9fe6', tp_pb: '#a8cdf2', kmn: '#6a1b62', pink: '#f1b3cf',
   cu: '#2f72d0', cuw: '#efeee6', wh: '#f4f3ee', mno2: '#272727', fe: '#e4c04c', i2aq: '#d7a24c', i2dcm: '#7b3fa1', bb: '#18193b',
   pale_y: '#efe19c', ce: '#f1d77a', pb: '#aab1b8', molten: '#d9a85a', br2: '#9c4a1c', cuso4: '#3f86d6', meth: '#d8e8f2', cinn: '#f1e3b0',
   ether: '#eef0d6', aq: '#d5e6ef', oil: '#e9dc9a', asp: '#f6f5ef', cloudy: '#e6ebee'
@@ -1720,7 +1723,7 @@ EX.push({
     { t: 'Weigh lamp + fuel → A', d: '~Weigh~ and record the total mass of the spirit lamp and fuel.', cam: [3.4, 1.9, 3.6, 3.2, 0.6, 0.5], ph: [[1.0, { lamp: { x: 3.3, y: 0.33, z: 0.5 } }], [0.8, { bal: { rd: 68.42 } }], [0.3, { n1: { vis: 1, x: 3.3, y: 1.6, z: 0.5, lab: 'A = 68.42 g' } }]] },
     { t: 'Place the lamp under the calorimeter', d: '~Place~ the spirit lamp under the calorimeter as in the set-up: calorimeter on a ‹tripod› and ‹wire gauze›, thermometer clamped to a ‹retort stand› and immersed in the water, all inside a ‹wind shield›.', cam: [0.4, 3.2, 8.6, 0.2, 1.4, 0],
       ph: [[0.3, { n1: { vis: 0 } }], [1.4, { lamp: { x: 0, y: 0, z: 0 }, bal: { rd: 0 } }]] },
-    { t: 'Burn until T rises 5–10 °C → D', d: '~Light~ the wick. When the water temperature has risen by about «5–10 °C» (e.g. 7 °C), ~extinguish~ the flame and record the «final temperature».', why: 'A 5–10 °C rise is large enough to measure, but small enough to limit heat loss.', cam: [1.0, 2.0, 4.6, 0.1, 1.4, 0],
+    { t: 'Burn until T rises 5–10 °C → D', d: '~Light~ the wick. When the water temperature has risen by about «5–10 °C» (e.g. 7 °C), ~extinguish~ the flame and record the «final temperature».', why: 'A 5–10 °C rise is large enough to measure, but small enough to limit heat loss.', cam: [1.8, 2.8, 6.4, 0.1, 1.7, 0],
       ph: [[0.4, { lamp: { cap: 0 } }], [0.6, { lamp: { fl: 1 } }], [4.0, { th: { T: 31.5 }, lamp: { lv: 0.55 } }], [0.4, { lamp: { cap: 1, fl: 0 } }], [0.3, { n1: { vis: 1, lab: 'D = 31.5 °C (ΔT = 7.0 °C)' } }]] },
     { t: 'Cool and reweigh → B', d: 'Allow the spirit lamp to cool sufficiently, then ~reweigh~ the lamp and remaining fuel. Record the new total mass.', why: 'Keep the cap on: volatile fuel evaporates fast, especially right after the flame is put out.', cam: [3.4, 1.9, 3.6, 3.2, 0.6, 0.5],
       ph: [[0.3, { n1: { vis: 0 } }], [1.4, { lamp: { x: 3.3, y: 0.33, z: 0.5 } }], [0.8, { bal: { rd: 68.21 } }], [0.3, { n1: { vis: 1, x: 3.3, y: 1.6, z: 0.5, lab: 'B = 68.21 g' } }]],
@@ -2000,13 +2003,13 @@ EX.push({
       ph: [[1.0, { vB: { lv: 1, col: '#cbdff2', stop: 1 } }], [1.0, { vC: { lv: 1, col: '#d3e4f2', stop: 1 } }], [1.0, { vD: { lv: 1, col: '#d1e4f1', stop: 1 } }], [0.4, { vA: { stop: 1 } }]],
       dg: [{ k: 'table', h: 'Solutions', head: ['Flask', '[$Cu^2+$] / mol dm⁻³', 'Made from', 'E<sub>cell</sub> / V'], rows: [['—', '1.00', '—', ''], ['A', '1.00 × 10⁻¹', '2.50 cm³ of 1.00 mol dm⁻³', ''], ['B', '1.00 × 10⁻²', '2.50 cm³ from A', ''], ['C', '1.00 × 10⁻³', '2.50 cm³ from B', ''], ['D', '1.00 × 10⁻⁴', '2.50 cm³ from C', '']] }] },
     { t: 'Two beakers in the water bath', d: '~Place~ two clean, dry beakers in a ‹thermostatically controlled water bath›. Fill one with «1.00 mol dm⁻³ $ZnSO4$» and the other with «1.00 mol dm⁻³ $CuSO4$».', cam: [2.0, 2.8, 5.6, 2.0, 0.8, 0], ph: [[0.8, { bkZn: { vis: 1 }, bkCu: { vis: 1 } }]] },
-    { t: 'Both at 298 K', d: '~Place~ a thermometer in each solution and make sure both are at the same temperature, «298 K».', cam: [2.0, 2.4, 4.6, 2.0, 0.9, 0], ph: [[0.6, { th1: { vis: 1 }, th2: { vis: 1 } }], [0.3, { n1: { vis: 1, lab: 'both at 298 K' } }]] },
-    { t: 'Zinc electrode', d: '~Connect~ one end of a wire to the voltmeter and the other to the ‹zinc electrode› with a crocodile clip. ~Immerse~ the zinc electrode in the 1.00 mol dm⁻³ zinc sulfate solution.', cam: [1.6, 2.6, 5.0, 1.6, 1.0, 0.4],
+    { t: 'Both at 298 K', d: '~Place~ a thermometer in each solution and make sure both are at the same temperature, «298 K».', cam: [2.0, 3.6, 6.2, 2.0, 0.9, 0], ph: [[0.6, { th1: { vis: 1 }, th2: { vis: 1 } }], [0.3, { n1: { vis: 1, lab: 'both at 298 K' } }]] },
+    { t: 'Zinc electrode', d: '~Connect~ one end of a wire to the voltmeter and the other to the ‹zinc electrode› with a crocodile clip. ~Immerse~ the zinc electrode in the 1.00 mol dm⁻³ zinc sulfate solution.', cam: [2.0, 3.6, 6.2, 2.0, 0.9, 0],
       ph: [[0.3, { n1: { vis: 0 }, th1: { vis: 0 }, th2: { vis: 0 } }], [0.6, { vm: { vis: 1 } }], [0.8, { pZn: { vis: 1 }, wZn: { vis: 1 } }]] },
-    { t: 'Copper electrode', d: '~Repeat~ for the ‹copper electrode› and the 1.00 mol dm⁻³ copper(II) sulfate solution.', cam: [2.4, 2.6, 5.0, 2.4, 1.0, 0.4], ph: [[0.8, { pCu: { vis: 1 }, wCu: { vis: 1 } }]] },
-    { t: 'Salt bridge', d: '~Soak~ a strip of filter paper in saturated $KNO3$ solution. ~Place~ one end in the zinc sulfate beaker and the other in the copper(II) sulfate beaker.', why: 'The salt bridge completes the circuit and keeps the solutions electrically neutral.', cam: [2.0, 2.6, 4.8, 2.0, 1.0, 0], ph: [[0.8, { sb: { vis: 1 } }], [0.6, { sb: { col: '#ddd2ae' } }]] },
-    { t: 'Read the voltmeter', d: '~Record~ the reading on the ‹voltmeter›.', cam: [2.0, 1.8, 4.2, 2.0, 0.6, 1.0], ph: [[1.0, { vm: { rd: 1.100 } }], [0.3, { n1: { vis: 1, x: 2.0, y: 1.1, z: 1.3, lab: '[Cu²⁺] = 1.00 → 1.100 V' } }]] },
-    { t: 'Repeat for the other concentrations', d: '~Repeat~ with the copper(II) sulfate solutions of four other concentrations, using a «new salt bridge» each time.', cam: [2.0, 2.2, 5.0, 2.0, 0.8, 0.6],
+    { t: 'Copper electrode', d: '~Repeat~ for the ‹copper electrode› and the 1.00 mol dm⁻³ copper(II) sulfate solution.', cam: [2.0, 3.6, 6.2, 2.0, 0.9, 0], ph: [[0.8, { pCu: { vis: 1 }, wCu: { vis: 1 } }]] },
+    { t: 'Salt bridge', d: '~Soak~ a strip of filter paper in saturated $KNO3$ solution. ~Place~ one end in the zinc sulfate beaker and the other in the copper(II) sulfate beaker.', why: 'The salt bridge completes the circuit and keeps the solutions electrically neutral.', cam: [2.0, 3.6, 6.2, 2.0, 0.9, 0], ph: [[0.8, { sb: { vis: 1 } }], [0.6, { sb: { col: '#ddd2ae' } }]] },
+    { t: 'Read the voltmeter', d: '~Record~ the reading on the ‹voltmeter›.', cam: [2.0, 3.6, 6.2, 2.0, 0.9, 0], ph: [[1.0, { vm: { rd: 1.100 } }], [0.3, { n1: { vis: 1, x: 2.0, y: 1.1, z: 1.3, lab: '[Cu²⁺] = 1.00 → 1.100 V' } }]] },
+    { t: 'Repeat for the other concentrations', d: '~Repeat~ with the copper(II) sulfate solutions of four other concentrations, using a «new salt bridge» each time.', cam: [2.0, 3.6, 6.2, 2.0, 0.9, 0],
       ph: [[0.3, { n1: { vis: 0 } }], [0.6, { bkCu: { col: '#9cc3ec' }, vm: { rd: 1.071 }, sb: { col: '#efe6cc' } }], [0.4, { sb: { col: '#ddd2ae' } }], [0.6, { bkCu: { col: '#cbdff2' }, vm: { rd: 1.041 } }], [0.6, { bkCu: { col: '#d3e4f2' }, vm: { rd: 1.012 } }], [0.6, { bkCu: { col: '#d1e4f1' }, vm: { rd: 0.982 } }], [0.3, { n1: { vis: 1, x: 2.0, y: 1.1, z: 1.3, lab: 'D (1.00 × 10⁻⁴) → 0.982 V' } }]],
       dg: [{ k: 'table', h: 'Predicted readings', head: ['[$Cu^2+$] / mol dm⁻³', 'ln(1/[$Cu^2+$])', 'E<sub>cell</sub> / V'], rows: [['1.00', '0.00', '1.100'], ['1.00 × 10⁻¹', '2.30', '1.071'], ['1.00 × 10⁻²', '4.61', '1.041'], ['1.00 × 10⁻³', '6.91', '1.012'], ['1.00 × 10⁻⁴', '9.21', '0.982']] }] },
     { t: 'Plot; read off X', d: 'With [$Zn^2+$] = 1.00 mol dm⁻³, E<sub>cell</sub> = 1.10 − 0.0128 ln(1/[$Cu^2+$]). ~Plot~ E<sub>cell</sub> against ln(1/[$Cu^2+$]): a straight line. ~Measure~ E<sub>cell</sub> with solution X, read off ln(1/[$Cu^2+$]) = Y, then «[$Cu^2+$] in X = 1/e<sup>Y</sup>».', ph: [[0.3, { n1: { vis: 0 } }]], dg: [{ k: 'graph', g: 'ecell' }] }
@@ -2228,7 +2231,7 @@ function plot(o) {
   const X = v => m.l + (v - o.xr[0]) / (o.xr[1] - o.xr[0]) * (w - m.l - m.r);
   const Y = v => h - m.b - (v - o.yr[0]) / (o.yr[1] - o.yr[0]) * (h - m.t - m.b);
   let s = '<svg class="plot" viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="' + (o.title || 'graph') + '">';
-  for (const t of (o.yt || [])) s += '<line class="gl" x1="' + m.l + '" x2="' + (w - m.r) + '" y1="' + Y(t) + '" y2="' + Y(t) + '"/>';
+  for (const t of (o.yt || [])) { const v = Array.isArray(t) ? t[0] : t; s += '<line class="gl" x1="' + m.l + '" x2="' + (w - m.r) + '" y1="' + Y(v) + '" y2="' + Y(v) + '"/>'; }
   s += '<line class="ax" x1="' + m.l + '" y1="' + (h - m.b) + '" x2="' + (w - m.r) + '" y2="' + (h - m.b) + '"/><line class="ax" x1="' + m.l + '" y1="' + m.t + '" x2="' + m.l + '" y2="' + (h - m.b) + '"/>';
   for (const t of (o.xt || [])) { const v = Array.isArray(t) ? t[0] : t, lab = Array.isArray(t) ? t[1] : t; s += '<line class="ax" x1="' + X(v) + '" x2="' + X(v) + '" y1="' + (h - m.b) + '" y2="' + (h - m.b + 4) + '"/><text x="' + X(v) + '" y="' + (h - m.b + 15) + '" text-anchor="middle">' + lab + '</text>'; }
   for (const t of (o.yt || [])) { const v = Array.isArray(t) ? t[0] : t, lab = Array.isArray(t) ? t[1] : t; s += '<text x="' + (m.l - 6) + '" y="' + (Y(v) + 3.5) + '" text-anchor="end">' + lab + '</text>'; }

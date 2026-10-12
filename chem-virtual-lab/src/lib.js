@@ -195,7 +195,7 @@ class Actor {
 }
 
 /* ---------- apparatus library ---------- */
-const T = {};
+const T = {}; const TYPES = T;
 const CF_WALL = [[0.42, 0.0], [0.45, 0.04], [0.44, 0.12], [0.17, 0.92], [0.15, 1.0], [0.15, 1.3]];
 function bubbles(A, rate, dt, y0, top, rmax, col) {
   A.emit('bub', rate, dt, () => { const r = Math.random() * rmax, a = Math.random() * TAU; spawn({ k: 'bub', p: A.w(Math.cos(a) * r, y0, Math.sin(a) * r), v: v3(0, rnd(0.45, 0.8), 0), life: 4, top: A.w(0, top, 0).y, size: rnd(0.012, 0.024), col: col || '#ffffff', op: 0.65 }); });
@@ -737,7 +737,7 @@ function resize() {
 }
 function fitCam(c) {
   const p = v3(c[0], c[1], c[2]), t = v3(c[3], c[4], c[5]);
-  const asp = camera.aspect || 1.6; if (asp < 1.45) { const k = Math.pow(1.45 / asp, 0.85); p.sub(t).multiplyScalar(k).add(t); }
+  const asp = camera.aspect || 1.6; if (asp < 1.45) { const k = Math.pow(1.45 / asp, 1.35); p.sub(t).multiplyScalar(k).add(t); }
   return [p, t];
 }
 function setCam(c, instant) {

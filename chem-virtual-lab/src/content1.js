@@ -1,7 +1,7 @@
 /* Content · helpers + topics 1–4.
    Text markup: ~verb~  «quantity»  ‹apparatus›  $chem formula$ (digits → subscripts, ^2+ → superscript). */
 const C = {
-  w: '#cfe3f2', mo_y: '#f0c22e', mo_o: '#ee8a2a', tp_b: '#5d9fe6', tp_pb: '#a8cdf2', kmn: '#6a1b62', pink: '#f1b3cf',
+  w: '#cfe3f2', mo_y: '#f0c22e', mo_o: '#e8661c', tp_b: '#5d9fe6', tp_pb: '#a8cdf2', kmn: '#6a1b62', pink: '#f1b3cf',
   cu: '#2f72d0', cuw: '#efeee6', wh: '#f4f3ee', mno2: '#272727', fe: '#e4c04c', i2aq: '#d7a24c', i2dcm: '#7b3fa1', bb: '#18193b',
   pale_y: '#efe19c', ce: '#f1d77a', pb: '#aab1b8', molten: '#d9a85a', br2: '#9c4a1c', cuso4: '#3f86d6', meth: '#d8e8f2', cinn: '#f1e3b0',
   ether: '#eef0d6', aq: '#d5e6ef', oil: '#e9dc9a', asp: '#f6f5ef', cloudy: '#e6ebee'
