@@ -13,3 +13,4 @@ mkdir -p dist
   echo '<script>'; cat src/app.js; echo '</script>'
 } > "$out"
 echo "built $out ($(wc -c < "$out") bytes)"
+# Diagrams PDF (needs Playwright + Chromium): node diagrams/build_pdf.js

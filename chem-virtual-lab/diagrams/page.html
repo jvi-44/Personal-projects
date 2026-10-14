@@ -1,0 +1,103 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Diagrams to Draw</title>
+<style>
+@page { size: A4; margin: 13mm 14mm 15mm; }
+:root { --ink:#14201c; --muted:#56635e; --line:#c9d3cf; --soft:#eef3f1; --accent:#1d5fa6; --liq:#d7e7f4; }
+* { box-sizing: border-box; }
+body { margin: 0; font: 10.2pt/1.45 "Bitstream Charter", "DejaVu Serif", serif; color: var(--ink); background: #fff; }
+h1,h2,h3 { font-family: "Inter Display", Inter, "DejaVu Sans", sans-serif; margin: 0; letter-spacing: -0.01em; }
+.cover h1 { font-size: 34pt; font-weight: 700; line-height: 1; }
+.eyebrow { font: 600 7.5pt/1.2 "DejaVu Sans Mono", monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.cover { border-bottom: 2.4px solid var(--ink); padding-bottom: 10px; margin-bottom: 12px; }
+.cover p { max-width: 150mm; margin: 8px 0 0; color: var(--muted); }
+.rules { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 22px; margin: 0 0 14px; padding: 0; list-style: none; }
+.rules li { padding-left: 16px; position: relative; font-size: 9.6pt; }
+.rules li::before { content: "✎"; position: absolute; left: 0; color: var(--accent); }
+.toc { columns: 2; column-gap: 22px; font-size: 9.2pt; margin: 0; padding: 0; list-style: none; }
+.toc li { display: flex; gap: 6px; break-inside: avoid; padding: 1.5px 0; border-bottom: 1px dotted var(--line); }
+.toc .n { font: 600 8.5pt "DejaVu Sans Mono", monospace; color: var(--accent); width: 22px; }
+.toc .s { margin-left: auto; color: var(--muted); font-size: 8.4pt; }
+.part { break-before: page; margin: 0 0 6px; display: flex; align-items: baseline; gap: 12px; border-bottom: 2.4px solid var(--ink); padding-bottom: 6px; }
+.part h2 { font-size: 20pt; }
+.sec { font: 600 8pt "DejaVu Sans Mono", monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); margin: 12px 0 4px; break-after: avoid; }
+.card { break-inside: avoid; display: grid; grid-template-columns: 58% 1fr; gap: 14px; padding: 10px 0 12px; border-top: 1px solid var(--line); }
+.card h3 { font-size: 12.5pt; font-weight: 700; display: flex; gap: 8px; align-items: baseline; }
+.card h3 .n { font: 600 10pt "DejaVu Sans Mono", monospace; color: var(--accent); }
+.from { font-size: 8.4pt; color: var(--muted); margin: 2px 0 8px; font-style: italic; }
+.must h4 { font: 600 7.5pt "DejaVu Sans Mono", monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin: 0 0 4px; }
+.must ul { margin: 0; padding-left: 14px; font-size: 9.3pt; display: grid; gap: 3px; }
+.must .box { margin-top: 8px; border: 1px dashed var(--line); border-radius: 4px; padding: 5px 8px; font-size: 8.4pt; color: var(--muted); }
+svg.dia, svg.plot { width: 100%; height: auto; display: block; }
+/* drawing styles */
+.gl { fill: none; stroke: #111; stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; }
+.gl.wf, .wf { fill: #fff; }
+.metal { fill: none; stroke: #111; stroke-width: 3; stroke-linejoin: round; }
+.liq { fill: var(--liq); stroke: none; } .liq2 { fill: #bcd3e8; stroke: none; } .liqs { fill: var(--liq); stroke: #111; stroke-width: .8; }
+.sol { fill: url(#dots); stroke: none; }
+.men { stroke: #111; stroke-width: 1; }
+.mt { fill: #555; stroke: #111; stroke-width: 1; } .rod { stroke: #111; stroke-width: 3.2; stroke-linecap: round; } .rod2 { stroke: #111; stroke-width: 2; stroke-linecap: round; } .rod3 { stroke: #777; stroke-width: 2; }
+.tk { stroke: #111; stroke-width: .9; }
+.ld { stroke: #444; stroke-width: .7; } .dotp { fill: #444; }
+.lb { font: 8.6px "DejaVu Sans", sans-serif; fill: #111; }
+.nt { font: 8.6px "DejaVu Sans", sans-serif; fill: #333; } .nt.b { font-weight: 700; fill: var(--accent); }
+.mtr { font: 700 11px "DejaVu Sans", sans-serif; fill: #111; }
+.ar { stroke: #111; stroke-width: 1.2; } .arh { stroke: #b2561a; stroke-width: 1.6; }
+.tbo { fill: none; stroke: #111; stroke-width: 6.5; stroke-linejoin: round; stroke-linecap: round; } .tbo2 { fill: none; stroke: #111; stroke-width: 5.5; stroke-linejoin: round; } .tbi { fill: none; stroke: #fff; stroke-width: 3.3; stroke-linejoin: round; stroke-linecap: round; }
+.wr { fill: none; stroke: #111; stroke-width: 1.3; }
+.bung { fill: #8a6a5c; stroke: #111; stroke-width: 1; }
+.bulb { fill: #9b3a3a; stroke: #111; stroke-width: .8; }
+.chip { fill: #fff; stroke: #111; stroke-width: .8; }
+.gz { fill: #fff; stroke: #111; stroke-width: 1; } .xx { font: 6px "DejaVu Sans", sans-serif; fill: #111; letter-spacing: -0.5px; }
+.pc { stroke: #d8cfbf; stroke-width: 5; stroke-linecap: round; }
+.fl { fill: #cfe3ff; stroke: #2a5bd7; stroke-width: 1; } .fli { fill: #6f95ee; stroke: none; }
+.wick { stroke: #777; stroke-width: 2; }
+.th { fill: #c0392b; stroke: #111; stroke-width: .8; } .thc { stroke: #c0392b; stroke-width: 1.6; }
+.str { fill: none; stroke: #8b6d3f; stroke-width: 1; stroke-dasharray: 2 1.5; }
+.hold { stroke: #8a5a32; stroke-width: 6; stroke-linecap: round; }
+.cupw { fill: none; stroke: #111; stroke-width: 3.5; stroke-opacity: .25; }
+.paper { fill: none; stroke: #111; stroke-width: 1; stroke-dasharray: 3 2; }
+.shield { stroke: #111; stroke-width: 4; }
+.mant { fill: #dfe5ea; stroke: #111; stroke-width: 1.4; }
+.dash2 { stroke: #111; stroke-width: 1.1; stroke-dasharray: 4 3; }
+.ice { fill: #fff; stroke: #111; stroke-width: .8; }
+.rodg { fill: #333; stroke: #111; stroke-width: .8; }
+.plate { fill: #9ea7ae; stroke: #111; stroke-width: 1; } .plateC { fill: #c46f3d; stroke: #111; stroke-width: 1; }
+.sb1 { fill: none; stroke: #111; stroke-width: 11; stroke-linejoin: round; } .sb2 { fill: none; stroke: #f1ead6; stroke-width: 8.4; stroke-linejoin: round; }
+/* graph styles */
+.plot .ax { stroke: #111; stroke-width: 1.2; fill: none; } .plot .gl { stroke: #e3e8e6; stroke-width: .8; fill: none; }
+.plot .ln { stroke: #111; stroke-width: 1.8; fill: none; } .plot .dash { stroke: #666; stroke-width: 1; stroke-dasharray: 4 3; fill: none; }
+.plot .pt { stroke: #111; stroke-width: 1.3; fill: none; } .plot text { fill: #444; font: 9.5px "DejaVu Sans", sans-serif; } .plot .tl { fill: #111; font: 600 9.5px "DejaVu Sans", sans-serif; }
+.plot .box { fill: #fff; stroke: #111; stroke-width: 1.2; } .plot .arr { stroke: #111; stroke-width: 1.3; } .plot .hd { fill: #111; }
+</style></head><body>
+<svg width="0" height="0" style="position:absolute"><defs>
+<pattern id="dots" width="5" height="5" patternUnits="userSpaceOnUse"><rect width="5" height="5" fill="#f3efe4"/><circle cx="1.5" cy="1.5" r=".9" fill="#333"/><circle cx="4" cy="3.8" r=".7" fill="#333"/></pattern>
+<marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#111"/></marker>
+</defs></svg>
+<div id="out"></div>
+<script>/*KIT*/</script>
+<script>/*GRAPHS*/</script>
+<script>/*DIA*/</script>
+<script>
+(function(){
+  const out = document.getElementById('out'); let h = '';
+  h += '<header class="cover"><p class="eyebrow">H2 Chemistry · Paper 4 planning · companion to Chem Virtual Lab</p><h1>Diagrams to Draw</h1><p>Every apparatus set-up and sketch graph from your three sets of planning notes, drawn the way a labelled exam diagram should look. Each one lists the points a marker looks for.</p></header>';
+  h += '<h3 style="font-size:12pt;margin:0 0 6px">Rules for every diagram</h3><ul class="rules">' + [
+    'Label every piece of apparatus with a ruled leader line, and state capacities (250 cm³ conical flask, 50.00 cm³ burette, 100 cm³ gas syringe).',
+    'Name what is inside each vessel, with its volume or mass where you know it.',
+    'Show liquid levels with a horizontal line; draw solids as dots or shading.',
+    'Draw a set-up that would actually work: no gaps for gas to leak, tubes ending under water, thermometers in the liquid, a vertical burette.',
+    'Seal what must be sealed (gas collection) and leave open what must be open (reflux).',
+    'For gas collection, show how the reactants are kept apart and then mixed, and how the gas is collected.',
+    'Show a safe heat source: heating mantle or water bath for organic liquids; Bunsen burner only for inorganic heating.',
+    'Sketch graphs: both axes labelled with quantity / unit, best-fit lines, and the key point marked (V<sub>eq</sub>, ΔT, t = 3.0 min).'
+  ].map(x => '<li>' + x + '</li>').join('') + '</ul>';
+  let n = 0; const toc = [];
+  DIA.forEach(d => { d.n = ++n; toc.push(d); }); GR.forEach(d => { d.n = ++n; toc.push(d); });
+  h += '<h3 style="font-size:12pt;margin:4px 0 6px">Contents</h3><ol class="toc">' + toc.map(d => '<li><span class="n">' + String(d.n).padStart(2, '0') + '</span>' + d.title + '<span class="s">' + (d.g ? 'graph' : SECTIONS.find(s => s.id === d.sec).name) + '</span></li>').join('') + '</ol>';
+  const card = (d, body) => '<article class="card"><div>' + body + '</div><div><h3><span class="n">' + String(d.n).padStart(2, '0') + '</span>' + d.title + '</h3><p class="from">Used in: ' + d.from + '</p><div class="must"><h4>Must show</h4><ul>' + d.must.map(m => '<li>' + m + '</li>').join('') + '</ul><div class="box">Practise: cover the drawing and redraw it from the checklist.</div></div></div></article>';
+  h += '<div class="part"><span class="eyebrow">Part A</span><h2>Apparatus set-ups</h2></div>';
+  for (const sec of SECTIONS) { const list = DIA.filter(d => d.sec === sec.id); if (!list.length) continue; h += '<div class="sec">' + sec.name + '</div>'; for (const d of list) h += card(d, svg(d.w, d.h, d.draw())); }
+  h += '<div class="part"><span class="eyebrow">Part B</span><h2>Graphs to sketch</h2></div>';
+  for (const sec of SECTIONS) { const list = GR.filter(d => d.sec === sec.id); if (!list.length) continue; h += '<div class="sec">' + sec.name + '</div>'; for (const d of list) h += card(d, G[d.g]()); }
+  out.innerHTML = h; document.body.dataset.ready = '1';
+})();
+</script></body></html>
