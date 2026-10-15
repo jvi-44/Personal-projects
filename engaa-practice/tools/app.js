@@ -98,7 +98,7 @@ const newId = () => 'a' + Date.now().toString(36) + Math.random().toString(36).s
 const shuffle = arr => { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; };
 const speedLabel = s => `${s.bank ? BANK[s.bank] : 'ENGAA questions'} · ${s.topic === 'B' ? 'Maths + Physics' : TOPIC[s.topic]} · ${s.diff === 'X' ? 'Mixed difficulty' : DIFF[s.diff]}`;
 const modeLabel = a => a.mode === 'full' ? 'ENGAA paper' : a.mode === 'mistakes' ? 'ENGAA unanswered retry' : a.mode === 'esat' ? 'ESAT mock' : 'Speed practice';
-const attemptTitle = a => isEsat(a) ? (mocks?.[a.mock]?.name || 'ESAT mock') : isSpeed(a) ? 'Speed practice' : 'ENGAA ' + a.year;
+const attemptTitle = a => isEsat(a) ? (a.mockName || mocks?.[a.mock]?.name || 'ESAT mock') : isSpeed(a) ? 'Speed practice' : 'ENGAA ' + a.year;
 
 let view = {name: 'dash'};
 let timerId = null;
@@ -128,7 +128,7 @@ function speedPool(p) {
 function renderDash() {
   if (!meta) { app.innerHTML = topbar() + '<div class="empty">Loading question bank…</div>'; loadMeta().then(() => { if (view.name === 'dash') renderDash(); }).catch(e => { app.innerHTML = topbar() + `<div class="empty">${esc(e.message)}</div>`; }); return; }
   const full = attempts.filter(a => a.mode === 'full');
-  const mk = attempts.filter(a => a.mode === 'esat');
+  const mk = attempts.filter(a => a.mode === 'esat' && typeof a.mock === 'number');
   const doneE = new Set(full.map(a => a.year)), doneM = new Set(mk.map(a => a.mock));
   const bestMock = mk.length ? Math.max(...mk.map(a => pct(a.score, a.total))) : null;
   const latestMistakes = Object.keys(AVAILABLE).reduce((s, y) => { const a = lastFull(+y); return s + (a ? mistakesOf(a).length : 0); }, 0);
@@ -137,7 +137,7 @@ function renderDash() {
   let html = topbar();
   if (active) {
     const sp = isSpeed(active), es = isEsat(active), pz = !!active.pausedAt;
-    const what = sp ? 'Speed practice · ' + speedLabel(active.settings) : es ? `${mocks[active.mock].name} · Section ${active.sec + 1} of 3 (${active.secNames[active.sec]})` : active.year + (active.mode === 'mistakes' ? ' ENGAA unanswered retry' : ' ENGAA paper');
+    const what = sp ? 'Speed practice · ' + speedLabel(active.settings) : es ? `${active.mockName || mocks[active.mock].name} · Section ${active.sec + 1} of 3 (${active.secNames[active.sec]})` : active.year + (active.mode === 'mistakes' ? ' ENGAA unanswered retry' : ' ENGAA paper');
     html += `<div class="resume"><div><div class="eyebrow">${pz ? 'Paused' : sp ? 'Practice in progress' : 'Test in progress'}</div><div style="margin-top:4px"><b>${esc(what)}</b> · ${Object.keys(active.answers).length}/${active.qns.length} answered · ${sp ? `<span class="mono">${fmt(elapsedOf(active))}</span> elapsed` : `<span class="mono">${fmt(remainingOf(active))}</span> left${es ? ' in this section' : ''}`}${pz ? '. The clock is stopped until you resume.' : sp ? '' : '. The clock is still running.'}</div></div>
       <div style="display:flex;gap:8px"><button class="btn primary" data-act="resume">Resume</button><button class="btn ghost" data-act="abandon">Discard</button></div></div>`;
   }
@@ -160,6 +160,16 @@ function renderDash() {
       ${last ? `<button class="btn small" data-act="review" data-id="${last.id}">Review</button>` : ''}</div></article>`;
   });
   html += `</div>`;
+
+  const ep = engaaPools(), avail = Math.min(...ENGAA_SECTIONS.map(([, k]) => Math.floor(ep[k].length / 27)));
+  const em = attempts.filter(a => isEsat(a) && String(a.mock).startsWith('E')).sort((a, b) => b.finishedAt - a.finishedAt);
+  html += `<div class="section-h"><h2>ENGAA mocks</h2><span class="note">Built fresh each time from ENGAA questions you haven't answered yet in any attempt: Mathematics 1 (Part A maths), Mathematics 2 (Part B advanced maths) and Physics (Part A physics). 27 questions and 40 minutes per section.</span></div>
+  <section class="speed emock">
+    <div class="opts">${ENGAA_SECTIONS.map(([nm, k]) => `<div class="field"><span class="eyebrow">${nm}</span><b class="mono" style="font-size:20px">${ep[k].length}</b><span class="note">unattempted</span></div>`).join('')}
+      ${em.length ? `<div class="field"><span class="eyebrow">Last ENGAA mock</span><b class="mono" style="font-size:20px">${em[0].score}/${em[0].total}</b><button class="btn small" data-act="review" data-id="${em[0].id}">Review</button></div>` : ''}</div>
+    <div class="go"><span class="note mono">${avail ? `Enough for ${avail} more mock${avail > 1 ? 's' : ''}` : 'Not enough unattempted questions left for a full mock'}</span>
+      <button class="btn primary" data-act="engaa-mock" ${active || !avail ? 'disabled' : ''}>Start ENGAA Mock ${em.length + 1}</button></div>
+  </section>`;
 
   const pool = speedPool(speedPrefs).length;
   const seg = (key, opts) => `<div class="seg" role="group">${opts.map(([v, l]) => `<button data-act="pref" data-k="${key}" data-v="${v}" class="${String(speedPrefs[key]) === String(v) ? 'on' : ''}" aria-pressed="${String(speedPrefs[key]) === String(v)}">${l}</button>`).join('')}</div>`;
@@ -236,14 +246,51 @@ async function startTest(y, mode) {
   go({name: 'test'});
 }
 async function startMock(k) {
-  app.innerHTML = topbar() + `<div class="empty">Loading the mock…</div>`;
   await loadMeta();
-  const m = mocks[k];
+  return startMockSpec(mocks[k], k);
+}
+/* ENGAA mocks are assembled on demand from ENGAA questions you have never answered in any attempt */
+const ENGAA_SECTIONS = [['Mathematics 1', 'M1'], ['Mathematics 2', 'M2'], ['Physics', 'PH']];
+function engaaAttempted() {
+  const s = new Set();
+  for (const a of attempts) for (const id of a.qns) if (a.answers[id]) { const g = gidOf(a, id); if (g[0] === 'E') s.add(g); }
+  return s;
+}
+function engaaSectionOf(g) {
+  const {year, n} = parseGid(g), pb = year <= 2018 ? 29 : 21;
+  if (n >= pb) return 'M2';
+  return n % 2 ? 'M1' : 'PH';
+}
+function engaaPools() {
+  const done = engaaAttempted(), pools = {M1: [], M2: [], PH: []};
+  for (const [g] of meta) if (!done.has(g)) pools[engaaSectionOf(g)].push(g);
+  const pos = g => { const {year, n} = parseGid(g), pb = year <= 2018 ? 29 : 21, last = year <= 2018 ? 53 : 39;
+    return n >= pb ? (n - pb) / (last - pb) : (n - 1) / (pb - 2); };
+  for (const k in pools) pools[k].sort((a, b) => pos(a) - pos(b) || a.localeCompare(b));
+  return pools;
+}
+/* spread the 27 picks evenly across the difficulty-sorted pool, so each section runs easy to hard */
+function pickSpread(list, n) {
+  if (list.length <= n) return list.slice(0, n);
+  const out = [], step = list.length / n;
+  for (let i = 0; i < n; i++) out.push(list[Math.floor(i * step + step / 2)]);
+  return out;
+}
+async function startEngaaMock() {
+  await loadMeta();
+  const pools = engaaPools();
+  if (ENGAA_SECTIONS.some(([, k]) => pools[k].length < 27)) return go({name: 'dash'});
+  const num = attempts.filter(a => isEsat(a) && String(a.mock).startsWith('E')).length + 1;
+  const spec = {name: 'ENGAA Mock ' + num, sections: ENGAA_SECTIONS.map(([name, key]) => ({key, name, qns: pickSpread(pools[key], 27)}))};
+  return startMockSpec(spec, 'E' + num);
+}
+async function startMockSpec(m, k) {
+  app.innerHTML = topbar() + `<div class="empty">Loading the mock…</div>`;
   const qns = m.sections.flatMap(s => s.qns);
   try { await Promise.all([...new Set(qns.map(g => parseGid(g).key))].map(loadPaper)); } catch (e) { app.innerHTML = topbar() + `<div class="empty">${esc(e.message)} <button class="btn small" data-act="home">Back</button></div>`; return; }
   const starts = []; let c = 0; for (const s of m.sections) { starts.push(c); c += s.qns.length; }
   const now = Date.now();
-  active = {id: newId(), year: 'esat', mode: 'esat', mock: k, qns, secStarts: starts, secNames: m.sections.map(s => s.name), sec: 0, secUsed: [], secTimedOut: [],
+  active = {id: newId(), year: 'esat', mode: 'esat', mock: k, mockName: m.name, qns, secStarts: starts, secNames: m.sections.map(s => s.name), sec: 0, secUsed: [], secTimedOut: [],
     answers: {}, flags: [], idx: 0, startedAt: now, limit: ESAT_SEC, deadline: now + ESAT_SEC * 1000};
   saveActive();
   go({name: 'test'});
@@ -347,7 +394,7 @@ function renderTest() {
   });
   const unanswered = secQns.length - answered;
   const eyebrow = sp ? `Speed practice · ${esc(speedLabel(active.settings))} · from ${srcOf(active, id)} ${y} Q${n}`
-    : es ? `${esc(mocks[active.mock].name)} · Section ${active.sec + 1} of 3 · ${active.secNames[active.sec]}`
+    : es ? `${esc(active.mockName || mocks[active.mock].name)} · Section ${active.sec + 1} of 3 · ${active.secNames[active.sec]}`
     : `${active.year} · Part ${q.p} · ${q.p === 'A' ? 'Mathematics and Physics' : 'Advanced Mathematics and Advanced Physics'}${active.mode === 'mistakes' ? ' · Unanswered retry' : ''}`;
   const lozCls = L => locked ? (L === q.a ? 'r-ok' : L === sel ? 'r-bad' : '') : (sel === L ? 'sel' : '');
   const fb = locked ? `<div class="feedback ${sel === q.a ? 'ok' : 'bad'}" aria-live="polite"><h3>${sel === q.a ? 'Correct' : `Not quite. The answer is ${q.a}`}</h3>
@@ -461,7 +508,7 @@ async function submit(timedOut = false) {
   rec.topics = topics;
   if (es) {
     const short = {'Mathematics 1': 'M1', 'Physics': 'PH', 'Mathematics 2': 'M2'};
-    rec.mock = a.mock; rec.limit = ESAT_SEC; rec.used = a.secUsed.reduce((s, x) => s + (x || 0), 0); rec.timedOut = a.secTimedOut.some(Boolean);
+    rec.mock = a.mock; rec.mockName = a.mockName; rec.limit = ESAT_SEC; rec.used = a.secUsed.reduce((s, x) => s + (x || 0), 0); rec.timedOut = a.secTimedOut.some(Boolean);
     rec.sections = a.secNames.map((nm, k) => ({name: nm, short: short[nm] || nm, used: a.secUsed[k] || 0, timedOut: !!a.secTimedOut[k]}));
   }
   rec.times = {};
@@ -554,6 +601,7 @@ function handleAct(b) {
   if (act === 'home') return go({name: 'dash'});
   if (act === 'start') return startTest(+b.dataset.y, 'full');
   if (act === 'mock') return startMock(+b.dataset.k);
+  if (act === 'engaa-mock') return startEngaaMock();
   if (act === 'retry') return startTest(+b.dataset.y, 'mistakes');
   if (act === 'speed') return startSpeed();
   if (act === 'speed-again') { go({name: 'dash'}); document.querySelector('.speed')?.scrollIntoView({block: 'center'}); return; }
