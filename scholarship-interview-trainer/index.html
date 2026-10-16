@@ -1,0 +1,1330 @@
+<title>Panel Room SG</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..900&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: sticky top bar + MRT-style "line" tabs; each board is a line with its own colour and station-code badge.
+   Content is a dossier column beside a trainer column, stacking to one column on phones. Practice opens as a full-screen studio. */
+:root{
+  --bg:#F1F4F5; --surface:#FFFFFF; --surface-2:#E6EBEE; --ink:#111B23; --ink-2:#4B5963; --line:#D2DADF;
+  --accent:#C8232C; --accent-ink:#FFFFFF; --accent-soft:#F8E3E3;
+  --good:#1D7A4C; --warn:#9A5B00; --bad:#B3261E; --focus:#005EC4;
+  --f-display:"Archivo","Arial Narrow",Arial,sans-serif;
+  --f-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --r:10px; --gap:16px;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0C1216; --surface:#131B21; --surface-2:#1B252C; --ink:#E3E9EC; --ink-2:#9BA9B2; --line:#28343C;
+  --accent:#FF5B52; --accent-ink:#1C0A0A; --accent-soft:#3A1A1A;
+  --good:#4CC38A; --warn:#E5A33B; --bad:#FF7A70; --focus:#73AEFF; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#0C1216; --surface:#131B21; --surface-2:#1B252C; --ink:#E3E9EC; --ink-2:#9BA9B2; --line:#28343C;
+  --accent:#FF5B52; --accent-ink:#1C0A0A; --accent-soft:#3A1A1A;
+  --good:#4CC38A; --warn:#E5A33B; --bad:#FF7A70; --focus:#73AEFF; color-scheme:dark }
+*{box-sizing:border-box}
+html,body{background:var(--bg)}
+body{color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--surface)}
+a{color:var(--focus)}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:4px}
+h1,h2,h3,h4{font-family:var(--f-display);font-stretch:82%;line-height:1.12;margin:0;text-wrap:balance;letter-spacing:-.005em}
+h1{font-size:clamp(26px,4vw,38px);font-weight:800}
+h2{font-size:clamp(21px,2.6vw,26px);font-weight:800}
+h3{font-size:17px;font-weight:750}
+h4{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-2);font-stretch:100%}
+p{margin:0}
+.wrap{max-width:1240px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.muted{color:var(--ink-2)}
+.mono{font-family:var(--f-mono);font-size:12.5px}
+.tab-nums{font-variant-numeric:tabular-nums}
+
+/* top bar */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:12px;padding-block:10px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;margin-right:auto;min-width:0}
+.brand-mark{width:30px;height:30px;border-radius:8px;background:var(--accent);display:grid;place-items:center;color:var(--accent-ink);font-family:var(--f-display);font-weight:900;font-size:13px;font-stretch:75%}
+.brand b{font-family:var(--f-display);font-size:19px;font-weight:850;font-stretch:78%;letter-spacing:.01em}
+.brand span{display:block;font-size:12px;color:var(--ink-2);line-height:1.2}
+.status{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--ink-2);background:var(--surface-2);border-radius:999px;padding:5px 11px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--ink-2)}
+.dot.on{background:var(--good)} .dot.busy{background:var(--warn);animation:pulse 1s infinite} .dot.off{background:var(--bad)}
+@keyframes pulse{50%{opacity:.35}}
+.lines{display:flex;gap:6px;overflow-x:auto;padding-block:8px 10px;scrollbar-width:thin}
+.line-tab{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:5px 12px 5px 5px;font:600 13.5px var(--f-body);cursor:pointer;white-space:nowrap}
+.line-tab:hover{border-color:var(--ink-2)}
+.line-tab[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.code{display:inline-grid;place-items:center;min-width:34px;height:24px;padding:0 6px;border-radius:7px;font:800 12px var(--f-display);font-stretch:85%;letter-spacing:.04em;color:#fff;background:var(--c,#555)}
+.code.lt{color:#13200A}
+.code.big{min-width:54px;height:38px;font-size:18px;border-radius:10px}
+
+/* generic */
+main{padding-block:22px 64px}
+.grid2{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:22px;align-items:start}
+@media (max-width:900px){.grid2{grid-template-columns:minmax(0,1fr)}}
+.stack{display:flex;flex-direction:column;gap:var(--gap)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.panel.flat{background:transparent;border-style:dashed}
+.btn{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:700 14px var(--f-body);padding:9px 14px;border-radius:9px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;text-decoration:none;line-height:1.2}
+.btn:hover{border-color:var(--ink-2)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn.ink{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn.small{font-size:13px;padding:6px 10px;border-radius:8px}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--ink-2)}
+.btn.ghost:hover{color:var(--ink);border-color:var(--line)}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--surface-2);color:var(--ink-2);text-transform:uppercase;letter-spacing:.05em}
+.chip.official{background:color-mix(in srgb,var(--good) 16%,transparent);color:var(--good)}
+.chip.reported{background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn)}
+textarea,input[type=text],select{width:100%;font:15px/1.5 var(--f-body);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:10px 12px}
+textarea{resize:vertical;min-height:110px}
+label.lbl{font-size:13px;font-weight:700;color:var(--ink-2);display:block;margin-bottom:5px}
+ul.clean{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px}
+ul.clean li::marker{color:var(--ink-2)}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.kv div{background:var(--surface-2);border-radius:9px;padding:10px 12px;min-width:0}
+.kv span{display:block;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+.kv b{display:block;font-size:14px;line-height:1.35;margin-top:2px}
+details.sec{border-top:1px solid var(--line);padding-block:12px}
+details.sec:first-of-type{border-top:0;padding-top:4px}
+details.sec>summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:10px}
+details.sec>summary::-webkit-details-marker{display:none}
+details.sec>summary::after{content:"+";font:700 18px var(--f-mono);color:var(--ink-2)}
+details.sec[open]>summary::after{content:"–"}
+details.sec>.body{padding-top:10px}
+.md{display:flex;flex-direction:column;gap:9px;min-width:0;overflow-wrap:anywhere}
+.md h3{margin-top:6px}
+.md ul,.md ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:5px}
+.md strong{font-weight:700}
+.out{border-left:3px solid var(--accent);padding:4px 0 4px 14px;margin-top:6px}
+.out.thinking{color:var(--ink-2);font-style:italic}
+.note{font-size:13px;color:var(--ink-2)}
+.err{color:var(--bad);font-size:14px}
+
+/* briefing */
+.hero{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:22px;align-items:stretch;margin-bottom:22px}
+@media (max-width:900px){.hero{grid-template-columns:minmax(0,1fr)}}
+.drill{background:var(--ink);color:var(--bg);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:14px}
+.drill .eyebrow{font:700 12px var(--f-body);letter-spacing:.09em;text-transform:uppercase;opacity:.75}
+.drill q{font-family:var(--f-display);font-stretch:80%;font-weight:800;font-size:clamp(22px,3vw,30px);line-height:1.15;quotes:"“" "”"}
+.drill .btn{border-color:transparent}
+.drill .btn.ghost{color:var(--bg);opacity:.85}
+.drill .btn.ghost:hover{border-color:color-mix(in srgb,var(--bg) 40%,transparent)}
+.asof{display:flex;flex-direction:column;gap:10px}
+.asof .big{font:850 44px/1 var(--f-display);font-stretch:75%;color:var(--accent)}
+.themes{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+@media (max-width:420px){.themes{grid-template-columns:minmax(0,1fr)}}
+.theme{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.theme .stamp{font:600 12px var(--f-mono);color:var(--ink-2)}
+.theme ul{font-size:14px}
+.theme .links{display:flex;gap:5px;flex-wrap:wrap}
+.theme .links .code{height:20px;min-width:28px;font-size:10.5px;border-radius:6px}
+.theme .actions{margin-top:auto;display:flex;gap:8px;flex-wrap:wrap;padding-top:4px}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap;margin:30px 0 14px}
+
+/* board header */
+.board-head{display:flex;gap:16px;align-items:flex-start;margin-bottom:18px}
+.board-head .t{display:flex;flex-direction:column;gap:6px;min-width:0}
+.qlist{display:flex;flex-direction:column;gap:8px}
+.qitem{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;padding:10px 12px;border:1px solid var(--line);border-radius:9px;background:var(--bg)}
+.qitem p{font-size:14.5px;min-width:0}
+.qitem .tag{font:700 10.5px var(--f-body);text-transform:uppercase;letter-spacing:.07em;color:var(--ink-2);display:block;margin-bottom:2px}
+.qitem .btn{flex:0 0 auto}
+.sources{font-size:13px}
+.sources a{word-break:break-word}
+
+/* studio */
+.studio{position:fixed;inset:0;z-index:40;background:var(--bg);overflow-y:auto;padding-bottom:env(safe-area-inset-bottom,0px)}
+.studio-bar{position:sticky;top:0;z-index:2;background:var(--surface);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.studio-bar .wrap{display:flex;gap:10px;align-items:center;padding-block:10px;flex-wrap:wrap}
+.studio-q{padding-block:22px 6px}
+.studio-q .qtext{font-family:var(--f-display);font-stretch:80%;font-weight:800;font-size:clamp(22px,3.2vw,32px);line-height:1.15;margin-top:8px;text-wrap:balance}
+.cam{position:relative;aspect-ratio:4/3;max-width:100%;background:#0b1013;border-radius:12px;overflow:hidden;display:grid;place-items:center;color:#cfd8dc;text-align:center}
+.cam video{width:100%;height:100%;object-fit:cover;background:#0b1013}
+.cam video.mirror{transform:scaleX(-1)}
+.cam .ph{padding:24px;display:flex;flex-direction:column;gap:12px;align-items:center;font-size:14px;max-width:360px}
+.cam .ph .btn{background:#1d272d;color:#e8eef0;border-color:#33424a}
+.rec{position:absolute;left:12px;top:12px;display:flex;gap:8px;align-items:center;background:rgba(0,0,0,.6);color:#fff;border-radius:999px;padding:4px 10px;font:600 13px var(--f-mono)}
+.rec i{width:9px;height:9px;border-radius:50%;background:#ff3b30;animation:pulse 1s infinite}
+.meter{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.meter div{background:var(--surface-2);border-radius:9px;padding:8px 10px}
+.meter span{display:block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+.meter b{font:600 18px var(--f-mono)}
+.scores{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.score{background:var(--surface-2);border-radius:9px;padding:10px 12px}
+.score .lab{display:flex;justify-content:space-between;font-size:13px;font-weight:700}
+.bar{height:6px;border-radius:9px;background:var(--line);margin-top:7px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:9px;background:var(--ink)}
+.bar i.hi{background:var(--good)} .bar i.mid{background:var(--warn)} .bar i.lo{background:var(--bad)}
+.overall{display:flex;gap:16px;align-items:center}
+.overall .n{font:850 56px/1 var(--f-display);font-stretch:72%}
+.fu{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--line)}
+.fu:first-child{border-top:0}
+.model{background:var(--surface-2);border-radius:10px;padding:14px 16px;white-space:pre-wrap}
+
+/* profile / progress */
+.form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.form .full{grid-column:1/-1}
+@media (max-width:640px){.form{grid-template-columns:minmax(0,1fr)}}
+.attempt{border-top:1px solid var(--line);padding-block:10px}
+.attempt summary{cursor:pointer;display:flex;gap:10px;align-items:center;justify-content:space-between}
+.attempt summary span.q{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.tbl-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+.toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:700;z-index:60;font-size:14px;max-width:calc(100% - 32px)}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">PR</div>
+      <div><b>Panel Room SG</b><span>Scholarship interview trainer · ECE/CS track</span></div>
+    </div>
+    <span class="status" id="aiStatus"><i class="dot" id="aiDot"></i><span id="aiText">Connecting to Claude…</span></span>
+  </div>
+  <div class="wrap"><nav class="lines" id="tabs" role="tablist" aria-label="Sections"></nav></div>
+</header>
+
+<main class="wrap" id="view"></main>
+
+<section class="studio" id="studio" hidden aria-label="Practice studio"></section>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+/* ============================================================
+   DATA: briefing digest (verified to 16 Oct 2026) and board dossiers
+   ============================================================ */
+const DIGEST_DATE = "16 Oct 2026";
+
+const THEMES = [
+ {id:"trade", title:"Tariffs, trade and the US–China squeeze", stamp:"Latest: 24 Jul 2026", boards:["edb","gic","mas","psc"],
+  facts:[
+   "The US Supreme Court struck down the IEEPA “reciprocal” tariffs on **20 Feb 2026**. Washington switched to a temporary **10% Section 122 tariff** for 150 days.",
+   "From **24 Jul 2026** the US charges **12.5%** on about **one-third of Singapore’s domestic exports** to the US, citing forced labour in supply chains. Semiconductors and energy products are exempt. MTI rejected the forced-labour claims.",
+   "In **Apr 2025** Singapore had been placed on the 10% baseline tariff, despite a US–Singapore FTA and a US goods trade surplus with Singapore.",
+   "Singapore chairs **ASEAN in 2027** (the Philippines chairs in 2026). The Johor–Singapore Special Economic Zone agreement was signed in **Jan 2025**.",
+   "New bilateral resilience deals in 2026: an **energy supply pact with Australia** (10 Apr: Singapore refined fuel for Australian LNG) and a **“fuel for food”** agreement with New Zealand (4 May)."],
+  tensions:["Stay open and rules-based vs. hedge with bilateral resilience deals","Pick sides vs. stay a trusted hub for both the US and China","Exemptions for chips help now, but leave Singapore dependent on one sector"],
+  angle:"Supply-chain traceability (provenance data, digital trade documents) is an engineering answer to the forced-labour allegation. So is designing products and supply chains that can be re-routed when tariffs change.",
+  qs:["The US hit Singapore with a 12.5% tariff over forced-labour claims. How should Singapore respond?","Should a small country like Singapore ever take sides between the US and China?","What should Singapore prioritise when it chairs ASEAN in 2027?"]},
+ {id:"energy", title:"Energy shock: the Iran war and Hormuz", stamp:"Ongoing since 28 Feb 2026", boards:["psc","edb","gic","mas","pub","lta","dsta"],
+  facts:[
+   "Hostilities between the US, Israel and Iran escalated on **28 Feb 2026**, and the **Strait of Hormuz** has been effectively closed for months. A Singapore-flagged container ship was sunk there in Oct 2026.",
+   "**More than half** of Singapore’s crude imports come from the Middle East. Two of the three Jurong Island refineries cut output. About **95% of Singapore’s electricity** is generated from imported natural gas.",
+   "In **Apr 2026** the Government added close to **S$1 billion** of relief on top of Budget 2026 (earlier CDC vouchers, bigger cost-of-living payments, a larger Energy Efficiency Grant). MHA set up a high-level committee on energy, food, essentials and security.",
+   "MTI was renamed the **Ministry of Energy, Trade and Industry (METI)** on **1 Oct 2026**, with Dr Tan See Leng as Minister (Energy and Industry).",
+   "Transition levers: carbon tax **S$45/tonne in 2026–27** (S$50–80 by 2030), a target of **6 GW of low-carbon electricity imports by 2035**, and nuclear. There is **no decision on nuclear** yet: EMA signed an SMR study MOU with Korea Hydro & Nuclear Power (Mar 2026), and an IAEA infrastructure review is due in 2027.",
+   "NDR 2026: islands south of Jurong Island (Semakau, Bukom, Sudong and others) will be merged over decades into a new island for future industries and **new power-generation infrastructure**."],
+  tensions:["Decarbonise fast vs. secure supply at any cost","Regional grid imports diversify supply but add cross-border dependency","Nuclear: energy security and low carbon vs. safety, land and public acceptance"],
+  angle:"Grid engineering: storage, demand response, interconnectors, hydrogen and ammonia readiness, and how to run a gas-heavy grid through a supply shock. As an ECE student you can talk credibly about smart grids and power electronics.",
+  qs:["The Strait of Hormuz is closed and oil is above US$100. What does this teach Singapore about resilience?","Should Singapore build nuclear power?","Is the carbon tax still the right policy during an energy crisis?"]},
+ {id:"econ", title:"Growth, AI and the Economic Strategy Review", stamp:"Latest: Aug 2026 forecast", boards:["edb","psc","sn","imda","astar","gic"],
+  facts:[
+   "GDP grew **6.1% year on year in H1 2026** (Q2: 5.9%), driven by AI-related demand for chips and electronics. In Aug 2026 MTI raised its 2026 forecast to **4.5–5.5%** (from 2–4%).",
+   "**Budget 2026** (12 Feb, “Securing Our Future Together in a Changed World”): a **National AI Council** chaired by the PM; **National AI Missions** in advanced manufacturing, connectivity, finance and healthcare; Enterprise Innovation Scheme extended to AI; **RIE2030 at S$37b**; another S$1b for Startup SG Equity; SkillsFuture and WSG to merge; Local Qualifying Salary raised to S$1,800.",
+   "**Economic Strategy Review**: 32 recommendations in 8 thrusts (May 2026), with the full report out on 24 Jun. Key line: Singapore should be the place where **AI solutions are developed, tested and deployed**, rather than competing to build frontier models or host the most data centres. Its “bold bets” are **quantum and space**.",
+   "The **National Space Agency of Singapore** started on **1 Apr 2026** (CE: Ngiam Le Na) and took over the work of OSTIn.",
+   "EDB’s 2025 results: **S$14.2b** fixed-asset investment (S$12.1b of it manufacturing), S$8.9b total business expenditure, **15,700 jobs** expected and S$18b value-added."],
+  tensions:["AI boosts productivity but displaces mid-skill jobs","Chasing AI demand concentrates risk in one cycle","Talent: more foreign experts vs. building a local core"],
+  angle:"You are the kind of person the AI missions need: someone who can deploy AI in real systems (edge devices, manufacturing lines, networks), not only talk about it.",
+  qs:["The ESR says Singapore shouldn’t race to build frontier AI models. Do you agree?","Will AI create more good jobs in Singapore than it destroys?","Why should Singapore bet on space technology?"]},
+ {id:"money", title:"Money, reserves and inflation", stamp:"Latest: MAS MPS 14 Oct 2026", boards:["mas","gic"],
+  facts:[
+   "On **14 Oct 2026** MAS **held** the slope, width and centre of the S$NEER band after two straight tightenings. Analysts had expected another tightening. Core inflation is forecast at **1.5–2.0% for 2026** and **1.5–2.5% for 2027**.",
+   "GIC’s **20-year annualised real return** for the period to **31 Mar 2026** was **3.4%** (5.6% nominal in USD), down from 3.8%. MOF attributed this partly to GIC’s more cautious positioning in volatile markets.",
+   "The Net Investment Returns Contribution (NIRC) lets the Budget spend **up to 50%** of the expected long-term real returns on net assets managed by GIC, MAS and Temasek. It is one of the largest single sources of government revenue.",
+   "Digital finance: Project Guardian (tokenisation, **40+ institutions**), a 2026 pilot settling **tokenised MAS Bills in wholesale CBDC**, a finalised stablecoin framework, and MAS’s new **Future of Finance Institute** (AI and tokenisation)."],
+  tensions:["Use more of the reserves now vs. protect them for future generations","Tokenisation: efficiency vs. new systemic risks","Stronger S$ fights imported inflation but hurts exporters"],
+  angle:"Market infrastructure is engineering: settlement rails, cryptography, resilience and fraud analytics. An engineer can make finance safer.",
+  qs:["Explain how MAS fights inflation without setting interest rates.","Should Singapore spend more of its reserves during an energy crisis?","Is a digital Singapore dollar a good idea?"]},
+ {id:"demog", title:"Babies, ageing and the shrinking cohort", stamp:"Latest: NDR 23 Aug 2026", boards:["psc","dsta","lta","sn"],
+  facts:[
+   "The resident **total fertility rate fell to 0.87 in 2025** (0.97 in 2024), a record low. About **one in five citizens is 65 or older**, compared with one in eight in 2015.",
+   "DPM Gan Kim Yong said that without new measures the **citizen population will start shrinking in the early 2040s**.",
+   "NDR 2026: a new **SG Child Support Package** replaces the Baby Bonus. It gives **S$2,000 a year** in child credits from age 1 to 16, regardless of birth order, about **S$70,000 per child by 17**, fully for children born from **1 Apr 2027**.",
+   "Childcare leave rises to **8/10/12 days** for parents with 1/2/3+ children aged 12 and below. Full-day childcare at government-supported centres will fall to **S$150/month** (infant care S$300) by 2030."],
+  tensions:["Money vs. culture: can incentives move fertility at all?","Immigration as a fix vs. social cohesion","An older workforce means automation is a necessity"],
+  angle:"Fewer NS soldiers, bus captains and nurses mean automation is a matter of national capacity. Autonomous systems, robotics and assistive tech are how engineers respond.",
+  qs:["Singapore’s TFR is 0.87. Is the new SG Child Support Package going to work?","What role should technology play in an ageing Singapore?","Should Singapore take in more immigrants to deal with its falling birth rate?"]},
+ {id:"housing", title:"Housing and cost of living", stamp:"Latest: 24 Aug 2026", boards:["psc","mas"],
+  facts:[
+   "The BTO household income ceiling rose from **S$14,000 to S$16,000** (EC: S$16,000 to S$18,000) from **24 Aug 2026**, because couples now marry later and earn more by then.",
+   "From the **Feb 2027** sales exercise, first-timers get **one extra ballot chance per child** they have or are expecting.",
+   "HDB has classified new flats as **Standard, Plus or Prime** since Oct 2024, to keep central locations affordable and fair.",
+   "Cost-of-living support: a S$200–400 Cost-of-Living Special Payment (Sep 2026), U-Save rebates, and **S$500 CDC vouchers in Jan 2027**. Public transport fares rise by **12–13 cents per ride from Dec 2026**."],
+  tensions:["Affordability vs. housing as a store of wealth","Broad handouts vs. targeted help","Fare increases vs. sustainable public transport financing"],
+  angle:"Data-driven planning (demand forecasting for BTO launches, digital twins of new towns like Tengah) is where engineers shape housing.",
+  qs:["Is public housing in Singapore still affordable?","Should the Government keep raising income ceilings for BTO flats?","How should Singapore help people with the cost of living without fuelling inflation?"]},
+ {id:"climate", title:"Climate, coasts and haze", stamp:"Latest: haze, Oct 2026", boards:["pub","psc","lta","astar"],
+  facts:[
+   "**Haze** from fires in Indonesia (especially Kalimantan) pushed the PSI into the **unhealthy range on 4 Sep 2026** (central PSI 123) for the first time in three years, and air quality stayed unhealthy into Oct. PM Wong said the Government is looking into companies that may be responsible. The Transboundary Haze Pollution Act (2014) allows action against them.",
+   "**Long Island**: preparatory works on the ~**800 ha** reclamation off East Coast start from **end-2026**. It will include two barrages, pumping stations and a new reservoir. East Coast Park flooded in **Jan 2024 and Jan 2026**.",
+   "Mean sea level could rise up to **1.15 m by 2100**, and up to 4–5 m in extreme tide and storm-surge events. PUB has been the national coastal protection agency since 2020.",
+   "The **Equatic-1** seawater CO₂-removal plant began operating in Tuas on **31 Mar 2026**. It removes about 1 tonne of CO₂ a day at first."],
+  tensions:["Spend billions now on coastal defence vs. other needs","Hold the line with hard engineering vs. nature-based solutions","Diplomacy vs. legal action on transboundary haze"],
+  angle:"Sensing and forecasting: tide-gauge networks, flood digital twins, satellite fire detection and air-quality models. This is ECE and data work.",
+  qs:["Is Long Island worth tens of billions of dollars?","The haze is back. Should Singapore take legal action against companies abroad?","Is Singapore doing enough on climate change, given it emits so little globally?"]},
+ {id:"transport", title:"Transport and the next islands", stamp:"Latest: RTS delay, 2 Oct 2026", boards:["lta","psc","dsta"],
+  facts:[
+   "**Circle Line Stage 6** opened on **12 Jul 2026**, completing the loop. Cross Island Line Stage 3 (four stations) was detailed in Jul. LTA is studying **bus rapid transit for Tuas South**.",
+   "The **Johor Bahru–Singapore RTS Link** (4 km, about 10,000 passengers per hour in each direction, roughly 5 minutes) has reportedly been **pushed from Dec 2026 to Feb 2027**, pending independent safety certification.",
+   "The **Ai.R autonomous shuttle** started public service in Punggol on **1 Apr 2026**. At NDR 2026, PM Wong said AVs will be scaled up once proven, citing hard-to-fill bus captain jobs and an ageing taxi workforce.",
+   "NDR 2026: Singapore is studying **undersea tunnels to Pulau Tekong**. Southern Tekong will be reclaimed for SAF training, leaving about **500 ha for civilian use**.",
+   "Road safety returned to the spotlight after a six-year-old was killed by a speeding car in Chinatown (Feb 2026)."],
+  tensions:["Automation vs. jobs for bus and taxi drivers","Fares vs. subsidies","Car-lite ambitions vs. the cost of car ownership"],
+  angle:"Signalling, condition-based maintenance, sensor fusion for AVs and network reliability engineering are where an ECE/CS scholar contributes.",
+  qs:["Should Singapore replace bus captains with autonomous buses?","What makes cross-border rail like the RTS Link so hard to deliver?","How would you reduce MRT breakdowns?"]},
+ {id:"digital", title:"Online safety, AI risk and scams", stamp:"Latest: NDR 23 Aug 2026", boards:["imda","sn","mas","psc"],
+  facts:[
+   "The **Online Safety Commission** began work on **29 Jun 2026** under the Online Safety (Relief and Accountability) Act 2025. Victims of harassment, doxxing, stalking, intimate image abuse and image-based child abuse can seek takedowns, usually after a platform fails to act within 24 hours.",
+   "NDR 2026: platforms must run **robust age checks** instead of relying on self-declared ages. Singapore will form **coalitions with countries and companies on practical AI safeguards**. PM Wong cited an AI agent that went beyond its test environment and attacked a company.",
+   "**SG Alert**, a cell-broadcast emergency alert system, was tested from **10 May 2026**.",
+   "Scams: a Shared Responsibility Framework for banks and telcos took effect in Dec 2024, and the Protection from Scams Act (2025) lets the police restrict a victim’s banking transactions."],
+  tensions:["Safety by design vs. privacy (age verification data)","Regulate AI early vs. let innovation run","Individual responsibility vs. platform accountability for scams"],
+  angle:"Age assurance, deepfake detection, secure-by-design systems and agent sandboxing are concrete engineering problems you can discuss in depth.",
+  qs:["Should social media be banned for children under 16?","How should Singapore keep AI agents safe without stifling innovation?","Who should pay when a Singaporean is scammed: the bank, the telco or the victim?"]},
+ {id:"defence", title:"Defence and Total Defence", stamp:"Latest: Jul 2026", boards:["dsta","psc","sn"],
+  facts:[
+   "Defence spending stays at **about 3% of GDP** (Budget 2026), with room to spend more if threats require it.",
+   "The **Digital and Intelligence Service (DIS)** has been the SAF’s fourth service since **Oct 2022**. In **Jul 2026**, DIS and DSTA began working with IBM on **quantum computing for mission planning and logistics optimisation**. MINDEF, DSTA and DSO are also co-developing generative AI models with Mistral AI.",
+   "**Exercise SG Ready** began on 1 Feb 2026 with the Public Warning System sounding at 3pm. Total Defence has six pillars, including Digital Defence (added 2019).",
+   "A new NS medical classification system will replace the Physical Employment Standards from **Oct 2027**."],
+  tensions:["Deterrence vs. diplomacy for a small state","Smaller NS cohorts vs. more complex threats","Buy foreign systems vs. build sovereign capability"],
+  angle:"Systems-of-systems integration, cyber defence, unmanned systems and AI decision support: DSTA’s work is mostly integration engineering.",
+  qs:["Why does Singapore still need such a strong military?","How should the SAF stay strong with fewer people?","What can Singapore learn from the war in the Middle East?"]},
+ {id:"politics", title:"Politics, institutions and trust", stamp:"Latest: Sep 2026", boards:["psc"],
+  facts:[
+   "**GE2025 (3 May 2025)**: the PAP won 87 of 97 seats with about 65.6% of the vote. Lawrence Wong led it as PM for the first time. The Workers’ Party won 10 seats.",
+   "On **15 Jan 2026** PM Wong removed **Pritam Singh as Leader of the Opposition**, after Parliament found him unsuitable following his conviction for lying to a parliamentary committee (upheld on appeal in Dec 2025).",
+   "**Cabinet reshuffle** (effective 27 Jul 2026): K Shanmugam became Senior Minister, Ng Chee Meng became Minister in the PMO, Jasmin Lau became Acting Minister for Manpower, and MTI became METI.",
+   "Political office-holder and MP salaries rose from **15 Oct 2026**, the first increase in 15 years. Chief Justice Sundaresh Menon will step down in **Feb 2027**."],
+  tensions:["Paying for talent vs. the ethos of public service","A dominant party vs. a stronger opposition","Holding office-holders to high standards vs. fairness and due process"],
+  angle:"Show how you would earn public trust as a technocrat: transparency, explaining trade-offs plainly, and owning mistakes (for example, open data and clear incident post-mortems).",
+  qs:["Why should a talented engineer join the public service instead of the private sector?","Should ministers be paid so much?","What does it mean to be a public servant in a world of low trust?"]},
+ {id:"research", title:"Research, chips and quantum", stamp:"Latest: RIE2030 from Apr 2026", boards:["astar","edb","dsta","sn"],
+  facts:[
+   "**RIE2030** commits **S$37b** over five years from Apr 2026, across four domains: advanced manufacturing and engineering; health and biomedical sciences; sustainability and urban solutions; and AI, quantum and digital.",
+   "New in RIE2030: **RIE Flagships and Grand Challenges**. A **Semiconductor RIE Flagship** led by A*STAR and EDB focuses on **heterogeneous integration / advanced packaging and silicon photonics**.",
+   "The National Quantum Strategy (2024) builds quantum computing, sensing and communications capability. DIS/DSTA’s 2026 quantum pilot with IBM is one application.",
+   "EDB says Singapore makes about **one in ten of the world’s chips** and about a fifth of global semiconductor equipment. AI-driven chip demand drove growth in 2026."],
+  tensions:["Basic science vs. near-term industrial payoff","Attract global firms vs. build local deep-tech champions","Talent pipelines: PhDs who stay vs. leave"],
+  angle:"Silicon photonics, advanced packaging and edge AI hardware sit squarely in ECE. Say which one excites you and why.",
+  qs:["How should Singapore measure whether S$37b of research spending was worth it?","Why should Singapore invest in quantum computing?","Should Singapore try to build its own chip companies?"]}
+];
+
+const ORGS = [
+ {id:"psc", code:"PE", color:"#009645", short:"PSC Eng", name:"PSC Scholarship (Engineering)",
+  mandate:"Public Service Commission scholarship for engineers who will lead technical work across the public service.",
+  facts:[["Awarded by","Public Service Commission (PSC)"],["Bond","6 yrs English-speaking · 5 yrs non-English · 4 yrs Singapore"],["Window","1 Sep 2026 – 15 Mar 2027"],["After graduation","Public Service Leadership Programme (Engineering)"]],
+  what:["The PSC, set up in **1951** and independent of the elected government under the Constitution, appoints and disciplines senior public officers and awards public service scholarships. The **Engineering** scholarship grows technical leaders for the whole public service.",
+   "You are tied to a **parent agency** in one of three clusters:\n- **Defence & Security**: CSIT, DSTA, HTX, ISD\n- **ICT & Smart Systems**: CSA, GovTech, IMDA\n- **Infrastructure & Environment**: BCA, EMA, HDB, JTC, LTA, NEA, PUB",
+   "After you graduate you join the **Public Service Leadership Programme (General Phase – Engineering)**. Your first posting (up to 4 years) builds technical depth. Later postings can take you outside your ministry family. Master’s sponsorship is possible."],
+  now:["Engineering-heavy national projects are being decided now: Long Island coastal works, a new power island south of Jurong Island, Tekong tunnels, nuclear feasibility, the National AI Missions and the National Space Agency.",
+   "The **Economic Strategy Review** and **Budget 2026** made AI adoption, energy resilience and career transitions central themes, and the panel will expect you to know them."],
+  process:[["reported","Application with an essay. A **video interview** link usually follows within about a week."],["reported","**Psychometric and game-based assessments** (reasoning plus “natural attributes”)."],["reported","A long one-to-one interview with a **psychologist**, whose report goes to the board. Be consistent with what you say later."],["official","A panel interview with the **PSC Scholarships Selection Board**. One candidate described 9–10 senior officials who challenged every position."],["reported","Outcome: offer, **referral to an agency scholarship**, or unsuccessful, often within about two weeks."]],
+  probe:["Why public service over a tech company, with a reason that is personal and true","Which cluster and parent agency, and what you would build there","Whether you can hold a position under pushback, and admit when you are wrong","Trade-offs: efficiency vs. equity, speed vs. safety, cost vs. resilience","Consistency across your essay, psychologist interview and panel"],
+  angle:["Frame yourself as a **systems engineer for national problems**: you start from requirements and constraints (land, water, energy, people), test small, and scale what works.","Name a concrete first-posting ambition, e.g. “grid-scale storage and demand response at EMA”, or “secure, accessible digital services at GovTech”.","Show you can translate between engineers and policymakers. That is the leadership the scholarship is designed to build."],
+  terms:["Public Service Leadership Programme","parent agency","clusters: D&S / ICT&SS / I&E","Whole-of-Government","Forward Singapore","Economic Strategy Review"],
+  qs:[["board","Why be an engineer in the public service rather than at a company like Google or Shopee?"],["board","Which cluster would you choose (D&S, ICT & Smart Systems, or Infrastructure & Environment), and why?"],["personal","Engineers solve technical problems. Leaders deal with people and trade-offs. Which are you?"],["personal","Tell us about a project you led that went wrong. What did you change?"],["current","Singapore’s citizen population could start shrinking in the early 2040s. What should engineers in government do about it?"],["current","Should Singapore build a nuclear power plant?"],["technical","If you could redesign one government digital service, which would it be and how?"],["curveball","Name a government policy you disagree with. What would you do instead?"]],
+  sources:[["PSC Scholarship (Engineering)","https://www.psc.gov.sg/scholarships/apply-for-scholarship/psc-scholarships/list-of-psc-scholarships/psc-scholarship--engineering-/"],["The PSC process, stage by stage (candidate account)","https://cheekysapphire.com/scholarships/psc-scholarship-process"],["PSC Chairman’s open letter on selection","https://www.psc.gov.sg/resources/events/an-open-letter-from-the-chairman/"]]},
+ {id:"dsta", code:"DS", color:"#005EC4", short:"DSTA", name:"Defence Science and Technology Agency",
+  mandate:"MINDEF’s statutory board that plans, buys, builds and integrates the technology the SAF fights with.",
+  facts:[["Founded","1 Mar 2000"],["Parent ministry","MINDEF"],["Bond (reported)","4 yrs local · 5 non-English · 6 English-speaking"],["2025 intake","33 DSTA Scholars (82 defence awards)"]],
+  what:["DSTA is the SAF’s systems engineer and acquirer. It **acquires and integrates weapon systems**, builds C4 and digital systems, and develops **defence infrastructure** such as camps, airbases and naval bases. With **DSO National Laboratories** and MINDEF/SAF it forms the Defence Technology Community.",
+   "Its value is **integration**: making systems from different vendors work together under Singapore’s constraints (little airspace, little land, conscript manpower). It buys off the shelf where it can and builds where it must."],
+  now:["The SAF is transforming into the **Next Generation SAF**. The **Digital and Intelligence Service** (est. Oct 2022) is its fourth service. In **Jul 2026** DIS and DSTA began working with **IBM on quantum computing for mission planning and logistics**.",
+   "MINDEF, DSTA and DSO are co-developing **generative AI models with Mistral AI** for decision support.",
+   "Shrinking cohorts (TFR 0.87) push the SAF towards **unmanned and autonomous systems**. The Middle East war and the closure of Hormuz show how missiles, drones and shipping security matter to a trading nation."],
+  process:[["reported","Apply through BrightSparks. The cycle typically opens late in the year and closes around **May**."],["reported","Interviews with **senior DSTA engineers and managers**, who go deep on your projects and technical reasoning."],["reported","**Psychometric or technical assessments** in some cycles."],["official","Awards are presented at the **Defence Scholarship Awards Ceremony** (Aug)."]],
+  probe:["Comfort with defence work and its ethics","Technical depth: how something you built actually works, and its failure modes","How technology offsets manpower constraints","Systems thinking: integration, interoperability, cyber resilience","Why DSTA rather than DSO (research) or industry"],
+  angle:["Talk about **integration and reliability**, not just invention: sensor fusion, secure networks, C2 software and drone countermeasures.","Use an engineering trade-off you made yourself (latency vs. accuracy, cost vs. redundancy) to show judgement.","Link to deterrence: credible capability makes peace more likely, and that is why it matters to you."],
+  terms:["Next Generation SAF","Digital and Intelligence Service (DIS)","Defence Technology Community","C4I","systems-of-systems","Total Defence (6 pillars)"],
+  qs:[["board","Why defence technology? Some people say engineers shouldn’t build weapons."],["current","With smaller NS cohorts, how should the SAF use technology to stay credible?"],["technical","At a systems level, how would you defend a base against a drone swarm?"],["board","DSTA buys and integrates more than it invents. Is that a weakness?"],["technical","How would you secure a military network against an insider threat?"],["current","What should Singapore learn from the 2026 Middle East war and the closure of the Strait of Hormuz?"],["personal","Walk us through the most technically difficult thing you have built."],["ethics","Where should DSTA use AI, and where should it never use AI?"]],
+  sources:[["DIS–DSTA–IBM quantum collaboration (Jul 2026)","https://www.mindef.gov.sg/news-and-events/latest-releases/21jul26-nr/"],["Defence Scholarship Awards 2025","https://www.dsta.gov.sg/whats-on/spotlight/meet-singapore-s-newest-defence-scholars"],["DSTA Scholarship guide (third-party)","https://opportunityinside.com/scholarships/dsta-scholarship-singapore-2027.html"]]},
+ {id:"gic", code:"GI", color:"#FA9E0D", short:"GIC", name:"GIC",
+  mandate:"The fund manager that invests Singapore’s foreign reserves for long-term real returns.",
+  facts:[["Founded","1981"],["Owner","Government of Singapore (GIC manages, does not own, the assets)"],["20-yr real return","3.4% to 31 Mar 2026"],["Bond (reported)","3–5 yrs depending on university location"]],
+  what:["Lee Kuan Yew and Goh Keng Swee founded GIC in **1981** to invest reserves beyond what MAS needs for monetary policy. Its mandate is to **preserve and enhance the international purchasing power** of the reserves over the long term.",
+   "There are three entities. **MAS** holds the Official Foreign Reserves for monetary stability. **GIC** manages the Government’s financial assets on its behalf. **Temasek** owns its own portfolio as an investment company. Under the **NIRC**, the Budget can spend up to half of the expected long-term real returns from all three.",
+   "GIC’s main yardstick is its **rolling 20-year annualised real return**. Risk is set by a **Reference Portfolio** (65% global equities, 35% bonds). GIC invests across public markets, private equity, real estate and infrastructure from offices around the world."],
+  now:["The 20-year real return fell to **3.4%** (from 3.8%). MOF said this partly reflects GIC’s more cautious stance in volatile markets. GIC has named **AI** as a key investment focus.",
+   "The macro backdrop: AI capex is booming, the US has imposed a 12.5% tariff on part of Singapore’s exports, and the Hormuz closure has kept oil above US$100."],
+  process:[["reported","Online tests (numerical, verbal, logical), sometimes a **recorded video interview**."],["reported","A **case study or group exercise**, sometimes with an hour to prepare and present."],["reported","Panel interviews with senior management on motivation, judgement and the markets."]],
+  probe:["Can you explain GIC, MAS and Temasek clearly?","Long-term thinking: what would you do in a 30% crash?","Investment judgement: one theme or asset and its risks","Why an engineer belongs at an investor (technology, data and quant roles)","Integrity and discretion"],
+  angle:["GIC runs on **technology**: data platforms, quant models, risk systems and cyber security. You can bring engineering rigour to investing.","Use the AI supply chain (chips, power, cooling, networking) as an investment theme you understand better than most applicants.","Show you are patient: a 20-year horizon suits someone who thinks in systems, not headlines."],
+  terms:["rolling 20-year real return","Reference Portfolio","NIRC","long-term value investor","asset allocation","drawdown"],
+  qs:[["board","In plain words, what does GIC do, and how is it different from Temasek and MAS?"],["board","GIC’s 20-year real return fell to 3.4%. Is that a failure?"],["current","How will AI change the way a sovereign fund invests?"],["technical","Pitch one investment theme for the next 20 years and its biggest risk."],["personal","Why should an engineer work at GIC instead of building products?"],["board","How do the reserves help ordinary Singaporeans?"],["curveball","Markets fall 30% next year. What should a long-term investor do?"],["current","Tariffs, interest rates or the oil shock: which worries you most as a long-term investor?"]],
+  sources:[["GIC 2026 results","https://www.gic.com.sg/newsroom/all/gic-delivers-steady-long-term-returns-within-its-mandate-and-stays-focused-on-portfolio-resilience-in-a-structurally-changed-world/"],["MOF on GIC’s 3.4% return","https://www.mof.gov.sg/news-resources/newsroom/drop-in-gic-s-annualised-rolling-20-year-real-rate-of-return-for-year-ended-31-march-2026/"],["GIC portfolio and Reference Portfolio","https://www.gic.com.sg/our-portfolio"]]},
+ {id:"edb", code:"ED", color:"#9900AA", short:"EDB", name:"Economic Development Board",
+  mandate:"Attracts and grows investment that creates good jobs and keeps Singapore’s economy competitive.",
+  facts:[["Founded","1961"],["Parent ministry","METI (Ministry of Energy, Trade and Industry)"],["2025 FAI","S$14.2b · 15,700 jobs expected"],["Scholarships","Full-term and Mid-term 2027"]],
+  what:["EDB was set up in **1961** after the UN mission led by **Albert Winsemius**. **Hon Sui Sen** was its first chairman. It drove industrialisation from Jurong onwards (JTC was spun off in 1968) and still pitches Singapore to global companies.",
+   "Today it works on manufacturing (semiconductors, biomedical), services and headquarters, R&D and innovation. It now reports to **METI** (MTI was renamed on 1 Oct 2026). Officers rotate between **industry teams and overseas centres**."],
+  now:["2025: **S$14.2b** fixed-asset investment, S$12.1b of it manufacturing, S$8.9b total business expenditure, 15,700 jobs and S$18b value-added expected.",
+   "Headwinds: a **12.5% US tariff** on about a third of domestic exports since 24 Jul 2026 (chips exempt), the global minimum tax (Pillar Two), and competition from Malaysia (including the Johor–Singapore SEZ), Vietnam and India.",
+   "The **ESR** asks Singapore to lead where it is strong, to be an **AI deployment hub**, and to bet on **quantum and space**. Budget 2026 launched National AI Missions."],
+  process:[["official","Full-term and mid-term scholarships. They include overseas study, language or immersion programmes, and internships on EDB projects."],["official","Strong summer interns may be considered for the **Mid-Term Scholarship**."],["reported","Interviews test business sense, persuasion and understanding of Singapore’s competitiveness."]],
+  probe:["Can you pitch Singapore against a cheaper rival?","Business judgement: what investors care about (talent, certainty, energy, land)","Jobs for Singaporeans, not just investment dollars","Responses to tariffs and global minimum tax","Your comfort with clients, travel and ambiguity"],
+  angle:["Engineers can **speak an investor’s technical language**: fab requirements, power and water, supply chains, yield.","Argue that Singapore’s edge is **trusted execution**: reliable infrastructure, rule of law, IP protection and skilled people.","Pick one industry (e.g. advanced packaging or silicon photonics) and explain why Singapore can win it."],
+  terms:["Fixed Asset Investment (FAI)","Total Business Expenditure (TBE)","value-added","Manufacturing 2030","Refundable Investment Credit","Pillar Two / global minimum tax"],
+  qs:[["board","Persuade a US chipmaker to build its next plant in Singapore, not Malaysia or Vietnam."],["current","The US has put a 12.5% tariff on a third of Singapore’s exports to it. What should EDB do?"],["board","Singapore has no land, expensive labour and imported energy. Why would anyone invest here?"],["board","Should EDB keep chasing multinationals or focus on growing Singapore companies?"],["current","The ESR says Singapore should be where AI is deployed, not where frontier models are built. Do you agree?"],["curveball","Which industry will matter most to Singapore in 2040?"],["board","How do investment wins actually reach ordinary Singaporeans?"],["personal","Tell us about a time you persuaded someone who disagreed with you."]],
+  sources:[["EDB Year 2025 in Review","https://www.edb.gov.sg/en/about-edb/media-releases-publications/edb-year-2025-in-review.html"],["EDB Scholarships","https://www.edb.gov.sg/en/careers/edb-scholarships"],["ESR final recommendations","https://www.gov.sg/features/esr/final-report/"]]},
+ {id:"mas", code:"MA", color:"#9D5B25", short:"MAS", name:"Monetary Authority of Singapore",
+  mandate:"Singapore’s central bank and integrated financial regulator.",
+  facts:[["Founded","1971"],["Policy tool","S$NEER exchange-rate band (since 1981)"],["Managing Director","Chia Der Jiun"],["Window (last cycle)","15 Dec 2025 – 15 Mar 2026"]],
+  what:["MAS conducts **monetary policy through the exchange rate**: it manages the trade-weighted Singapore dollar (S$NEER) within an undisclosed band, adjusting its **slope, width and centre**. This suits a small, very open economy where imports drive prices.",
+   "It also regulates banks, insurers and capital markets, manages the **Official Foreign Reserves**, issues currency, and develops Singapore as a **financial centre**, including fintech, payments and green finance."],
+  now:["On **14 Oct 2026** MAS **held** policy after two tightenings. Core inflation is forecast at **1.5–2.0% (2026)** and 1.5–2.5% (2027), as imported energy costs from the Hormuz crisis feed through.",
+   "Digital finance: **Project Guardian** (tokenisation, 40+ institutions), a 2026 pilot settling **tokenised MAS Bills in wholesale CBDC**, a stablecoin framework, the **BLOOM** initiative, and the **Future of Finance Institute** for AI and tokenisation.",
+   "Scams and resilience: the Shared Responsibility Framework and technology-risk rules for banks after past outages."],
+  process:[["official","Application → **Assessments** → **Group discussion** → **Panel interview** → Offer → Onboarding."],["official","Open to any discipline except Medicine, Dentistry and Architecture. An **8-week internship** in Year 2."],["reported","The group discussion usually takes a policy or economic topic. Panels look for clear thinking and listening, not dominance."]],
+  probe:["Can you explain exchange-rate-based monetary policy simply?","Can you explain current inflation drivers (oil, wages, the S$)?","How you balance innovation (tokenisation, AI) against financial stability","How you behave in the group discussion: building on others, summarising","Why an engineer at a central bank"],
+  angle:["Payments rails, cyber resilience, SupTech (AI to detect misconduct or fraud) and tokenisation infrastructure are engineering problems.","Explain one thing technically, e.g. how a tokenised bond settles atomically against wholesale CBDC.","Show respect for **trust**: in finance, reliability and integrity matter more than novelty."],
+  terms:["S$NEER policy band (slope, width, centre)","core inflation","Project Guardian","wholesale CBDC","Shared Responsibility Framework","SupTech"],
+  qs:[["board","Why does MAS manage the exchange rate instead of interest rates?"],["current","MAS held policy in October 2026. Talk us through why."],["current","Should MAS issue a digital Singapore dollar for the public?"],["ethics","When someone is scammed, who should bear the loss: the bank, the telco or the victim?"],["technical","How would you use AI to supervise banks?"],["curveball","What could cause the next financial crisis in Singapore?"],["personal","Why would an engineer want to work at a central bank?"],["current","Tokenisation has been “the future” for years. Why hasn’t it taken off?"]],
+  sources:[["MAS Monetary Policy Statement, Oct 2026","https://www.mas.gov.sg/news/monetary-policy-statements/2026/mas-monetary-policy-statement-14oct26"],["MAS Scholarships","https://www.mas.gov.sg/careers/scholarship"],["“Building Trusted Foundations for Digital Finance” (Oct 2026)","https://www.mas.gov.sg/news/speeches/2026/building-trusted-foundations-for-digital-finance"]]},
+ {id:"astar", code:"AS", color:"#0099AA", short:"A*STAR", name:"Agency for Science, Technology and Research",
+  mandate:"Singapore’s lead public R&D agency, turning science into industry and national capability.",
+  facts:[["Founded","1991 as NSTB, renamed A*STAR in 2002"],["Parent ministry","METI"],["Key award","National Science Scholarship (BS-PhD)"],["NSS(BS) cycle","Apply 1 Jul – 1 Mar · interviews Mar–May"]],
+  what:["A*STAR runs **research institutes** (e.g. I²R for infocomm, IME for microelectronics, IHPC for computing, ARTC/SIMTech for manufacturing, IMRE for materials) and partners with companies to translate research.",
+   "The **A*STAR Graduate Academy** runs scholarships. NSS (BS-PhD) scholars study overseas, then return to research careers in Singapore."],
+  now:["**RIE2030**: **S$37b** from Apr 2026 across four domains (advanced manufacturing and engineering; health; sustainability and urban solutions; AI, quantum and digital). New **RIE Flagships** and Grand Challenges.",
+   "A **Semiconductor RIE Flagship** led by A*STAR and EDB targets **advanced packaging / heterogeneous integration and silicon photonics**. A*STAR will also deepen AI engineering and quantum translation.",
+   "The ESR’s “bold bets” on **quantum and space** build on semiconductor and aerospace strengths."],
+  process:[["official","Shortlisted NSS (BS) applicants are interviewed between **March and May**, face to face."],["reported","For the PhD track: a first round with **A*STAR scientists**, then senior management. The BS process is likely similar but this is not confirmed."],["reported","Expect a deep dive into your research or project experience and how you think as a scientist."]],
+  probe:["Real curiosity: what open question excites you?","Can you explain your project clearly to a non-expert?","Research integrity and dealing with failed experiments","Translation: how research becomes jobs and products in Singapore","Commitment to a PhD and a research career here"],
+  angle:["Choose a specific ECE frontier, such as **silicon photonics, chiplet packaging, neuromorphic or edge AI hardware**, and connect it to an A*STAR institute.","Show that you know the difference between a demo and a product: yield, reliability, scale.","Mention RIE2030 domains accurately. Nothing signals preparation better."],
+  terms:["RIE2030","RIE Flagships","heterogeneous integration","silicon photonics","technology readiness level (TRL)","translation"],
+  qs:[["personal","Tell us about your research interest. What is the open problem?"],["personal","Explain your best project to a 12-year-old."],["current","RIE2030 costs S$37 billion. How should Singapore know it was worth it?"],["board","Should A*STAR focus on research that companies can use now, or on long-term science?"],["personal","Why do a PhD instead of going straight into industry?"],["current","What does Singapore gain from chip R&D when the fabs belong to foreign firms?"],["ethics","A result you expected doesn’t replicate. What do you do?"],["curveball","Which will change Singapore more in 20 years: quantum, AI or something else?"]],
+  sources:[["A*STAR Scholarships FAQs","https://www.a-star.edu.sg/scholarships/home/faqs"],["RIE2030 factsheet","https://file.go.gov.sg/rie2030factsheet.pdf"],["RIE2030: Turning the page (A*STAR Research)","https://research.a-star.edu.sg/articles/features/rie2030-turning-the-page/"]]},
+ {id:"imda", code:"ID", color:"#97C616", lightText:true, short:"SG Digital", name:"SG Digital Scholarship (IMDA)",
+  mandate:"IMDA’s scholarship for future tech and media leaders across Singapore’s digital economy.",
+  facts:[["Agency","Infocomm Media Development Authority (est. 2016)"],["Parent ministry","MDDI"],["Bond","3 yrs local · 4 yrs fast-track BSc-MSc · 4–5 yrs overseas"],["Where you serve","A tech or media role at an IMDA-approved company"]],
+  what:["IMDA was formed in **Oct 2016** by merging IDA and MDA. It **develops and regulates** Singapore’s infocomm and media sectors and houses the **PDPC** (data protection). It builds digital infrastructure, grows tech companies and talent, and leads on **AI governance**.",
+   "The SG Digital Scholarship is unusual: your bond is served in a **tech or media role at an IMDA-approved company**, not only in government. IMDA is investing in the industry’s future leaders."],
+  now:["AI governance: the Model AI Governance Framework, AI Verify and frameworks for generative and agentic AI. NDR 2026 committed Singapore to **coalitions on practical AI safeguards**.",
+   "Online safety: the **Online Safety Commission** (from 29 Jun 2026) and NDR 2026’s push for **robust age checks** on social media.",
+   "Digital infrastructure: data centre growth under energy limits (the Green Data Centre Roadmap), next-generation broadband and 5G, all under the new **National AI Council**."],
+  process:[["official","Bond and benefits are published by IMDA. Applications typically open in Q1."],["reported","Interviews look for passion for tech or media, a CCA or competition record, and an industry view of the digital economy."]],
+  probe:["Why both growth and regulation sit in one agency","Your view on AI and online-safety regulation","Which company or sector you would serve your bond in","Digital inclusion (seniors, lower-income families)","Product sense and entrepreneurial drive"],
+  angle:["Speak as a **builder who respects guardrails**: you can ship fast and design for safety (privacy by design, age assurance, content provenance).","Pick a real Singapore tech problem you would build for, e.g. scam detection or accessible apps for seniors.","Know that the bond can be in industry, and have a target type of company."],
+  terms:["Model AI Governance Framework","AI Verify","PDPA / PDPC","Online Safety Commission","Digital Connectivity Blueprint","MDDI"],
+  qs:[["board","What does IMDA do, and why does it both grow and regulate the industry?"],["current","How should Singapore govern AI agents without killing innovation?"],["current","Should social media be banned for under-16s?"],["board","How do we make sure seniors aren’t left behind in a digital society?"],["current","Singapore wants more data centres but has limited energy. How would you decide who gets capacity?"],["personal","What tech company would you start in Singapore, and why here?"],["technical","Pick a digital product you use every day. What would you change, and how would you know it worked?"],["curveball","What is the biggest threat to trust online in Singapore?"]],
+  sources:[["SG Digital Scholarship (Undergraduate)","https://imda.gov.sg/Singapore-Digital-Scholarship-undergraduate"],["Online Safety Commission begins operations","https://www.mddi.gov.sg/newsroom/online-safety-commission-and-online-safety--relief-and-accountability--act-2025-to-start-on-29-june-2026/"]]},
+ {id:"sn", code:"SN", color:"#748477", short:"Smart Nation", name:"Smart Nation Scholarship",
+  mandate:"Joint scholarship by GovTech, CSA and IMDA for technologists who will build and protect Singapore’s digital government.",
+  facts:[["Offered by","GovTech · CSA · IMDA"],["Launched","2018"],["Bond (2018 factsheet)","6 yrs overseas · 4 yrs local"],["Window","1 Sep – 31 Mar"]],
+  what:["**GovTech** (est. 2016) builds government digital products and platforms, such as **Singpass**, LifeSG and Pair (an AI assistant for civil servants). **CSA** (est. 2015) protects critical information infrastructure under the **Cybersecurity Act** (amended 2024). **IMDA** develops the digital economy.",
+   "Scholars rotate across **technology tracks** and enter the **Technology Associate Programme (TAP)** directly."],
+  now:["**Smart Nation 2.0** (Oct 2024) is built around **Trust, Growth and Community**. National AI Strategy 2.0 (2023) aims for 15,000 AI practitioners. Budget 2026 added the **National AI Council** and AI Missions.",
+   "Threats: state-linked cyber espionage on critical infrastructure, scams, deepfakes and AI agents behaving unpredictably (cited at NDR 2026). **SG Alert** cell broadcast trials started in May 2026."],
+  process:[["official","Shortlisted candidates take a **group assessment** and an **individual technical test**."],["official","Interviews with **HR, tech leads and senior leaders**."],["reported","2020 saw a record 723 applications for 15 awards. Expect a high technical bar."]],
+  probe:["Real hands-on skill: code, systems design, debugging stories","Product thinking: users first, measure outcomes","Security mindset","Collaboration in the group assessment","Why government tech rather than a startup"],
+  angle:["Prepare one **system you built** in depth: architecture, trade-offs, what broke, what you would redo.","Tie your work to citizens: “a 1% failure rate on Singpass is tens of thousands of stuck people a day”.","Show security instincts: threat modelling, least privilege, logging, incident response."],
+  terms:["Smart Nation 2.0","GovTech TAP","Singpass","Critical Information Infrastructure (CII)","zero trust","NAIS 2.0"],
+  qs:[["technical","Walk us through a system you built: architecture, trade-offs, and what you would change."],["technical","Singpass is used by almost everyone. How would you make it more secure without making it harder to use?"],["technical","Design a system that warns the public about haze in real time."],["ethics","The Government wants AI to help civil servants. What could go wrong?"],["technical","A hospital is hit by ransomware. What do you do in the first hour?"],["personal","Why GovTech and not a startup?"],["board","What does Smart Nation 2.0 mean to you?"],["technical","Explain how public-key cryptography keeps a login secure."]],
+  sources:[["Smart Nation Scholarship (GovTech)","https://tech.gov.sg/careers/students-and-graduates/smart-nation-scholarship"],["Smart Nation Scholarship factsheet (2018)","https://www.smartnation.gov.sg/files/press-releases/2018/smart-nation-scholarship-factsheet_15aug18.pdf"],["Record applications (2020)","https://www.csa.gov.sg/news-events/press-releases/smart-nation-scholarship-2020/"]]},
+ {id:"pub", code:"PU", color:"#1F8FD6", short:"PUB", name:"PUB, Singapore’s National Water Agency",
+  mandate:"Runs the whole water loop and, since 2020, protects Singapore’s coastline from rising seas.",
+  facts:[["Founded","1963"],["Parent ministry","MSE"],["Roles","Water supply · used water · drainage · coastal protection"],["Scholarships","PUB / Singapore Sustainability Scholarship · PSC (Eng) I&E cluster"]],
+  what:["PUB became the national water agency in **2001** and manages the full water loop. The **Four National Taps** are local catchment (about two-thirds of land), **imported water** from Johor (the 1962 agreement runs to **2061**), **NEWater** (since 2003), and **desalination** (five plants, including the dual-mode Marina East and Jurong Island).",
+   "In **2020** PUB also became the national **coastal protection agency**. The **Deep Tunnel Sewerage System** carries used water to centralised plants. Phase 2 ends at the **Tuas Water Reclamation Plant**, part of **Tuas Nexus** with NEA’s waste facility."],
+  now:["**Long Island** preparatory works start from **end-2026**: about 800 ha of land plus barrages, pumping stations and a new reservoir. East Coast Park flooded in Jan 2024 and Jan 2026.",
+   "Water demand could nearly **double by 2065**. NEWater and desalination are energy-hungry, which matters more during the Hormuz energy shock.",
+   "Water prices rose in 2024–25 to reflect the true cost of supply."],
+  process:[["official","Scholarships include the **Singapore Sustainability Scholarship** (PUB, NEA and SFA). PUB is also a parent agency under the **PSC (Engineering) I&E cluster**."],["reported","Past scholars were partly selected through internships. Interviews test passion for water and climate engineering."]],
+  probe:["Do you understand the Four Taps and their trade-offs?","Climate adaptation: costs, timing and fairness","Energy–water nexus thinking","Communicating with the public (water prices, conservation)","Operational mindset in floods and crises"],
+  angle:["Smart water networks: **sensors, leak detection, digital twins** and predictive maintenance are ECE/CS work.","Lower the **energy per cubic metre** of desalination: power electronics, controls and AI optimisation.","Show you think in decades: assets built today must work in 2100."],
+  terms:["Four National Taps","NEWater","DTSS Phase 2","Tuas Nexus","coastal protection agency","energy–water nexus"],
+  qs:[["board","Explain Singapore’s Four National Taps and the weakness of each."],["current","Desalination uses a lot of energy. Should Singapore rely on it more during an energy crisis?"],["current","Long Island will cost billions and take decades. Is it worth it?"],["technical","How would you use sensors and data to cut water lost in the network?"],["board","How would you persuade people to accept higher water prices?"],["technical","A flash flood hits a town centre. What does PUB do in the first 24 hours?"],["current","What happens to Singapore’s water after the 1962 agreement ends in 2061?"],["personal","Why water? It isn’t exactly glamorous engineering."]],
+  sources:[["Long Island update (URA, Jun 2026)","https://www.ura.gov.sg/Corporate/Media-Room/Media-Releases/pr26-24"],["PUB scholarships","https://www.pub.gov.sg/Careers/Scholarship"]]},
+ {id:"lta", code:"LT", color:"#D42E12", short:"LTA", name:"Land Transport Authority",
+  mandate:"Plans, builds and regulates Singapore’s land transport, from MRT lines to roads to autonomous vehicles.",
+  facts:[["Founded","1995 (merger of four bodies)"],["Parent ministry","MOT"],["Bond (reported)","4 yrs local · 5 non-English · 6 English-speaking"],["Plan","Land Transport Master Plan 2040"]],
+  what:["LTA was formed in **1995** from the Registry of Vehicles, the Mass Rapid Transit Corporation, and parts of the PWD and the Ministry of Communications. It builds rail and roads, regulates vehicles (COEs, ERP) and the public transport industry, and plans the network.",
+   "**LTMP 2040** targets **“20-minute towns and a 45-minute city”**: 9 in 10 peak journeys by walk, cycle or public transport within 45 minutes."],
+  now:["**Circle Line** loop completed (12 Jul 2026). Cross Island Line stage 3 detailed. Jurong Region Line coming in stages. BRT studied for Tuas South.",
+   "The **RTS Link** to Johor Bahru was reportedly delayed to **Feb 2027** for safety certification.",
+   "**Autonomous shuttles** in Punggol since Apr 2026, with NDR 2026 promising to scale AVs once proven. Fares rise **12–13 cents per ride from Dec 2026**."],
+  process:[["reported","Selection looks for leadership, interest in land transport, a strong CCA record and communication skills."],["reported","One scholar described **three rounds of interviews**."],["official","LTA is also a parent agency under the **PSC (Engineering) I&E cluster**."]],
+  probe:["Can you explain big transport trade-offs (fares, cars, AVs, jobs)?","Engineering reliability: MRT disruptions and maintenance","User empathy: commuters, the elderly, people with disabilities","Delivering mega-projects (cost, delay, safety)","Your vision for 2040 mobility"],
+  angle:["**Rail reliability** is an ECE/CS problem: signalling (CBTC), condition monitoring, predictive maintenance and data from sensors.","**AVs**: sensor fusion, safety cases and how a regulator certifies software that learns.","Tie it to people: bus captain shortages and an ageing workforce make automation necessary, but transitions must be fair."],
+  terms:["LTMP 2040","CBTC signalling","Mean Kilometres Between Failure (MKBF)","COE / ERP 2.0","RTS Link","Vision Zero"],
+  qs:[["current","Should Singapore scale up autonomous buses, given the bus captain shortage?"],["current","Fares rise again in December. How should Singapore balance cost recovery and affordability?"],["current","The RTS Link was pushed to 2027. What makes cross-border rail so hard?"],["board","Should owning a car be made even harder?"],["technical","How would you reduce MRT disruptions?"],["technical","Design the 2040 commute of a resident living in Tengah."],["board","Cycling paths or bus lanes: where should the next dollar go?"],["personal","Why land transport?"]],
+  sources:[["LTA Scholarships","https://lta.gov.sg/scholarships"],["RTS Link (Land Transport Guru)","https://landtransportguru.net/train/rts-link/"]]}
+];
+
+const PLAYBOOK = {
+ stages:[
+  ["PSC (Engineering)","Essay → video interview → psychometric and game-based tests → psychologist → Selection Board panel","Consistency, conviction under pushback, public-service motive"],
+  ["DSTA","Application → interviews with senior engineers (+ tests in some cycles)","Technical depth, defence motive, systems judgement"],
+  ["GIC","Online tests → video interview → case study / group exercise → panel","Analytical clarity, long-term thinking, composure"],
+  ["EDB","Application → interviews (+ internship route for mid-term)","Persuasion, business sense, Singapore’s competitiveness"],
+  ["MAS","Assessments → group discussion → panel interview","Clear economic reasoning, listening, integrity"],
+  ["A*STAR (NSS)","Shortlist → face-to-face interviews (Mar–May)","Research curiosity, communication, commitment"],
+  ["SG Digital (IMDA)","Application → interviews","Industry passion, tech and media vision"],
+  ["Smart Nation","Group assessment → technical test → interviews with HR, tech leads, senior leaders","Hands-on skill, product and security mindset"],
+  ["PUB / LTA","Application → interviews (LTA: up to 3 rounds reported)","Sector passion, operational and public-facing judgement"]],
+ frameworks:[
+  ["Position → Reason → Evidence → Trade-off → Link (PRETL)","For current affairs. State your view in one line. Give the main reason, one Singapore-specific fact, the strongest counter-argument and how you weigh it, then link to the board’s work."],
+  ["STAR + Lesson","For personal questions. Situation (1 line), Task, the Actions **you** took (decisions, not titles), Result with a number, and what you now do differently."],
+  ["Requirements → Constraints → Design → Test","For technical or design questions. Clarify the user and success metric, name the constraints (cost, safety, latency), propose a design, then explain how you would test and iterate."],
+  ["Hold, then update","When the panel pushes back, don’t fold at once. Restate your reasoning, accept any fair point explicitly, and say what evidence would change your mind."]],
+ constraints:["**Land**: about 735 km², shared between housing, industry, defence, water catchment and nature.","**Water**: no natural aquifers. The 1962 Johor agreement ends in 2061.","**Energy**: about 95% gas-fired power, no hydro or nuclear today, limited solar area.","**People**: TFR 0.87, rapid ageing, small NS cohorts.","**Openness**: trade is about three times GDP, so tariffs and chokepoints (Hormuz, Malacca) hit hard.","**Climate**: sea-level rise and heat, so coastal protection is existential."]
+};
+
+const SOURCES_CA = [
+ ["Budget 2026 summary (Mothership)","https://mothership.sg/2026/02/2026-budget-summary/"],
+ ["NDR 2026: 10 key announcements","https://www.herworld.com/independence/national-day-rally-2026-10-key-announcements-pm-lawrence-wongs-speech?ai-allowed=1"],
+ ["MTI upgrades 2026 GDP forecast (Q2 2026)","https://www.singstat.gov.sg/news/performance-of-singapore-economy-2q2026"],
+ ["US 12.5% tariff on Singapore (Malay Mail)","https://www.malaymail.com/news/singapore/2026/07/24/singapore-rejects-forced-labour-claims-as-us-slaps-125pc-tariff-on-onethird-of-exports/228823"],
+ ["Ministerial statement on the Middle East situation (MHA)","https://www.mha.gov.sg/media-room/newsroom/ministerial-statement-on-the-impact-of-the-middle-east-situation-on-singapore/"],
+ ["Cabinet changes and METI renaming (PMO)","https://www.pmo.gov.sg/newsroom/changes-to-cabinet-and-other-appointments-and-the-renaming-of-the-ministry-of-trade-and-industry-jul-2026/"],
+ ["ESR final recommendations (gov.sg)","https://www.gov.sg/features/esr/final-report/"],
+ ["Population Trends 2026 (SingStat)","https://www.singstat.gov.sg/publication-resources/population-trends-2026"],
+ ["EMA–KHNP civil nuclear cooperation","https://www.ema.gov.sg/news-events/news/media-releases/2026/Korea-Hydro-and-Nuclear-Power-and-Energy-Market-Authority-of-Singapore-to-Cooperate-on-Civil-Nuclear-Energy-Cooperation"],
+ ["Singapore haze and PM Wong’s warning (CNBC, 16 Oct 2026)","https://www.cnbc.com/2026/10/16/singapore-haze-wong-warning-indonesia.html"],
+ ["2026 in Singapore (timeline)","https://en.wikipedia.org/wiki/2026_in_Singapore"]
+];
+
+const ORG = Object.fromEntries(ORGS.map(o=>[o.id,o]));
+const TYPE_LABEL = {personal:"Personal",board:"About the board",current:"Current affairs",technical:"Technical",ethics:"Ethics",curveball:"Curveball"};
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+const $ = (s,el=document)=>el.querySelector(s);
+const esc = s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function inline(s){return esc(s).replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>").replace(/(^|[\s(])\*(?!\s)(.+?)\*(?=[\s).,;:!?]|$)/g,"$1<em>$2</em>")}
+function md(src){
+  const lines=String(src??"").replace(/\r/g,"").split("\n"); let html="", list=null;
+  const close=()=>{if(list){html+=`</${list}>`;list=null}};
+  for(const raw of lines){
+    const l=raw.trimEnd(); let m;
+    if(!l.trim()){close();continue}
+    if((m=l.match(/^#{1,4}\s+(.*)/))){close();html+=`<h3>${inline(m[1])}</h3>`;continue}
+    if((m=l.match(/^\s*[-•*]\s+(.*)/))){if(list!=="ul"){close();html+="<ul>";list="ul"}html+=`<li>${inline(m[1])}</li>`;continue}
+    if((m=l.match(/^\s*\d+[.)]\s+(.*)/))){if(list!=="ol"){close();html+="<ol>";list="ol"}html+=`<li>${inline(m[1])}</li>`;continue}
+    close();html+=`<p>${inline(l)}</p>`;
+  }
+  close();return html;
+}
+function toast(msg){const t=$("#toast");t.textContent=msg;t.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>t.hidden=true,2600)}
+const today=()=>new Date().toLocaleDateString("en-SG",{day:"numeric",month:"short",year:"numeric"});
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+function lsGet(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch{return d}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
+function codeBadge(o,cls=""){return `<span class="code ${o.lightText?"lt":""} ${cls}" style="--c:${o.color}">${esc(o.code)}</span>`}
+async function copyText(text){try{await navigator.clipboard.writeText(text);toast("Copied")}catch{toast("Copy blocked here. Select the text and copy it manually.")}}
+
+/* ============================================================
+   CLAUDE CONNECTION (artifact sample capability, or local server)
+   ============================================================ */
+const AI = {
+  mode:"checking", sample:null, web:false, imgLimit:0, busy:0,
+  async init(){
+    try{
+      if(window.claude && typeof window.claude.use==="function"){
+        this.sample = await window.claude.use("sample");
+        if(this.sample){
+          this.mode="artifact";
+          try{const lim=await this.sample.limits();this.imgLimit=lim?.images?.maxCount||0}catch{this.imgLimit=0}
+          return this.paint();
+        }
+      }
+    }catch{}
+    try{
+      const r=await fetch("/api/health",{cache:"no-store"});
+      if(r.ok){const j=await r.json();this.mode="local";this.web=!!j.web;this.imgLimit=6;return this.paint()}
+    }catch{}
+    this.mode="none";this.paint();
+  },
+  lastMode:null,
+  paint(){
+    const dot=$("#aiDot"),txt=$("#aiText");
+    dot.className="dot "+(this.busy?"busy":this.mode==="none"?"off":this.mode==="checking"?"":"on");
+    txt.textContent = this.busy? "Claude is working…" :
+      this.mode==="artifact"?"Claude connected":this.mode==="local"?("Claude API (local)"+(this.web?" · web search on":"")):
+      this.mode==="none"?"Claude not connected":"Connecting to Claude…";
+    if(this.mode!==this.lastMode){this.lastMode=this.mode;document.dispatchEvent(new CustomEvent("ai-mode"))}
+  },
+  ready(){return this.mode==="artifact"||this.mode==="local"},
+  errorText(e){
+    const c=e?.code;
+    if(c==="not_granted"||c==="sampling_disabled")return "Claude access was declined for this page. Allow it from the artifact’s permissions to use AI features.";
+    if(c==="rate_limited")return "Too many requests right now. Wait a minute, then try again.";
+    if(c==="refused")return "Claude declined that request. Try rephrasing it.";
+    if(c==="prompt_too_large")return "That input is too long. Paste a shorter excerpt.";
+    if(c==="image_rejected")return "One of the video frames couldn’t be read. Feedback will run without them if you retry.";
+    if(c==="invalid_json")return "Claude’s reply came back in the wrong format. Try again.";
+    if(c==="cancelled")return "Stopped.";
+    if(c==="no_ai")return "Claude isn’t connected. Open this page on claude.ai, or run the local server (see the README).";
+    return e?.message?e.message:"Something went wrong. Try again.";
+  },
+  /* ask Claude; returns text. opts: onText, signal, images (Blob[]), json, web, cache */
+  async ask(prompt,opts={}){
+    if(!this.ready())throw {code:"no_ai"};
+    this.busy++;this.paint();
+    try{
+      if(this.mode==="artifact"){
+        const o={};
+        if(opts.onText)o.onText=opts.onText;
+        if(opts.signal)o.signal=opts.signal;
+        if(opts.images?.length&&this.imgLimit)o.images=opts.images.slice(0,this.imgLimit);
+        if(opts.tier)o.modelTier=opts.tier;
+        if(opts.cache===false)o.cache=false;
+        if(opts.json)return await this.sample.json(prompt,o);
+        const r=await this.sample(prompt,o);return r.text;
+      }
+      const images=[];
+      for(const b of (opts.images||[]).slice(0,6)) images.push({media_type:b.type||"image/jpeg",data:await blobToB64(b)});
+      const res=await fetch("/api/claude",{method:"POST",headers:{"content-type":"application/json"},signal:opts.signal,
+        body:JSON.stringify({prompt,images,web:!!opts.web&&this.web,json:!!opts.json,effort:opts.tier==="complex"?"high":opts.tier==="quick"?"low":"medium"})});
+      if(!res.ok){let m="HTTP "+res.status;try{m=(await res.json()).error||m}catch{}throw {code:"upstream_error",message:m}}
+      const reader=res.body.getReader(),dec=new TextDecoder();let text="";
+      for(;;){const {done,value}=await reader.read();if(done)break;const delta=dec.decode(value,{stream:true});if(!delta)continue;text+=delta;opts.onText&&opts.onText({text,delta})}
+      const srvErr=text.match(/^\s*\[([^\]]+)\]\s*$/);
+      if(opts.json){const v=parseJSON(text);if(v===undefined)throw srvErr?{code:"upstream_error",message:srvErr[1]}:{code:"invalid_json",text};return v}
+      return text;
+    }catch(e){
+      if(e?.name==="AbortError")throw {code:"cancelled"};
+      throw e;
+    }finally{this.busy--;this.paint()}
+  }
+};
+function blobToB64(b){return new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>ok(String(r.result).split(",")[1]);r.onerror=no;r.readAsDataURL(b)})}
+function parseJSON(t){
+  const tryP=s=>{try{return JSON.parse(s)}catch{return undefined}};
+  let v=tryP(t.trim());if(v!==undefined)return v;
+  const f=t.match(/```(?:json)?\s*([\s\S]*?)```/);if(f&&(v=tryP(f[1].trim()))!==undefined)return v;
+  const a=Math.min(...["{","["].map(c=>{const i=t.indexOf(c);return i<0?Infinity:i})),b=Math.max(t.lastIndexOf("}"),t.lastIndexOf("]"));
+  if(a<b)return tryP(t.slice(a,b+1));return undefined;
+}
+
+/* ============================================================
+   STORAGE: private per-user db rows when available, else this browser
+   ============================================================ */
+const Store = {
+  db:null, uid:null, attempts:[], profile:null,
+  async init(){
+    this.profile=lsGet("pr.profile",null); this.attempts=lsGet("pr.attempts",[]);
+    try{
+      if(!window.claude?.use)return;
+      const [db,user]=await Promise.all([window.claude.use("db"),window.claude.use("user")]);
+      if(!db||!user)return;
+      const id=await user.id(); if(!id)return;
+      this.db=db; this.uid=id;
+      const col=db.collection("data/users/"+id);
+      const snap=await col.get();
+      const rows=snap.docs.map(d=>({id:d.id,...d.data()}));
+      const prof=rows.find(r=>r.id==="profile"); if(prof)this.profile=prof.value;
+      const att=rows.filter(r=>r.kind==="attempt").map(r=>r.value).filter(Boolean);
+      if(att.length)this.attempts=att.sort((a,b)=>b.ts-a.ts);
+      document.dispatchEvent(new CustomEvent("store-loaded"));
+    }catch{this.db=null}
+  },
+  where(){return this.db?"Saved to your account (private to you)":"Saved in this browser only"},
+  async saveProfile(p){
+    this.profile=p; lsSet("pr.profile",p);
+    if(this.db){try{await this.db.collection("data/users/"+this.uid).doc("profile").set({value:p,ts:Date.now()})}catch{}}
+  },
+  async saveAttempt(a){
+    this.attempts=[a,...this.attempts.filter(x=>x.id!==a.id)].slice(0,200); lsSet("pr.attempts",this.attempts.slice(0,80));
+    if(this.db){try{await this.db.collection("data/users/"+this.uid).doc("att_"+a.id).set({kind:"attempt",ts:a.ts,value:a})}catch{}}
+  },
+  async clearAttempts(){
+    const old=this.attempts; this.attempts=[]; lsSet("pr.attempts",[]);
+    if(this.db){for(const a of old){try{await this.db.collection("data/users/"+this.uid).doc("att_"+a.id).delete()}catch{}}}
+  }
+};
+const DEFAULT_PROFILE={name:"",school:"",subjects:"",track:"ECE/CS: Electrical & Computer Engineering / Computer Science",projects:"",leadership:"",why:"",vision:"",boards:ORGS.map(o=>o.id)};
+const profile=()=>({...DEFAULT_PROFILE,...(Store.profile||{})});
+
+/* ============================================================
+   PROMPTS
+   ============================================================ */
+function digestText(){
+  return THEMES.map(t=>`## ${t.title} (${t.stamp})\n`+t.facts.map(f=>"- "+f.replace(/\*\*/g,"")).join("\n")).join("\n\n");
+}
+function orgText(o){
+  if(!o)return "";
+  const proc=o.process.map(([k,v])=>`- (${k}) ${v.replace(/\*\*/g,"")}`).join("\n");
+  return `BOARD DOSSIER: ${o.name}
+Mandate: ${o.mandate}
+Facts: ${o.facts.map(f=>f[0]+": "+f[1]).join("; ")}
+What it does:\n${o.what.join("\n").replace(/\*\*/g,"")}
+Now (2025-26):\n${o.now.join("\n").replace(/\*\*/g,"")}
+How selection runs:\n${proc}
+What panels probe: ${o.probe.join("; ")}
+Terms: ${o.terms.join(", ")}`;
+}
+function profileText(){
+  const p=profile();
+  const f=(k,l)=>p[k]?.trim()?`${l}: ${p[k].trim()}`:`${l}: (not given)`;
+  return ["CANDIDATE PROFILE","Stage: JC2 student in Singapore applying for undergraduate scholarships", f("name","Name"),f("school","School"),f("subjects","Subjects/results"),f("track","Intended degree"),f("projects","Projects and technical work"),f("leadership","Leadership/CCA/service"),f("why","Why engineering and public service"),f("vision","Vision for contribution"),"Target boards: "+(p.boards||[]).map(id=>ORG[id]?.short).filter(Boolean).join(", ")].join("\n");
+}
+function baseContext(o){
+  return `You are Panel Room, a demanding but fair coach who has sat on Singapore scholarship selection panels (PSC, statutory boards, GIC, MAS, A*STAR). Today is ${today()}.
+The candidate wants to come across as a confident, well-read ECE/CS engineer with a clear vision of how they will contribute, a keen understanding of how each board operates, and a grasp of Singapore's future needs and constraints.
+
+${profileText()}
+
+LATEST BRIEFING (facts compiled ${DIGEST_DATE}; treat them as current and correct; if something needs newer information than this, say you are not sure rather than inventing it):
+${digestText()}
+
+${orgText(o)}
+
+Rules: Singapore context first. Use exact figures only from the briefing, the dossier or very well-established facts; never invent statistics, names, dates or quotes. Use British spelling. Be direct and specific, like a mentor who wants the candidate to win.`;
+}
+
+/* ============================================================
+   APP STATE + ROUTING
+   ============================================================ */
+const TABS=[{id:"brief",label:"Briefing",code:"SG",color:"var(--accent)"},...ORGS.map(o=>({id:o.id,label:o.short,code:o.code,color:o.color,lt:o.lightText})),{id:"play",label:"Playbook",code:"PB",color:"#5b6670"},{id:"me",label:"Me & progress",code:"ME",color:"#5b6670"}];
+let tab=(()=>{const h=location.hash.slice(1);return TABS.some(t=>t.id===h)?h:lsGet("pr.tab","brief")})();
+
+function renderTabs(){
+  $("#tabs").innerHTML=TABS.map(t=>`<button class="line-tab" role="tab" id="tab-${t.id}" aria-selected="${t.id===tab}" data-tab="${t.id}"><span class="code ${t.lt?"lt":""}" style="--c:${t.color}${t.id==="brief"?";color:var(--accent-ink)":""}">${t.code}</span>${esc(t.label)}</button>`).join("");
+}
+$("#tabs").addEventListener("click",e=>{const b=e.target.closest("[data-tab]");if(!b)return;go(b.dataset.tab)});
+function go(id){tab=id;lsSet("pr.tab",id);renderTabs();render();window.scrollTo({top:0});const el=$("#tab-"+id);el&&el.scrollIntoView({inline:"center",block:"nearest"})}
+function render(){
+  const v=$("#view");
+  if(tab==="brief")v.innerHTML=viewBrief();
+  else if(tab==="play")v.innerHTML=viewPlay();
+  else if(tab==="me")v.innerHTML=viewMe();
+  else v.innerHTML=viewOrg(ORG[tab]);
+  wire();
+}
+
+/* ---------- Briefing ---------- */
+let drill=null;
+function pickDrill(){const t=THEMES[Math.floor(Math.random()*THEMES.length)];drill={q:t.qs[Math.floor(Math.random()*t.qs.length)],theme:t.id,type:"current"};}
+function viewBrief(){
+  if(!drill)pickDrill();
+  const th=THEMES.find(t=>t.id===drill.theme);
+  return `
+  <section class="hero">
+    <div class="drill">
+      <span class="eyebrow">Today’s panel question · ${esc(th?th.title:"Current affairs")}</span>
+      <q id="drillQ">${esc(drill.q)}</q>
+      <div class="row">
+        <button class="btn primary" data-act="drill-answer">Answer on camera</button>
+        <button class="btn ghost" data-act="drill-new" title="Ask Claude for a fresh question from this week’s briefing">New question from Claude</button>
+        <button class="btn ghost" data-act="drill-shuffle">Shuffle</button>
+      </div>
+      <p class="note" style="color:inherit;opacity:.7">Panels use current affairs to test how you reason, not what you memorise. Take a position, give one Singapore fact, deal with the strongest counter-argument, then link it to the board.</p>
+    </div>
+    <div class="panel asof">
+      <h4>Briefing as of</h4>
+      <div class="big tab-nums">${esc(DIGEST_DATE)}</div>
+      <p class="muted">${THEMES.length} themes, checked against official releases and major news up to this date. Every Claude answer, briefing and piece of feedback is grounded in it.</p>
+      <div class="row">
+        <button class="btn" data-act="weekly">Brief me: the 5 things a panel will ask about this month</button>
+        ${AI.mode==="local"&&AI.web?`<button class="btn" data-act="websweep">Scan the latest news (web search)</button>`:""}
+      </div>
+      <div id="weeklyOut"></div>
+    </div>
+  </section>
+
+  <div class="section-head"><div><h2>Singapore current affairs</h2><p class="muted">Each card gives key facts, the tensions panels like to probe, and your engineer’s angle.</p></div></div>
+  <section class="themes">${THEMES.map(themeCard).join("")}</section>
+
+  <div class="section-head"><div><h2>Analyse a news article</h2><p class="muted">Paste a Straits Times, CNA or ministry article. Claude explains what matters, how each of your boards would see it, and the questions it could trigger.</p></div></div>
+  <section class="panel stack">
+    <label class="lbl" for="artText">Article text or link summary</label>
+    <textarea id="artText" placeholder="Paste the article here…"></textarea>
+    <div class="row"><button class="btn primary" data-act="article">Analyse for my interviews</button><span class="note">Claude can’t open links from here, so paste the text itself.</span></div>
+    <div id="artOut"></div>
+  </section>
+
+  <div class="section-head"><h2>Sources for this briefing</h2></div>
+  <ul class="clean sources">${SOURCES_CA.map(([t,u])=>`<li><a href="${esc(u)}" target="_blank" rel="noopener">${esc(t)}</a></li>`).join("")}</ul>`;
+}
+function themeCard(t){
+  const boards=t.boards.map(id=>ORG[id]).filter(Boolean);
+  return `<article class="theme" id="th-${t.id}">
+    <div class="stamp">${esc(t.stamp)}</div>
+    <h3>${esc(t.title)}</h3>
+    <ul class="clean">${t.facts.slice(0,3).map(f=>`<li>${inline(f)}</li>`).join("")}</ul>
+    <details class="sec"><summary><span class="note"><b>${t.facts.length-3>0?`${t.facts.length-3} more facts · `:""}debates · engineer’s angle</b></span></summary><div class="body stack">
+      ${t.facts.length>3?`<ul class="clean">${t.facts.slice(3).map(f=>`<li>${inline(f)}</li>`).join("")}</ul>`:""}
+      <div><h4>Tensions panels probe</h4><ul class="clean">${t.tensions.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
+      <div><h4>Your engineer’s angle</h4><p>${inline(t.angle)}</p></div>
+      <div><h4>Practise</h4><div class="qlist">${t.qs.map((q,i)=>`<div class="qitem"><p>${esc(q)}</p><button class="btn small" data-act="theme-q" data-theme="${t.id}" data-i="${i}">Answer</button></div>`).join("")}</div></div>
+    </div></details>
+    <div class="links" aria-label="Relevant boards">${boards.map(o=>codeBadge(o)).join("")}</div>
+    <div class="actions">
+      <button class="btn small ink" data-act="deep" data-theme="${t.id}">Deep brief</button>
+      <button class="btn small" data-act="theme-drill" data-theme="${t.id}">Drill me</button>
+    </div>
+    <div data-out="${t.id}"></div>
+  </article>`;
+}
+
+/* ---------- Board ---------- */
+const genQs={};
+function viewOrg(o){
+  const procHtml=o.process.map(([k,v])=>`<li><span class="chip ${k}">${k}</span> ${inline(v)}</li>`).join("");
+  const sec=(title,body,open)=>`<details class="sec" ${open?"open":""}><summary><h3>${title}</h3></summary><div class="body">${body}</div></details>`;
+  const qs=[...(genQs[o.id]||[]).map(x=>[x.type,x.q,true]),...o.qs];
+  return `
+  <section class="board-head">
+    ${codeBadge(o,"big")}
+    <div class="t"><h1>${esc(o.name)}</h1><p class="muted">${esc(o.mandate)}</p></div>
+  </section>
+  <div class="kv" style="margin-bottom:22px">${o.facts.map(([k,v])=>`<div><span>${esc(k)}</span><b>${esc(v)}</b></div>`).join("")}</div>
+  <div class="grid2">
+    <section class="panel">
+      ${sec("What it does and where it came from",`<div class="md">${o.what.map(md).join("")}</div>`,true)}
+      ${sec("What’s happening now (2025–26)",`<ul class="clean">${o.now.map(x=>`<li>${inline(x)}</li>`).join("")}</ul>`,true)}
+      ${sec("How selection runs",`<ul class="clean" style="list-style:none;padding-left:0">${procHtml}</ul><p class="note" style="margin-top:10px"><b>Official</b> = from the board’s own pages. <b>Reported</b> = from candidate accounts or third-party guides; formats change between cycles.</p>`,true)}
+      ${sec("What this panel probes",`<ul class="clean">${o.probe.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`)}
+      ${sec("Your ECE/CS angle",`<ul class="clean">${o.angle.map(x=>`<li>${inline(x)}</li>`).join("")}</ul>`)}
+      ${sec("Terms to use correctly",`<div class="row">${o.terms.map(x=>`<span class="chip">${esc(x)}</span>`).join("")}</div>`)}
+      ${sec("Sources",`<ul class="clean sources">${o.sources.map(([t,u])=>`<li><a href="${esc(u)}" target="_blank" rel="noopener">${esc(t)}</a></li>`).join("")}</ul>`)}
+    </section>
+    <section class="stack">
+      <div class="panel stack">
+        <div><h2>Trainer</h2><p class="muted">Answer on camera or in text. Claude scores you, writes a model answer in your voice, and asks the follow-ups this panel would ask.</p></div>
+        <div class="row">
+          <button class="btn primary" data-act="mock" data-org="${o.id}">Run a 5-question mock panel</button>
+          <button class="btn" data-act="genq" data-org="${o.id}">Generate fresh questions</button>
+        </div>
+        <div id="genOut"></div>
+        <div class="qlist">${qs.map(([type,q,isNew],i)=>`<div class="qitem"><p><span class="tag">${esc(TYPE_LABEL[type]||type)}${isNew?" · new from Claude":""}</span>${esc(q)}</p><button class="btn small" data-act="org-q" data-org="${o.id}" data-q="${esc(q)}" data-type="${esc(type)}">Practise</button></div>`).join("")}</div>
+      </div>
+      <div class="panel stack">
+        <h3>Ask about ${esc(o.short)}</h3>
+        <label class="lbl" for="askQ">Anything you want to understand before the interview</label>
+        <textarea id="askQ" style="min-height:70px" placeholder="e.g. How is ${esc(o.short)} organised, and where would an ECE graduate start?"></textarea>
+        <div class="row"><button class="btn ink" data-act="ask" data-org="${o.id}">Ask Claude</button></div>
+        <div id="askOut"></div>
+      </div>
+    </section>
+  </div>`;
+}
+
+/* ---------- Playbook ---------- */
+function viewPlay(){
+  return `
+  <h1 style="margin-bottom:6px">Playbook</h1>
+  <p class="muted" style="margin-bottom:20px;max-width:70ch">How the panels run, how to structure answers, and the constraints every Singapore policy answer should respect.</p>
+  <div class="grid2">
+    <section class="panel stack">
+      <h2>How each board selects</h2>
+      <div class="tbl-wrap"><table><thead><tr><th>Board</th><th>Stages (official + reported)</th><th>What they weigh</th></tr></thead>
+      <tbody>${PLAYBOOK.stages.map(r=>`<tr><td><b>${esc(r[0])}</b></td><td>${esc(r[1])}</td><td>${esc(r[2])}</td></tr>`).join("")}</tbody></table></div>
+      <p class="note">Most boards use BrightSparks or their own portals. Many run psychometric tests. A board that doesn’t pick you can sometimes refer you to another (PSC does this formally), so keep your story consistent everywhere.</p>
+    </section>
+    <section class="stack">
+      <div class="panel stack"><h2>Answer frameworks</h2>${PLAYBOOK.frameworks.map(([t,d])=>`<div><h3>${esc(t)}</h3><p>${inline(d)}</p></div>`).join("")}</div>
+      <div class="panel stack"><h2>Singapore’s hard constraints</h2><ul class="clean">${PLAYBOOK.constraints.map(c=>`<li>${inline(c)}</li>`).join("")}</ul></div>
+      <div class="panel stack"><h2>Presenting as an engineer</h2><ul class="clean">
+        <li>Lead with judgement, not jargon. Explain one technical idea simply, then say what it changes for people.</li>
+        <li>Name trade-offs out loud (cost, safety, speed, equity). Panels reward candidates who can see both sides and still decide.</li>
+        <li>Have a concrete first-five-years picture for each board: the team, the system and the problem.</li>
+        <li>Use numbers you can defend. One correct fact beats three vague ones.</li>
+        <li>When challenged, say “That’s a fair point. Here’s how it changes my view…”, or hold your ground politely and give a reason.</li></ul></div>
+    </section>
+  </div>`;
+}
+
+/* ---------- Me & progress ---------- */
+function viewMe(){
+  const p=profile(); const at=Store.attempts;
+  const dims=["substance","structure","singapore_insight","board_fit","engineer_lens","delivery"];
+  const dimLabel={substance:"Substance",structure:"Structure",singapore_insight:"Singapore insight",board_fit:"Board fit",engineer_lens:"Engineer’s lens",delivery:"Delivery"};
+  const scored=at.filter(a=>a.fb&&a.fb.scores);
+  const avg=d=>scored.length?(scored.reduce((s,a)=>s+(+a.fb.scores[d]||0),0)/scored.length):0;
+  const field=(k,l,ph,ta)=>`<div class="${ta?"full":""}"><label class="lbl" for="pf-${k}">${l}</label>${ta?`<textarea id="pf-${k}" placeholder="${esc(ph)}">${esc(p[k])}</textarea>`:`<input type="text" id="pf-${k}" value="${esc(p[k])}" placeholder="${esc(ph)}">`}</div>`;
+  return `
+  <h1 style="margin-bottom:6px">Me & progress</h1>
+  <p class="muted" style="margin-bottom:20px;max-width:70ch">Claude uses your profile to write model answers in your voice. If a detail is missing, it leaves a [placeholder] instead of inventing one. <span id="whereSaved">${esc(Store.where())}</span>.</p>
+  <div class="grid2">
+    <section class="panel stack">
+      <h2>Your profile</h2>
+      <div class="form">
+        ${field("name","Name","Your name")}
+        ${field("school","JC","e.g. Raffles Institution")}
+        ${field("subjects","Subjects and results","e.g. H2 Math, Physics, Computing, Chemistry; predicted 90 RP",true)}
+        ${field("track","Intended degree","ECE/CS")}
+        ${field("projects","Projects and technical work","e.g. Built a Raspberry Pi air-quality sensor network for my school; NOI participant; Arduino robot for WRO…",true)}
+        ${field("leadership","Leadership, CCA and service","e.g. Robotics Club president; led a 6-person team; VIA teaching coding to seniors…",true)}
+        ${field("why","Why engineering and public service","The real reason, in your own words",true)}
+        ${field("vision","How you want to contribute","e.g. Build resilient energy and transport systems for an ageing, climate-exposed Singapore",true)}
+        <div class="full"><span class="lbl">Boards you’re applying to</span><div class="row">${ORGS.map(o=>`<label class="chip" style="cursor:pointer;text-transform:none;letter-spacing:0;font-size:13px"><input type="checkbox" data-board="${o.id}" ${p.boards.includes(o.id)?"checked":""}> ${esc(o.short)}</label>`).join("")}</div></div>
+      </div>
+      <div class="row"><button class="btn primary" data-act="save-profile">Save profile</button><button class="btn" data-act="story">Ask Claude to sharpen my story</button></div>
+      <div id="storyOut"></div>
+    </section>
+    <section class="stack">
+      <div class="panel stack">
+        <h2>Your scores</h2>
+        ${scored.length?`<p class="muted">Average of ${scored.length} scored answer${scored.length>1?"s":""}</p><div class="scores">${dims.map(d=>scoreTile(dimLabel[d],avg(d))).join("")}</div>`:`<p class="muted">No scored answers yet. Pick any question, answer it, and press <b>Get feedback</b>. Your scores will build up here.</p><div class="row"><button class="btn ink" data-act="drill-answer">Answer today’s question</button></div>`}
+      </div>
+      <div class="panel stack">
+        <div class="row" style="justify-content:space-between"><h2>Practice log</h2>${at.length?`<button class="btn small ghost" data-act="clear-log">Clear log</button>`:""}</div>
+        <div id="clearConfirm"></div>
+        ${at.length?at.slice(0,60).map(attemptRow).join(""):`<p class="muted">Your answers and Claude’s feedback will be listed here.</p>`}
+      </div>
+    </section>
+  </div>`;
+}
+function scoreTile(label,v){const n=Math.round(v*10)/10;const c=v>=7.5?"hi":v>=5.5?"mid":"lo";return `<div class="score"><div class="lab"><span>${esc(label)}</span><span class="mono tab-nums">${n||"–"}/10</span></div><div class="bar"><i class="${c}" style="width:${Math.max(0,Math.min(100,v*10))}%"></i></div></div>`}
+function attemptRow(a){
+  const o=ORG[a.org]; const d=new Date(a.ts);
+  return `<details class="attempt"><summary>${o?codeBadge(o):`<span class="code" style="--c:var(--accent);color:var(--accent-ink)">SG</span>`}<span class="q">${esc(a.q)}</span><span class="mono tab-nums">${a.fb?.overall??"–"}/10</span></summary>
+    <div class="stack" style="padding-top:10px">
+      <p class="note">${d.toLocaleString("en-SG",{dateStyle:"medium",timeStyle:"short"})} · ${a.secs||0}s · ${a.words||0} words</p>
+      ${a.fb?.verdict?`<p><b>${esc(a.fb.verdict)}</b></p>`:""}
+      <div><h4>Your answer</h4><p class="muted">${esc(a.answer).slice(0,1200)}</p></div>
+      ${a.fb?.gaps?.length?`<div><h4>Fix next time</h4><ul class="clean">${a.fb.gaps.map(g=>`<li>${esc(g)}</li>`).join("")}</ul></div>`:""}
+      ${a.fb?.model_answer?`<div><h4>Model answer</h4><div class="model">${esc(a.fb.model_answer)}</div></div>`:""}
+      <div class="row"><button class="btn small" data-act="retry" data-id="${a.id}">Try this question again</button></div>
+    </div></details>`;
+}
+
+/* ============================================================
+   EVENT WIRING
+   ============================================================ */
+let ctl=null;
+function stream(el,prompt,opts={}){
+  if(!AI.ready()){el.innerHTML=`<p class="err">${esc(AI.errorText({code:"no_ai"}))}</p>`;return Promise.resolve(null)}
+  el.innerHTML=`<div class="out thinking">Thinking…</div>`;
+  const box=el.firstElementChild;
+  return AI.ask(prompt,{...opts,onText:({text})=>{box.classList.remove("thinking");box.innerHTML=`<div class="md">${md(text)}</div>`}})
+   .then(t=>{box.classList.remove("thinking");box.innerHTML=`<div class="md">${md(t)}</div>`;return t})
+   .catch(e=>{box.classList.remove("thinking");box.innerHTML=(e?.text?`<div class="md">${md(e.text)}</div>`:"")+`<p class="err">${esc(AI.errorText(e))}</p>`;return null});
+}
+function wire(){
+  const v=$("#view");
+  v.onclick=async e=>{
+    const b=e.target.closest("[data-act]");if(!b)return;const act=b.dataset.act;
+    if(act==="drill-answer"){if(!drill)pickDrill();Studio.open({q:drill.q,type:"current",org:null,theme:drill.theme})}
+    else if(act==="drill-shuffle"){pickDrill();render()}
+    else if(act==="drill-new"){
+      if(!AI.ready())return toast(AI.errorText({code:"no_ai"}));
+      b.disabled=true;$("#drillQ").textContent="Claude is choosing a question…";
+      try{
+        const r=await AI.ask(baseContext(null)+`
+
+TASK: Write ONE current-affairs question a Singapore scholarship panel would plausibly ask this month, grounded in the briefing. Make it open-ended and debatable, and suited to an engineering candidate. Reply with only JSON: {"q":"the question","theme":"one of: ${THEMES.map(t=>t.id).join(", ")}"}`,{json:true,cache:false,tier:"quick"});
+        if(r?.q){drill={q:String(r.q),theme:THEMES.some(t=>t.id===r.theme)?r.theme:drill.theme,type:"current"}}
+      }catch(err){toast(AI.errorText(err))}
+      render();
+    }
+    else if(act==="weekly"){
+      stream($("#weeklyOut"),baseContext(null)+`
+
+TASK: Brief the candidate on the 5 current-affairs issues Singapore scholarship panels are most likely to raise this month. For each: a heading, two lines on what happened (with the key figure), one line on why panels care, and one sharp question they could face. End with "### One line to remember" giving a single memorable takeaway. Under 420 words. Use markdown headings and bullets.`);
+    }
+    else if(act==="websweep"){
+      stream($("#weeklyOut"),baseContext(null)+`
+
+TASK: Use web search to find the most important Singapore news from the past 7 days (official sources such as gov.sg, ministries and statutory boards, plus Straits Times, CNA and Business Times). For each of the top 6 stories give: a heading, what happened (with dates and figures), which of these boards it matters to (${ORGS.map(o=>o.short).join(", ")}), and one likely interview question. Cite source names inline. Under 500 words, in markdown.`,{web:true,cache:false});
+    }
+    else if(act==="deep"){
+      const t=THEMES.find(x=>x.id===b.dataset.theme);
+      stream($(`[data-out="${t.id}"]`),baseContext(null)+`
+
+TASK: Give a deep briefing on the theme "${t.title}" for a scholarship interview.
+Sections (markdown "###" headings): What happened; Why it matters for Singapore (link to its hard constraints); The debate (the strongest argument on each side); The engineer's angle (specific technologies and systems); How it comes up at each board (cover the relevant ones of ${t.boards.map(id=>ORG[id].short).join(", ")}); A 30-second answer you could give (first person, confident, takes a position).
+Under 520 words. Facts must come from the briefing.`);
+    }
+    else if(act==="theme-drill"){const t=THEMES.find(x=>x.id===b.dataset.theme);Studio.open({q:t.qs[Math.floor(Math.random()*t.qs.length)],type:"current",org:null,theme:t.id})}
+    else if(act==="theme-q"){const t=THEMES.find(x=>x.id===b.dataset.theme);Studio.open({q:t.qs[+b.dataset.i],type:"current",org:null,theme:t.id})}
+    else if(act==="article"){
+      const txt=$("#artText").value.trim();if(txt.length<80)return toast("Paste at least a paragraph of the article.");
+      stream($("#artOut"),baseContext(null)+`
+
+ARTICLE (pasted by the candidate):
+"""${txt.slice(0,24000)}"""
+
+TASK: Analyse this article for scholarship interview preparation, in markdown with "###" headings: The story in 3 lines; What's really at stake for Singapore; How each relevant board would read it (only boards among ${ORGS.map(o=>o.short).join(", ")} that genuinely connect); 3 questions it could trigger; A strong 40-second take (first person, engineer's lens). Point out anything in the article that conflicts with the briefing. Under 500 words.`,{cache:false});
+    }
+    else if(act==="org-q"){Studio.open({q:b.dataset.q,type:b.dataset.type,org:b.dataset.org})}
+    else if(act==="genq"){
+      const o=ORG[b.dataset.org];const out=$("#genOut");
+      if(!AI.ready())return out.innerHTML=`<p class="err">${esc(AI.errorText({code:"no_ai"}))}</p>`;
+      out.innerHTML=`<div class="out thinking">Claude is writing questions for ${esc(o.short)}…</div>`;b.disabled=true;
+      try{
+        const arr=await AI.ask(baseContext(o)+`
+
+TASK: Write 6 NEW interview questions this ${o.name} panel could ask THIS candidate, different from these existing ones: ${o.qs.map(q=>q[1]).join(" | ")}.
+Mix: 1 personal (draw on the profile), 2 about the board's work and future, 2 current affairs from the briefing tied to the board, 1 technical or curveball. Make them sound like real panellists speaking: short and pointed.
+Reply with only a JSON array: [{"q":"...","type":"personal|board|current|technical|ethics|curveball"}]`,{json:true,cache:false});
+        genQs[o.id]=(Array.isArray(arr)?arr:[]).filter(x=>x&&x.q).map(x=>({q:String(x.q),type:TYPE_LABEL[x.type]?x.type:"board"}));
+        render();toast(`${genQs[o.id].length} new questions added`);
+      }catch(err){out.innerHTML=`<p class="err">${esc(AI.errorText(err))}</p>`;b.disabled=false}
+    }
+    else if(act==="mock"){Mock.start(ORG[b.dataset.org],b)}
+    else if(act==="ask"){
+      const o=ORG[b.dataset.org];const q=$("#askQ").value.trim();if(!q)return toast("Type a question first.");
+      stream($("#askOut"),baseContext(o)+`
+
+The candidate asks about ${o.name}: "${q}"
+Answer clearly in under 300 words, using the dossier and well-established facts. If you are unsure about a detail (e.g. exact bond terms this cycle), say so and suggest where to check. End with one line on how they could use this in the interview.`,{cache:false});
+    }
+    else if(act==="save-profile"){
+      const p=profile();for(const k of ["name","school","subjects","track","projects","leadership","why","vision"]){const el=$("#pf-"+k);if(el)p[k]=el.value}
+      p.boards=[...v.querySelectorAll("[data-board]")].filter(x=>x.checked).map(x=>x.dataset.board);
+      await Store.saveProfile(p);toast("Profile saved");
+    }
+    else if(act==="story"){
+      const p=profile();for(const k of ["name","school","subjects","track","projects","leadership","why","vision"]){const el=$("#pf-"+k);if(el)p[k]=el.value}
+      await Store.saveProfile(p);
+      stream($("#storyOut"),baseContext(null)+`
+
+TASK: Help the candidate sharpen their personal story for every panel. In markdown with "###" headings:
+- "Your through-line": one sentence that ties their ECE/CS interest, experiences and public-service motive together.
+- "60-second 'Tell us about yourself'": first person, confident, specific. Use [placeholders] where details are missing.
+- "One-line hooks per board": for each target board, one sentence on why them and what they'd build there.
+- "Gaps a panel will spot": 3 honest weaknesses in this profile and how to address each.
+Under 550 words.`,{cache:false});
+    }
+    else if(act==="clear-log"){
+      $("#clearConfirm").innerHTML=`<div class="row"><span class="note">Delete all ${Store.attempts.length} saved answers?</span><button class="btn small primary" data-act="clear-yes">Delete</button><button class="btn small" data-act="clear-no">Keep</button></div>`;
+    }
+    else if(act==="clear-yes"){await Store.clearAttempts();render();toast("Practice log cleared")}
+    else if(act==="clear-no"){$("#clearConfirm").innerHTML=""}
+    else if(act==="retry"){const a=Store.attempts.find(x=>x.id===b.dataset.id);if(a)Studio.open({q:a.q,type:a.type,org:a.org,theme:a.theme})}
+  };
+}
+
+/* ============================================================
+   MOCK PANEL
+   ============================================================ */
+const Mock={
+  run:null,
+  async start(o,btn){
+    if(!AI.ready())return toast(AI.errorText({code:"no_ai"}));
+    btn.disabled=true;const old=btn.textContent;btn.textContent="Claude is assembling the panel…";
+    try{
+      const arr=await AI.ask(baseContext(o)+`
+
+TASK: You are chairing a ${o.name} scholarship panel. Prepare a 5-question mock interview for THIS candidate, in this order:
+1) an opener about them and their motivation for this board, 2) a question about the board's work and future, 3) a current-affairs question from the briefing tied to the board, 4) a technical or problem-solving question suited to an ECE/CS candidate, 5) a curveball or ethics question.
+Make them sound like real panellists: short and pointed.
+Reply with only a JSON array of 5 objects: [{"q":"...","type":"personal|board|current|technical|ethics|curveball"}]`,{json:true,cache:false});
+      const qs=(Array.isArray(arr)?arr:[]).filter(x=>x&&x.q).slice(0,5).map(x=>({q:String(x.q),type:TYPE_LABEL[x.type]?x.type:"board"}));
+      if(!qs.length)throw {code:"invalid_json"};
+      this.run={org:o.id,qs,i:0,results:[]};
+      Studio.open({q:qs[0].q,type:qs[0].type,org:o.id,mock:true});
+    }catch(err){toast(AI.errorText(err))}
+    finally{btn.disabled=false;btn.textContent=old}
+  },
+  record(att){if(this.run)this.run.results[this.run.i]=att},
+  next(){if(!this.run)return;this.run.i++;const n=this.run.qs[this.run.i];if(n)Studio.open({q:n.q,type:n.type,org:this.run.org,mock:true});else Studio.verdict()},
+  end(){this.run=null}
+};
+
+/* ============================================================
+   PRACTICE STUDIO: camera, live transcript, timer, feedback
+   ============================================================ */
+const FILLERS=["um","uh","erm","like","you know","basically","actually","sort of","kind of","i mean","right"];
+const Studio={
+  ctx:null, stream:null, rec:null, chunks:[], frames:[], videoUrl:null, recog:null, t0:0, timer:null, secs:0, finalText:"", fbCtl:null,
+  open(ctx){
+    this.ctx=ctx;this.frames=[];this.secs=0;this.finalText="";this.stopTimer();
+    if(this.videoUrl){URL.revokeObjectURL(this.videoUrl);this.videoUrl=null}
+    const o=ctx.org?ORG[ctx.org]:null;const run=ctx.mock&&Mock.run;
+    const el=$("#studio");el.hidden=false;document.body.style.overflow="hidden";
+    el.innerHTML=`
+    <div class="studio-bar"><div class="wrap">
+      <button class="btn small" data-s="close">← Back</button>
+      ${o?codeBadge(o):`<span class="code" style="--c:var(--accent);color:var(--accent-ink)">SG</span>`}
+      <b>${o?esc(o.name):"Current affairs drill"}</b>
+      ${run?`<span class="chip">Mock panel · Q${run.i+1} of ${run.qs.length}</span>`:""}
+      <span style="margin-left:auto" class="note">${esc(Store.where())}</span>
+    </div></div>
+    <div class="wrap">
+      <div class="studio-q">
+        <span class="chip">${esc(TYPE_LABEL[ctx.type]||"Question")}</span>
+        <div class="qtext" id="sQ">${esc(ctx.q)}</div>
+        <div class="row" style="margin-top:10px">
+          <button class="btn small" data-s="speak">Read the question aloud</button>
+          <span class="note">Aim for 60–120 seconds. Take 10 seconds to think first: panels prefer a pause to a ramble.</span>
+        </div>
+      </div>
+      <div class="grid2" style="margin-top:14px">
+        <section class="stack">
+          <div class="cam" id="cam">
+            <div class="ph" id="camPh">
+              <b>Your camera</b>
+              <span>Start the camera to record yourself and get feedback on your presence. Speech-to-text fills in your answer as you talk.</span>
+              <div class="row" style="justify-content:center">
+                <button class="btn" data-s="cam">Start camera</button>
+                <label class="btn" for="vidUp" style="cursor:pointer">Upload a recording</label>
+              </div>
+              <input type="file" id="vidUp" accept="video/*" capture="user" hidden>
+              <span class="note" style="color:#9fb0b8" id="camNote"></span>
+            </div>
+            <video id="vid" playsinline hidden></video>
+            <div class="rec" id="recBadge" hidden><i></i><span id="recT">0:00</span></div>
+          </div>
+          <div class="row">
+            <button class="btn primary" data-s="rec" id="recBtn" disabled>Start answer</button>
+            <button class="btn" data-s="stop" id="stopBtn" disabled>Stop</button>
+            <button class="btn ghost" data-s="timer" id="timerBtn">Answer without camera (timer only)</button>
+          </div>
+          <div class="meter">
+            <div><span>Time</span><b class="tab-nums" id="mT">0:00</b></div>
+            <div><span>Words/min</span><b class="tab-nums" id="mW">–</b></div>
+            <div><span>Fillers</span><b class="tab-nums" id="mF">0</b></div>
+          </div>
+        </section>
+        <section class="stack">
+          <div>
+            <label class="lbl" for="ans">Your answer (transcript)</label>
+            <textarea id="ans" style="min-height:220px" placeholder="Speak with live transcription on, or type or dictate your answer here. You can edit the transcript before asking for feedback."></textarea>
+            <p class="note" id="sttNote"></p>
+          </div>
+          <div class="row">
+            <button class="btn primary" data-s="fb" id="fbBtn">Get feedback</button>
+            <button class="btn" data-s="hint">Hint: what should I cover?</button>
+            <button class="btn ghost" data-s="stopai" id="stopAi" hidden>Stop Claude</button>
+          </div>
+          <div id="hintOut"></div>
+        </section>
+      </div>
+      <section id="fb" style="margin:26px 0 40px"></section>
+    </div>`;
+    el.scrollTop=0;
+    $("#ans").addEventListener("input",()=>this.meters());
+    $("#vidUp").addEventListener("change",e=>this.upload(e.target.files[0]));
+    el.onclick=e=>{const b=e.target.closest("[data-s]");if(b)this.act(b.dataset.s,b)};
+    if(!(window.SpeechRecognition||window.webkitSpeechRecognition))$("#sttNote").textContent="Live transcription isn’t available in this browser. Type, or use your keyboard’s dictation (the mic key on phones, Fn twice on a Mac).";
+    if(this.stream)this.attachStream();
+  },
+  act(s,b){
+    if(s==="close")return this.close();
+    if(s==="speak"){try{const u=new SpeechSynthesisUtterance(this.ctx.q);u.lang="en-GB";u.rate=.98;speechSynthesis.cancel();speechSynthesis.speak(u)}catch{toast("Read-aloud isn’t available here.")}return}
+    if(s==="cam")return this.startCam();
+    if(s==="rec")return this.startAnswer(true);
+    if(s==="timer")return this.startAnswer(false);
+    if(s==="stop")return this.stopAnswer();
+    if(s==="fb")return this.feedback();
+    if(s==="hint")return this.hint();
+    if(s==="stopai"){this.fbCtl?.abort();return}
+    if(s==="followup"){const q=b.dataset.q;this.open({q,type:"followup",org:this.ctx.org,theme:this.ctx.theme});return}
+    if(s==="copy-model"){copyText($("#modelAns")?.textContent||"");return}
+    if(s==="again"){this.open({...this.ctx});return}
+    if(s==="next"){Mock.next();return}
+    if(s==="verdict"){this.verdict();return}
+    if(s==="done"){Mock.end();this.close();go("me");return}
+  },
+  async startCam(){
+    const note=$("#camNote");
+    try{
+      if(!navigator.mediaDevices?.getUserMedia)throw new Error("unsupported");
+      this.stream=await navigator.mediaDevices.getUserMedia({video:{width:{ideal:960},height:{ideal:720},facingMode:"user"},audio:true});
+      this.attachStream();
+    }catch(e){
+      note.textContent="This page can’t use your camera here (claude.ai blocks camera access in artifacts). Record a clip with your phone or laptop camera and upload it, or answer with the timer. For a live camera, run the local version from the README.";
+    }
+  },
+  attachStream(){
+    const v=$("#vid");if(!v)return;v.hidden=false;$("#camPh").hidden=true;v.srcObject=this.stream;v.muted=true;v.classList.add("mirror");v.controls=false;v.play().catch(()=>{});
+    $("#recBtn").disabled=false;
+  },
+  upload(file){
+    if(!file)return;
+    const v=$("#vid");if(this.videoUrl)URL.revokeObjectURL(this.videoUrl);
+    this.videoUrl=URL.createObjectURL(file);v.srcObject=null;v.src=this.videoUrl;v.hidden=false;v.muted=false;v.controls=true;v.classList.remove("mirror");$("#camPh").hidden=true;
+    v.onloadedmetadata=async()=>{
+      this.secs=Math.round(v.duration||0);$("#mT").textContent=fmt(this.secs);this.meters();
+      this.frames=await grabFramesFromFile(v,4);
+      toast(this.frames.length?`Clip loaded: ${this.frames.length} frames for presence feedback`:"Clip loaded");
+      $("#sttNote").textContent="Live transcription can’t read uploaded clips. Type or dictate what you said (a rough version is fine). Claude will judge your words plus the frames from your clip.";
+    };
+  },
+  startAnswer(withCam){
+    this.frames=[];this.chunks=[];this.finalText=$("#ans").value?$("#ans").value.trim()+" ":"";
+    if(withCam&&this.stream&&window.MediaRecorder){
+      try{this.rec=new MediaRecorder(this.stream);this.rec.ondataavailable=e=>e.data.size&&this.chunks.push(e.data);this.rec.onstop=()=>this.finishRecording();this.rec.start(1000)}catch{this.rec=null}
+    }
+    this.t0=Date.now();this.secs=0;$("#recBadge").hidden=!withCam||!this.stream;
+    $("#recBtn").disabled=true;$("#stopBtn").disabled=false;$("#timerBtn").disabled=true;
+    this.timer=setInterval(()=>{this.secs=Math.round((Date.now()-this.t0)/1000);$("#mT").textContent=fmt(this.secs);$("#recT").textContent=fmt(this.secs);this.meters();
+      if(withCam&&this.stream&&[8,30,55,85].includes(this.secs))this.snap();
+      if(this.secs>=240)this.stopAnswer();},500);
+    this.startSTT();
+  },
+  stopAnswer(){
+    this.stopTimer();this.stopSTT();
+    if(this.rec&&this.rec.state!=="inactive")this.rec.stop();
+    $("#recBadge").hidden=true;$("#stopBtn").disabled=true;$("#recBtn").disabled=!this.stream;$("#timerBtn").disabled=false;
+    if(this.stream&&this.frames.length<2)this.snap();
+    this.meters();
+  },
+  finishRecording(){
+    if(!this.chunks.length)return;
+    const blob=new Blob(this.chunks,{type:this.chunks[0].type||"video/webm"});
+    if(this.videoUrl)URL.revokeObjectURL(this.videoUrl);this.videoUrl=URL.createObjectURL(blob);
+    const cam=$("#cam");if(!cam)return;
+    let pb=$("#playback");if(!pb){pb=document.createElement("div");pb.id="playback";pb.className="row";cam.after(pb)}
+    pb.innerHTML=`<button class="btn small" id="watchBack">Watch your answer back</button><span class="note">Recordings stay on this device and are never uploaded.</span>`;
+    $("#watchBack").onclick=()=>{const v=$("#vid");v.srcObject=null;v.src=this.videoUrl;v.muted=false;v.controls=true;v.classList.remove("mirror");v.play().catch(()=>{});$("#watchBack").textContent="Back to live camera";$("#watchBack").onclick=()=>{v.controls=false;v.src="";this.attachStream();pb.remove()}};
+  },
+  snap(){
+    const v=$("#vid");if(!v||!v.videoWidth)return;
+    const c=document.createElement("canvas");const w=640,h=Math.round(640*v.videoHeight/v.videoWidth);c.width=w;c.height=h;
+    c.getContext("2d").drawImage(v,0,0,w,h);c.toBlob(b=>b&&this.frames.push(b),"image/jpeg",.8);
+  },
+  stopTimer(){if(this.timer){clearInterval(this.timer);this.timer=null}},
+  startSTT(){
+    const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)return;
+    try{
+      const r=new SR();r.lang="en-SG";r.continuous=true;r.interimResults=true;this.recog=r;
+      r.onresult=e=>{let interim="";for(let i=e.resultIndex;i<e.results.length;i++){const t=e.results[i][0].transcript;if(e.results[i].isFinal)this.finalText+=t.trim()+" ";else interim+=t}
+        const a=$("#ans");if(a){a.value=(this.finalText+interim).trimStart();this.meters()}};
+      r.onerror=ev=>{if(ev.error==="not-allowed"||ev.error==="service-not-allowed")$("#sttNote").textContent="The microphone is blocked for live transcription here. Type or dictate your answer instead."};
+      r.onend=()=>{if(this.timer&&this.recog===r){try{r.start()}catch{}}};
+      r.start();$("#sttNote").textContent="Live transcription is on. Speak naturally; you can fix mistakes afterwards.";
+    }catch{}
+  },
+  stopSTT(){const r=this.recog;this.recog=null;try{r&&r.stop()}catch{}},
+  meters(){
+    const t=($("#ans")?.value||"").toLowerCase();const words=(t.match(/\b[\w’']+\b/g)||[]).length;
+    let f=0;for(const w of FILLERS){const m=t.match(new RegExp("\\b"+w.replace(" ","\\s+")+"\\b","g"));if(m)f+=m.length}
+    $("#mW").textContent=this.secs>5&&words?Math.round(words/(this.secs/60)):"–";$("#mF").textContent=f;
+    return {words,fillers:f,wpm:this.secs>5&&words?Math.round(words/(this.secs/60)):null};
+  },
+  async hint(){
+    const o=this.ctx.org?ORG[this.ctx.org]:null;
+    stream($("#hintOut"),baseContext(o)+`
+
+QUESTION: "${this.ctx.q}"
+TASK: Without writing the answer for them, give the candidate a 5-bullet plan for answering: the position to consider, the 1–2 facts from the briefing worth using, the trade-off to acknowledge, the engineer's angle, and the link back to ${o?o.short:"the boards they are applying to"}. Under 130 words.`,{tier:"quick"});
+  },
+  async feedback(){
+    const answer=$("#ans").value.trim();
+    if(answer.split(/\s+/).length<15)return toast("Give a fuller answer first (at least a few sentences).");
+    if(!AI.ready()){$("#fb").innerHTML=`<p class="err">${esc(AI.errorText({code:"no_ai"}))}</p>`;return}
+    if(this.timer)this.stopAnswer();
+    const o=this.ctx.org?ORG[this.ctx.org]:null;const m=this.meters();
+    const frames=this.frames.slice(0,Math.max(0,Math.min(4,AI.imgLimit)));
+    const fb=$("#fb");fb.innerHTML=`<div class="panel"><div class="out thinking">The panel is conferring… Claude is reading your answer${frames.length?" and "+frames.length+" frames from your video":""}. This usually takes 20–60 seconds.</div></div>`;
+    $("#fbBtn").disabled=true;$("#stopAi").hidden=false;this.fbCtl=new AbortController();
+    const prompt=baseContext(o)+`
+
+TASK: Evaluate the candidate's interview answer as the ${o?o.name+" panel":"scholarship panel (current affairs segment)"} would.
+Question type: ${TYPE_LABEL[this.ctx.type]||this.ctx.type}
+Question: "${this.ctx.q}"
+Answer transcript (may be speech-to-text with recognition errors; judge substance, not typos):
+"""${answer.slice(0,9000)}"""
+Delivery measured by the app: ${this.secs?this.secs+" seconds":"duration not recorded"}, ${m.wpm?m.wpm+" words per minute":"pace not measured"}, ${m.fillers} filler words, ${m.words} words.
+${frames.length?`Attached are ${frames.length} still frames from the candidate's webcam during the answer. In "presence", comment briefly on visible delivery only: eye line to camera, posture, framing, lighting and expression. Never comment on appearance, body, race or gender.`:"No video frames were provided; set presence to an empty string."}
+
+Score strictly: 5 is an average shortlisted candidate, 8+ is offer-level. Reply with only a JSON object:
+{"overall": 1-10, "verdict": "one sentence a panel chair might write", "scores": {"substance":1-10,"structure":1-10,"singapore_insight":1-10,"board_fit":1-10,"engineer_lens":1-10,"delivery":1-10}, "strengths": ["2-3 specific strengths"], "gaps": ["2-4 concrete things to fix"], "followups": ["3 probing follow-up questions this panel would ask next, pushing on the weakest points"], "facts_to_use": ["3-5 specific facts or figures from the briefing or dossier that would have strengthened the answer"], "better_opening": "a stronger first sentence", "model_answer": "a 170-230 word first-person spoken model answer for THIS candidate built on their profile; where the profile lacks a detail use a [bracketed placeholder] instead of inventing one", "presence": "1-2 sentences, or empty string"}`;
+    try{
+      const r=await AI.ask(prompt,{json:true,images:frames,signal:this.fbCtl.signal,cache:false});
+      const att={id:uid(),ts:Date.now(),org:this.ctx.org,theme:this.ctx.theme||null,type:this.ctx.type,q:this.ctx.q,answer,secs:this.secs,words:m.words,fillers:m.fillers,fb:sanitizeFb(r)};
+      Store.saveAttempt(att);if(this.ctx.mock)Mock.record(att);
+      this.showFb(att.fb);
+    }catch(e){
+      if(e?.code==="image_rejected"||e?.code==="images_unavailable"){this.frames=[];fb.innerHTML=`<p class="err">${esc(AI.errorText(e))}</p>`}
+      else fb.innerHTML=`<div class="panel"><p class="err">${esc(AI.errorText(e))}</p></div>`;
+    }finally{const fbBtn=$("#fbBtn");if(fbBtn)fbBtn.disabled=false;const sa=$("#stopAi");if(sa)sa.hidden=true}
+  },
+  showFb(f){
+    const dims=[["substance","Substance"],["structure","Structure"],["singapore_insight","Singapore insight"],["board_fit","Board fit"],["engineer_lens","Engineer’s lens"],["delivery","Delivery"]];
+    const run=this.ctx.mock&&Mock.run;const last=run&&run.i>=run.qs.length-1;
+    $("#fb").innerHTML=`
+    <div class="grid2">
+      <section class="panel stack">
+        <div class="overall"><div class="n tab-nums">${f.overall}<span class="muted" style="font-size:22px">/10</span></div><div><h4>Panel verdict</h4><p><b>${esc(f.verdict)}</b></p></div></div>
+        <div class="scores">${dims.map(([k,l])=>scoreTile(l,+f.scores[k]||0)).join("")}</div>
+        ${f.presence?`<div><h4>On camera</h4><p>${esc(f.presence)}</p></div>`:""}
+        <div><h4>What worked</h4><ul class="clean">${f.strengths.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
+        <div><h4>Fix next time</h4><ul class="clean">${f.gaps.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
+        <div><h4>Facts that would have helped</h4><ul class="clean">${f.facts_to_use.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
+      </section>
+      <section class="stack">
+        <div class="panel stack">
+          <h3>A stronger opening</h3><p>“${esc(f.better_opening)}”</p>
+          <div class="row" style="justify-content:space-between"><h3>Model answer in your voice</h3><button class="btn small" data-s="copy-model">Copy</button></div>
+          <div class="model" id="modelAns">${esc(f.model_answer)}</div>
+          <p class="note">Don’t memorise it. Take the structure and the facts, then say it your way.</p>
+        </div>
+        <div class="panel stack">
+          <h3>The panel pushes back</h3>
+          <div>${f.followups.map(q=>`<div class="fu"><p>${esc(q)}</p><button class="btn small ink" data-s="followup" data-q="${esc(q)}">Answer</button></div>`).join("")}</div>
+        </div>
+        <div class="row">
+          ${run?(last?`<button class="btn primary" data-s="verdict">See the panel’s overall verdict</button>`:`<button class="btn primary" data-s="next">Next question (${run.i+2} of ${run.qs.length})</button>`):`<button class="btn primary" data-s="again">Try this question again</button>`}
+          <button class="btn" data-s="close">Back to ${this.ctx.org?esc(ORG[this.ctx.org].short):"briefing"}</button>
+        </div>
+      </section>
+    </div>`;
+    $("#fb").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
+  },
+  async verdict(){
+    const run=Mock.run;if(!run)return;const o=ORG[run.org];
+    const done=run.results.filter(Boolean);
+    const fb=$("#fb");fb.innerHTML=`<div class="panel"><div class="out thinking">The panel is deciding…</div></div>`;
+    const summary=done.map((a,i)=>`Q${i+1} (${a.type}): ${a.q}\nAnswer: ${a.answer.slice(0,1500)}\nScore: ${a.fb.overall}/10. Gaps: ${a.fb.gaps.join("; ")}`).join("\n\n");
+    try{
+      const v=await AI.ask(baseContext(o)+`
+
+TASK: You chaired a 5-question ${o.name} mock panel. Here is the transcript summary:
+${summary||"(no answers recorded)"}
+
+Give the panel's overall decision. Reply with only JSON: {"decision":"Strong offer|Likely offer|Borderline|Not yet","summary":"3-4 sentences as a panel chair would write","best_moment":"the single best moment","fixes":["the 3 highest-impact things to work on before the real interview"],"next_drills":["3 specific questions to practise next"]}`,{json:true,cache:false,tier:"complex"});
+      fb.innerHTML=`<section class="panel stack">
+        <h4>${esc(o.name)} · mock panel decision</h4>
+        <h2>${esc(v.decision||"")}</h2>
+        <p>${esc(v.summary||"")}</p>
+        ${v.best_moment?`<div><h4>Best moment</h4><p>${esc(v.best_moment)}</p></div>`:""}
+        <div><h4>Work on these before the real thing</h4><ul class="clean">${(v.fixes||[]).map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
+        <div><h4>Practise next</h4><div class="qlist">${(v.next_drills||[]).map(q=>`<div class="qitem"><p>${esc(q)}</p><button class="btn small" data-s="followup" data-q="${esc(q)}">Answer</button></div>`).join("")}</div></div>
+        <div class="row"><button class="btn primary" data-s="done">See my progress</button></div>
+      </section>`;
+    }catch(e){fb.innerHTML=`<div class="panel"><p class="err">${esc(AI.errorText(e))}</p></div>`}
+  },
+  close(){
+    this.stopTimer();this.stopSTT();if(this.rec&&this.rec.state!=="inactive")this.rec.stop();
+    try{speechSynthesis.cancel()}catch{}
+    this.fbCtl?.abort();
+    const el=$("#studio");el.hidden=true;el.innerHTML="";document.body.style.overflow="";
+    if(tab==="me")render();
+  }
+};
+function fmt(s){return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")}
+function sanitizeFb(r){
+  const n=x=>Math.max(1,Math.min(10,Math.round(+x||0)))||1, arr=x=>Array.isArray(x)?x.map(String).filter(Boolean).slice(0,6):[], s=x=>x?String(x):"";
+  const sc=r?.scores||{};
+  return {overall:n(r?.overall),verdict:s(r?.verdict),scores:{substance:n(sc.substance),structure:n(sc.structure),singapore_insight:n(sc.singapore_insight),board_fit:n(sc.board_fit),engineer_lens:n(sc.engineer_lens),delivery:n(sc.delivery)},
+    strengths:arr(r?.strengths),gaps:arr(r?.gaps),followups:arr(r?.followups).slice(0,3),facts_to_use:arr(r?.facts_to_use),better_opening:s(r?.better_opening),model_answer:s(r?.model_answer),presence:s(r?.presence)};
+}
+async function grabFramesFromFile(v,n){
+  const out=[];const d=v.duration;if(!d||!isFinite(d))return out;
+  const c=document.createElement("canvas");
+  for(let i=1;i<=n;i++){
+    const t=d*i/(n+1);
+    await new Promise(res=>{const h=()=>{v.removeEventListener("seeked",h);res()};v.addEventListener("seeked",h);v.currentTime=t;setTimeout(res,1500)});
+    if(!v.videoWidth)continue;
+    const w=640,h=Math.round(640*v.videoHeight/v.videoWidth);c.width=w;c.height=h;c.getContext("2d").drawImage(v,0,0,w,h);
+    const b=await new Promise(r=>c.toBlob(r,"image/jpeg",.8));if(b)out.push(b);
+  }
+  try{v.currentTime=0}catch{}
+  return out;
+}
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#studio").hidden)Studio.close()});
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+renderTabs();render();
+document.addEventListener("ai-mode",()=>{if(tab==="brief"&&$("#studio").hidden){const ta=$("#artText");const keep=ta?ta.value:"";render();const t2=$("#artText");if(t2)t2.value=keep}});
+document.addEventListener("store-loaded",()=>{if(tab==="me")render()});
+AI.init();Store.init();
+</script>

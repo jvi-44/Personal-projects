@@ -1,0 +1,16 @@
+{
+  "name": "panel-room-sg",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AI-powered Singapore scholarship interview trainer (current affairs, board dossiers, webcam practice, Claude feedback).",
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.130.0"
+  }
+}
