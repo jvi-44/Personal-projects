@@ -1,0 +1,5 @@
+private/
+app/papers/
+app/dl/*_annotated.pdf
+__pycache__/
+deliverables/

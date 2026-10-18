@@ -1,0 +1,232 @@
+{
+ "hci": {
+  "key": "hci",
+  "name": "Hwa Chong Institution",
+  "short": "HCI",
+  "date": "27 Aug 2026",
+  "questions": [
+   {
+    "id": "Q1",
+    "title": "Three springs at 90°",
+    "marks": 11
+   },
+   {
+    "id": "Q2",
+    "title": "RC circuit: discharge and charging data",
+    "marks": 15
+   },
+   {
+    "id": "Q3",
+    "title": "Bent-wire torsion pendulum",
+    "marks": 24
+   }
+  ]
+ },
+ "ejc": {
+  "key": "ejc",
+  "name": "Eunoia Junior College",
+  "short": "EJC",
+  "date": "18 Aug 2026",
+  "questions": [
+   {
+    "id": "Q1",
+    "title": "Parametric oscillations of a spring–string pendulum",
+    "marks": 14
+   },
+   {
+    "id": "Q2",
+    "title": "NTC thermistor: resistance and self-heating",
+    "marks": 12
+   },
+   {
+    "id": "Q3",
+    "title": "Equilibrium of a rod on a pivot and pulley",
+    "marks": 24
+   }
+  ]
+ },
+ "njc": {
+  "key": "njc",
+  "name": "National Junior College",
+  "short": "NJC",
+  "date": "2 Sep 2026",
+  "questions": [
+   {
+    "id": "Q1",
+    "title": "Capacitor timing circuit",
+    "marks": 11
+   },
+   {
+    "id": "Q2",
+    "title": "Cooling of hot water",
+    "marks": 14
+   },
+   {
+    "id": "Q3",
+    "title": "Conical pendulum",
+    "marks": 25
+   }
+  ]
+ },
+ "nyjc": {
+  "key": "nyjc",
+  "name": "Nanyang Junior College",
+  "short": "NYJC",
+  "date": "24 Aug 2026",
+  "questions": [
+   {
+    "id": "Q1",
+    "title": "T-shaped pendulum and damped oscillations",
+    "marks": 26
+   },
+   {
+    "id": "Q2",
+    "title": "Friction on a strip leaning on a smooth board",
+    "marks": 13
+   },
+   {
+    "id": "Q3",
+    "title": "Two wires in series via a sliding lead",
+    "marks": 11
+   }
+  ]
+ },
+ "sajc": {
+  "key": "sajc",
+  "name": "St. Andrew's Junior College",
+  "short": "SAJC",
+  "date": "18 Aug 2026",
+  "questions": [
+   {
+    "id": "Q1",
+    "title": "Two wires joined by a sliding lead",
+    "marks": 12
+   },
+   {
+    "id": "Q2",
+    "title": "Two stretched rubber bands",
+    "marks": 14
+   },
+   {
+    "id": "Q3",
+    "title": "Coupled pendulums",
+    "marks": 24
+   }
+  ]
+ },
+ "asrjc": {
+  "key": "asrjc",
+  "name": "Anderson Serangoon Junior College",
+  "short": "ASRJC",
+  "date": "24 Aug 2026",
+  "questions": [
+   {
+    "id": "Q1",
+    "title": "Resistance wire in a series–parallel circuit",
+    "marks": 14
+   },
+   {
+    "id": "Q2",
+    "title": "Oscillating wooden strip (compound pendulum)",
+    "marks": 13
+   },
+   {
+    "id": "Q3",
+    "title": "Stability of a container of water",
+    "marks": 23
+   }
+  ]
+ },
+ "vjc": {
+  "key": "vjc",
+  "name": "Victoria Junior College",
+  "short": "VJC",
+  "date": "26 Aug 2026",
+  "questions": [
+   {
+    "id": "Q1",
+    "title": "Two masses on a string (double pendulum)",
+    "marks": 8
+   },
+   {
+    "id": "Q2",
+    "title": "Energy in a stretched rubber band",
+    "marks": 16
+   },
+   {
+    "id": "Q3",
+    "title": "Resistance of a coil of wire",
+    "marks": 26
+   }
+  ]
+ },
+ "tjc": {
+  "key": "tjc",
+  "name": "Temasek Junior College",
+  "short": "TJC",
+  "date": "1 Sep 2026",
+  "questions": [
+   {
+    "id": "Q1",
+    "title": "Two masses on a string (double pendulum)",
+    "marks": 10
+   },
+   {
+    "id": "Q2",
+    "title": "Rubber bands and a capacitor-discharge dataset",
+    "marks": 15
+   },
+   {
+    "id": "Q3",
+    "title": "Resistance of a coil of wire",
+    "marks": 25
+   }
+  ]
+ },
+ "acjc": {
+  "key": "acjc",
+  "name": "Anglo-Chinese Junior College",
+  "short": "ACJC",
+  "date": "6 Aug 2026",
+  "questions": [
+   {
+    "id": "Q1",
+    "title": "Pendulum hanging from a V-shaped string",
+    "marks": 14
+   },
+   {
+    "id": "Q2",
+    "title": "Resistance wire with two resistors",
+    "marks": 11
+   },
+   {
+    "id": "Q3",
+    "title": "Sand flowing through a funnel",
+    "marks": 25
+   }
+  ]
+ },
+ "dhs": {
+  "key": "dhs",
+  "name": "Dunman High School",
+  "short": "DHS",
+  "date": "27 Aug 2026",
+  "questions": [
+   {
+    "id": "Q1",
+    "title": "Terminal velocity of a paper cone",
+    "marks": 14
+   },
+   {
+    "id": "Q2",
+    "title": "Five-resistor network",
+    "marks": 12
+   },
+   {
+    "id": "Q3",
+    "title": "Bifilar suspension (playground ride model)",
+    "marks": 24
+   }
+  ]
+ }
+}
