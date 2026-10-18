@@ -11,9 +11,11 @@ for d, _, fs in os.walk(ROOT):
             files[rel] = open(os.path.join(d, f), encoding='utf-8').read()
         elif rel.startswith('papers/') and rel.endswith('.jpg'):
             files[rel] = 'data:image/jpeg;base64,' + base64.b64encode(open(os.path.join(d, f), 'rb').read()).decode()
+        elif rel.startswith('dl/Planning_') and rel.endswith('.pdf'):
+            files[rel] = 'data:application/pdf;base64,' + base64.b64encode(open(os.path.join(d, f), 'rb').read()).decode()
 html = open(os.path.join(ROOT, 'index.html'), encoding='utf-8').read()
 shim = ('<script>window.__FILES=' + json.dumps(files) + ';(function(){const f=window.fetch;window.fetch=function(u,o){'
-        'const k=String(u).replace(/^\\.\\//,"");if(k in window.__FILES){const v=window.__FILES[k];'
+        'const k=String(u).replace(/^\\.\\//,"");if(k in window.__FILES){const v=window.__FILES[k];if(v.startsWith("data:application/pdf"))return f.call(this,v);'
         'return Promise.resolve(new Response(v,{status:200}))}'
         'if(/^dl\\//.test(k))return Promise.resolve(new Response("missing",{status:404}));return f.apply(this,arguments)}})();</script>')
 def inline(m):

@@ -1,5 +1,6 @@
 private/
 app/papers/
 app/dl/*_annotated.pdf
+app/dl/Planning_*.pdf
 __pycache__/
 deliverables/

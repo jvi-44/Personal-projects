@@ -1,6 +1,7 @@
 import math, os, random, sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'tools'))
 from vpl import *
+from plans import place
 
 rnd = random.Random(2026_08_24)
 P = Paper('nyjc', 'Nanyang Junior College', 'NYJC', '24 Aug 2026', os.path.join(PRIV, 'src', 'nyjc.pdf'))
@@ -15,7 +16,7 @@ def T_of(x, M=0.05):
 xa, xc = 10.0, 18.0
 ta = [round(20 * T_of(xa) * (1 + rnd.gauss(0, 0.003)), 2) for _ in range(2)]
 tc = [round(20 * T_of(xc) * (1 + rnd.gauss(0, 0.003)), 2) for _ in range(2)]
-Ta, Tc = sum(ta) / 40, sum(tc) / 40
+Ta, Tc = hu(sum(ta) / 40, 3), hu(sum(tc) / 40, 3)
 pts = given + [(xa ** 2, Ta ** 2), (xc ** 2, Tc ** 2)]
 mA, cA, r2A = linfit([p[0] for p in pts], [p[1] for p in pts])
 P.question('Q1', 'T-shaped pendulum and damped oscillations', 26, [2, 3, 4, 5, 6, 7, 8],
@@ -25,8 +26,8 @@ P.question('Q1', 'T-shaped pendulum and damped oscillations', 26, [2, 3, 4, 5, 6
                                 ('NYJC_Q1g_damped_dataset.xlsx', 'A practice version of datasetQ1g: horizontal velocity every 0.02 s. Find a (gradient) and s (cumulative area), plot a against s, and find ω, the amplitude and the damping ratio.')],
            skills=['metre rule', 'timing oscillations', 'plotting on a printed grid', 'numerical differentiation & integration', 'planning'])
 P.ans(3, 'x =', f'{xa:.1f} cm', q='Q1')
-P.text(3, 140, 410, 'Rule held along the cross-bar: centre of nail at 50.0 cm,\ncentre of bolt at 60.0 cm', size=9, q='Q1')
-P.text(3, 140, 560, f'Time for 20 oscillations: {ta[0]:.2f} s, {ta[1]:.2f} s\nmean = {sum(ta)/2:.2f} s, T = mean/20', size=9.5, q='Q1')
+P.text(3, 140, 452, 'Rule along cross-bar: nail centre 50.0 cm, bolt centre 60.0 cm', size=9, q='Q1')
+P.text(3, 140, 560, f'Time for 20 oscillations: {ta[0]:.2f} s, {ta[1]:.2f} s\nmean = {sum(ta)/2:.3f} s, T = mean/20', size=9.5, q='Q1')
 P.ans(3, 'T =', f'{Ta:.3f} s', q='Q1')
 P.note(3, 460, 'x runs from the centre of the bolt to the nail (both centres). Measure on both sides and check they are equal.', 'tip')
 P.note(3, 560, 'T ≈ 1.4 s: time 20 oscillations (≈ 28 s) twice; start counting at the centre of the swing using a fiducial mark.', 'mark')
@@ -45,8 +46,8 @@ P.ans(5, 'b =', f'{cA:.2f}', q='Q1')
 M2 = 0.100
 te = []
 for x in (10.0, 20.0):
-    T = T_of(x, M2) * (1 + rnd.gauss(0, 0.003))
-    te.append((x, round(20 * T, 2), T))
+    t20 = round(20 * T_of(x, M2) * (1 + rnd.gauss(0, 0.003)), 2)
+    te.append((x, t20, hu(t20 / 20, 3)))
 a2 = (te[1][2] ** 2 - te[0][2] ** 2) / (te[1][0] ** 2 - te[0][0] ** 2)
 b2 = te[0][2] ** 2 - a2 * te[0][0] ** 2
 P.table(5, 121, 318, ['M / g', 'x / cm', 't (20 osc) / s', 'T / s', 'T² / s²', 'x² / cm²'],
@@ -60,15 +61,7 @@ P.note(4, 620, 'Choose x to fill the gap in the printed data (between x² ≈ 20
 P.note(5, 70, 'Use a large gradient triangle (> half the line) and read the intercept at x² = 0 (the x-axis starts at 0 here).', 'mark')
 P.note(5, 300, '"Two further sets" with a different M: take two values of x so that a and b can be found for that M. Two points are enough for a straight line.', 'why')
 P.note(5, 430, 'Conclusion: state how a depends on M (proportional) AND how b depends on M (independent), with numbers.', 'mark')
-plan_f = ('Equipment: a set of T-shaped pendulums cut from the same sheet with different heights h and widths w; metre rule or vernier calipers; stopwatch. '
-          'Procedure: remove the slotted masses (x = 0) so T² = b. For each pendulum, time 20 oscillations twice and calculate b = T². '
-          'Control: first use pendulums with the same w and different h (at least 6 values), then the same h and different w. Keep the pivot hole position, '
-          'material and thickness the same, and use small amplitudes. '
-          'Analysis: with w constant, plot b against h³; it should be a straight line with gradient p (intercept qw³). '
-          'With h constant, plot b against w³; gradient = q (intercept ph³). Check the intercepts are consistent.')
-P.para(6, 99, 420, 430, plan_f, size=9.3, lh=12.8, q='Q1')
-P.note(6, 420, 'Each bullet earns marks: equipment, procedure, control of variables (one variable at a time), analysis (b against h³ and b against w³).', 'mark')
-P.note(6, 560, 'b is T² with no slotted masses attached (x = 0), so set x = 0 by removing the masses.', 'why')
+place(P, 'nyjc-q1f', [('box', 6, 119, 416, 410, 107, 13.5), ('lines', 6, 500, 740)], notes=[(6, 420), (6, 560)], q='Q1')
 
 # (g) damped dataset
 A0, w0, gam = 0.040, 2 * math.pi / 1.25, 0.050
@@ -162,16 +155,18 @@ P.ans(9, 'L =', f'{lo["L"]:.1f} cm', q='Q2')
 P.ans(9, 'd A =', f'{lo["dA"]:.1f} cm', q='Q2')
 P.note(9, 150, 'Strip lengths to 0.1 cm with a metre rule; d is measured to the centre of the slotted mass.', 'mark')
 P.ans(10, 'A =', f'{lo["thA"]}°', q='Q2')
-P.text(10, 140, 250, f'Repeated trials gave {lo["thA"]-1}°, {lo["thA"]+1}°, {lo["thA"]}°: the "just stays" position is a judgement\nΔθ ≈ 2°\n% uncertainty = 2/{lo["thA"]} × 100%', size=9.2, q='Q2')
+P.text(10, 140, 250, f'Repeats {lo["thA"]-1}°, {lo["thA"]}°, {lo["thA"]+1}°; the "just stays" position is hard to judge, so take\nΔθ ≈ 2° (larger than the half-range of 1°). % uncertainty = 2/{lo["thA"]} × 100%', size=9.2, q='Q2')
 P.ans(10, 'percentage uncertainty', f'{pct_th:.0f}%', q='Q2')
 P.ans(10, 'M =', f'{lo["M"]*1000:.1f} g', q='Q2')
-P.text(10, 140, 560, f'F_A = (0.0{lo["M"]*10000:.0f}/2 + 0.100 × {lo["dA"]:.1f}/{lo["L"]:.1f}) / ((0.0{lo["M"]*10000:.0f} + 0.100) tan {lo["thA"]}°)'.replace('0.0452', '0.0452'), size=9.2, q='Q2')
+P.text(10, 140, 560, f'F(A) = (0.0{lo["M"]*10000:.0f}/2 + 0.100 × {lo["dA"]:.1f}/{lo["L"]:.1f}) / ((0.0{lo["M"]*10000:.0f} + 0.100) tan {lo["thA"]}°)'.replace('0.0452', '0.0452'), size=9.2, q='Q2')
 P.ans(10, 'F A =', f'{lo["FA"]:.2f}', q='Q2')
 P.note(10, 200, 'Measure θ at the bottom of the strip with a protractor on the bench, or measure height and base and use tan θ = height/base.', 'tip')
 P.note(10, 300, 'The limiting position varies between trials. Repeat it and use the spread for Δθ.', 'mark')
 P.note(10, 600, 'F is dimensionless (it is the coefficient of static friction between strip and bench). Use consistent mass units.', 'why')
 P.ans(11, 'd B =', f'{lo["dB"]:.1f} cm', q='Q2')
 P.ans(11, 'B =', f'{lo["thB"]}°', after=500, q='Q2')
+_xb, _yb = P.find(11, 'F B =')
+P.text(11, 140, _yb - 26, f'F(B) = (0.0{lo["M"]*10000:.0f}/2 + 0.100 × {lo["dB"]:.1f}/{lo["L"]:.1f}) / ((0.0{lo["M"]*10000:.0f} + 0.100) tan {lo["thB"]}°)', size=9.2, q='Q2')
 P.ans(11, 'F B =', f'{lo["FB"]:.2f}', q='Q2')
 P.note(11, 430, 'With the mass high up, the strip needs a steeper angle before it can stand: θ_B > θ_A.', 'why')
 for lab, val in [('L =', f'{sh["L"]:.1f} cm'), ('d A =', f'{sh["dA"]:.1f} cm'), ('M =', f'{sh["M"]*1000:.1f} g'),
@@ -179,17 +174,20 @@ for lab, val in [('L =', f'{sh["L"]:.1f} cm'), ('d A =', f'{sh["dA"]:.1f} cm'), 
     P.ans(12, lab, val, q='Q2')
 P.fill(12, 399, 189, f'{sh["thA"]}°', q='Q2')
 P.fill(12, 399, 365, f'{sh["thB"]}°', q='Q2')
-P.text(12, 120, 560, f'k = F_A / F_B\nlong strip: k = {lo["FA"]:.3f}/{lo["FB"]:.3f} = {lo["k"]:.2f}\nshort strip: k = {sh["FA"]:.3f}/{sh["FB"]:.3f} = {sh["k"]:.2f}', size=9.5, q='Q2')
+P.text(12, 120, 560, f'k = F(A) / F(B)\nlong strip: k = {lo["FA"]:.3f}/{lo["FB"]:.3f} = {lo["k"]:.2f}\nshort strip: k = {sh["FA"]:.3f}/{sh["FB"]:.3f} = {sh["k"]:.2f}', size=9.5, q='Q2')
 P.ans(12, 'first value of k', f'{lo["k"]:.2f}', q='Q2')
 P.ans(12, 'second value of k', f'{sh["k"]:.2f}', q='Q2')
-pdk = abs(lo['k'] - sh['k']) / min(lo['k'], sh['k']) * 100
-P.write_lines(13, f'% difference in k = {pdk:.0f}%. k depends on two angles each with ≈ {pct_th:.0f}% uncertainty, so k is uncertain by '
-              f'roughly 2 × {pct_th:.0f}% = {2*pct_th:.0f}% (or more, since tan θ is involved). {pdk:.0f}% is {"within" if pdk <= 2*pct_th else "outside"} this, so the results '
-              f'{"support" if pdk <= 2*pct_th else "do not support"} F_A/F_B = k.', after=170, before=260, size=8.8, q='Q2')
+kl, ks_ = round(lo['k'], 2), round(sh['k'], 2)
+pdk = abs(kl - ks_) / min(kl, ks_) * 100
+utan = lambda th: math.radians(2) / (math.sin(math.radians(th)) * math.cos(math.radians(th))) * 100
+uk = utan(lo['thA']) + utan(lo['thB'])
+P.write_lines(13, f'% difference in k = ({max(kl, ks_):.2f} − {min(kl, ks_):.2f})/{min(kl, ks_):.2f} = {pdk:.0f}%. k ∝ tan θB / tan θA and, with Δθ = 2°, '
+              f'the % uncertainty in tan θ is Δθ/(sin θ cos θ) ≈ {utan(lo["thA"]):.0f}% at {lo["thA"]}° and {utan(lo["thB"]):.0f}% at {lo["thB"]}°, so k is uncertain by ≈ {uk:.0f}%. '
+              f'{pdk:.0f}% {"<" if pdk <= uk else ">"} {uk:.0f}%, so the results {"support" if pdk <= uk else "do not support"} F(A)/F(B) = k.', after=170, before=260, size=8.6, q='Q2')
 P.write_lines(13, 'The friction varies along the bench and the "just stays" position is hard to judge, so θ is hard to reproduce '
               '(the strip may stay at slightly different angles in repeat trials).', after=290, before=380, size=9.2, q='Q2')
-P.write_lines(13, 'Place the strip on a rough board of uniform surface fixed to the bench and slowly tilt the board/strip; or measure the height '
-              'of the top end and the horizontal distance with a rule and use tan θ = height/distance, repeating 5 times and averaging.', after=425, before=515, size=9.2, q='Q2')
+P.write_lines(13, 'Tape a sheet of uniform sandpaper to the bench under the foot of the strip so the friction is the same in every trial, '
+              'and repeat the limiting-angle measurement 5 times and take the average θ.', after=425, before=515, size=9.2, q='Q2')
 P.note(13, 160, 'Use the % uncertainty you calculated in (a)(iii); compare it with the % difference in k.', 'mark')
 P.note(13, 290, 'Avoid "human error". Name the specific difficulty: judging the limiting position, or friction varying along the bench.', 'warn')
 
@@ -216,13 +214,13 @@ P.note(14, 150, 'Average several micrometer readings at different points and ori
 P.note(14, 620, 'Open the switch between readings: the wire heats up and its resistance changes.', 'tip')
 P.table(15, 160, 90, ['x / cm', 'I / A', '(1/I) / A⁻¹'], [[f'{x:.1f}', f'{I:.3f}', f'{1/I:.3f}'] for x, I in rows3], size=9.5, q='Q3')
 P.graph(15, 140, 480, 300, 200, q='Q3', xlabel='x / m', ylabel='(1/I) / A⁻¹', xr=[0, 1.0], yr=[3.0, 6.0],
-        series=[dict(pts=[(x / 100, 1 / I) for x, I in rows3])], lines=[dict(m=m3, c=c3)], eq=eqn(m3, c3, 4, r2=r23), eqpos=(160, 490))
+        series=[dict(pts=[(x / 100, 1 / I) for x, I in rows3])], lines=[dict(m=m3, c=c3)], eq=eqn(m3, c3, 4, r2=r23), eqpos=(330, 615))
 P.ans(15, 'P =', f'{m3:.2f} A⁻¹ m⁻¹', q='Q3')
 P.ans(15, 'Q =', f'{c3:.2f} A⁻¹', q='Q3')
 P.text(16, 140, 200, f'P/Q = (d_G²/d_F² − 1)/L  ⇒  d_G/d_F = √(1 + LP/Q)\n= √(1 + 1.000 × {m3:.3f}/{c3:.3f})', size=9.8, q='Q3')
 P.ans(16, '=', f'{ratio3:.2f}', q='Q3')
-P.text(16, 140, 345, f'(Micrometer readings give {dG/dF:.2f}. The graph value is a little lower because the cell\'s internal\nresistance adds to Q.)', size=8.8, q='Q3')
-P.note(15, 90, 'Seven values over the whole wire (10–90 cm). Record I to the ammeter\'s precision, and 1/I to 3 s.f.', 'mark')
+P.text(16, 140, 262, f'(The micrometer means 0.377/0.273 give 1.38. The graph value is a little\nlower because the cell\'s internal resistance adds to Q.)', size=8.8, q='Q3')
+P.note(15, 90, 'Seven values over the whole wire (10–90 cm). Record I to the ammeter\'s precision, and 1/I to 3 or 4 s.f. consistently.', 'mark')
 P.note(15, 480, 'Units: P in A⁻¹ m⁻¹ if x is in metres (A⁻¹ cm⁻¹ if in cm). Be consistent with L = 1.000 m in (d).', 'warn')
 P.note(16, 190, 'Rearrange before substituting: d_G/d_F = √(1 + LP/Q).', 'mark')
 workbook(os.path.join(X, 'NYJC_Q3_two_wires.xlsx'), 'NYJC Q3 – Two wires (sample data)', 'Plot 1/I against x (in m). P = gradient, Q = intercept.',

@@ -1,6 +1,7 @@
 import math, os, random, sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'tools'))
 from vpl import *
+from plans import place
 
 rnd = random.Random(2026_08_27)
 P = Paper('hci', 'Hwa Chong Institution', 'HCI', '27 Aug 2026', os.path.join(PRIV, 'src', 'hci.pdf'))
@@ -93,14 +94,14 @@ P.question('Q2', 'RC circuit: discharge and charging data', 15, [6, 7, 8, 9],
            'charging dataset is analysed (t₀, I₀, charge from area, τ from ln I graph); plan to compare ½CV² with the work done by the cell.',
            sim='hci-q2', xlsx=[('HCI_Q2a_discharge.xlsx', 'Discharge readings every 10 s. Practise ln I against t to get τ = R₂C.'), ('HCI_Q2b_charging_dataset.xlsx', 'A practice version of the engineer\'s datasetQ2b: 151 readings at 0.2 s intervals. Find t₀, I₀, Q (trapezium rule) and τ.')],
            skills=['timing readings', 'area under graph', 'ln-linearisation', 'planning'])
-P.ans(6, 'I =', '0.000 mA (≈ 0)', q='Q2')
-P.text(6, 133, 396, 'After 20 s (≫ R₁C) the capacitor is fully charged, so no current flows.', size=8.6, q='Q2')
+I20 = V2 / 3300 * math.exp(-20 / (3300 * C2)) * 1000
+P.ans(6, 'I =', f'{I20:.3f} mA', q='Q2')
+P.text(6, 133, 396, f'After 20 s ≈ {20/(3300*C2):.1f} R₁C (R₁C = 3.3 kΩ × 2200 µF ≈ {3300*C2:.1f} s), I has fallen to about {I20/(V2/3300*1000)*100:.0f}% of V/R₁:\nsmall but not zero.', size=8.4, q='Q2')
 P.table(6, 160, 522, ['t / s', 'I / mA'], [[t, f'{i:.3f}'] for t, i in I_dis], size=8.8, cw=[60, 70], q='Q2')
 P.text(6, 320, 540, 'Current is in the opposite direction\nto charging (meter shows −).\nReadings taken over several\ndischarges, a few values each run.', size=8.4, q='Q2')
-P.write_lines(6, 'The current decreases quickly, so it is hard to read the meter at exactly the instant the stopwatch '
-              'shows each 10 s mark (especially the large, fast-changing value at t = 0).', after=730, q='Q2')
+P.write_lines(6, 'I falls quickly, so it is hard to read the meter at the exact instant the stopwatch reaches each 10 s mark.', after=730, q='Q2')
 P.note(6, 250, 'Position 1: C charges through R₁ only (R₂ is in an open branch). Position 2: C discharges through R₂ only, so τ = R₂C.', 'why')
-P.note(6, 400, 'A zero reading is a valid answer here. Record it with the meter\'s precision (e.g. 0.000 mA), not just "0".', 'mark')
+P.note(6, 400, 'Record the reading to the meter\'s precision (e.g. 0.058 mA). A small reading is expected: 20 s is only about 3 R₁C.', 'mark')
 P.note(6, 520, 'You may need several discharges: recharge in position 1 between runs and read two or three values per run.')
 P.note(6, 720, '"Problem" answers must be specific to this experiment (fast-changing reading, reaction time, sign of current), not "human error".', 'warn')
 
@@ -118,7 +119,8 @@ fit_pts = [(t - t0_true, math.log(I)) for t, I in ds if t0_true <= t <= t0_true 
 mb, cb, r2b = linfit([a for a, b in fit_pts], [b for a, b in fit_pts])
 tau_fit = -1 / mb
 P.ans(7, 't 0 =', f'{t0_true:.1f} s', q='Q2')
-P.ans(7, 'I 0 =', f'{I0_true:.3f} mA', q='Q2')
+I0_read = next(I for t, I in ds if t >= t0_true)
+P.ans(7, 'I 0 =', f'{I0_read:.3f} mA', q='Q2')
 P.ans(7, 'Q =', f'{Q_b*1000:.2f} × 10⁻³ C', q='Q2')
 P.write_lines(7, 'Q = area under the I–t graph from t₀ onwards, found in the spreadsheet with the trapezium rule: '
               'sum of ½(Iₙ + Iₙ₊₁)Δt over all intervals.', after=480, before=530, q='Q2')
@@ -127,7 +129,7 @@ P.graph(7, 150, 592, 260, 146, q='Q2', xlabel='(t − t₀) / s', ylabel='ln (I 
         eq=eqn(mb, cb, 4), eqpos=(300, 600), ny=4)
 P.ans(7, '= ', f'{tau_fit:.2f} s', after=730, q='Q2')
 P.text(7, 420, 690, f'gradient = −1/τ\nτ = 1/{abs(mb):.4f}', size=8.5, q='Q2')
-P.note(7, 270, 't₀ is the first time the current jumps above zero; I₀ is the peak value at that moment. Read both straight from the data column.')
+P.note(7, 270, 't₀ is the time at which the current jumps from ≈ 0 (noise ≤ 0.001 mA) to its peak; I₀ is the reading at that time. Read both straight from the data column.')
 P.note(7, 400, 'Units: mA × s = mC. Convert to coulombs and give 2–3 s.f.', 'warn')
 P.note(7, 480, 'State the method precisely: "area under the I–t graph" plus how you found the area (trapezium sum in the spreadsheet).', 'mark')
 P.note(7, 560, 'ln I = ln I₀ − (t − t₀)/τ. Plot ln I against (t − t₀) and use only the region where I ≫ noise (the tail flattens and goes noisy).', 'why')
@@ -148,39 +150,14 @@ workbook(os.path.join(X, 'HCI_Q2b_charging_dataset.xlsx'), 'HCI Q2(b) – Engine
                ('ln(I / mA)', f'=IF(AND(A{{r}}>={t0_true},B{{r}}>0.02),LN(B{{r}}),"")'),
                ('strip area / mA s', f'=IF(AND(A{{r}}>={t0_true},A{{r1}}<>""),0.5*(B{{r}}+B{{r1}})*0.2,"")')],
          chart=dict(x=3, y=4, title='ln I against (t − t₀)', xt='(t − t₀) / s', yt='ln (I / mA)'),
-         results=[('t₀ (first non-zero current)', t0_true, 's'), ('I₀ (peak)', I0_true, 'mA'),
+         results=[('t₀ (time of the jump to peak current)', t0_true, 's'), ('I₀ (reading at t₀)', I0_read, 'mA'),
                   ('Q = Σ strips', '=SUM(E{first}:E{last})/1000', 'C'),
                   ('gradient of ln I graph', f'=SLOPE(D{{first}}:D{{last}},C{{first}}:C{{last}})', 's⁻¹'),
                   ('τ = −1/gradient', f'=-1/SLOPE(D{{first}}:D{{last}},C{{first}}:C{{last}})', 's')],
          answer_note='Strip area uses the trapezium rule between consecutive readings (Δt = 0.2 s).')
 
-# Q2(c) planning
-P.diagram(8, 140, 380, [
-    ('cell', 40, 20, 'h', 'cell, e.m.f. E'), ('wire', [(0, 20), (25, 20)]), ('wire', [(55, 20), (250, 20), (250, 60)]),
-    ('wire', [(0, 20), (0, 160), (40, 160)]), ('S', 55, 160, 'h', 'switch'), ('wire', [(70, 160), (95, 160)]),
-    ('R', 110, 160, 'h', 'R (known)'), ('wire', [(125, 160), (150, 160)]), ('A', 165, 160, 'h', ''),
-    ('text', 165, 185, 'current sensor', 8, 'middle'), ('wire', [(180, 160), (250, 160), (250, 130)]),
-    ('C', 250, 95, 'v', 'C'), ('wire', [(250, 60), (250, 80)]), ('wire', [(250, 110), (250, 130)]),
-    ('wire', [(250, 60), (320, 60), (320, 80)]), ('V', 320, 95, 'v', ''), ('wire', [(320, 110), (320, 130), (250, 130)]),
-    ('text', 335, 98, 'voltage sensor', 8), ('rect', 300, 200, 80, 34), ('text', 340, 221, 'datalogger', 8.5, 'middle'),
-    ('dash', [(165, 168), (165, 215), (300, 215)]), ('dash', [(330, 112), (330, 200)]),
-    ('text', 0, 250, 'Discharge C fully (short across it through a resistor) before each run. Voltmeter across the cell measures E.', 8)])
-plan = ('Procedure: measure E of the cell with a high-resistance voltmeter. Discharge the capacitor fully. Close the switch '
-        'and use the datalogger to record current I and capacitor p.d. V at 50 samples per second until I ≈ 0 (about 5RC). '
-        'Work done by cell: W = E × Q, where Q = area under the I–t graph (trapezium sum in a spreadsheet) or W = ∫EI dt. '
-        'Energy stored: U = ½CV², using the final p.d. V across the capacitor and the known C (or U = ½QV). '
-        'Difference = W − U. Theory predicts W = CE² and U = ½CE², so the difference should be ½CE² (energy dissipated in R). '
-        'Repeat with different R to show the difference does not depend on R, and repeat each run and average. '
-        'Precautions: connect the electrolytic capacitor with the correct polarity and keep E below its rated voltage; '
-        'use a cell of low internal resistance so E stays constant; zero/calibrate the sensors; choose R so that RC ≫ sampling interval; '
-        'check E with the voltmeter before and after each run.')
-rest = P.write_lines(8, plan, after=640, size=9, q='Q2', spill=True)
-P.note(8, 120, 'Planning marks usually come from: a workable labelled circuit, how each quantity is measured, the analysis, and two or more relevant precautions.', 'mark')
-P.note(8, 380, 'Use sensors + datalogger: the current falls too fast for reading a meter by eye.')
-P.note(8, 660, 'Work done by the cell = E × (total charge moved). The charge is the area under the I–t graph, so use the trapezium rule.', 'why')
-P.note(8, 760, 'Expected result: half the cell\'s work is stored and half is dissipated in the resistor, whatever the value of R.', 'why')
-if rest:
-    P.write_lines(9, rest, after=40, size=9, q='Q2')
+# Q2(c) planning (numbered answer key in content/plans.py)
+place(P, 'hci-q2c', [('lines', 8, 640, 800), ('lines', 9, 40, 420)], diagram=(8, 140, 375), notes=[(8, 120), (8, 660)], q='Q2')
 P.note(9, 200, 'Precautions must be specific (polarity, voltage rating, discharge before each run, sampling rate). "Repeat readings" alone scores little.', 'warn')
 
 # ======================= Q3 bent-wire torsion pendulum =======================
@@ -209,9 +186,9 @@ P.ans(12, 'C =', f'{C3:.1f} cm', q='Q3')
 P.text(12, 106, 635, f'Time for 10 oscillations: t₁ = {t10[0]:.2f} s, t₂ = {t10[1]:.2f} s\n'
        f'mean t = {sum(t10)/2:.2f} s\nT = t/10 = {T0_mean:.3f} s', size=9.5, q='Q3')
 P.ans(12, 'T =', f'{T0_mean:.2f}', q='Q3')
-P.note(12, 120, 'C runs from the top of the wire (the bend) to the centre of a bob. Use a set square to find the bob centre and add D/2 to the hook position.')
+P.note(12, 120, 'C runs from the top of the wire (the bend) to the centre of a bob. Measure to the top of the bob and add D/2.')
 P.note(12, 520, 'C ≈ 16 cm is measured with a metre rule to 0.1 cm. State the unit (the answer line has none printed).', 'mark')
-P.note(12, 640, 'Time at least 10 oscillations, twice, and average. Start timing at the turning point or as the bob passes a fiducial mark.', 'mark')
+P.note(12, 640, 'Time at least 10 oscillations, twice, and average. Start and stop timing as the bob passes a fiducial marker at the equilibrium position, where it moves fastest.', 'mark')
 P.note(12, 740, 'Show all raw times in your working. Examiners look for repeated readings.')
 
 thetas = [40, 60, 80, 100, 120, 140]
@@ -220,7 +197,7 @@ for th in thetas:
     thm = th + rnd.choice([-1, 0, 1])
     T = period(C3, thm)
     a, b = [round(10 * T * (1 + rnd.gauss(0, 0.005)), 2) for _ in range(2)]
-    Tm = (a + b) / 20
+    Tm = hu((a + b) / 20, 3)
     rows3.append((thm, a, b, Tm, math.sin(math.radians(thm) / 2)))
 m3f, c3f, r23 = linfit([r[4] for r in rows3], [r[3] for r in rows3])
 k_from = m3 * (2 * math.pi * C3 / 100 / m3f) ** 2
@@ -246,7 +223,7 @@ T_short = math.pi * L_short_true / 100 * math.sqrt(m3 / k3) * (1 + rnd.gauss(0, 
 L_long, L_short = 10.1, round(L_short_true, 1)
 tl = [round(10 * T_long + d, 2) for d in (-0.03, 0.04)]
 ts = [round(20 * T_short + d, 2) for d in (0.05, -0.04)]
-Tl, Ts = sum(tl) / 20, sum(ts) / 40
+Tl, Ts = hu(sum(tl) / 20, 3), hu(sum(ts) / 40, 3)
 z1 = (Tl / (math.pi * L_long / 100)) ** 2
 z2 = (Ts / (math.pi * L_short / 100)) ** 2
 pctL = 0.2 / L_long * 100
@@ -255,7 +232,7 @@ P.ans(14, 'θ =', f'{thE}°', q='Q3')
 P.ans(14, 'L =', f'{L_long:.1f} cm', q='Q3')
 P.text(14, 104, 556, f'ΔL = 0.2 cm (hard to judge the centres of two moving bobs)\n%unc = 0.2/{L_long:.1f} × 100%', size=9, q='Q3')
 P.ans(14, 'percentage uncertainty in L', f'{pctL:.0f}%', q='Q3')
-P.text(14, 104, 665, f'10 oscillations: {tl[0]:.2f} s, {tl[1]:.2f} s\nT = {sum(tl)/2:.2f}/10', size=9.5, q='Q3')
+P.text(14, 104, 665, f'10 oscillations: {tl[0]:.2f} s, {tl[1]:.2f} s\nmean = {sum(tl)/2:.3f} s, T = {sum(tl)/2:.3f}/10', size=9.5, q='Q3')
 P.ans(14, 'T =', f'{Tl:.3f}', q='Q3')
 P.note(14, 360, 'Keep θ identical for both wires. Bend the short wire using the protractor as a template.')
 P.note(14, 520, 'Realistic ΔL is larger than the rule precision. You are judging the centres of two bobs, so ±0.1–0.2 cm is reasonable. Justify it in words.', 'mark')
@@ -263,7 +240,7 @@ P.note(14, 640, 'L = 2C sin(θ/2), so T = πL√(m/k). The relationship in (vi) 
 
 P.ans(15, 'θ =', f'{thE}°', q='Q3')
 P.ans(15, 'L =', f'{L_short:.1f} cm', q='Q3')
-P.text(15, 104, 92, f'Short wire oscillates faster, so time 20 oscillations:\n{ts[0]:.2f} s, {ts[1]:.2f} s → T = {sum(ts)/2:.2f}/20', size=9.5, q='Q3')
+P.text(15, 104, 92, f'Short wire oscillates faster, so time 20 oscillations:\n{ts[0]:.2f} s, {ts[1]:.2f} s → mean = {sum(ts)/2:.3f} s, T = {sum(ts)/2:.3f}/20', size=9.5, q='Q3')
 P.ans(15, 'T =', f'{Ts:.3f}', q='Q3')
 P.text(15, 126, 430, f'z = (T / πL)²\nlong wire:  z = ({Tl:.3f} / π × 0.{int(L_long*10):03d})² = {z1:.2f}\n'
        f'short wire: z = ({Ts:.3f} / π × 0.0{int(L_short*10):02d})² = {z2:.2f}', size=9.5, q='Q3')
@@ -277,27 +254,16 @@ support = pd <= 2 * pctL
 P.write_lines(16, f'Percentage difference between the z values = {pd:.1f}%. Since z ∝ 1/L², the uncertainty in z from L alone is '
               f'about 2 × {pctL:.0f}% = {2*pctL:.0f}%. The difference is {"within" if support else "larger than"} this, so the results '
               f'{"support" if support else "do not support"} the relationship.', after=200, before=320, size=9.2, q='Q3')
-P.write_lines(16, 'The short wire has a small period (≈ 0.6 s), so reaction time in starting and stopping the stopwatch gives a large '
-              'percentage uncertainty in T.', after=330, before=410, size=9.2, q='Q3')
-P.write_lines(16, 'Film the oscillations with a slow-motion video camera beside a timer and find T frame by frame (or use a light gate '
-              'and datalogger at the bob).', after=440, before=525, size=9.2, q='Q3')
+P.write_lines(16, f'It is hard to judge the centres of the bobs when measuring L (and to set the same θ on the short wire): ΔL ≈ 0.2 cm '
+              f'is about {0.2/L_short*100:.0f}% of the short L.', after=330, before=410, size=9.2, q='Q3')
+P.write_lines(16, 'Measure the inside and outside separations of the bobs with a vernier caliper and average them, or photograph the wire '
+              'against a mm scale.', after=440, before=525, size=9.2, q='Q3')
 P.note(16, 160, 'Conclusion recipe: (1) % difference of the two values (2) compare with the stated % uncertainty (×2 because z ∝ L⁻²) (3) state support or not.', 'mark')
 P.note(16, 330, 'Pick an error specific to part (e): judging bob centres for L, the short period, or θ changing when the bobs are hung.')
 P.note(16, 440, 'The improvement must fix the error you named. "Repeat readings" or "be more careful" earn nothing.', 'warn')
 
-plan3 = ('Procedure: keep the same long wire, bobs and θ. Loop the rubber band n = 1, 2, 3, 4 (and 5 if possible) times over the '
-         'wooden rod. For each n, displace one bob so the wire turns about 90° about the vertical axis, release, and time 10 oscillations '
-         'twice to find the mean T. '
-         'Control of variables: the same rubber band, wire, θ (check with the protractor), C, bob mass and the same initial angle of twist; '
-         'the band should hang at the same point on the rod. '
-         'Analysis: plot T against 1/n. If T is inversely proportional to n, the graph is a straight line through the origin '
-         '(equivalently nT is constant within the uncertainty). '
-         'Limitation: n can only take a few small integer values (the band cannot be looped more than about 4–5 times before it is too tight '
-         'or the loops overlap), so there are only 4–5 data points, too few and too narrow a range to establish a valid trend.')
-P.write_lines(17, plan3, after=240, size=9.2, q='Q3')
-P.note(17, 180, 'Cover all four bullet points explicitly. Each one is usually worth a mark.', 'mark')
+place(P, 'hci-q3g', [('lines', 17, 240, 640), ('box', 18, 76, 90, 470, 640, 13.5)], notes=[(17, 180), (17, 520)], q='Q3')
 P.note(17, 330, 'Inverse proportionality: plot T against 1/n for a straight line through the origin. A T against n curve on its own does not prove it.', 'why')
-P.note(17, 520, 'The last bullet is about the discrete, limited values of n, not about measurement uncertainty.', 'warn')
 
 workbook(os.path.join(X, 'HCI_Q3_torsion.xlsx'), 'HCI Q3 – Bent-wire torsion pendulum (sample data)',
          f'C = {C3:.1f} cm, m = 68.0 g. Times are for 10 oscillations. Plot T against sin(θ/2) and find k.',
@@ -306,7 +272,7 @@ workbook(os.path.join(X, 'HCI_Q3_torsion.xlsx'), 'HCI Q3 – Bent-wire torsion p
          chart=dict(x=5, y=4, title='T against sin(θ/2)', xt='sin(θ/2)', yt='T / s'),
          results=[('gradient', '=SLOPE(D{first}:D{last},E{first}:E{last})', 's'),
                   ('intercept', '=INTERCEPT(D{first}:D{last},E{first}:E{last})', 's'),
-                  ('k = m(2πC/gradient)²', f'=0.068*(2*PI()*{C3/100}/SLOPE(D{{first}}:D{{last}},E{{first}}:E{{last}}))^2', 'kg m² s⁻²')])
+                  ('k = m(2πC/gradient)²', f'=0.068*(2*PI()*{round(C3/100, 4)}/SLOPE(D{{first}}:D{{last}},E{{first}}:E{{last}}))^2', 'kg m² s⁻²')])
 
 P.meta['sources'] = 'Suggested solutions written for practice; sample data generated from a physical model of each set-up.'
 P.build()

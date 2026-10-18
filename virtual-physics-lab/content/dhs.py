@@ -1,6 +1,7 @@
 import math, os, random, sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'tools'))
 from vpl import *
+from plans import place
 
 rnd = random.Random(2026_08_27)
 P = Paper('dhs', 'Dunman High School', 'DHS', '27 Aug 2026', os.path.join(PRIV, 'src', 'dhs.pdf'))
@@ -33,7 +34,7 @@ P.question('Q1', 'Terminal velocity of a paper cone', 14, [2, 3, 4, 5, 6, 7],
 P.text(2, 122, 615, f'Two perpendicular diameters across the rim: {d1a:.2f} cm, {d1b:.2f} cm\nd = ({d1a:.2f} + {d1b:.2f}) / 2', size=9.5, q='Q1')
 P.ans(2, 'd =', f'{d1:.2f} cm', q='Q1')
 P.note(2, 600, 'Measure across the rim in two perpendicular directions: the taped cone is rarely perfectly round.', 'tip')
-P.text(3, 122, 420, 'Released from about 10 cm above the rule so it is already at terminal velocity at the 100 cm mark.\n'
+P.text(3, 122, 420, 'Released from about 30 cm above the top of the rule so that it has (very nearly) reached\nterminal velocity before the 100 cm mark.\n'
        'Timed from passing the top of the rule until it lands on the bench.\n'
        't / s: ' + ', '.join(f'{t:.2f}' for t in t1s), size=8.8, q='Q1')
 P.ans(3, 'h =', f'{h*100:.1f} cm', q='Q1')
@@ -44,29 +45,20 @@ P.note(3, 420, 'A fall of under a second: repeat at least 5 times and average to
 P.write_lines(4, f't = {t1:.2f} s is known to 2 s.f. (the timings scatter by ±0.03 s, so the hundredths place is the least certain), while h = 1.000 m is to 4 s.f.; '
               'so v is given to 2 s.f., the least number of s.f. of the data used.', after=62, before=225, size=9.0, q='Q1')
 P.write_lines(4, f'The fall time (≈ {t1:.1f} s) is short compared with the reaction time in starting and stopping the stopwatch (≈ 0.1–0.2 s), '
-              'so the percentage uncertainty in t is large. The cone may also sway or tilt as it falls.', after=231, before=400, size=9.0, q='Q1')
+              'so the percentage uncertainty in t is large.', after=231, before=400, size=9.0, q='Q1')
 P.text(4, 122, 655, f'Two perpendicular diameters: {d2a:.2f} cm, {d2b:.2f} cm', size=9.5, q='Q1')
 P.ans(4, 'd =', f'{d2:.2f} cm', q='Q1')
-P.table(5, 99, 150, ['cone', 'd / cm', 't / s (five drops)', 'mean t / s', 'v / m s⁻¹', 'vd / m² s⁻¹', 'v√d / m^1.5 s⁻¹'],
-        [['1', f'{d1:.2f}', ' '.join(f'{t:.2f}' for t in t1s), f'{t1:.3f}', f'{v1:.2f}', f'{k1:.3f}', f'{v1*math.sqrt(d1/100):.3f}'],
-         ['2', f'{d2:.2f}', ' '.join(f'{t:.2f}' for t in t2s), f'{t2:.3f}', f'{v2:.2f}', f'{k2:.3f}', f'{v2*math.sqrt(d2/100):.3f}']], size=8.0, q='Q1')
-P.text(5, 99, 220, 'h = 1.000 m for both cones', size=8.6, q='Q1')
+P.table(5, 99, 150, ['cone', 'd / cm', 't / s (five drops)', 'mean t / s', 'v / m s⁻¹', 'vd / m² s⁻¹', 'v√d / m^(3/2) s⁻¹'],
+        [['1', f'{d1:.2f}', ' '.join(f'{t:.2f}' for t in t1s), f'{t1:.2f}', f'{v1:.1f}', f'{k1:.3f}', f'{v1*math.sqrt(d1/100):.3f}'],
+         ['2', f'{d2:.2f}', ' '.join(f'{t:.2f}' for t in t2s), f'{t2:.2f}', f'{v2:.1f}', f'{k2:.3f}', f'{v2*math.sqrt(d2/100):.3f}']], size=8.0, q='Q1')
+P.text(5, 99, 220, 'h = 1.000 m for both cones. vd and v√d are calculated from the unrounded mean times.', size=8.6, q='Q1')
 P.write_lines(5, f'If v ∝ 1/d, then vd should be constant. The two values of vd differ by {diffk:.0f}%. '
               f'The percentage uncertainty in v is about {ut:.0f}% (half the spread of t) and in d about 1%, so about {ut+1:.0f}% in vd. '
               f'Since {diffk:.0f}% > {ut+1:.0f}%, the difference is not explained by the uncertainty: I do not agree that v is inversely proportional to d. '
               '(v√d is nearly constant instead. The paper mass ∝ d, while the drag ∝ v²d², which gives v ∝ 1/√d.)', after=300, size=8.9, q='Q1')
 P.note(5, 150, 'Two cones only: calculate k = vd for each, compare the percentage difference with your estimated uncertainty, then conclude.', 'mark')
 P.note(5, 470, 'Why not 1/d: cutting a bigger sector reduces the weight as well as the diameter.', 'why')
-planG = ('Procedure: use the same cone (fixed diameter d, checked with vernier calipers). Measure the weight W of the cone with n paperclips on a top-pan balance '
-         '(W = mg); vary W by adding 1, 2, 3 … 6 paperclips, taped inside the tip so they cannot move. Because the loaded cone falls much faster, drop it from a '
-         'greater height (e.g. 2.0 m, using a stand on the bench or a ladder) so it reaches terminal velocity, and time it over the lower 1.000 m using two light gates '
-         'connected to a timer (or film it with a video camera beside a metre rule and use frame-by-frame analysis). v = 1.000 m / t. Check that v has become '
-         'constant by timing over two successive 0.50 m sections and confirming the times are equal. Repeat each drop 3 times and average. '
-         'Analysis: plot lg v against lg W; the gradient gives the power of W (expect 0.5, since W = kv² at terminal velocity). '
-         'Precautions: no draughts (close windows, switch off fans); release from the same orientation with the axis vertical; '
-         'safety: someone holds the ladder, and keep clear of the falling cone.')
-P.write_lines(6, planG, after=290, size=8.7, q='Q1')
-P.note(6, 330, 'Key idea the question is fishing for: a longer drop (it falls faster) and an electronic or video timing method instead of a hand-held stopwatch.', 'mark')
+place(P, 'dhs-q1g', [('lines', 6, 320, 760)], notes=[(6, 330)], q='Q1')
 # (h) dataset
 W, vt = 0.020, 3.0
 s0 = vt * vt / (2 * g)
@@ -76,8 +68,7 @@ P.graph(7, 120, 290, 340, 230, q='Q1', xlabel='s / m', ylabel='F / N', xr=[0, 1.
         series=[dict(pts=[(s, F) for s, F in dsF[::2]], mark='dot')],
         curves=[dict(pts=[(s, W * (1 - math.exp(-s / s0))) for s, _ in dsF])],
         notes=[(300, 470, 'area from s = 0 to 1.000 m', 8.5), (300, 482, '= energy dissipated', 8.5)])
-P.text(7, 99, 540, 'Work done against drag = ∫F ds, so the energy dissipated is the area under the F–s graph\nfrom s = 0 to 1.000 m. In the spreadsheet: strip area = ½(F₁ + F₂)(s₂ − s₁) for each pair of\nrows (trapezium rule), then sum the strips up to 1.000 m.\n'
-       f'Check: E = Ws − ½mv² at 1.000 m with W = 0.020 N.', size=8.4, q='Q1')
+P.text(7, 99, 540, 'Work done against drag = ∫F ds, so the energy dissipated is the area under the F–s graph\nfrom s = 0 to 1.000 m. In the spreadsheet: strip area = ½(F₁ + F₂)(s₂ − s₁) for each pair of\nrows (trapezium rule), then sum the strips up to 1.000 m.', size=8.4, q='Q1')
 P.ans(7, 'energy dissipated', f'{E_d:.4f}', q='Q1')
 P.note(7, 300, 'The force rises towards the weight 0.020 N as the cone approaches terminal velocity, so the area is less than W × 1.000 m = 0.020 J.', 'why')
 workbook(os.path.join(X, 'DHS_Q1h_drag_dataset.xlsx'), 'DHS Q1(h) – Drag force against distance (practice dataset)', 'W = 0.020 N, d = 11.0 cm. Find the area under the F–s graph from 0 to 1.000 m.',
@@ -153,11 +144,11 @@ dk = abs(kA - kC) / min(kA, kC) * 100
 m = 0.0500
 M = Mr + 2 * m
 rows3 = []
-for xc in (4, 8, 12, 16, 20, 24):
+for xc in (3.0, 6.0, 9.0, 12.0, 19.0, 22.0):   # masses kept clear of the string loops at ±15 cm
     x = xc / 100
     T = T_bif(lC, dC, I0 + 2 * m * x * x + 2 * 2.0e-6, M)
     t = [round(10 * T * (1 + rnd.gauss(0, 0.003)), 2) for _ in range(2)]
-    Tm = sum(t) / 20
+    Tm = hu(sum(t) / 20, 3)
     rows3.append((xc, t[0], t[1], Tm, Tm * Tm, x * x))
 mC, cC, r2C = linfit([r[5] for r in rows3], [r[4] for r in rows3])
 I0_p = cC * M * g * dC ** 2 / (4 * math.pi ** 2 * lC)
@@ -167,7 +158,7 @@ P.question('Q3', 'Bifilar suspension (playground ride model)', 24, [12, 13, 14, 
            sim='dhs-q3', xlsx=[('DHS_Q3_bifilar.xlsx', 'Six positions x with two timings each. Plot T² against x² and find C.')],
            skills=['measuring between strings', 'percentage uncertainty', 'timing oscillations', 'testing a relationship', 'planning', 'T² against x²'])
 P.ans(12, 'd =', f'{dA*100:.1f} cm', q='Q3')
-P.text(12, 126, 660, 'Δd ≈ 0.2 cm: judging the centre of each string loop against the rule scale (parallax, loop thickness)\n'
+P.text(12, 126, 660, 'Δd ≈ 0.2 cm: judging the centre of each string loop against the rule scale\n(parallax, loop thickness). '
        f'% uncertainty = 0.2 / {dA*100:.1f} × 100%', size=8.8, q='Q3')
 P.ans(12, 'percentage uncertainty in d', f'{0.2/(dA*100)*100:.1f}%', q='Q3')
 P.note(12, 597, 'Read both strings at the same edge (e.g. left edge of each loop) so the loop thickness cancels.', 'tip')
@@ -178,7 +169,7 @@ P.ans(13, 'percentage uncertainty in l', f'{0.2/(lA*100)*100:.0f}%', q='Q3')
 P.text(13, 126, 395, f'20 oscillations: {tA20[0]:.2f} s, {tA20[1]:.2f} s\nT = ({tA20[0]:.2f} + {tA20[1]:.2f}) / 40', size=9.0, q='Q3')
 P.ans(13, 'T =', f'{TAm:.3f} s', q='Q3')
 P.ans(13, 'd =', f'{dC*100:.1f} cm', q='Q3')
-P.fill(13, 398, 631, f'{lC*100:.1f} cm', q='Q3')
+P.fill(13, 404, 631, f'{lC*100:.1f} cm', q='Q3')
 P.text(13, 126, 655, f'10 oscillations: {tC10[0]:.2f} s, {tC10[1]:.2f} s\nT = ({tC10[0]:.2f} + {tC10[1]:.2f}) / 20', size=9.0, q='Q3')
 P.ans(13, 'T =', f'{TCm:.3f} s', nth=1, q='Q3')
 P.note(13, 395, 'Small twist (about 10°) so the rule does not swing sideways; start timing at the centre of the swing.', 'tip')
@@ -189,38 +180,16 @@ P.write_lines(14, f'The two values of k differ by {dk:.1f}%. The uncertainty in 
               f'{2*0.2/(dA*100)*100 + 0.2/(lA*100)*100:.0f}%. Since {dk:.1f}% is less than this, the results support the suggested relationship.', after=432, size=9.0, q='Q3')
 P.note(14, 432, 'Compare the % difference in k with the combined % uncertainty from (a)(ii) and (a)(iv) (d is squared, so double it).', 'mark')
 P.text(15, 120, 300, 'Diagram (front view)', size=9.5, q='Q3')
-P.diagram(15, 140, 330, [('line', 0, 0, 0, 230), ('line', 360, 0, 360, 230), ('line', -20, 232, 380, 232), ('rect', -15, 226, 30, 6), ('rect', 345, 226, 30, 6),
-                          ('rect', 20, 20, 320, 6), ('line', 0, 23, 20, 23), ('line', 340, 23, 360, 23),
-                          ('line', 107, 26, 107, 140), ('line', 113, 26, 113, 140), ('line', 247, 26, 247, 140), ('line', 253, 26, 253, 140),
-                          ('rect', 60, 140, 240, 6), ('rect', 122, 128, 16, 12, '#c9d7f2'), ('rect', 222, 128, 16, 12, '#c9d7f2'),
-                          ('arrow', 110, 10, 250, 10, True), ('text', 180, 6, 'd (fixed, value from (c))', 8, 'middle'),
-                          ('arrow', 272, 26, 272, 140, True), ('text', 276, 85, 'l (larger loops, fixed)', 8),
-                          ('dash', [(180, 120), (180, 180)]), ('arrow', 180, 165, 230, 165, True), ('text', 205, 177, 'x', 9, 'middle'),
-                          ('arrow', 130, 165, 180, 165, True), ('text', 155, 177, 'x', 9, 'middle'),
-                          ('text', 130, 122, 'm', 8, 'middle'), ('text', 230, 122, 'm', 8, 'middle'),
-                          ('text', -20, 252, 'Masses m taped on the bottom rule at equal distances x either side of its centre (keeps the rule level).', 8),
-                          ('text', -20, 265, 'x measured with the metre rule from the centre mark to the centre of each mass.', 8),
-                          ('text', -20, 278, 'Stopwatch: time 10 oscillations about the vertical axis, twice, for each x.', 8)], q='Q3')
-P.note(15, 330, 'Label: d, l, x (to the centre of each mass), the two masses placed symmetrically, the vertical axis of rotation.', 'mark')
-planE = (f'Use the larger loops with d = {dC*100:.1f} cm and l = {lC*100:.1f} cm throughout (control variables: d, l, the two masses m, the size of the twist). '
-         'Mark the centre of the bottom rule. Tape one mass on each side at the same distance x from the centre, with their centres on the marks, so the rule stays '
-         'horizontal; check with a spirit level or by measuring the height of each end above the bench. Measure x with a metre rule from the centre mark to the centre '
-         'of each mass. Twist the rule by a small angle (about 10°) about the vertical axis by moving one end towards you and the other away, and release; let it settle '
-         'into a pure twist (no sideways swing). Use a fiducial mark (e.g. a pin on the bench below the end of the rule) and time 10 oscillations; repeat and average, '
-         'T = t/10. Repeat for x = 4, 8, 12, 16, 20 and 24 cm. Calculate T² and x²; plot T² against x². '
-         'Precautions: the strings must stay vertical and the same distance from the centre; re-check d and l after moving the masses; '
-         'tape the masses so they do not slide; wait until the motion is a pure rotation before timing.')
-P.write_lines(16, planE, after=60, size=8.8, q='Q3')
-P.note(16, 80, 'Five marks for a clear method: what is changed (x), measured (x, T), kept constant (d, l, m), and how T is found accurately.', 'mark')
+place(P, 'dhs-q3e', [('lines', 16, 60, 530), ('box', 16, 126, 534, 410, 240, 13.5)], diagram=(15, 140, 330), notes=[(15, 330)], q='Q3')
 P.table(17, 140, 95, ['x / cm', 't₁ / s', 't₂ / s', 'T / s', 'T² / s²', 'x² / m²'],
-        [[r[0], f'{r[1]:.2f}', f'{r[2]:.2f}', f'{r[3]:.3f}', f'{r[4]:.3f}', f'{r[5]:.4f}'] for r in rows3], size=9.5, q='Q3')
+        [[f'{r[0]:.1f}', f'{r[1]:.2f}', f'{r[2]:.2f}', f'{r[3]:.3f}', f'{r[4]:.3f}', f'{r[5]:.4f}'] for r in rows3], size=9.5, q='Q3')
 P.text(17, 140, 290, f't₁, t₂ = time for 10 oscillations. d = {dC*100:.1f} cm and l = {lC*100:.1f} cm throughout; m = {m*1000:.1f} g each.', size=8.6, q='Q3')
 P.note(17, 95, 'Six x values over a wide range, repeat timings, T² and x² columns with units.', 'mark')
 P.graph(18, 130, 186, 340, 205, q='Q3', xlabel='x² / m²', ylabel='T² / s²', xr=[0, 0.06], yr=[0, 3.0], nx=6, ny=6,
         series=[dict(pts=[(r[5], r[4]) for r in rows3])], lines=[dict(m=mC, c=cC, x=[0, 0.06])], eq=eqn(mC, cC, 4, r2=r2C), eqpos=(185, 205))
 P.ans(18, 'C =', f'{cC:.3f}', q='Q3')
 P.write_lines(18, f'T² increases linearly with x² (straight line with a positive intercept, R² = {r2C:.4f}). '
-              f'At x = 0, T = √C = {math.sqrt(cC):.3f} s, which is smaller than T = {TCm:.3f} s in (c). '
+              f'At x\u00a0=\u00a00, T = √C = {math.sqrt(cC):.3f} s, which is smaller than T = {TCm:.3f} s in (c). '
               'With the masses at the centre the extra mass adds to the weight, and so to the restoring torque (∝ Mg), but adds almost nothing to the '
               'moment of inertia, so the rule turns back faster and the period is shorter.', after=410, size=8.9, q='Q3')
 P.note(18, 175, 'T² = (16π²l/(Mgd²))(I₀ + 2mx²): straight line in x², gradient ∝ 2m, intercept ∝ I₀.', 'why')

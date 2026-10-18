@@ -1,6 +1,7 @@
 import math, os, random, sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'tools'))
 from vpl import *
+from plans import place
 
 rnd = random.Random(2026_08_24 + 3)
 P = Paper('asrjc', 'Anderson Serangoon Junior College', 'ASRJC', '24 Aug 2026', os.path.join(PRIV, 'src', 'asrjc.pdf'))
@@ -31,15 +32,17 @@ P.ans(2, 'V =', f'{rows1[0][1]:.2f} V', q='Q1')
 P.note(2, 160, 'E: voltmeter straight across the battery with nothing else connected (open circuit). R: multimeter on the 200 Ω range, resistor out of the circuit.', 'mark')
 P.note(2, 600, 'Measure L between the contact points of the clips F and G (not the clip edges).', 'tip')
 P.table(3, 130, 110, ['L / cm', 'V / V', '(E − V)/L / V m⁻¹'], [[f'{L:.1f}', f'{V:.2f}', f'{y:.3f}'] for (L, V), (y, _) in zip(rows1, ys1)], size=9.5, q='Q1')
-P.graph(3, 130, 462, 300, 215, q='Q1', xlabel='V / V', ylabel='(E − V)/L / V m⁻¹', xr=[1.75, 2.25], yr=[1.2, 3.0],
-        series=[dict(pts=[(V, y) for y, V in ys1])], lines=[dict(m=mP, c=cQ, x=[1.75, 2.25])], eq=eqn(mP, cQ, 4, r2=r21), eqpos=(300, 470), nx=4, ny=4)
+Vint = -cQ / mP
+P.graph(3, 130, 462, 300, 215, q='Q1', xlabel='V / V', ylabel='(E − V)/L / V m⁻¹', xr=[1.4, 2.3], yr=[0, 3.2],
+        series=[dict(pts=[(V, y) for y, V in ys1])],
+        lines=[dict(m=mP, c=cQ, x=[Vint, 2.3]), dict(m=1.5 * mP, c=1.5 * cQ, x=[Vint, 2.3], dash='4,2', label='W (1(f))', ldy=8)],
+        eq=eqn(mP, cQ, 4, r2=r21), eqpos=(330, 600), nx=5, ny=4)
 P.ans(3, 'P =', f'{Pv:.2f} m⁻¹', q='Q1')
 P.ans(3, 'Q =', f'{Qv:.2f} V m⁻¹', q='Q1')
 P.note(3, 110, 'Seven values of L from 30 to 90 cm, with the calculated (E − V)/L column. V to 0.01 V.', 'mark')
 P.note(3, 470, 'Plot y = (E − V)/L against x = V. Gradient = P; intercept = −Q, so Q = −(intercept).', 'why')
 P.note(3, 740, 'Units: P has unit m⁻¹ (V m⁻¹ ÷ V). Q has unit V m⁻¹.', 'mark')
-P.text(4, 100, 150, 'W is steeper (P ∝ 1/R larger) with a more negative y-intercept (Q ∝ 1/R larger).\n'
-       'Both lines meet the V-axis at the same point, V = Q/P = E/2, because the ratio is unchanged.', size=8.6, q='Q1')
+P.note(3, 600, 'Line W (1(f), dashed, drawn here for R → 2R/3): steeper (P ∝ 1/R) with a more negative intercept (Q ∝ 1/R); both lines meet the V-axis at V = Q/P = E/2.', 'mark')
 # (g) AC dataset
 I0, f = 0.120, 50.0
 dsa = []
@@ -47,7 +50,7 @@ for i in range(0, 161):
     t = i * 0.00025
     dsa.append((round(t, 5), round(I0 * math.sin(2 * math.pi * f * t) + rnd.gauss(0, 0.0008), 4)))
 Q1 = sum(0.5 * (dsa[i][1] + dsa[i + 1][1]) * 0.00025 for i in range(40))
-P.ans(4, 'Q 1 =', f'{Q1*1000:.2f} × 10⁻³ C', q='Q1')
+P.ans(4, 'Q 1 =', f'{sci(Q1, 2)} C', q='Q1')
 P.write_lines(4, 'Q₁ = area under the I–t graph from t = 0 to half a period (0.010 s, where I returns to zero), using the trapezium rule in the spreadsheet.',
               after=360, size=9.2, q='Q1')
 P.note(4, 80, 'Draw W on your sketch in (e). The key features are a steeper gradient and the same V-intercept.', 'mark')
@@ -69,11 +72,11 @@ for z in (5.0, 10.0, 15.0, 20.0, 25.0, 30.0, 35.0):
     y = a2 - z
     T = 2 * math.pi * math.sqrt(((y / 100) ** 2 + (kg / 100) ** 2) / (g * y / 100))
     t20 = [round(20 * T * (1 + rnd.gauss(0, 0.003)), 2) for _ in range(2)]
-    Tm = sum(t20) / 40
+    Tm = hu(sum(t20) / 40, 3)
     rows2.append((z, *t20, Tm, y, Tm * Tm * y / 100, (y / 100) ** 2))
 mM, cM, r22 = linfit([r[6] for r in rows2], [r[5] for r in rows2])
-bb = math.sqrt(cM / mM)
-gv = 4 * math.pi ** 2 / mM
+bb = math.sqrt(round(cM, 4) / round(mM, 3))
+gv = 4 * math.pi ** 2 / round(mM, 3)
 P.question('Q2', 'Oscillating wooden strip (compound pendulum)', 13, [6, 7, 8, 9],
            'Find the balance point, hang the strip from holes at distance y = a − z from its centre of mass, and plot T²y against y²: '
            'gradient M = 4π²/g, intercept Mb². Plan how a magnet, coil and voltage sensor could time the swing.',
@@ -83,36 +86,25 @@ P.ans(6, 'a =', f'{a2:.1f} cm', q='Q2')
 P.text(6, 140, 270, 'strip balanced on the pivot; rule from end A to the pivot edge', size=9, q='Q2')
 P.ans(6, 'z =', f'{rows2[0][0]:.1f} cm', q='Q2')
 r0 = rows2[0]
-P.text(7, 190, 115, f'20 oscillations: {r0[1]:.2f} s, {r0[2]:.2f} s → T = {(r0[1]+r0[2])/2:.2f}/20', size=9.5, q='Q2')
+P.text(7, 190, 115, f'20 oscillations: {r0[1]:.2f} s, {r0[2]:.2f} s → T = {(r0[1]+r0[2])/2:.3f}/20', size=9.5, q='Q2')
 P.ans(7, 'T =', f'{r0[3]:.3f} s', q='Q2')
 P.table(7, 140, 215, ['z / cm', 't₁ / s', 't₂ / s', 'T / s', 'y / cm', 'T²y / s² m', 'y² / m²'],
-        [[f'{r[0]:.1f}', f'{r[1]:.2f}', f'{r[2]:.2f}', f'{r[3]:.3f}', f'{r[4]:.1f}', f'{r[5]:.4f}', f'{r[6]:.4f}'] for r in rows2], size=8.6, q='Q2')
+        [[f'{r[0]:.1f}', f'{r[1]:.2f}', f'{r[2]:.2f}', f'{r[3]:.3f}', f'{r[4]:.1f}', sf(r[5], 4), f'{r[6]:.4f}'] for r in rows2], size=8.6, q='Q2')
 P.graph(7, 140, 567, 300, 172, q='Q2', xlabel='y² / m²', ylabel='T²y / s² m', xr=[0, 0.22], yr=[0, 1.4],
-        series=[dict(pts=[(r[6], r[5]) for r in rows2])], lines=[dict(m=mM, c=cM, x=[0, 0.22])], eq=eqn(mM, cM, 4, r2=r22), eqpos=(160, 575))
+        series=[dict(pts=[(r[6], r[5]) for r in rows2])], lines=[dict(m=mM, c=cM, x=[0, 0.22])], eq=eqn(mM, cM, 4, r2=r22), eqpos=(190, 578))
 P.ans(7, 'M =', f'{mM:.2f} s² m⁻¹', q='Q2')
-P.ans(7, 'b =', f'√({cM:.3f}/{mM:.2f}) = {bb*100:.1f} cm', size=9.5, q='Q2')
-P.text(8, 106, 110, f'g = 4π²/M = 4π² / {mM:.3f}', size=10, q='Q2')
+_xb, _yb = P.find(7, 'b =')
+P.text(7, 150, _yb - 22, f'b = √(intercept / gradient) = √({cM:.4f}/{mM:.3f})', size=9.2, q='Q2')
+P.ans(7, 'b =', f'{bb:.3f} m', size=10, q='Q2')
+P.text(8, 150, 190, f'g = 4π²/M = 4π² / {mM:.3f}', size=10, q='Q2')
 P.ans(8, 'g =', f'{gv:.2f} m s⁻²', q='Q2')
 P.note(6, 300, 'a locates the centre of mass. Balance carefully: a 0.5 cm error in a shifts every y.', 'tip')
 P.note(7, 110, 'T barely changes between holes (it has a minimum when y = b), so time 20 oscillations and keep 3 d.p. in T to see the trend.', 'why')
 P.note(7, 220, 'Seven holes, two timings each, with the processed columns needed for the graph (y, T²y, y²) and units.', 'mark')
 P.note(7, 580, 'T²y = My² + Mb²: plot T²y against y². Gradient = M, intercept = Mb², so b = √(intercept/M).', 'why')
 P.note(8, 100, 'Check: g should come out near 9.8 m s⁻². b ≈ L/√12 for a uniform strip.', 'tip')
-plan2 = ('Fix the bar magnet to end B (pole facing down) and set up a flat coil on the bench just below the lowest point of the swing, '
-         'so the magnet passes close to (but does not touch) the coil. Connect the coil to a voltage sensor and datalogger (sampling at about 500 Hz). '
-         'Displace the strip by a small angle and release. Each time the magnet passes over the coil an e.m.f. pulse is induced; the magnet passes twice per oscillation, '
-         'so the period is the time between alternate pulses (or between alternate zero-crossings in the middle of the pulses). '
-         'Find the time for 10 oscillations from the datalogger record and divide by 10. '
-         'Precautions: use small amplitudes; keep the coil close to the magnet\'s path but not touching it; keep iron/steel objects away; '
-         'use a high sampling rate; keep the coil fixed with tape; repeat and average.')
-P.write_lines(9, plan2, after=460, size=9.0, q='Q2')
-P.diagram(9, 160, 240, [('rect', 120, 0, 10, 170, '#f3e6c4'), ('circle', 125, 10, 2), ('text', 135, 12, 'pivot (nail)', 8.5), ('rect', 118, 170, 14, 22, '#fca5a5'),
-                        ('text', 140, 185, 'bar magnet at end B', 8.5), ('rect', 96, 205, 58, 8), ('text', 160, 212, 'coil (flat, fixed)', 8.5),
-                        ('line', 125, 213, 125, 220), ('rect', 180, 160, 80, 30), ('text', 220, 178, 'voltage sensor', 8.5, 'middle'), ('dash', [(154, 209), (180, 180)]),
-                        ('rect', 280, 160, 70, 30), ('text', 315, 178, 'datalogger', 8.5, 'middle'), ('line', 260, 175, 280, 175),
-                        ('arrow', 95, 150, 155, 150, True), ('text', 125, 145, 'small swing', 8, 'middle')], q='Q2')
+place(P, 'asrjc-q2c', [('lines', 9, 465, 720)], diagram=(9, 150, 236), notes=[(9, 480)], q='Q2')
 P.note(9, 240, 'Diagram must show: strip pivoted, magnet on B, coil beneath the path, and the sensor and datalogger connected to the coil.', 'mark')
-P.note(9, 480, 'Key physics: two pulses per oscillation. The period is the interval between alternate pulses.', 'why')
 workbook(os.path.join(X, 'ASRJC_Q2_compound_pendulum.xlsx'), 'ASRJC Q2 – Compound pendulum (sample data)', f'a = {a2:.1f} cm. Times are for 20 oscillations.',
          ['z / cm', 't1 / s', 't2 / s'], [[r[0], r[1], r[2]] for r in rows2],
          proc=[('T / s', '=(B{r}+C{r})/40'), ('y / m', f'=({a2}-A{{r}})/100'), ('T²y / s² m', '=D{r}^2*E{r}'), ('y² / m²', '=E{r}^2')],
@@ -144,7 +136,7 @@ P.text(10, 130, 150, 'vernier jaws across the widest part; zero error 0.00 cm; r
 P.ans(10, 'h =', f'{h1[0]:.1f} cm', q='Q3')
 P.text(11, 130, 95, f'Δh ≈ 0.1 cm (meniscus and the base thickness make the zero hard to locate)\n% uncertainty = 0.1/{h1[0]:.1f} × 100%', size=9.2, q='Q3')
 P.ans(11, 'percentage uncertainty', f'{0.1/h1[0]*100:.0f}%', q='Q3')
-P.ans(12, 'θ =', f'{h1[3]:.0f}°', q='Q3')
+P.ans(12, 'θ =', f'{h1[3]:.1f}°  (mean of {h1[1]}°, {h1[2]}°)', q='Q3')
 P.ans(12, 'cos θ =', f'{math.cos(math.radians(h1[3])):.3f}', q='Q3')
 P.write_lines(12, '1. The container tips over quickly, so it is hard to judge the exact angle at which it starts to fall (and to read the scale at that instant). '
               '2. The container may slide along the metal ruler instead of pivoting about its bottom edge, and the water sloshes, shifting the centre of mass.',
@@ -170,22 +162,12 @@ P.text(14, 130, 200, f'k = cos²θ [(d/2)² + h²] / h\nh = {r2_[0]:.1f} cm, θ 
        f'h = {r4_[0]:.1f} cm, θ = {r4_[3]:.1f}°: k = {math.cos(math.radians(r4_[3]))**2:.3f} × ({(d3/2)**2:.2f} + {r4_[0]**2:.2f}) / {r4_[0]:.1f}', size=9.0, q='Q3')
 P.ans(14, 'first value of k', f'{k1:.1f} cm', q='Q3')
 P.ans(14, 'second value of k', f'{k2:.1f} cm', q='Q3')
-P.write_lines(14, 'h was measured to 2 s.f. (e.g. 1.0 cm, 4.0 cm) and θ to 2 s.f., so k is given to 2 s.f.', after=450, before=500, size=9.2, q='Q3')
+P.write_lines(14, 'h was measured to 2 s.f. (1.0 cm, 4.0 cm) and the raw θ readings to the nearest degree (2 s.f.), so k is given to 2 s.f.', after=450, before=500, size=9.2, q='Q3')
 pdk = abs(k1 - k2) / min(k1, k2) * 100
 P.write_lines(14, f'The k values differ by {pdk:.0f}%, much more than the {0.1/h1[0]*100:.0f}% uncertainty in h, so the results do not support the suggested relationship.',
               after=690, size=9.2, q='Q3')
-P.note(14, 190, 'Use two well-separated values of h (not neighbours near the peak) so a real difference shows.', 'tip')
-plan3 = ('Use containers made of the same material with the same height and cap but different diameters d (at least 6, e.g. 3 cm to 9 cm). '
-         'Fill each with the same depth (or the same proportion of the height) of soya sauce or water, as in actual use; measure d with vernier calipers. '
-         'Tilt each container slowly from the top in front of the quadrant scale, as in (c), with a stop strip at the base edge so it pivots and does not slide; record the toppling angle θ. '
-         'Repeat 3 times and average. Control: same height, wall material/thickness, cap, liquid, fill height and the same push point; level bench. '
-         'Table: d / cm | θ₁ / ° | θ₂ / ° | θ₃ / ° | mean θ / ° | tan θ. '
-         'Analysis: plot tan θ against d (expected straight line since tan θ = d/(2 × CM height)) or θ against d, and read off (interpolate) the diameter at which θ = 30°: '
-         'this is the minimum diameter; a smaller container topples at less than 30°. '
-         'Precautions: push slowly and gently; view the scale at eye level (or film it) to avoid parallax; wipe spills; check the container is upright with a set square before each trial.')
-P.write_lines(15, plan3, after=280, size=9.0, q='Q3')
-P.note(15, 290, 'Bullets to hit: procedure, control of variables, a table with units, how to find d at θ = 30° (graph and interpolation), and precautions.', 'mark')
-P.note(15, 560, 'Linear option: tan θ against d is a straight line, which makes interpolation reliable.', 'why')
+P.note(14, 190, 'Use two well-separated values of h so that any change in k is larger than the reading uncertainty.', 'tip')
+place(P, 'asrjc-q3f', [('lines', 15, 280, 770), ('box', 16, 97, 90, 430, 600, 13.5)], notes=[(15, 290), (15, 560)], q='Q3')
 workbook(os.path.join(X, 'ASRJC_Q3_container.xlsx'), 'ASRJC Q3 – Toppling angle against water height (sample data)', f'd = {d3:.2f} cm.',
          ['h / cm', 'θ1 / °', 'θ2 / °'], [[r[0], r[1], r[2]] for r in rows3],
          proc=[('θ / °', '=(B{r}+C{r})/2'), ('cos²θ', '=COS(RADIANS(D{r}))^2'), ('k = cos²θ((d/2)²+h²)/h / cm', f'=IF(A{{r}}>0,E{{r}}*(({d3}/2)^2+A{{r}}^2)/A{{r}},"")')],

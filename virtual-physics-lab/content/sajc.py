@@ -1,6 +1,7 @@
 import math, os, random, sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'tools'))
 from vpl import *
+from plans import place
 
 rnd = random.Random(2026_08_18 + 7)
 P = Paper('sajc', "St. Andrew's Junior College", 'SAJC', '18 Aug 2026', os.path.join(PRIV, 'src', 'sajc.pdf'))
@@ -15,7 +16,7 @@ def I_of(xcm):
     return E3 / (rho * x / AF + rho * (1 - x) / AG + r3)
 rows1 = [(x, round(I_of(x) * (1 + rnd.gauss(0, 0.003)), 3)) for x in (10.0, 20.0, 35.0, 50.0, 65.0, 80.0, 90.0)]
 m1, c1, r21 = linfit([x / 100 for x, I in rows1], [1 / I for x, I in rows1])
-dG_est = dF * math.sqrt(1 + m1 / c1)
+dG_est = round(dF, 2) * math.sqrt(1 + m1 / c1)
 P.question('Q1', 'Two wires joined by a sliding lead', 12, [2, 3, 4],
            'Same circuit idea as NYJC Q3: 1/I = Px + Q. Measure d_F, plot 1/I against x, then use P/Q = (d_G²/d_F² − 1)/L to work out d_G.',
            sim='nyjc-q3', xlsx=[('SAJC_Q1_two_wires.xlsx', 'Seven (x, I) pairs. Plot 1/I against x, find P and Q, then d_G.')],
@@ -27,8 +28,8 @@ P.ans(2, 'I =', f'{dict(rows1)[50.0]:.3f} A', q='Q1')
 P.note(2, 140, 'Two marks for the micrometer: a sensible value (≈ 0.2–0.5 mm) to 0.01 mm, and evidence of repeats or a zero-error check.', 'mark')
 P.note(2, 560, 'Position C at exactly 50.0 cm on both rules. Read the clip edge against the scale at eye level.', 'tip')
 P.table(3, 160, 110, ['x / cm', 'I / A', '(1/I) / A⁻¹'], [[f'{x:.1f}', f'{I:.3f}', f'{1/I:.3f}'] for x, I in rows1], size=9.5, q='Q1')
-P.graph(3, 140, 455, 300, 190, q='Q1', xlabel='x / m', ylabel='(1/I) / A⁻¹', xr=[0, 1.0], yr=[2.5, 5.5],
-        series=[dict(pts=[(x / 100, 1 / I) for x, I in rows1])], lines=[dict(m=m1, c=c1)], eq=eqn(m1, c1, 4, r2=r21), eqpos=(160, 465))
+P.graph(3, 140, 455, 300, 190, q='Q1', xlabel='x / m', ylabel='(1/I) / A⁻¹', xr=[0, 1.0], yr=[2.0, 5.5],
+        series=[dict(pts=[(x / 100, 1 / I) for x, I in rows1])], lines=[dict(m=m1, c=c1)], eq=eqn(m1, c1, 4, r2=r21), eqpos=(330, 590))
 P.ans(3, 'P =', f'{m1:.2f} A⁻¹ m⁻¹', q='Q1')
 P.ans(3, 'Q =', f'{c1:.2f} A⁻¹', q='Q1')
 P.text(4, 130, 230, f'd_G² / d_F² = 1 + LP/Q = 1 + 1.000 × {m1:.3f}/{c1:.3f} = {1+m1/c1:.3f}\nd_G = {dF:.2f} × √{1+m1/c1:.3f}', size=9.8, q='Q1')
@@ -40,7 +41,7 @@ workbook(os.path.join(X, 'SAJC_Q1_two_wires.xlsx'), 'SAJC Q1 – Two wires (samp
          ['x / cm', 'I / A'], [list(r) for r in rows1], proc=[('x / m', '=A{r}/100'), ('1/I / A⁻¹', '=1/B{r}')],
          chart=dict(x=3, y=4, title='1/I against x', xt='x / m', yt='1/I / A⁻¹'),
          results=[('P', '=SLOPE(D{first}:D{last},C{first}:C{last})', 'A⁻¹ m⁻¹'), ('Q', '=INTERCEPT(D{first}:D{last},C{first}:C{last})', 'A⁻¹'),
-                  ('d_G = d_F√(1 + LP/Q)', f'={dF}*SQRT(1+SLOPE(D{{first}}:D{{last}},C{{first}}:C{{last}})/INTERCEPT(D{{first}}:D{{last}},C{{first}}:C{{last}}))', 'mm')])
+                  ('d_G = d_F√(1 + LP/Q)', f'={round(dF, 2)}*SQRT(1+SLOPE(D{{first}}:D{{last}},C{{first}}:C{{last}})/INTERCEPT(D{{first}}:D{{last}},C{{first}}:C{{last}}))', 'mm')])
 
 # ======================= Q2 rubber bands =======================
 L0, b2, kb = 6.0, 9.4, 47.7
@@ -58,7 +59,7 @@ P.question('Q2', 'Two stretched rubber bands', 14, [5, 6, 7, 8],
            sim='sajc-q2', xlsx=[('SAJC_Q2f_force_extension_dataset.xlsx', 'A practice version of the engineer\'s loading data. Area under F–x (trapezium) for the work done; plot ln(F/A + 1) against x for B.')],
            skills=['protractor', 'metre rule along a slant', 'force resolution', 'area under a graph', 'linearising an exponential'])
 P.ans(5, 'm =', '300 g', q='Q2')
-P.text(5, 140, 590, 'protractor centred where the band leaves the blade; rule laid along the band from the blade to the hook', size=8.6, q='Q2')
+P.text(5, 140, 725, 'Protractor centred where the band leaves the blade; rule laid along the band\nfrom the blade to the hook.', size=8.6, q='Q2')
 P.ans(5, 'α =', f'{a300}°', q='Q2')
 P.ans(5, 'b =', f'{b2:.1f} cm', q='Q2')
 P.note(5, 560, 'α is between ONE band and the blade. Read it at the top where the band leaves the blade.', 'tip')
@@ -92,7 +93,7 @@ P.write_lines(7, 'Work done = area under the force–extension graph, found with
 P.write_lines(8, 'The area of the loop is the energy dissipated (converted to internal energy/heat in the material) in one loading–unloading cycle '
               '(hysteresis): less work is recovered on unloading than was done on loading.', after=100, before=180, size=9.0, q='Q2')
 P.graph(8, 140, 395, 300, 200, q='Q2', xlabel='x / m', ylabel='ln(F/A + 1)', xr=[0, 0.032], yr=[0, 2.8],
-        series=[dict(pts=lin[::2])], lines=[dict(m=mf, c=cf)], eq=eqn(mf, cf, 4, r2=r2f), eqpos=(160, 405))
+        series=[dict(pts=lin[::2])], lines=[dict(m=mf, c=cf)], eq=eqn(mf, cf, 4, r2=r2f), eqpos=(195, 405))
 P.text(8, 140, 610, 'F/A + 1 = e^(Bx) ⇒ ln(F/A + 1) = Bx, so the gradient = B', size=9.3, q='Q2')
 P.ans(8, 'B =', f'{mf:.1f} m⁻¹', q='Q2')
 P.note(7, 90, 'Make the error specific to this set-up (band shape at blade/hook, or b changing while you adjust the tops).')
@@ -128,14 +129,18 @@ P.question('Q3', 'Coupled pendulums', 24, [9, 10, 11, 12, 13, 14, 15, 16],
 P.ans(10, 'x =', f'{x0:.1f}', q='Q3')
 P.text(10, 180, 330, f'Times from release to A first stopping: {t0-0.7:.1f} s, {t0+0.8:.1f} s, {t0-0.1:.1f} s → mean', size=9, q='Q3')
 P.ans(10, 't =', f'{t0:.1f}', q='Q3')
-P.text(10, 180, 430, f'Judging when A has fully stopped: Δt ≈ 1 s (half the spread of repeats)\n% uncertainty = 1/{t0:.1f} × 100%', size=9, q='Q3')
+P.text(10, 180, 430, f'Δt ≈ ({t0+0.8:.1f} − {t0-0.7:.1f})/2 ≈ 0.8 s; take Δt ≈ 1 s for judging when A stops\n% uncertainty = 1/{t0:.1f} × 100%', size=9, q='Q3')
 P.ans(10, 'percentage uncertainty in t', f'{pct3:.0f}%', q='Q3')
-P.write_lines(10, 'Better: the same judgement uncertainty (≈ 1 s) is spread over a time twice as long, halving the % uncertainty. '
-              'But it could be worse: the amplitudes have decayed by then, so B "stopping" is harder to see.', after=610, size=8.8, q='Q3')
+P.write_lines(10, 'Better: the same ≈ 1 s judgement uncertainty is spread over twice the time, halving the % uncertainty. '
+              'Worse: the amplitudes have decayed, so B\'s stop is harder to see. Overall better, if B\'s stop is still clear.', after=610, size=8.8, q='Q3')
 P.note(10, 180, 'Keep both pendulums exactly 45 cm (top knot to bob centre); unequal lengths stop the energy transfer from being complete.', 'tip')
 P.note(10, 380, 'A never stops instantly. Its amplitude dwindles, so the uncertainty is a judgement of about ±1 s, not 0.01 s.', 'why')
 P.note(10, 620, '"Discuss": give both sides (smaller % uncertainty vs harder-to-see stop because of damping), then conclude.', 'mark')
-P.table(11, 130, 115, ['x / cm', 't₁ / s', 't₂ / s', 't / s'], [[f'{x:.1f}', f'{t-0.4:.1f}', f'{t+0.4:.1f}', f'{t:.1f}'] for x, t in rows3], size=9.2, q='Q3')
+_offs = [(-0.5, 0.3, 0.2), (0.4, -0.6, 0.2), (-0.2, 0.6, -0.4), (0.5, -0.1, -0.4), (-0.3, -0.3, 0.6)]
+def _rep3(i, x, t):
+    o = (-0.7, 0.8, -0.1) if abs(x - x0) < 1e-9 else _offs[i % len(_offs)]
+    return [f'{x:.1f}'] + [f'{t + d:.1f}' for d in o] + [f'{t:.1f}']
+P.table(11, 130, 115, ['x / cm', 't₁ / s', 't₂ / s', 't₃ / s', 't / s'], [_rep3(i, x, t) for i, (x, t) in enumerate(rows3)], size=9.2, q='Q3')
 P.write_lines(11, 't increases as x increases (the pendulums are coupled more weakly when they are further apart).', after=330, before=380, size=9.2, q='Q3')
 P.write_lines(11, f'x = {x0:.0f} cm: t is long enough ({t0:.0f} s) for a small % uncertainty, but short enough that damping has not made '
               'A\'s stopping point hard to see.', after=470, before=540, size=9.0, q='Q3')
@@ -144,8 +149,8 @@ P.ans(12, 't =', f'{ttaut:.1f}', q='Q3')
 P.write_lines(12, f'Increasing the tension increases t (from {t0:.0f} s to {ttaut:.0f} s): a tauter string transfers energy between the pendulums more slowly.',
               after=210, before=290, size=9.2, q='Q3')
 P.text(13, 130, 200, f'k = t√y? No: k = t × y\nfirst: k = 31 × 4.0 = {k1:.0f} s cm\nsecond: k = 12 × 8.0 = {k2:.0f} s cm'.replace('k = t√y? No: k = t × y', 'k = t × y'), size=9.6, q='Q3')
-P.ans(13, 'first value of k', f'{k1:.0f} s cm  (1.2 × 10² s cm)', size=9.5, q='Q3')
-P.ans(13, 'second value of k', f'{k2:.0f} s cm  (96 s cm)', size=9.5, q='Q3')
+P.ans(13, 'first value of k', '1.2 × 10² s cm', size=9.5, q='Q3')
+P.ans(13, 'second value of k', '96 s cm', size=9.5, q='Q3')
 P.write_lines(13, 't is given to 2 s.f. (31, 12) and y to 2 s.f. (4.0, 8.0), so k should be given to 2 s.f.', after=400, before=480, size=9.2, q='Q3')
 P.write_lines(13, f'% difference = ({k1:.0f} − {k2:.0f})/{k2:.0f} = {pdk:.0f}%, much larger than the {pct3:.0f}% uncertainty in t (about '
               f'{2*pct3:.0f}% allowing for both readings), so the results do not support t = k/y.', after=600, size=9.0, q='Q3')
@@ -155,19 +160,12 @@ for i, (m2, t) in enumerate(tab2):
     s = str(m2 - 40)
     P.text(14, [233, 290, 346, 403, 460][i] - tw(s, 9.5) / 2, 440, s, size=9.5, q='Q3')
 P.graph(15, 140, 140, 300, 220, q='Q3', xlabel='(m₂ − m₁) / g', ylabel='t / s', xr=[0, 130], yr=[0, 55],
-        series=[dict(pts=[(m - 40, t) for m, t in tab2])], lines=[dict(m=mt, c=ct, x=[0, 130], dash=None)], eq=eqn(mt, ct, 4, r2=r2t), eqpos=(300, 150))
+        series=[dict(pts=[(m - 40, t) for m, t in tab2])], lines=[dict(m=mt, c=ct, x=[0, 130], dash=None)], eq=eqn(mt, ct, 4, r2=r2t), eqpos=(190, 300))
 P.text(15, 140, 380, f'Equal masses ⇒ (m₂ − m₁) = 0 ⇒ t = y-intercept = {ct:.1f} s (extrapolation)', size=9.4, q='Q3')
 P.ans(15, 't =', f'{ct:.0f}', q='Q3')
 P.note(14, 430, 'Complete the table: 40, 60, 80, 100, 120 g (m₁ = 40 g).', 'mark')
 P.note(15, 150, 'The t-intercept answer is an extrapolation: say so, and keep the trendline running to x = 0.', 'tip')
-plan3 = ('Keep x, the tension (stand positions), pendulum lengths (45 cm) and bob masses constant. '
-         'Measure the release angle θ with a protractor fixed at the top of pendulum A (or pull A out by a horizontal distance d and use sin θ = d/L). '
-         'Release A from rest (no push) at θ = 5°, 10°, 15°, 20°, 25° and 30°. For each, time from release until A first stops; repeat three times and average. '
-         'Use a video recording with a timer to judge more precisely when A stops. '
-         'Plot t against θ: if t is independent of θ, the points lie on a horizontal line within the error bars (the gradient of the trendline is close to zero and '
-         'the spread of t is within its uncertainty of about ±1 s).')
-P.write_lines(16, plan3, after=320, size=9.2, q='Q3')
-P.note(16, 330, 'Two bullet points to cover: the measurements (how θ and t are found, repeats) and how the results show independence (horizontal line / constant t).', 'mark')
+place(P, 'sajc-q3g', [('box', 16, 100, 198, 440, 136, 13.5), ('lines', 16, 320, 650)], notes=[(16, 200)], q='Q3')
 workbook(os.path.join(X, 'SAJC_Q3_coupled.xlsx'), 'SAJC Q3 – Coupled pendulums (Table 3.2)', 'm₁ = 40 g. Plot t against (m₂ − m₁) and find t at (m₂ − m₁) = 0.',
          ['m2 / g', 't / s'], [list(r) for r in tab2], proc=[('(m2 − m1) / g', '=A{r}-40')],
          chart=dict(x=3, y=2, title='t against (m₂ − m₁)', xt='(m₂ − m₁) / g', yt='t / s'),

@@ -75,6 +75,11 @@
         el('div', { class: 'mode' }, el('h3', {}, el('span', { class: 'ink' }, '■'), 'Paper'), el('p', {}, 'The original question paper with suggested answers overlaid in blue. Hide them, or reveal one at a time to test yourself.')),
         el('div', { class: 'mode' }, el('h3', {}, el('span', { class: 'ink' }, '■'), 'Lab'), el('p', {}, 'Set up the apparatus, read scales through the magnifier, time oscillations yourself, and record your own table and graph.')),
         el('div', { class: 'mode' }, el('h3', {}, el('span', { class: 'ink' }, '■'), 'Spreadsheets'), el('p', {}, 'Raw data on the first tab for you to process; suggested processing, trendline and answers on the second.'))),
+      el('section', { class: 'wrap', style: 'margin-bottom:28px' },
+        el('div', { class: 'mode plan-dl' },
+          el('h3', {}, el('span', { class: 'ink' }, '■'), 'Planning questions'),
+          el('p', {}, 'All 15 planning questions from the ten papers, each with a numbered answer key (set-up, 8 readings, control of variables, preliminary readings, graphs that test the relationship, precautions), in one PDF.'),
+          el('button', { class: 'btn primary', onclick: (e) => saveFile('dl/Planning_Questions_Answer_Keys_2026.pdf', e.currentTarget) }, 'Download planning PDF'))),
       el('section', { class: 'wrap' },
         el('div', { class: 'grid-h' }, el('h2', {}, 'Choose a school'), el('span', { class: 'small' }, `${built.length} of 10 papers ready`)),
         el('div', { class: 'sgrid' }, ...ORDER.map((k) => {

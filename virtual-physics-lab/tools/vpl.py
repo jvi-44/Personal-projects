@@ -52,10 +52,10 @@ def sf(x, n):
     if x == 0:
         return '0' if n == 1 else '0.' + '0' * (n - 1)
     d = n - 1 - int(math.floor(math.log10(abs(x))))
-    v = round(x, d)
+    v = hu(x, d)
     if d > 0:
-        return f'{v:.{d}f}'
-    return f'{int(round(v))}'
+        return f'{v:.{d}f}'.replace('-', '−')
+    return f'{int(round(v))}'.replace('-', '−')
 
 
 def dp(x, n):
@@ -347,8 +347,8 @@ def _graph(g, it):
 
 # circuit / apparatus symbols for planning diagrams. Coordinates relative to item x,y.
 def _diagram(g, it):
-    ox, oy = it['x'], it['y']
-    P = lambda a, b: (ox + a, oy + b)
+    ox, oy, sc = it['x'], it['y'], it.get('scale', 1)
+    P = lambda a, b: (ox + a * sc, oy + b * sc)
     for el in it['els']:
         k = el[0]
         if k == 'wire':
@@ -357,13 +357,13 @@ def _diagram(g, it):
             g.poly([P(a, b) for a, b in el[1]], dash='3,2')
         elif k == 'text':
             x, y = P(el[1], el[2])
-            g.text(x, y, el[3], el[4] if len(el) > 4 else 8.5, anchor=el[5] if len(el) > 5 else 'start')
+            g.text(x, y, el[3], (el[4] if len(el) > 4 else 8.5) * max(sc, 0.85), anchor=el[5] if len(el) > 5 else 'start')
         elif k == 'rect':
             x, y = P(el[1], el[2])
-            g.rect(x, y, el[3], el[4], fill=el[5] if len(el) > 5 else 'none')
+            g.rect(x, y, el[3] * sc, el[4] * sc, fill=el[5] if len(el) > 5 else 'none')
         elif k == 'circle':
             x, y = P(el[1], el[2])
-            g.circle(x, y, el[3])
+            g.circle(x, y, el[3] * sc)
         elif k == 'arrow':
             x1, y1 = P(el[1], el[2]); x2, y2 = P(el[3], el[4])
             g.arrow(x1, y1, x2, y2, both=len(el) > 5 and el[5])
@@ -455,8 +455,8 @@ class Paper:
     def graph(self, page, x, y, w, h, q=None, **kw):
         return self.add(page, dict(t='graph', x=x, y=y, w=w, h=h, **kw), q)
 
-    def diagram(self, page, x, y, els, q=None):
-        return self.add(page, dict(t='diagram', x=x, y=y, els=els), q)
+    def diagram(self, page, x, y, els, q=None, scale=1):
+        return self.add(page, dict(t='diagram', x=x, y=y, els=els, scale=scale), q)
 
     def note(self, page, y, text, kind='tip'):
         self.notes.setdefault(page, []).append(dict(y=y, text=text, kind=kind))
@@ -551,8 +551,14 @@ class Paper:
 
 # ---------- spreadsheets ----------
 
+def hu(x, nd):
+    """Round half-up as a student with a calculator would (avoids 23.47/20 = 1.17349999 -> 1.173)."""
+    from decimal import Decimal, ROUND_HALF_UP
+    return float(Decimal(f'{x:.10f}').quantize(Decimal(1).scaleb(-nd), rounding=ROUND_HALF_UP))
+
+
 def workbook(path, title, intro, raw_cols, raw_rows, proc=None, chart=None, results=None,
-             answer_note=None, extra_raw_note=None, sheet_names=('Raw data', 'Suggested solution')):
+             answer_note=None, extra_raw_note=None, sheet_names=('Raw data', 'Suggested solution'), raw_fmt=None):
     """Two-tab practice workbook.
 
     raw_cols: list of header strings; raw_rows: list of row lists.
@@ -578,6 +584,20 @@ def workbook(path, title, intro, raw_cols, raw_rows, proc=None, chart=None, resu
     nraw = len(raw_cols)
     first = 5  # header row
 
+    def _dp(v):  # decimal places as written in the data (20.0 -> 1, 24.30 cannot be told from 24.3: use the column max)
+        if isinstance(v, bool) or not isinstance(v, float):
+            return 0
+        t = repr(v)
+        return 0 if 'e' in t else len(t.split('.')[1].rstrip('0') or '') if '.' in t else 0
+    fmts = list(raw_fmt) if raw_fmt else []
+    for j in range(len(fmts), nraw):
+        col = [r[j] for r in raw_rows if j < len(r) and isinstance(r[j], (int, float))]
+        if col and all(isinstance(v, float) for v in col):
+            dp = max(max(_dp(v) for v in col), 1)
+            fmts.append('0.' + '0' * dp)
+        else:
+            fmts.append(None)
+
     def head(ws, r, c, text):
         cell = ws.cell(r, c, text)
         cell.font, cell.fill = hdr_font, hdr_fill
@@ -601,8 +621,11 @@ def workbook(path, title, intro, raw_cols, raw_rows, proc=None, chart=None, resu
             for j, v in enumerate(row):
                 cell = ws.cell(first + 1 + i, j + 1, v)
                 cell.border = box
+                if isinstance(v, (int, float)) and fmts[j]:
+                    cell.number_format = fmts[j]
         last = first + len(raw_rows)
-        for k, (h, f) in enumerate(proc):
+        for k, pc in enumerate(proc):
+            h, f = pc[0], pc[1]
             col = nraw + 1 + k
             head(ws, first, col, h)
             ws.column_dimensions[L(col)].width = max(13, len(h) + 4)
@@ -615,7 +638,7 @@ def workbook(path, title, intro, raw_cols, raw_rows, proc=None, chart=None, resu
                 else:
                     cell.value = f.format(r=r, r1=r + 1, first=first + 1, last=last)
                     cell.font = blue
-                    cell.number_format = '0.000E+00' if 'E' in h else 'General'
+                    cell.number_format = pc[2] if len(pc) > 2 else 'General'
         rc = nraw + len(proc) + 2
         if si == 0:
             ws.cell(first - 1, nraw + 1, 'Your processing → fill the yellow cells, then plot your own graph.' if proc else
@@ -657,7 +680,8 @@ def workbook(path, title, intro, raw_cols, raw_rows, proc=None, chart=None, resu
             if not chart.get('line'):
                 s.graphicalProperties.line.noFill = True
             if chart.get('trend', True):
-                s.trendline = Trendline(trendlineType=chart.get('ttype', 'linear'), dispEq=True, dispRSqr=True)
+                tt = chart.get('ttype', 'linear')
+                s.trendline = Trendline(trendlineType=tt, order=2 if tt == 'poly' else None, dispEq=True, dispRSqr=True)
             ch.series.append(s)
             ws.add_chart(ch, f'{L(rc)}{first + 4 + (len(results) if results else 0) + (len(answer_note.split(chr(10))) if answer_note else 0)}')
     wb.save(path)
@@ -767,11 +791,11 @@ def dotlines(self, page, after=0, before=1e9, x_min=0):
     ys = []
     for ln in _layout(self)[page]:
         if after < ln['y0'] < before and DOTS.search(ln['text']) and len(DOTS.sub('', ln['text']).replace('[', '').replace(']', '').strip()) <= 3 and ln['x0'] >= x_min:
-            ys.append((ln['x0'], ln['y0'], ln['x1']))
+            ys.append((ln['x0'], ln['y0'], ln['x1'], ln['y0'] + 0.6 * (ln['y1'] - ln['y0'])))  # last = y of the dots
     if not ys:
         texty = [(ln['y0'] - 1, ln['y1'] + 1) for ln in _layout(self)[page]
                  if not DOTS.search(ln['text']) and not re.fullmatch(r'\[\d+\]|\|?\[\d+\]', ln['text'].strip())]
-        ys = [r for r in _raster_rules(self, page) if after < r[1] < before and r[0] >= x_min
+        ys = [(r[0], r[1], r[2], r[1] + 9) for r in _raster_rules(self, page) if after < r[1] < before and r[0] >= x_min
               and not any(a <= r[1] + 9 <= b for a, b in texty)]
     return ys
 
@@ -807,3 +831,64 @@ Paper.find = find
 Paper.dotlines = dotlines
 Paper.ans = ans
 Paper.write_lines = write_lines
+
+
+def plan_rows(text, width, size):
+    """Planning answer text -> rows. '## Heading' = bold heading; 'n) step' = numbered, hanging indent;
+    '- item' = indented sub-line under the previous step; anything else = plain wrapped text."""
+    rows = []
+    ind = tw('00) ', size)
+    for raw in text.strip().split('\n'):
+        raw = raw.strip()
+        if not raw:
+            continue
+        if raw.startswith('## '):
+            rows.append([(0, raw[3:], True)])
+            continue
+        m = re.match(r'^(\d+\))\s+(.*)$', raw)
+        if m:
+            num, body = m.groups()
+            for i, ln in enumerate(wrap(body, width - ind, size)):
+                rows.append([(0, num, False), (ind, ln, False)] if i == 0 else [(ind, ln, False)])
+            continue
+        if raw.startswith('- '):
+            for i, ln in enumerate(wrap(raw[2:], width - ind - 9, size)):
+                rows.append([(ind, '–', False), (ind + 9, ln, False)] if i == 0 else [(ind + 9, ln, False)])
+            continue
+        for ln in wrap(raw, width, size):
+            rows.append([(0, ln, False)])
+    return rows
+
+
+def flow(self, areas, text, size=8.6, q=None, width=None):
+    """Lay planning text into answer areas, two rows per dotted line.
+    areas: ('lines', page, after, before[, rows_per_line]) or ('box', page, x, y, w, h, lh)."""
+    slots = []
+    for a in areas:
+        if a[0] == 'lines':
+            dl = self.dotlines(a[1], a[2], a[3])
+            if not dl:
+                raise KeyError(f'{self.key} p{a[1]}: no dotted lines in {a}')
+            sp = (dl[-1][1] - dl[0][1]) / (len(dl) - 1) if len(dl) > 1 else 27
+            per = a[4] if len(a) > 4 else (2 if sp > 23 else 1)   # rows per dotted line
+            w = dl[0][2] - dl[0][0] - 24
+            for ln in dl:
+                for j in range(per):
+                    slots.append((a[1], dl[0][0], ln[3] - 2 - size + j * sp / 2, w))  # row 0 sits just on the dotted line
+        else:
+            _, pg, x, y, w, h, lh = a
+            yy = y
+            while yy + lh <= y + h + 0.1:
+                slots.append((pg, x, yy, w))
+                yy += lh
+    width = width or min(sl[3] for sl in slots)
+    rows = plan_rows(text, width, size)
+    if len(rows) > len(slots):
+        raise ValueError(f'{self.key}: plan needs {len(rows)} rows but only {len(slots)} slots')
+    for row, (pg, x, y, w) in zip(rows, slots):
+        for dx, s, bold in row:
+            self.add(pg, dict(t='text', x=x + dx, y=y, s=s, size=size, bold=bold), q)
+    return len(slots) - len(rows)
+
+
+Paper.flow = flow
