@@ -40,7 +40,7 @@ COMMONS = {
     "heimaey-buried": ("File:Vestmannaeyjar Vulkanasche 1.jpg", "Houses buried by Eldfell's ash, Heimaey, July 1974"),
     "heimaey-lava": ("File:Heimaey 08.jpg", "The 1973 lava beside the town, eighteen months after the eruption"),
     "heimaey-panorama": ("File:Heimaey (3521013286).jpg", "Heimaey, where the 1973 lava stopped just above the town"),
-    "gentoo": ("File:Falkland Islands Penguins 79.jpg", "Gentoo penguins, Saunders Island, Falkland Islands"),
+    "gentoo": ("File:Gentoo Penguins (4313133896).jpg", "Gentoo penguins, Falkland Islands"),
     "warrah": ("File:Falklandwolf Dusicyon culpaeus.jpg", "The warrah, illustrated for G. R. Waterhouse's mammals of the Beagle voyage"),
     "warrah-specimen": ("File:Falkland Island wolf, Dusicyon australis OMNZVT2369 !1pub (cropped).jpg", "Warrah specimen, Otago Museum"),
     "tussac": ("File:Tusac grass 01.jpg", "Tussac grass near Stanley"),
