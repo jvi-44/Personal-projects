@@ -57,7 +57,8 @@ def main():
                 pts += sc["items"]
             elif sc["type"] == "stat":
                 pts += [f"<b>{x['v']}</b> {x['label']}" for x in sc.get("stats", [])] or [f"<b>{sc['value']}</b> {sc['label']}"]
-        vidx[vid] = dict(dur=vindex[vid]["dur"], paras=[sc["say"] for sc in v["scenes"]], points=pts[:8])
+        vtt = open(os.path.join(site, "media", "video", f"{vid}.vtt"), encoding="utf-8").read()
+        vidx[vid] = dict(dur=vindex[vid]["dur"], paras=[sc["say"] for sc in v["scenes"]], points=pts[:8], vtt=vtt)
     for vid in CHECKS:
         assert vid in VIDEOS, f"check for unknown video {vid}"
     photos = {k: {f: p[f] for f in ("caption", "alt", "credit", "author", "license", "page", "source")} for k, p in PHOTOS.items()}

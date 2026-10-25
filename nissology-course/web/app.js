@@ -94,7 +94,7 @@
       <p class="lede">${esc(COURSE.blurb)}</p>
       <p class="mono small">${esc(COURSE.hours)} · ${READINGS.filter((r) => r.hosted).length} annotated papers · ${READINGS.filter((r) => !r.hosted).length} companion guides · ${read.length}/${total} readings marked read</p>
     </header>
-    ${VIDX.intro ? `<section class="trailer"><figure class="vid"><video controls preload="none" playsinline poster="media/video/intro.jpg" data-vid="intro"><source src="media/video/intro.mp4" type="video/mp4"><track kind="captions" src="media/video/intro.vtt" srclang="en" label="English" default></video><figcaption>Course trailer · <span class="mono">${fmtDur(VIDX.intro.dur)}</span></figcaption></figure></section>` : ""}
+    ${VIDX.intro ? `<section class="trailer"><figure class="vid"><video controls preload="none" playsinline poster="media/video/intro.jpg" data-vid="intro"><source src="media/video/intro.mp4" type="video/mp4"><track kind="captions" src="${capSrc("intro")}" srclang="en" label="English" default></video><figcaption>Course trailer · <span class="mono">${fmtDur(VIDX.intro.dur)}</span></figcaption></figure></section>` : ""}
     <section class="chartmap">
       <figure class="worldmap" id="worldmap" aria-label="World map of the six case-study islands"><div class="map-placeholder">Loading map…</div></figure>
     </section>
@@ -164,6 +164,9 @@
   }
 
   // ------------------------------------------------------------ video lessons
+  // captions are inlined (VIDX[id].vtt) and served as blob URLs, since the host does not serve .vtt files
+  const capURL = {};
+  const capSrc = (vid) => capURL[vid] || (capURL[vid] = URL.createObjectURL(new Blob([VIDX[vid].vtt], { type: "text/vtt" })));
   const fmtDur = (d) => `${Math.floor(d / 60)}:${String(Math.round(d % 60)).padStart(2, "0")}`;
   function lessonHTML(u, i, h, body) {
     const vid = `${u.id}-${i}`, v = VIDX[vid];
@@ -172,7 +175,7 @@
     const done = watched().includes(vid);
     return `<section class="lesson" id="s${i}">${head}
       <figure class="vid"><video controls preload="none" playsinline poster="media/video/${vid}.jpg" data-vid="${vid}">
-        <source src="media/video/${vid}.mp4" type="video/mp4"><track kind="captions" src="media/video/${vid}.vtt" srclang="en" label="English" default></video>
+        <source src="media/video/${vid}.mp4" type="video/mp4"><track kind="captions" src="${capSrc(vid)}" srclang="en" label="English" default></video>
         <figcaption><span class="mono">${fmtDur(v.dur)}</span> · narrated, with captions <span class="wchip ${done ? "on" : ""}" data-w="${vid}">${done ? "Watched ✓" : "Not watched yet"}</span></figcaption></figure>
       ${v.points && v.points.length ? `<div class="keypoints"><h3>Key points</h3><ul>${v.points.map((x) => `<li>${x}</li>`).join("")}</ul></div>` : ""}
       <details class="more"><summary>Transcript</summary><div class="transcript">${v.paras.map((p) => `<p>${esc(p)}</p>`).join("")}</div></details>
