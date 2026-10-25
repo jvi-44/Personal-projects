@@ -1,0 +1,87 @@
+"""Photo sources for the course. tools/photos_fetch.py downloads each one and writes content/photos.py
+with full credit and licence metadata.
+
+COMMONS: id → (Wikimedia Commons file title, caption)
+NASA:    id → (NASA image id, caption, credit)   (public domain, NASA image library)
+"""
+
+COMMONS = {
+    # Unit 0 / Funafuti
+    "funafuti-boring": ("File:The atoll of Funafuti; borings into a coral reef and the results, being the report of the Coral Reef Committee of the Royal Society (1904) (14762635691).jpg", "Funafuti reef flat, from the Royal Society's report on the 1896–98 boring expeditions (1904)"),
+    "funafuti-eo": ("File:Funafuti Atoll, Tuvalu (153047 - funafuti oli 20230928 lrg).jpg", "Funafuti Atoll from Landsat 9, September 2023"),
+    "funafuti-aerial": ("File:Aerial view of Tuvalu’s capital, Funafuti, 2011. Tuvalu is a remote country of low lying atolls, making it vulnerable to climate change. Photo- Lily-Anne Homasi - DFAT (12779656093).jpg", "Aerial view of Fogafale, Funafuti, 2011"),
+    "funafuti-airport": ("File:Tuvalu Funafuti Atoll.JPG", "Funafuti from the air, with the airstrip across Fogafale"),
+    "funafuti-beach": ("File:Funafuti Plage w.jpg", "A lagoon beach on Funafuti"),
+    "tuvalu-copernicus": ("File:Coastal adaptation measures in Tuvalu (Copernicus 2025-06-29).png", "Fogafale before and after land reclamation, Sentinel-2 satellite images"),
+    "tuvalu-reclamation": ("File:Tuvalu Land Reclamation Program 2025.jpg", "Land reclamation works on Fogafale, 2025"),
+    "fatele": ("File:Fatele Funafuti Tuvalu.jpg", "Fatele performance by a group from Nanumea, Independence Day 2025"),
+    # Pitcairn
+    "pitcairn-island": ("File:Pitcairn Island NOAA.jpg", "Pitcairn Island from the sea"),
+    "pitcairn-chart": ("File:Admiralty Chart No 1113 Pitcairn Island, Published 1829.jpg", "Admiralty chart of Pitcairn Island, surveyed by Captain F. W. Beechey (published 1829)"),
+    "pitcairn-shillibeer": ("File:Pitcairn Island by John Shillibeer.jpg", "Pitcairn Island, from John Shillibeer's narrative of HMS Briton's voyage (1817)"),
+    "pitcairn-1814": ("File:A view of Pitcairn's Island, South Seas, 1814, J. Shillibeer.jpg", "A view of Pitcairn's Island, South Seas, 1814, by J. Shillibeer"),
+    "bounty-bay": ("File:Bounty bay.jpg", "Bounty Bay, Pitcairn Island, at dawn"),
+    "bounty-bay-1871": ("File:Bounty Bay mutineersofbount00belcuoft 0006.jpg", "Bounty Bay, from Lady Belcher's The Mutineers of the Bounty (1870)"),
+    "adamstown": ("File:Adamstown.jpg", "Adamstown from Gannet's Ridge, 2012"),
+    "adams-grave": ("File:Pitcairn John Adams Grab.jpg", "The grave of John Adams, the last surviving mutineer"),
+    "longboat": ("File:2 Long Boats - panoramio.jpg", "Pitcairn's longboats in their shed"),
+    "henderson-beach": ("File:Henderson Island-110252.jpg", "North-west beach, Henderson Island"),
+    "henderson-coast": ("File:Henderson Island-110248.jpg", "North Beach and the raised-reef cliffs of Henderson Island"),
+    "henderson-crake": ("File:Porzana atra.Imagen fija003.jpg", "Henderson crake, a flightless rail found only on Henderson"),
+    # Falklands
+    "stone-run": ("File:East Falkland - Stone Run.jpg", "A stone run on East Falkland"),
+    "stone-run-kent": ("File:Stone-run.JPG", "Stone run on Mount Kent"),
+    "stanley": ("File:Town and Arch From the water Stanley Falkland Islands.jpg", "Stanley from the water, with the whalebone arch and cathedral"),
+    "albatross-colony": ("File:FAL-2016-New Island, Falkland Islands-Black-browed albatross (Thalassarche melanophrys) 01.jpg", "Black-browed albatross, New Island, Falkland Islands"),
+    # Surtsey
+    "surtsey-1963": ("File:Surtsey eruption 1963.jpg", "Surtsey on 30 November 1963, sixteen days after the eruption began"),
+    "surtsey-1963b": ("File:Surtsey eruption 2.jpg", "Surtsey erupting, 1963"),
+    "surtsey-air": ("File:Surtsey from air by Bruce McAdam.jpg", "Surtsey from the air, 2008"),
+    "heimaey-buried": ("File:Vestmannaeyjar Vulkanasche 1.jpg", "Houses buried by Eldfell's ash, Heimaey, July 1974"),
+    "heimaey-lava": ("File:Heimaey 08.jpg", "The 1973 lava beside the town, eighteen months after the eruption"),
+    "heimaey-panorama": ("File:Heimaey (3521013286).jpg", "Heimaey, where the 1973 lava stopped just above the town"),
+    "gentoo": ("File:Falkland Islands Penguins 79.jpg", "Gentoo penguins, Saunders Island, Falkland Islands"),
+    "warrah": ("File:Falklandwolf Dusicyon culpaeus.jpg", "The warrah, illustrated for G. R. Waterhouse's mammals of the Beagle voyage"),
+    "warrah-specimen": ("File:Falkland Island wolf, Dusicyon australis OMNZVT2369 !1pub (cropped).jpg", "Warrah specimen, Otago Museum"),
+    "tussac": ("File:Tusac grass 01.jpg", "Tussac grass near Stanley"),
+    "tussac-1847": ("File:Ross 1847 Tussac Grass of Falkland Islands voyagediscovery2Ross 0243.jpg", "Tussac grass, drawn on James Clark Ross's Antarctic expedition (published 1847)"),
+    "tristan-settlement": ("File:Tristan da Cunha, British overseas territory-20March2012.jpg", "Tristan da Cunha from the sea, March 2012"),
+    "tristan-longboat": ("File:Tristan da Cunha - Lobster longboat.jpg", "A lobster longboat, Tristan da Cunha"),
+    "edinburgh": ("File:Edinburgh-Tristan.jpg", "Edinburgh of the Seven Seas"),
+    "tristan-from-nightingale": ("File:View of Tristan da Cunha from Nightingale island.jpg", "Tristan da Cunha seen from Nightingale Island"),
+    "rail": ("File:Inaccessible Island Rail (Atlantisia rogersi).jpg", "Inaccessible Island rail, the world's smallest flightless bird"),
+    "nesospiza": ("File:Wilkins's Finch Nesospiza wilkinsi in Nightingale Island, Tristan da Cunha 02.png", "Wilkins's finch (Nesospiza wilkinsi), Nightingale Island"),
+    "albatross-nightingale": ("File:Albatrossess nesting in Fernbrush on Nightingale island.jpg", "Albatrosses nesting among island trees, Nightingale Island"),
+    "gough-landsat": ("File:Gough Island Landsat.jpg", "Gough Island from Landsat"),
+    "gough-1955": ("File:1955postGoughIslandSurvey.jpg", "A cover postmarked by the Gough Island Scientific Survey, 1955"),
+    "bounty-painting": ("File:The Mutineers turning Lieut Bligh and part of the Officers and Crew adrift from His Majesty's Ship the Bounty ( 29 April 1789) RMG S0713.jpg", "The mutineers turning Lieutenant Bligh adrift, Robert Dodd, 1790"),
+    "henderson-plastic": ("File:Hendersonmüll.jpg", "Marine debris on a Henderson Island beach"),
+    "darwin": ("File:Charles Darwin by G. Richmond.jpg", "Charles Darwin, by George Richmond (1840)"),
+    "enewetak": ("File:Enewetak Atoll - 2014-02-10 - Landsat 8 - 15m.png", "Enewetak Atoll, where boreholes reached basalt in 1952 (Landsat 8)"),
+    "kilauea": ("File:Lava fountaining (11 September 2023) (summit of Kilauea Volcano, Hawaii) 1.jpg", "Lava fountaining at Kīlauea, Hawaiʻi, September 2023 (USGS)"),
+    "bora-bora": ("File:Bora Bora (16542797633).jpg", "Bora Bora: a volcanic peak inside a barrier reef"),
+    "dragon-trees": ("File:Dragon blood tree forest, Socotra, Yemen.jpg", "Dragon's blood tree woodland, Socotra"),
+    "dragon-tree": ("File:Dragons Blood Tree, Socotra Island (10941931846).jpg", "A dragon's blood tree, Dracaena cinnabari"),
+    "haggeher": ("File:Dragonblood tree in Socotra 1.jpg", "Dragon's blood tree with the Haggeher (Hajhir) mountains behind"),
+    "goats": ("File:Socotra - dracaena cinnabari trees with goats.jpg", "Dragon's blood trees with goats, their main threat"),
+    "firmihin": ("File:Socotra - Rokeb di Firmihin (1).jpg", "Firmihin dragon's blood forest, near the Diksam plateau"),
+    "desert-rose": ("File:Socotra Bottle Tree (51881615950).jpg", "Socotran desert rose (Adenium obesum subsp. socotranum)"),
+    "cucumber-tree": ("File:Cucumber tree (6407165121).jpg", "Cucumber tree (Dendrosicyos socotranus)"),
+    "hadibo-1898": ("File:View of Hadibu and the Haghier Mountains from Tamarida Bay.jpg", "Hadibo and the Haggeher mountains from Tamarida Bay, photographed by Henry Ogg Forbes in 1898"),
+    "hadibo": ("File:Mosque, Hadibo, Socotra Island (11007460353).jpg", "A mosque in Hadibo, Socotra"),
+    "hoq": ("File:Al Hoq Cave with Brahmi Greek Aramaic and other inscriptions, Socotra Yemen 02.jpg", "Hoq Cave, with Brahmi, Greek, Aramaic and other ancient inscriptions"),
+    "puffins": ("File:Juvenile atlantic puffins at Vestmannaeyjar 2.jpg", "Atlantic puffins, Westman Islands"),
+}
+
+NASA = {
+    "atoll-tikehau": ("GSFC_20171208_Archive_e000110", "Tikehau Atoll, French Polynesia, from orbit", "NASA Goddard / Landsat"),
+    "henderson-aster": ("PIA21691", "Henderson Island from the ASTER instrument on NASA's Terra satellite", "NASA/METI/AIST/Japan Space Systems, and U.S./Japan ASTER Science Team"),
+    "tristan-aster": ("PIA22506", "Tristan da Cunha in false colour (vegetation red), ASTER", "NASA/METI/AIST/Japan Space Systems, and U.S./Japan ASTER Science Team"),
+    "tuvalu-swot": ("PIA25777", "Sea surface height around Tuvalu measured by the SWOT satellite, 2023", "NASA/JPL-Caltech"),
+    "falklands-fires": ("iss015e30526", "Smoke from fires on East Falkland, photographed from the ISS, September 2007", "NASA, ISS Expedition 15 crew"),
+    "tristan-iss": ("iss034e041528", "Tristan da Cunha photographed from the ISS, February 2013", "NASA, ISS Expedition 34 crew"),
+    "tristan-peak": ("iss056e097317", "Queen Mary's Peak, Tristan da Cunha, from the ISS, July 2018", "NASA, ISS Expedition 56 crew"),
+    "falklands-iss": ("iss066e091560", "The Falkland Islands from the ISS, November 2021", "NASA, ISS Expedition 66 crew"),
+    "tuvalu-nui-iss": ("iss067e315980", "Niuoku islet, Tuvalu, from the ISS, September 2022", "NASA, ISS Expedition 67 crew"),
+    "socotra-iss": ("iss069e004768", "Socotra's southern coast from the ISS, April 2023", "NASA, ISS Expedition 69 crew"),
+}

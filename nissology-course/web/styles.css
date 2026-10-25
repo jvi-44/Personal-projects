@@ -315,3 +315,52 @@ details.tbl summary { cursor: pointer; font-family: var(--font-ui); font-size: 0
 }
 @media (max-width: 600px) { .m-lab { font-size: 28px; stroke-width: 6px; } .m-dot { r: 9px; } .m-ring { r: 16px; stroke-width: 2.5; } }
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+
+/* video lessons */
+.lesson { margin-top: 2.6rem; }
+.lnum { color: var(--accent); font-size: 0.8em; margin-right: 6px; }
+figure.vid { margin: 0.6rem 0 0; max-width: 960px; }
+figure.vid video { width: 100%; aspect-ratio: 16 / 9; display: block; background: #0b1622; border-radius: 6px; }
+.wchip { font-family: var(--font-ui); font-size: 0.78rem; padding: 1px 8px; border-radius: 10px; border: 1px solid var(--rule); margin-left: 6px; }
+.wchip.on { border-color: var(--s3); color: var(--s3); }
+.keypoints { margin-top: 12px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 4px 18px 10px; max-width: 960px; }
+.keypoints h3 { margin-top: 10px; }
+.keypoints li { margin: 4px 0; }
+details.more { margin-top: 10px; max-width: 960px; border-top: 1px solid var(--rule); }
+details.more summary { cursor: pointer; font-family: var(--font-ui); font-weight: 600; color: var(--link); padding: 8px 0; }
+details.more .transcript p { color: var(--ink-2); }
+.check, .tasks .task, .unitquiz { max-width: 960px; }
+.check { margin-top: 14px; background: var(--paper-2); border-radius: 6px; padding: 2px 18px 14px; }
+.trailer { margin-top: 18px; }
+.trailer figure.vid { max-width: 820px; }
+
+/* quizzes */
+.quiz form { display: flex; flex-direction: column; gap: 14px; }
+fieldset.q { border: 1px solid var(--rule); border-radius: 6px; padding: 10px 14px 12px; margin: 0; background: var(--card); min-width: 0; }
+fieldset.q legend { font-weight: 600; padding: 0 4px; max-width: 100%; }
+.qn { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--ink); color: var(--paper); font-size: 0.75rem; margin-right: 4px; }
+.opt { display: flex; gap: 10px; align-items: baseline; padding: 5px 4px; border-radius: 4px; cursor: pointer; }
+.opt:hover { background: var(--paper-2); }
+.opt input { accent-color: var(--accent); flex: none; }
+.numrow { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-family: var(--font-ui); }
+.numrow input { width: 9em; font: inherit; padding: 4px 8px; border: 1px solid var(--rule); border-radius: 4px; background: var(--paper); color: var(--ink); }
+ol.order { list-style: none; padding: 0; margin: 6px 0; display: flex; flex-direction: column; gap: 6px; counter-reset: ord; }
+ol.order li { display: flex; justify-content: space-between; gap: 10px; align-items: center; padding: 6px 10px; border: 1px solid var(--rule); border-radius: 4px; background: var(--paper); counter-increment: ord; max-width: none; }
+ol.order li::before { content: counter(ord); font-family: var(--font-mono); color: var(--muted); margin-right: 8px; }
+ol.order li span:first-of-type { flex: 1; }
+.ob { display: flex; gap: 4px; }
+.fb { font-size: 0.93rem; margin-top: 6px; color: var(--ink-2); }
+fieldset.right { border-color: var(--s3); box-shadow: inset 3px 0 0 var(--s3); }
+fieldset.wrong { border-color: var(--s2); box-shadow: inset 3px 0 0 var(--s2); }
+.qbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.qscore { color: var(--accent); font-weight: 600; }
+
+/* gallery & credits */
+.ggrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+.ggrid figure { margin: 0; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+.ggrid img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; }
+.ggrid figcaption { padding: 6px 10px 10px; font-size: 0.85rem; color: var(--ink); }
+.credit-s { display: block; color: var(--muted); font-size: 0.76rem; margin-top: 2px; }
+.cthumb { width: 64px; height: 44px; object-fit: cover; border-radius: 3px; vertical-align: middle; margin-right: 8px; }
+fieldset.q legend { float: left; width: 100%; padding: 0; margin-bottom: 8px; }
+fieldset.q legend + * { clear: both; }

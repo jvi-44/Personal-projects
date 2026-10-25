@@ -1,2 +1,5 @@
 .tile-cache/
 __pycache__/
+tools/video/vendor/
+tools/video/build/
+tools/video/voices/

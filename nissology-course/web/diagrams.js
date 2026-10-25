@@ -110,7 +110,7 @@ const DIAGRAMS = (() => {
 
   // ---------------------------------------------------------------- GDM
   function gdm() {
-    const W = 640, H = 260, x0 = 60, x1 = 610, y0 = 210, y1 = 40;
+    const W = 640, H = 264, x0 = 60, x1 = 610, y0 = 210, y1 = 70;
     let s = `<line x1="${x0}" y1="${y0}" x2="${x1}" y2="${y0}" class="d-axis"/><line x1="${x0}" y1="${y0}" x2="${x0}" y2="${y1}" class="d-axis"/>`;
     const curve = (amp, skew) => {
       let d = "";
@@ -124,10 +124,9 @@ const DIAGRAMS = (() => {
     s += `<path d="${curve(0.92, 0.9)}" class="d-curve1"/>`;
     s += `<path d="${curve(0.6, 1.3)}" class="d-curve2"/>`;
     s += `<path d="${curve(0.75, 0.7)}" class="d-curve3"/>`;
-    s += T(150, 70, "area & elevation", "d-t d-s c1", "start");
-    s += T(360, 92, "species richness", "d-t d-s c3", "start");
-    s += T(392, 142, "single-island endemics", "d-t d-s c2", "start");
-    s += T((x0 + x1) / 2, 236, "island age  (birth → growth → erosion and subsidence)", "d-t d-s");
+    const lg = [["area & elevation", "c1"], ["species richness", "c3"], ["single-island endemics", "c2"]];
+    lg.forEach(([t, c], i) => { s += `<rect x="440" y="${18 + i * 18}" width="14" height="4" class="${c}"/>` + T(460, 24 + i * 18, t, `d-t d-s ${c}`, "start"); });
+    s += T((x0 + x1) / 2, 254, "island age  (birth → growth → erosion and subsidence)", "d-t d-s");
     s += `<text x="22" y="${(y0 + y1) / 2}" class="d-t d-s" text-anchor="middle" transform="rotate(-90 22 ${(y0 + y1) / 2})">relative value</text>`;
     s += T(86, 228, "Surtsey", "d-t d-m", "start");
     s += T(250, 228, "Tristan", "d-t d-m", "start");

@@ -18,6 +18,15 @@
     toggle(id) { const v = new Set(this.get()); v.has(id) ? v.delete(id) : v.add(id); this.set([...v]); },
   };
 
+  const kv = {
+    get(k, d) { try { return JSON.parse(localStorage.getItem("nissology-" + k)) ?? d; } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem("nissology-" + k, JSON.stringify(v)); } catch (e) { /* storage unavailable */ } },
+  };
+  const watched = () => kv.get("watched", []);
+  const markWatched = (id) => { const w = new Set(watched()); w.add(id); kv.set("watched", [...w]); };
+  const scores = () => kv.get("scores", {});
+  const saveScore = (key, got, of) => { const sc = scores(); sc[key] = [got, of]; kv.set("scores", sc); };
+
   // ------------------------------------------------------------ routing
   function route() {
     cleanup.forEach((f) => { try { f(); } catch (e) { /* ignore */ } });
@@ -25,6 +34,7 @@
     const h = (location.hash || "#home").slice(1);
     if (h.startsWith("read-") && R[h.slice(5)]) renderReader(R[h.slice(5)]);
     else if (U[h]) renderUnit(U[h]);
+    else if (h === "credits") renderCredits();
     else renderHome();
     $$(".nav a").forEach((a) => a.classList.toggle("on", a.getAttribute("href") === "#" + (U[h] ? h : h.startsWith("read-") && R[h.slice(5)] ? R[h.slice(5)].unit : "home")));
     window.scrollTo(0, 0);
@@ -84,6 +94,7 @@
       <p class="lede">${esc(COURSE.blurb)}</p>
       <p class="mono small">${esc(COURSE.hours)} · ${READINGS.filter((r) => r.hosted).length} annotated papers · ${READINGS.filter((r) => !r.hosted).length} companion guides · ${read.length}/${total} readings marked read</p>
     </header>
+    ${VIDX.intro ? `<section class="trailer"><figure class="vid"><video controls preload="none" playsinline poster="media/video/intro.jpg" data-vid="intro"><source src="media/video/intro.mp4" type="video/mp4"><track kind="captions" src="media/video/intro.vtt" srclang="en" label="English" default></video><figcaption>Course trailer · <span class="mono">${fmtDur(VIDX.intro.dur)}</span></figcaption></figure></section>` : ""}
     <section class="chartmap">
       <figure class="worldmap" id="worldmap" aria-label="World map of the six case-study islands"><div class="map-placeholder">Loading map…</div></figure>
     </section>
@@ -95,7 +106,7 @@
         return `<li><a href="#${u.id}" class="unit-row">
           <span class="unit-num">${u.num}</span>
           <span class="unit-main"><span class="unit-kicker">${esc(u.kicker)}</span><span class="unit-title">${esc(u.title)}</span><span class="unit-sum">${esc(u.summary)}</span></span>
-          <span class="unit-meta mono small">${u.coords ? esc(u.coords) + "<br>" : ""}${rs.length ? `${done}/${rs.length} read` : ""}</span>
+          <span class="unit-meta mono small">${u.coords ? esc(u.coords) + "<br>" : ""}${unitProgress(u)}${rs.length ? `<br>${done}/${rs.length} read` : ""}</span>
         </a></li>`;
       }).join("")}</ol>
     </section>
@@ -105,8 +116,15 @@
       <h3>Annotation colours</h3><div class="legend-grid">${legendHTML()}</div></div>
     </section>
     <section><h2>All readings</h2><div class="rgrid">${READINGS.map(readingCard).join("")}</div></section>
-    <footer class="foot small muted"><p>Terrain: AWS Terrain Tiles (Mapzen terrarium; SRTM, EU-DEM, ETOPO1 and other public sources). Coastlines: Natural Earth via world-atlas. Papers are reproduced under their Creative Commons licences with annotations added; companion-guide papers are linked, not reproduced.</p></footer>`;
+    <footer class="foot small muted"><p><a href="#credits">Photo credits and licences</a>. Terrain: AWS Terrain Tiles (Mapzen terrarium; SRTM, EU-DEM, ETOPO1 and other public sources). Coastlines: Natural Earth via world-atlas. Papers are reproduced under their Creative Commons licences with annotations added; companion-guide papers are linked, not reproduced.</p></footer>`;
     drawWorldMap($("#worldmap"));
+    wireVideos(view);
+  }
+
+  function unitProgress(u) {
+    const vids = u.sections.map((_, i) => `${u.id}-${i}`).filter((v) => VIDX[v]);
+    const w = watched().filter((v) => vids.includes(v)).length, sc = scores()[`unit-${u.id}`];
+    return `${vids.length ? `${w}/${vids.length} videos` : ""}${sc ? ` · quiz ${sc[0]}/${sc[1]}` : ""}`;
   }
 
   // ------------------------------------------------------------ maps (d3)
@@ -145,6 +163,105 @@
     }).catch(() => { el.textContent = ""; });
   }
 
+  // ------------------------------------------------------------ video lessons
+  const fmtDur = (d) => `${Math.floor(d / 60)}:${String(Math.round(d % 60)).padStart(2, "0")}`;
+  function lessonHTML(u, i, h, body) {
+    const vid = `${u.id}-${i}`, v = VIDX[vid];
+    const head = `<h2><span class="lnum mono">${u.num}.${i + 1}</span> ${esc(h)}</h2>`;
+    if (!v) return `<section class="prose lesson" id="s${i}">${head}${body}</section>`;
+    const done = watched().includes(vid);
+    return `<section class="lesson" id="s${i}">${head}
+      <figure class="vid"><video controls preload="none" playsinline poster="media/video/${vid}.jpg" data-vid="${vid}">
+        <source src="media/video/${vid}.mp4" type="video/mp4"><track kind="captions" src="media/video/${vid}.vtt" srclang="en" label="English" default></video>
+        <figcaption><span class="mono">${fmtDur(v.dur)}</span> · narrated, with captions <span class="wchip ${done ? "on" : ""}" data-w="${vid}">${done ? "Watched ✓" : "Not watched yet"}</span></figcaption></figure>
+      ${v.points && v.points.length ? `<div class="keypoints"><h3>Key points</h3><ul>${v.points.map((x) => `<li>${x}</li>`).join("")}</ul></div>` : ""}
+      <details class="more"><summary>Transcript</summary><div class="transcript">${v.paras.map((p) => `<p>${esc(p)}</p>`).join("")}</div></details>
+      <details class="more"><summary>Reading notes, diagrams and data</summary><div class="prose">${body}</div></details>
+      ${CHECKS[vid] ? `<div class="check"><h3>Check your understanding</h3><div class="quiz" data-quiz="check-${vid}"></div></div>` : ""}
+    </section>`;
+  }
+  function wireVideos(root) {
+    $$("video[data-vid]", root).forEach((v) => {
+      const id = v.dataset.vid, src = $("source", v);
+      let tried = false;
+      // some embedded viewers refuse direct media URLs; fall back to a blob URL fetched from the same files
+      const fallback = async () => {
+        if (tried) return; tried = true;
+        try { const b = await (await fetch(src.src)).blob(); v.src = URL.createObjectURL(b); v.load(); } catch (e) { /* leave the native error */ }
+      };
+      src.addEventListener("error", fallback);
+      v.addEventListener("ended", () => { markWatched(id); const c = $(`.wchip[data-w="${id}"]`, root); if (c) { c.textContent = "Watched ✓"; c.classList.add("on"); } });
+      v.addEventListener("timeupdate", () => { if (v.duration && v.currentTime / v.duration > 0.9) markWatched(id); });
+    });
+  }
+  function gallery(u) {
+    const ids = [...new Set(UNIT_PHOTOS[u.id] || [])].filter((id) => PHOTOS[id]);
+    if (!ids.length) return "";
+    return `<section class="gallery"><h2>In pictures</h2><p class="muted">Photographs from expeditions, surveys, archives, satellites and travellers used in this unit's videos.</p>
+      <div class="ggrid">${ids.map((id) => { const p = PHOTOS[id]; return `<figure><img loading="lazy" src="media/photos/${id}.jpg" alt="${esc(p.alt)}"><figcaption>${esc(p.caption)}<span class="credit-s">${esc(p.credit)}</span></figcaption></figure>`; }).join("")}</div>
+      <p class="small"><a href="#credits">All photo credits and licences</a></p></section>`;
+  }
+  function renderCredits() {
+    document.title = "Credits · Nissology";
+    view.innerHTML = `<header class="unit-head"><p class="eyebrow">Course credits</p><h1 class="display">Photographs and data</h1>
+      <p class="lede">Every photograph is used under its licence or is in the public domain. Click a title to see the original file and full licence terms.</p></header>
+      <section><div class="table-wrap"><table><thead><tr><th>Photo</th><th>Credit</th><th>Licence</th><th>Source</th></tr></thead><tbody>
+      ${Object.entries(PHOTOS).map(([id, p]) => `<tr><td><img src="media/photos/${id}.jpg" alt="" loading="lazy" class="cthumb">${esc(p.caption)}</td><td>${esc(p.author)}</td><td>${esc(p.license)}</td><td><a href="${esc(p.page)}" target="_blank" rel="noopener">${esc(p.source)}</a></td></tr>`).join("")}
+      </tbody></table></div></section>
+      <section class="prose"><h2>Narration and video</h2><p>Videos are animated and rendered for this course. Narration uses the open-source Piper text-to-speech engine (voice: en_US lessac). Terrain from AWS Terrain Tiles; coastlines from Natural Earth.</p></section>`;
+  }
+
+  // ------------------------------------------------------------ quizzes
+  function seededShuffle(arr, seed) {
+    const a = arr.map((x, i) => [x, i]); let h = 0; for (const c of seed) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+    for (let i = a.length - 1; i > 0; i--) { h = (h * 1103515245 + 12345) >>> 0; const j = h % (i + 1); [a[i], a[j]] = [a[j], a[i]]; }
+    if (a.every(([, i], k) => i === k) && a.length > 1) a.push(a.shift());
+    return a;
+  }
+  function quizFor(key) {
+    if (key.startsWith("check-")) return CHECKS[key.slice(6)];
+    if (key.startsWith("unit-")) return UNIT_QUIZ[key.slice(5)];
+    if (key.startsWith("task-")) { const [, unit, i] = key.match(/^task-(.+)-(\d+)$/); return [TASKS[unit][+i].check]; }
+  }
+  function mountQuiz(el) {
+    const key = el.dataset.quiz, qs = quizFor(key); if (!qs) return;
+    const best = scores()[key];
+    el.innerHTML = `<form novalidate>${qs.map((q, qi) => {
+      const name = `${key}-${qi}`;
+      let body = "";
+      if (q.kind === "single" || q.kind === "multi") body = q.o.map((o, oi) => `<label class="opt"><input type="${q.kind === "single" ? "radio" : "checkbox"}" name="${name}" value="${oi}" id="${name}-${oi}"><span>${esc(o)}</span></label>`).join("");
+      else if (q.kind === "num") body = `<label class="numrow" for="${name}">Your answer <input type="number" step="any" id="${name}" name="${name}" inputmode="decimal"> <span class="muted">${esc(q.unit || "")}</span></label>`;
+      else if (q.kind === "order") body = `<ol class="order" data-name="${name}">${seededShuffle(q.o, name).map(([o, i]) => `<li data-i="${i}"><span>${esc(o)}</span><span class="ob"><button type="button" class="btn-s up" aria-label="Move up">↑</button><button type="button" class="btn-s dn" aria-label="Move down">↓</button></span></li>`).join("")}</ol>`;
+      return `<fieldset class="q" data-qi="${qi}"><legend><span class="qn mono">${qi + 1}</span> ${esc(q.q)}${q.kind === "multi" ? ' <span class="muted small">(choose all that apply)</span>' : ""}${q.kind === "order" ? ' <span class="muted small">(use the arrows to put them in order)</span>' : ""}</legend>${body}<div class="fb" aria-live="polite"></div></fieldset>`;
+    }).join("")}
+    <div class="qbar"><button type="submit" class="btn">Check answers</button><button type="button" class="btn btn-ghost qreset">Try again</button><span class="qscore mono">${best ? `Best: ${best[0]}/${best[1]}` : ""}</span></div></form>`;
+    const form = $("form", el);
+    $$(".order", form).forEach((ol) => ol.addEventListener("click", (e) => {
+      const li = e.target.closest("li"); if (!li) return;
+      if (e.target.closest(".up") && li.previousElementSibling) li.parentNode.insertBefore(li, li.previousElementSibling);
+      if (e.target.closest(".dn") && li.nextElementSibling) li.parentNode.insertBefore(li.nextElementSibling, li);
+    }));
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      let got = 0;
+      qs.forEach((q, qi) => {
+        const fs = $(`.q[data-qi="${qi}"]`, form), name = `${key}-${qi}`; let ok = false, answered = true;
+        if (q.kind === "single") { const c = $(`input[name="${name}"]:checked`, form); answered = !!c; ok = c && +c.value === q.a; }
+        else if (q.kind === "multi") { const c = $$(`input[name="${name}"]:checked`, form).map((x) => +x.value).sort(); answered = c.length > 0; ok = JSON.stringify(c) === JSON.stringify([...q.a].sort()); }
+        else if (q.kind === "num") { const v = parseFloat($(`#${CSS.escape(name)}`, form).value); answered = !isNaN(v); ok = answered && Math.abs(v - q.a) <= (q.tol || 0); }
+        else if (q.kind === "order") { ok = $$("li", fs).every((li, k) => +li.dataset.i === k); }
+        if (ok) got++;
+        fs.classList.toggle("right", !!ok); fs.classList.toggle("wrong", !ok);
+        const correct = q.kind === "single" ? q.o[q.a] : q.kind === "multi" ? q.a.map((i) => q.o[i]).join("; ") : q.kind === "num" ? `${q.a}${q.unit ? " " + q.unit : ""}${q.tol ? ` (±${q.tol})` : ""}` : q.o.join(" → ");
+        $(".fb", fs).innerHTML = `<b>${ok ? "Correct." : answered ? "Not quite." : "No answer."}</b> ${ok ? "" : `Answer: ${esc(correct)}. `}${esc(q.e)}`;
+      });
+      const prev = scores()[key];
+      if (!prev || got > prev[0]) saveScore(key, got, qs.length);
+      $(".qscore", form).textContent = `Score ${got}/${qs.length}` + (prev && prev[0] > got ? ` · best ${prev[0]}/${prev[1]}` : "");
+    });
+    $(".qreset", form).addEventListener("click", () => mountQuiz(el));
+  }
+
   // ------------------------------------------------------------ unit page
   function renderUnit(u) {
     document.title = `${u.short} · Nissology`;
@@ -160,12 +277,17 @@
     ${u.facts ? `<section class="factfile"><div class="locator" id="locator"></div><dl class="facts">${u.facts.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl></section>` : ""}
     <section class="objectives"><h2>By the end of this unit you can</h2><ul>${u.objectives.map((o) => `<li>${esc(o)}</li>`).join("")}</ul></section>
     ${u.model ? `<section class="model-sec"><h2>3D terrain and bathymetry</h2><div class="viewer" id="viewer"></div></section>` : ""}
-    ${u.sections.map(([h, body], i) => `<section class="prose" id="s${i}"><h2>${esc(h)}</h2>${body}</section>`).join("")}
+    ${u.sections.map(([h, body], i) => lessonHTML(u, i, h, body)).join("")}
+    ${gallery(u)}
+    ${TASKS[u.id] ? `<section class="tasks"><h2>Model tasks</h2><p class="muted">Use the 3D model above, then check your answer.</p>${TASKS[u.id].map((t, i) => `<div class="task"><h3>${esc(t.title)}</h3><ol>${t.steps.map((x) => `<li>${esc(x)}</li>`).join("")}</ol><div class="quiz" data-quiz="task-${u.id}-${i}"></div></div>`).join("")}</section>` : ""}
+    ${UNIT_QUIZ[u.id] ? `<section class="unitquiz"><h2>Unit ${u.num} quiz</h2><p class="muted">${UNIT_QUIZ[u.id].length} questions. Answer them all, then check. Your best score is saved in this browser.</p><div class="quiz" data-quiz="unit-${u.id}"></div></section>` : ""}
     ${u.readings.length ? `<section><h2>Readings</h2><p class="muted">Work through these in order. Each opens in the reader with its guide.</p><div class="rgrid">${u.readings.map((id) => readingCard(R[id])).join("")}</div></section>` : ""}
     ${u.seminar ? `<section class="seminar"><h2>Seminar questions</h2><ol>${u.seminar.map((q) => `<li>${esc(q)}</li>`).join("")}</ol></section>` : ""}
     ${u.assignment ? `<section class="assign"><h2>Assignment: ${esc(u.assignment[0])}</h2><p>${esc(u.assignment[1])}</p></section>` : ""}
     <nav class="pager">${prev ? `<a href="#${prev.id}">← Unit ${prev.num}: ${esc(prev.short)}</a>` : `<span></span>`}${next ? `<a href="#${next.id}">Unit ${next.num}: ${esc(next.short)} →</a>` : ""}</nav>`;
     linkify(view);
+    wireVideos(view);
+    $$(".quiz", view).forEach(mountQuiz);
     if (u.facts) drawLocator($("#locator"), u.id);
     if (u.model) {
       const v = new TerrainViewer($("#viewer"), u.model);

@@ -1,0 +1,400 @@
+"""Narrated video scripts: one video per unit section (plus a course trailer).
+
+Each scene has a `type` (see tools/video/studio.js) and `say`, the narration. Scene length follows the narration audio.
+Photo ids refer to content/photos.py. Video ids are "<unit>-<section index>"; "intro" is the course trailer.
+"""
+
+def S(type, say, **kw):
+    return dict(type=type, say=say, **kw)
+
+VIDEOS = {}
+
+def video(vid, bar, *scenes):
+    VIDEOS[vid] = dict(id=vid, bar=bar, scenes=list(scenes))
+
+# ===================================================================== trailer
+video("intro", "Course trailer",
+    S("title", "Welcome to Nissology: the study of islands on their own terms.", eyebrow="A guided course in island studies", title="Nissology", sub="Islands of the Modern World", photo="tristan-iss"),
+    S("map", "Over seven units we travel to six islands: a Pacific atoll, a volcano and its uplifted neighbour, a fragment of ancient continent in the South Atlantic, the most remote inhabited island on Earth, an island born in 1963, and a piece of Arabia left behind in the Indian Ocean.",
+      points=[[179.15, -8.52, "Funafuti"], [-130.1, -25.07, "Pitcairn"], [-59.3, -51.75, "Falklands"], [-12.29, -37.11, "Tristan da Cunha"], [-20.6, 63.3, "Surtsey"], [53.85, 12.5, "Socotra"]]),
+    S("photo", "Each case study begins with physical geography: how the island formed, what its landforms are, and what lives there.", photo="surtsey-air", caption="Surtsey, Iceland", subcap="The island that rose from the sea in 1963"),
+    S("photo", "Then we turn to history and culture: who arrived, who left, and who decides the island's future.", photo="dragon-trees", caption="Dragon's blood trees, Socotra"),
+    S("points", "Most of your time goes into real research. Every unit has peer-reviewed papers, annotated so you can see the argument, the evidence and the weak points. You will check their numbers, use 3D terrain models as instruments, and test yourself with quizzes after every video.",
+      head="How the course works", items=["Short narrated videos for each section", "Annotated research papers with reading guides", "3D terrain and bathymetry models you can measure", "Quizzes, data tasks and written assignments"]),
+)
+
+# ===================================================================== Unit 0
+U0 = "Unit 0 · Foundations"
+video("foundations-0", U0 + " · Nissology",
+    S("title", "What is nissology? The word was proposed in 1994 by the anthropologist Grant McCall, from the Greek nisos, meaning island.", eyebrow="Unit 0 · Foundations", title="Nissology: the study of islands", sub="On whose terms?", photo="atoll-tikehau"),
+    S("quote", "McCall defined it as the study of islands on their own terms. It grew out of a Pacific critique: aid agencies and mainland scholars tended to describe islands by what they lack: size, resources and connection.",
+      text="Nissology: the study of islands on their own terms.", cite="Grant McCall, 1994"),
+    S("quote", "In the same year the Tongan writer Epeli Hau'ofa answered that story of smallness. He described Oceania not as scattered specks in an empty ocean, but as a sea of islands, connected by voyaging and kinship.",
+      text="Our sea of islands.", cite="Epeli Hau'ofa, 1994"),
+    S("timeline", "Island studies then became a field with its own institutions: an international association in 1992, Island Studies Journal in 2006, and the island cultures journal Shima in 2007.",
+      head="Building a field", range=[1988, 2020], events=[[1992, "International Small Island|Studies Association"], [1994, "McCall: 'nissology'|Hau'ofa: 'Our Sea of Islands'"], [2006, "Island Studies Journal"], [2007, "Shima journal"], [2017, "Grydehøj: 'A future|of island studies'"]]),
+    S("points", "Two ideas run through this whole course. First, islandness: isolation and boundedness shape what happens on islands, but they do not determine it. Always ask what the mechanism is. Second, whose terms? Most research on small islands is written by outsiders. That does not make it wrong, but it shapes which questions get asked.",
+      head="Two ideas to carry with you", items=["<b>Islandness</b> contours and conditions events; it does not determine them", "<b>Whose terms?</b> Most island research is produced by outsiders"]),
+    S("points", "Your two foundation readings, by Godfrey Baldacchino and Adam Grydehøj, are essays about exactly these problems. Read them first: they are the lens for every case study that follows.",
+      head="Readings for this unit", items=["Baldacchino (2008) Studying islands: on whose terms?", "Grydehøj (2017) A future of island studies"]),
+)
+video("foundations-1", U0 + " · Island types",
+    S("title", "Not all islands are alike. Geographers classify them first by the crust they stand on, and the process that raised them above the sea.", eyebrow="Unit 0 · Foundations", title="A physical typology of islands"),
+    S("diagram", "Continental islands sit on thick, light continental crust. Some, like Britain, are simply parts of a continental shelf, joined to the mainland whenever sea level falls. Others are fragments of continent that broke away, like Socotra and the Falkland Islands.", d="typology", head="Five island types"),
+    S("diagram", "Oceanic islands are different. They are volcanoes built up from the deep ocean floor, and they have never been joined to a continent. Tristan da Cunha and Pitcairn are hotspot volcanoes. Surtsey grew on a rift in Iceland's shelf. When such a volcano sinks, a coral reef can keep growing on top of it, forming an atoll like Funafuti. And if an atoll is later pushed up, it becomes a raised atoll, like Henderson Island.", d="typology", head="Oceanic islands", reveal=0.4),
+    S("photo", "This is that building process today: lava fountaining at Kīlauea, on Hawaii, the youngest island of a hotspot chain.", photo="kilauea", caption="Kīlauea, Hawaiʻi, 2023", subcap="An oceanic island still growing"),
+    S("photo", "The type predicts a great deal: the rocks, the soils, the relief, the island's age, and even what kinds of animals and plants could have reached it.", photo="atoll-tikehau", caption="An atoll from orbit", subcap="Tikehau, French Polynesia"),
+    S("points", "Two cautions. Many islands are composites: Socotra's limestone plateaux sit on ancient granite. And sea level changes everything. At the peak of the last ice age, about twenty-one thousand years ago, the sea stood around one hundred and twenty-five metres lower. Shelf islands joined their continents, and atolls became limestone hills.",
+      head="Two cautions", items=["Many islands are <b>composite</b>", "Sea level was <b>~125 m lower</b> about 21,000 years ago"]),
+)
+video("foundations-2", U0 + " · Life cycle",
+    S("title", "Oceanic islands have life cycles. They are born, they grow, and then they slowly sink and wear away.", eyebrow="Unit 0 · Foundations", title="The life cycle of an oceanic island"),
+    S("diagram", "In 1963 the geophysicist J. Tuzo Wilson explained why volcanic islands form chains that get older in one direction. A plume of hot mantle stays roughly fixed, while the tectonic plate moves over it. Each volcano grows over the plume, is carried away, cools and sinks.", d="hotspot", head="The hotspot conveyor"),
+    S("points", "Why do old volcanoes sink? The ocean plate becomes thicker and denser as it cools. And the weight of the volcano itself bends the plate downwards, a process called flexure. Flexure also pushes up a bulge some distance away. We will see that bulge lift Henderson Island in Unit 2.",
+      head="Why volcanoes sink", items=["<b>Thermal subsidence</b>: the plate cools, thickens and sinks", "<b>Flexure</b>: the volcano's weight bends the plate down", "...and pushes up a <b>bulge</b> nearby"]),
+    S("photo", "Charles Darwin saw coral reefs during the voyage of HMS Beagle, and published his theory of how atolls form in 1842.", photo="darwin", caption="Charles Darwin, 1840", subcap="Portrait by George Richmond", fit="contain", zoom=[1.0, 1.05], pan=[0, 0, 0, 0]),
+    S("diagram", "In 1842, Charles Darwin argued that coral reefs record this sinking. Corals only grow in the sunlit top few tens of metres of the sea. So as a volcanic island sinks, its fringing reef keeps growing upward, becoming a barrier reef, and finally an atoll ring with no peak at all.", d="darwin", head="Darwin's theory of atolls"),
+    S("photo", "Darwin's theory waited more than a century for proof. The Royal Society drilled Funafuti between 1896 and 1898, passing through about three hundred and forty metres of reef rock, without reaching the volcano.", photo="funafuti-boring", caption="The Royal Society's Funafuti boring", subcap="Plate from The Atoll of Funafuti, 1904"),
+    S("photo", "The decisive test came on Enewetak Atoll in the Marshall Islands.", photo="enewetak", caption="Enewetak Atoll", subcap="Landsat 8, 2014"),
+    S("stat", "In 1952, boreholes there struck volcanic basalt beneath more than twelve hundred metres of reef limestone. Darwin was right. If reef growth cannot keep pace, the island drowns completely, leaving a flat-topped seamount called a guyot.",
+      eyebrow="Enewetak, 1952", value="1,200+ m", label="of reef limestone above volcanic basalt", sub="Darwin's subsidence theory confirmed"),
+)
+video("foundations-3", U0 + " · Island biogeography",
+    S("title", "Why do some islands have many species and others very few? This is the question of island biogeography.", eyebrow="Unit 0 · Foundations", title="Island biogeography"),
+    S("chart", "Robert MacArthur and E. O. Wilson treated an island's species number as a balance of two rates. Immigration falls as the island fills up, because fewer new species are left to arrive. Extinction rises, because more species compete for the same space. Where the two curves cross, the number of species is stable. Watch what happens as the island gets bigger: extinction falls, and the equilibrium moves to the right.", c="mw", head="MacArthur–Wilson equilibrium"),
+    S("stat", "The theory explains a pattern seen on islands everywhere: the species–area relationship. On islands, a tenfold increase in area roughly doubles the number of species.",
+      eyebrow="Species–area relationship", value="×10 area", label="≈ ×2 species", sub="S = cA^z, with z typically 0.2–0.35 on islands"),
+    S("diagram", "The General Dynamic Model adds time. A volcanic island is born, grows in area and height, then erodes and sinks. Species richness and the number of unique, endemic species rise and then fall over the island's life. Surtsey, already shrinking only decades after its birth, is the fastest-moving test of this model.", d="gdm", head="The General Dynamic Model"),
+    S("points", "A third idea, the island rule, says that on islands small animals tend to evolve larger, and large animals smaller. Treat all three theories as models to test, not laws. Real islands get extra nutrients from seabirds, receive species carried by people, and sometimes were once joined to land.",
+      head="Theories as null models", items=["<b>Equilibrium theory</b>: immigration vs extinction", "<b>General Dynamic Model</b>: island age matters", "<b>Island rule</b>: giants and dwarfs", "Real islands break the rules, so find out why"]),
+)
+video("foundations-4", U0 + " · Reading research",
+    S("title", "Most of this course is spent reading research papers. Here is a method for reading them critically.", eyebrow="Unit 0 · Foundations", title="How to read a research paper"),
+    S("points", "Ask five questions of every paper. What is the single main claim? What method was used, where, when, and on what sample? Which figure or table carries the evidence, and does its arithmetic hold? What uncertainty is reported, and what is missing? And finally, scope: to which islands and conditions does the result really apply?",
+      head="Five questions", items=["<b>Claim</b>: the one main assertion", "<b>Method</b>: what, where, when, sample", "<b>Evidence</b>: which figure? does it add up?", "<b>Uncertainty</b>: error, limits, alternatives", "<b>Scope</b>: where does the finding stop?"]),
+    S("compare", "The annotated papers use a colour code that matches these questions. Yellow marks the authors' argument. Green marks evidence. Blue marks method. Purple marks concepts to learn. Red means read critically. Orange links the paper to other units.",
+      head="The annotation colours", cols=[["Yellow · Argument", ["The authors' claims"]], ["Green · Evidence", ["Data and results"]], ["Blue · Method", ["How it was measured"]], ["Red · Read critically", ["Limits and inconsistencies"]]]),
+    S("points", "Some papers cannot be shared openly, so for those you get a companion guide and a link to the publisher. After every video there is a short quiz. Get into the habit of answering before you look at the feedback.",
+      head="Getting the most out of each unit", items=["Watch the video, then take the check quiz", "Read the paper with the annotations open", "Use the 3D model to measure, not just to look", "Finish with the unit quiz and assignment"]),
+)
+
+# ===================================================================== Unit 1 Funafuti
+U1 = "Unit 1 · Funafuti"
+video("funafuti-0", U1 + " · Formation",
+    S("title", "Funafuti, the capital of Tuvalu: a ring of low islands in the central Pacific, home to a nation's government and about half its people.", eyebrow="Unit 1 · Atolls and reef islands", title="Funafuti Atoll, Tuvalu", coords="8°31′S 179°12′E", photo="funafuti-eo"),
+    S("globe", "Funafuti lies about halfway between Hawaii and Australia, just west of the dateline.", lon=179.15, lat=-8.52, label="Funafuti", small="8°31′S 179°12′E", origin=[150, 10]),
+    S("terrain", "Seen in three dimensions, Funafuti is the flat top of an enormous extinct volcano. The reef ring, about twenty kilometres across, encloses a lagoon. Beneath the sea the slopes plunge more than four thousand metres to the ocean floor. Note that the lagoon floor in this model is a simplified reconstruction.",
+      dem="funafuti", exag=3, title="Funafuti: atoll on a drowned volcano", az0=-30, az1=30, el0=34, el1=26, d0=1.25, d1=1.0,
+      labels=[[-8.52, 179.197, "Fogafale", "capital islet"], [-8.53, 179.12, "Te Namo lagoon", ""], [-8.55, 179.045, "Western rim", ""]]),
+    S("photo", "Funafuti has a special place in the history of science. Between 1896 and 1898, Royal Society expeditions drilled here to test Darwin's theory of atolls, reaching about three hundred and forty metres through nothing but reef rock.", photo="funafuti-boring", caption="Testing Darwin at Funafuti", subcap="Royal Society Coral Reef Boring Expedition, 1896–98"),
+    S("diagram", "The islands themselves are far younger than the reef. Reef islands, or motu, are heaps of sand, gravel and rubble made by corals, coralline algae, shells and tiny single-celled foraminifera, piled up by waves on the reef flat. Most formed within the last few thousand years.", d="motu", head="Anatomy of a reef island"),
+    S("photo", "So when we ask whether atolls will drown as the sea rises, we are really asking whether waves and reefs can keep supplying and moving that sediment.", photo="funafuti-beach", caption="Funafuti's lagoon shore", subcap="Islands built of reef sediment"),
+)
+video("funafuti-1", U1 + " · Landforms",
+    S("title", "Let's walk across an atoll rim, from the open ocean to the lagoon.", eyebrow="Unit 1 · Funafuti", title="Landforms of the atoll rim"),
+    S("diagram", "On the ocean side, the reef front drops steeply into deep water. Waves break on the reef crest, often cemented by pink coralline algae. Behind it lies the reef flat, a shallow platform a few hundred metres wide where waves move sediment. Then comes a storm ridge of coarse rubble, the island itself, and finally the calmer lagoon beach.", d="motu", head="Ocean to lagoon"),
+    S("photo", "Cyclones build as well as destroy. In 1972 Cyclone Bebe threw up a long bank of rubble on Funafuti's eastern reef. Over the following decades waves reworked it onto the shorelines, and the eastern islands grew.", photo="funafuti-aerial", caption="Fogafale from the air", subcap="The capital islet on the eastern rim"),
+    S("points", "Fresh water on an atoll floats on seawater inside the porous rock, as a thin lens. By the Ghyben–Herzberg rule, for every metre the water table stands above sea level, the fresh lens reaches about forty metres below it. On a narrow islet the lens is thin and easily spoiled by drought, over-pumping or waves washing over the land.",
+      head="The freshwater lens", items=["Fresh water <b>floats</b> on denser seawater", "<b>1 m</b> above sea level → about <b>40 m</b> deep", "Thin lenses are easily <b>salinised</b>"]),
+    S("photo", "On Fogafale the lens is exposed in pits dug for wartime airfield fill, and in pits used to grow pulaka, a giant swamp taro. When salt water gets in, the gardens fail. That is one of the first visible effects of sea-level rise.", photo="tuvalu-nui-iss", caption="Reef islands of Tuvalu from orbit", subcap="Niuoku islet, photographed from the ISS, 2022"),
+)
+video("funafuti-2", U1 + " · Data exercise",
+    S("title", "Are Tuvalu's islands shrinking? In 2018 Paul Kench and colleagues measured every one of the country's one hundred and one islands to find out.", eyebrow="Unit 1 · Funafuti", title="Do Tuvalu's islands grow or shrink?"),
+    S("stat", "They compared aerial photographs from 1971 with satellite images from 2014. Over those four decades local sea level rose about fifteen centimetres, twice the global average. Yet Tuvalu's total land area grew by seventy-three and a half hectares, nearly three percent.",
+      eyebrow="Kench et al. 2018 · 1971–2014", stats=[dict(v="+73.5 ha", label="net land gained"), dict(v="74%", label="of islands grew"), dict(v="~0.15 m", label="local sea-level rise")]),
+    S("chart", "Here is the change for each atoll, from the paper's Table 1. Eight of the nine atolls gained land. Funafuti gained about four percent.", c="kench", head="Land-area change by atoll, 1971–2014"),
+    S("points", "Now be a careful reader. Add up the hectare changes in Table 1 and you get about sixty-three hectares, not seventy-three and a half. And one percentage in the table looks wrong. Small inconsistencies like these are common. Your task is to work out whether they change the conclusion. Here they do not: most islands grew under every reading.",
+      head="Check the arithmetic", items=["Table 1 rows sum to <b>≈ +63.1 ha</b>", "The headline says <b>+73.5 ha</b>", "Nanumea's % column: −0.004 vs <b>−0.37%</b>", "Does it change the conclusion?"]),
+    S("quote", "The authors conclude that islands are dynamic features, not static landforms waiting to drown. But they are careful: under high-emission scenarios, the sea will rise much faster than in their study period, and the past may not be a guide.",
+      text="Islands are dynamic features that will persist as sites for habitation over the next century.", cite="Kench, Ford & Owen 2018, Nature Communications"),
+)
+video("funafuti-3", U1 + " · Ecology",
+    S("title", "Atoll ecology is a paradox: some of the richest ecosystems on Earth sit beside some of the poorest.", eyebrow="Unit 1 · Funafuti", title="Atoll ecology"),
+    S("compare", "In the sea, coral reefs are among the most productive ecosystems on the planet. On land, soils are thin, salty and alkaline, and the native flora is small and widely spread, joined by coconut and breadfruit brought by voyagers.",
+      head="Reef and land", cols=[["The reef", ["Highly productive", "Corals, algae, fish", "Makes the sediment islands are built from"]], ["The land", ["Thin carbonate soils", "Few native plant species", "Coconut, breadfruit, pulaka gardens"]]]),
+    S("points", "The reef is a sediment factory. If corals bleach, or if the ocean becomes more acidic, the supply of sand and gravel that keeps islands alive slows down. So threats to reefs are threats to land.",
+      head="The reef as a sediment factory", items=["Corals and algae produce <b>carbonate sand and gravel</b>", "Bleaching and acidification <b>slow the supply</b>", "Threats to reefs are <b>threats to land</b>"]),
+    S("photo", "On the uninhabited western islets, the Funafuti Conservation Area, set up in 1996, protects seabird roosts and green turtle nesting beaches, and the reefs and lagoon around them.", photo="funafuti-eo", caption="Funafuti Atoll", subcap="NASA Earth Observatory, 2023"),
+)
+video("funafuti-4", U1 + " · History",
+    S("title", "Tuvalu's history runs from Polynesian voyaging to independence in 1978.", eyebrow="Unit 1 · Funafuti", title="History of Tuvalu"),
+    S("timeline", "Polynesian voyagers, with ties to Samoa and Tonga, settled these atolls at least two thousand years ago. In 1819 an American captain named Funafuti Ellice's Island. The 1860s brought Peruvian slave raiders and Samoan missionary pastors. Britain declared a protectorate in 1892.",
+      head="From voyaging to empire", range=[1800, 1900], events=[[1819, "Named 'Ellice's Island'"], [1863, "Peruvian slave raids"], [1865, "Samoan LMS pastors"], [1892, "British protectorate"]]),
+    S("timeline", "The islands became part of the Gilbert and Ellice Islands Colony in 1916. In 1942 and 1943 United States forces built an airfield right across Fogafale, digging and filling land on a scale still visible today. After a 1974 referendum the Ellice Islands separated from the Gilberts, and Tuvalu became independent on the first of October 1978.",
+      head="Colony, war and independence", range=[1910, 1985], events=[[1916, "Gilbert and Ellice|Islands Colony"], [1943, "US airfield on Fogafale"], [1974, "Referendum on separation"], [1978, "Independence"]]),
+    S("photo", "The wartime airstrip still dominates Fogafale, and the pits dug to build it still hold water today.", photo="funafuti-airport", caption="Funafuti International Airport", subcap="Built across Fogafale in 1943"),
+)
+video("funafuti-5", U1 + " · People and politics",
+    S("title", "Tuvalu has become a global symbol of climate change. How Tuvaluans respond to that is a story of politics as much as geography.", eyebrow="Unit 1 · Funafuti", title="People, culture and politics"),
+    S("points", "Each island community is governed through its falekaupule, a traditional assembly of elders, alongside the national parliament. Land is held by kin groups. That makes moving people within the country hard, even where land physically exists.",
+      head="Governance and land", items=["The <b>falekaupule</b>: island assemblies of elders", "Land held by <b>kin groups</b>", "Internal migration is <b>socially complex</b>"]),
+    S("photo", "Culture binds these communities: the fatele, a dance-song form performed at celebrations, brings each island's people together.", photo="fatele", caption="Fatele, Independence Day 2025", subcap="Performers from Nanumea"),
+    S("photo", "Tuvalu is responding on several fronts. Land is being reclaimed and raised on Fogafale under a coastal adaptation project.", photo="tuvalu-reclamation", caption="Land reclamation, Fogafale", subcap="Tuvalu Coastal Adaptation Project"),
+    S("photo", "Satellites can follow the work: these Sentinel-2 images show new land built out along Fogafale's lagoon shore.", photo="tuvalu-copernicus", caption="Fogafale before and after reclamation", subcap="Copernicus Sentinel-2, 2023 and 2025", fit="contain", zoom=[1.0, 1.04], pan=[0, 0, 0, 0]),
+    S("timeline", "In 2023 Tuvalu amended its constitution to state that its statehood will continue whatever happens to its land. The same year it signed the Falepili Union treaty with Australia, which opens a pathway for Tuvaluans to live and work there.",
+      head="Recent responses", range=[2019, 2026], events=[[2021, "Minister speaks to COP26|from knee-deep water"], [2023, "Constitution: statehood|continues regardless"], [2023.9, "Falepili Union treaty|with Australia"], [2025, "Reclamation works|on Fogafale"]]),
+    S("quote", "Every one of these policies responds to a prediction about the land. Kench and colleagues ask whether that prediction should be loss. And Baldacchino reminds us to ask who sets the terms.",
+      text="Islanders are often portrayed as victims of tragic circumstances beyond their control.", cite="Baldacchino 2008, summarising Farbotko on Tuvalu"),
+)
+
+# ===================================================================== Unit 2 Pitcairn
+U2 = "Unit 2 · Pitcairn"
+video("pitcairn-0", U2 + " · Formation",
+    S("title", "Four islands, one volcanic chain: the Pitcairn Islands of the South Pacific.", eyebrow="Unit 2 · Hotspot island and raised atoll", title="The Pitcairn Islands", coords="25°04′S 130°06′W", photo="pitcairn-island"),
+    S("globe", "They lie roughly halfway between New Zealand and South America, among the most isolated islands on Earth.", lon=-130.1, lat=-25.07, label="Pitcairn Islands", small="25°04′S 130°06′W", origin=[175, -40]),
+    S("compare", "The four islands are the tops of volcanoes that rose from the seafloor over the past sixteen million years. Oeno is about sixteen million years old, Henderson thirteen, Ducie eight, and Pitcairn, the youngest, under one million.",
+      head="Four stages of one life cycle", cols=[["Pitcairn", ["Young volcano", "≈0.8 million years", "High, eroding, inhabited"]], ["Henderson", ["Raised atoll", "≈13 million years", "Lifted ≈30 m"]], ["Oeno & Ducie", ["Low atolls", "≈16 and ≈8 million years", "Ducie: the most southerly atoll"]]]),
+    S("diagram", "Henderson's story is the most instructive. When Pitcairn grew, less than a million years ago, its weight bent the ocean plate down beneath it, and pushed up a bulge about two hundred kilometres away. Henderson, then an ordinary atoll, sat on that bulge, and was lifted about thirty metres out of the sea.", d="flexure", head="How Pitcairn lifted Henderson"),
+    S("photo", "From space you can see the result: a flat limestone plateau, the old lagoon floor, ringed by cliffs that were once the reef.", photo="henderson-aster", caption="Henderson Island from orbit", subcap="NASA ASTER image"),
+    S("terrain", "Pitcairn itself is a steep volcanic cone, only four and a half square kilometres above sea level, but rising from a base more than three thousand metres deep.",
+      dem="pitcairn", exag=2, zoom=0.6, title="Pitcairn Island", az0=-40, az1=20, labels=[[-25.066, -130.101, "Adamstown", ""], [-25.064, -130.093, "Bounty Bay", ""]]),
+)
+video("pitcairn-1", U2 + " · Landforms",
+    S("title", "Two islands, two very different landscapes.", eyebrow="Unit 2 · Pitcairn", title="Landforms of Pitcairn and Henderson"),
+    S("photo", "Pitcairn is a dissected volcano of steep valleys and cliffs. The village, Adamstown, sits on a terrace high above Bounty Bay, reached by a road called the Hill of Difficulty. There is no natural harbour, so people and cargo land by longboat through the surf.", photo="bounty-bay", caption="Bounty Bay, Pitcairn Island"),
+    S("photo", "Henderson is limestone throughout: a jagged, honeycombed plateau called makatea, under dense forest, edged by cliffs and caves. There are beaches only on the north and east coasts, and no permanent fresh water.", photo="henderson-aster", caption="Henderson Island", subcap="Raised coral atoll, World Heritage Site", zoom=[1.1, 1.35], pan=[0, 4, 0, -4]),
+    S("photo", "From the sea, Henderson's raised reef shows as a line of grey limestone cliffs, with sandy beaches only in a few places.", photo="henderson-coast", caption="North Beach, Henderson Island"),
+    S("points", "Oeno and Ducie are low rings of reef with lagoons and a few sandy islets, much like Funafuti, but uninhabited. Together the four islands show a volcanic island's whole life in one archipelago.",
+      head="Oeno and Ducie", items=["Low coral atolls with lagoons", "Uninhabited", "Ducie: <b>the world's most southerly atoll</b>"]),
+)
+video("pitcairn-2", U2 + " · Ecology",
+    S("title", "Henderson Island is one of the least-disturbed raised atolls in the world, but its threats arrived by sea.", eyebrow="Unit 2 · Pitcairn", title="Endemics, rats and plastic"),
+    S("points", "Henderson has four land birds found nowhere else: the flightless Henderson crake, the Henderson fruit dove, the Henderson lorikeet and the Henderson reed warbler. It is also the only breeding site of the Henderson petrel.",
+      head="Found only on Henderson", items=["Henderson <b>crake</b> (flightless)", "Henderson <b>fruit dove</b>", "Henderson <b>lorikeet</b>", "Henderson <b>reed warbler</b>", "Breeding site of the Henderson <b>petrel</b>"], photo="henderson-crake"),
+    S("stat", "Pacific rats, brought by Polynesian voyagers about eight hundred years ago, eat the petrels' chicks. In 2011, seventy-five tonnes of poison bait were dropped by helicopter. Genetic analysis later showed that only about sixty to eighty rats survived, but that was enough for the population to recover.",
+      eyebrow="Amos et al. 2016 · the 2011 eradication", stats=[dict(v="75 t", label="of bait dropped"), dict(v="60–80", label="rats survived"), dict(v="43 km²", label="island area")]),
+    S("stat", "Then there is plastic. Carried by the South Pacific Gyre, it has given Henderson's beaches one of the highest debris densities ever recorded: an estimated thirty-seven point seven million items, weighing about seventeen tonnes.",
+      eyebrow="Lavers & Bond 2017", value="37.7 million", label="pieces of debris on Henderson's beaches", sub="Up to 671.6 items per square metre"),
+    S("photo", "Much of it is fishing gear, bottles and fragments, most of it washed in from other countries.", photo="henderson-plastic", caption="Marine debris on Henderson Island"),
+    S("chart", "Offshore, island type shapes the reefs. In 2012, divers found that coral species richness increased with island age: from twenty-four species at young Pitcairn to fifty-eight at Oeno. But that pattern rests on just four islands, so treat it with caution.", c="coralage", head="Coral species vs island age (Friedlander et al. 2014)"),
+)
+video("pitcairn-3", U2 + " · History",
+    S("title", "Pitcairn's most famous history begins with a mutiny, but people lived here centuries before.", eyebrow="Unit 2 · Pitcairn", title="History: from Polynesia to the Bounty"),
+    S("points", "Polynesians lived on Pitcairn and Henderson for several centuries. They left house sites, burials, rock carvings and stone tools. Pitcairn's fine-grained basalt and volcanic glass were traded with Mangareva, about five hundred kilometres to the west. When that exchange collapsed, these marginal islands were abandoned. Europeans found them empty.",
+      head="Polynesian Pitcairn", items=["Settlements on Pitcairn and Henderson", "Stone and volcanic glass traded with <b>Mangareva</b>", "Abandoned before Europeans arrived"]),
+    S("photo", "In April 1789 the crew of HMS Bounty mutinied against their captain, William Bligh. Fletcher Christian took eight other mutineers, six Polynesian men, about a dozen Polynesian women and a baby to Pitcairn, where they burned the ship in January 1790.", photo="bounty-painting", caption="The mutineers turning Bligh adrift", subcap="Robert Dodd, 1790", fit="cover"),
+    S("timeline", "Pitcairn had been charted with the wrong longitude, which made it a perfect hiding place. Violence soon killed most of the men. When an American ship found the community in 1808, only one mutineer, John Adams, was still alive. In 1856 the entire population of one hundred and ninety-three moved to Norfolk Island; some families later returned.",
+      head="The Bounty settlement", range=[1760, 1870], events=[[1767, "Sighted by Carteret;|mischarted"], [1790, "Bounty burned"], [1808, "Found by the Topaz"], [1856, "All move to|Norfolk Island"], [1864, "Some families return"]]),
+    S("photo", "In 1814 two British warships, Briton and Tagus, called at the island. An officer on board drew this view.", photo="pitcairn-1814", caption="A view of Pitcairn's Island, 1814", subcap="J. Shillibeer, HMS Briton", fit="contain", zoom=[1.0, 1.05], pan=[0, 0, 0, 0]),
+    S("photo", "In 1825 Captain Frederick Beechey of HMS Blossom surveyed the island. His Admiralty chart finally put Pitcairn in the right place.", photo="pitcairn-chart", caption="Admiralty chart of Pitcairn Island", subcap="Surveyed by F. W. Beechey, published 1829", fit="contain", zoom=[1.0, 1.25], pan=[0, 0, 0, -6]),
+    S("points", "Pitcairn has remained British. In 2004 a series of trials for historic sexual offences led to the conviction of several island men. The case divided the community, and raised hard questions about law and governance on a tiny island.",
+      head="A British territory", items=["UK Overseas Territory since colonial times", "2004 trials: <b>governance and jurisdiction</b> questions"]),
+)
+video("pitcairn-4", U2 + " · People and culture",
+    S("title", "Fewer than fifty people now live on Pitcairn. How does such a small community keep going?", eyebrow="Unit 2 · Pitcairn", title="People and culture"),
+    S("points", "Pitcairners speak English and Pitkern, a creole of eighteenth-century English and Tahitian. Most belong to the Seventh-day Adventist church, adopted by the whole community in the 1880s.",
+      head="Language and faith", items=["<b>Pitkern</b>: English–Tahitian creole", "Seventh-day Adventist since the <b>1880s</b>"]),
+    S("photo", "The economy is small: honey, handicrafts, postage stamps, the dot P N internet domain, and cruise ship visitors when the sea allows a landing.", photo="adamstown", caption="Adamstown, Pitcairn Island"),
+    S("photo", "Everything arrives by longboat. The boats are the island's lifeline, and crewing them takes most of the able-bodied adults.", photo="longboat", caption="Pitcairn's longboats"),
+    S("points", "Population decline is the island's biggest worry. With about forty residents, crewing the longboats and running the council and school is hard. Pitcairn is a clear case of what Baldacchino calls autonomy without sovereignty, and of McCall's point that islands are places people leave, as well as places they stay.",
+      head="A shrinking community", items=["About <b>40 residents</b>", "Hard to crew longboats, run services", "<b>Autonomy without sovereignty</b>"]),
+)
+
+# ===================================================================== Unit 3 Falklands
+U3 = "Unit 3 · Falklands"
+video("falklands-0", U3 + " · Formation",
+    S("title", "The Falkland Islands: twelve thousand square kilometres of ancient rock in the cold South Atlantic.", eyebrow="Unit 3 · A rifted continental fragment", title="The Falkland Islands", coords="51°42′S 59°00′W", photo="falklands-iss"),
+    S("globe", "They lie about five hundred kilometres east of southern South America.", lon=-59.3, lat=-51.75, label="Falkland Islands", small="51°42′S 59°00′W", origin=[-30, -10]),
+    S("points", "Unlike every other island in this course, the Falklands are built of continental crust. The oldest rocks, in the far south of West Falkland, are about a billion years old. Above them lie hard quartzites and sandstones, and then sediments left by an ice age about three hundred million years ago.",
+      head="Continental rocks", items=["Basement about <b>1,000 million years</b> old", "Hard <b>quartzites</b> and sandstones", "Glacial deposits from a <b>late Palaeozoic ice age</b>"]),
+    S("diagram", "That sequence closely matches the rocks of South Africa. The leading explanation is that the Falklands block lay off south-eastern Africa within the supercontinent Gondwana, broke away as Gondwana split, and rotated about one hundred and eighty degrees on its way to its present position. Evidence from the magnetism of ancient rock supports a large rotation, though the details are still debated.", d="falklands_rotation", head="A piece of Africa?"),
+    S("terrain", "Today the islands sit on a shallow continental plateau. Watch what happens when we lower the sea by one hundred and twenty-five metres, roughly the level of the last ice age.",
+      dem="falklands", exag=12, sea=[0, -125], seaAt=2.5, seaLen=6, title="The Falklands at the last ice age", az0=-15, az1=15,
+      labels=[[-51.69, -57.86, "Stanley", ""], [-51.695, -58.84, "Mount Usborne", "705 m"]]),
+)
+video("falklands-1", U3 + " · Landforms",
+    S("title", "Rivers of stone, deep peat, and drowned valleys.", eyebrow="Unit 3 · Falklands", title="Stone runs, peat and drowned valleys"),
+    S("photo", "Stone runs are the Falklands' signature landform: streams and sheets of quartzite boulders, sometimes several kilometres long, filling valley floors with little soil between them. Charles Darwin described them in 1833 and puzzled over their origin.", photo="stone-run", caption="A Falklands stone run"),
+    S("points", "Most researchers see them as relics of a colder past. Frost shattered the quartzite, and the blocks crept downslope over frozen ground. Later, finer material was washed out from between them. Dating of exposed boulder surfaces suggests the largest runs built up over several cold stages, perhaps over seven hundred thousand years.",
+      head="How stone runs formed", items=["<b>Frost</b> shatters quartzite", "Blocks creep over <b>frozen ground</b>", "Fine material <b>washed out</b>", "Built over <b>several cold stages</b>"]),
+    S("points", "The islands were never covered by an ice sheet, though small glaciers carved hollows on the highest peaks. Peat, sometimes several metres deep, blankets much of the land: it is fuel, carbon store and an archive of past environments. And the coast is cut by long creeks and sounds, valleys drowned as the sea rose after the ice age.",
+      head="Peat and drowned valleys", items=["No ice sheet; small <b>cirques</b> on high peaks", "<b>Peat</b>: fuel, carbon store, archive", "Coast of <b>drowned valleys</b>"], photo="tussac"),
+)
+video("falklands-2", U3 + " · Ecology",
+    S("title", "The Falklands sit where the cold, nutrient-rich Falkland Current meets the South American shelf. The sea is extraordinarily productive; the land is not.", eyebrow="Unit 3 · Falklands", title="Ecology"),
+    S("photo", "The islands hold most of the world's black-browed albatrosses, commonly estimated at about seventy percent of the global population. This one nests on New Island, the site of this unit's archaeology.", photo="albatross-colony", caption="Black-browed albatross, New Island"),
+    S("photo", "Gentoo, rockhopper and Magellanic penguins breed in large colonies, with king penguins at Volunteer Point.", photo="gentoo", caption="Gentoo penguins, Falkland Islands"),
+    S("photo", "The only native land mammal was the warrah, a fox-like canid that Darwin found strangely tame. It was hunted to extinction by 1876. How it reached the islands is one of the puzzles in this unit's readings.", photo="warrah", caption="The warrah, Dusicyon australis", subcap="Illustrated after the Beagle voyage; extinct by 1876", fit="contain", zoom=[1.0, 1.06], pan=[0, 0, 0, 0]),
+    S("photo", "Expeditions recorded the coasts before the sheep arrived. James Clark Ross's Antarctic expedition wintered in the Falklands in 1842, and its naturalists drew the towering tussac grass on its peat pedestals.", photo="tussac-1847", caption="Tussac grass of the Falkland Islands", subcap="Ross's Antarctic expedition, published 1847", fit="contain", zoom=[1.0, 1.06], pan=[0, 0, 0, 0]),
+    S("points", "Since the nineteenth century, sheep grazing has destroyed most of the original tussac grass, which once fringed every coast. Rats and cats have cleared ground-nesting birds from many islands. Restoration now focuses on the outer islands that are free of predators.",
+      head="Human impact", items=["<b>Sheep grazing</b> destroyed most tussac", "<b>Rats and cats</b> remove nesting birds", "Restoration on <b>predator-free</b> islands"]),
+)
+video("falklands-3", U3 + " · History",
+    S("title", "When did people first reach the Falklands? The standard answer is 1690. New research suggests otherwise.", eyebrow="Unit 3 · Falklands", title="History: before and after 1690"),
+    S("points", "In 2021 Kit Hamley and colleagues reported three lines of evidence from New Island: a sudden hundred-fold rise in charcoal in the peat, piles of sea lion and penguin bones dated to about thirteen hundred CE, and a stone spear point made of local quartzite. They suggest visits by seafaring people from Tierra del Fuego, centuries before Europeans.",
+      head="Evidence from New Island (Hamley et al. 2021)", items=["Charcoal rises <b>100-fold</b> around 1400 CE", "Bone piles dated <b>1275–1420 CE</b>", "A <b>quartzite</b> projectile point"]),
+    S("photo", "Fire matters here. Even today, fire is visible from orbit. In this photograph taken from the International Space Station, smoke streams from fires on East Falkland. The researchers argue that lightning-caused fires are rare in these islands, so a sudden surge of charcoal points to people.", photo="falklands-fires", caption="Fires on East Falkland seen from the ISS", subcap="September 2007"),
+    S("timeline", "The colonial history is tangled. France and Britain both founded settlements in the 1760s. Spain bought out the French. After Spain left in 1811, Buenos Aires claimed the islands. Britain took control in 1833, the root of today's dispute. In 1982 Argentina invaded, and the war that followed cost about nine hundred lives.",
+      head="A contested history", range=[1680, 2020], events=[[1690, "First recorded landing"], [1764, "French Port Louis"], [1833, "British control"], [1982, "Falklands War"], [2013, "Referendum: 99.8%|stay British"]]),
+)
+video("falklands-4", U3 + " · People and culture",
+    S("title", "About three thousand six hundred people live in the Falklands today.", eyebrow="Unit 3 · Falklands", title="People and culture"),
+    S("photo", "Life divides between Stanley, the capital, and Camp, from the Spanish word campo: the countryside of sheep farms linked by rough tracks and small aircraft.", photo="stanley", caption="Stanley, Falkland Islands"),
+    S("points", "Since a fishing zone was declared in 1986, licences for squid fishing have transformed a wool economy into one of the richest per person in the region. The Falklands are a clear case of loyalty to a former imperial power, and of how a contested history shapes which island stories get told.",
+      head="From wool to squid", items=["<b>Camp</b>: farms beyond Stanley", "1986 fishing zone → <b>squid licences</b>", "A <b>'culture of loyalty'</b> to Britain"]),
+)
+
+# ===================================================================== Unit 4 Tristan
+U4 = "Unit 4 · Tristan da Cunha"
+video("tristan-0", U4 + " · Formation",
+    S("title", "Tristan da Cunha: the most remote inhabited island on Earth.", eyebrow="Unit 4 · Hotspot volcano", title="Tristan da Cunha", coords="37°06′S 12°17′W", photo="tristan-iss"),
+    S("globe", "It lies in the South Atlantic, about two thousand four hundred kilometres from St Helena and two thousand eight hundred from Cape Town.", lon=-12.29, lat=-37.11, label="Tristan da Cunha", small="37°06′S 12°17′W", origin=[18, -34]),
+    S("diagram", "About one hundred and thirty-two million years ago, as Africa and South America began to separate, a plume of hot mantle erupted vast floods of lava in what are now Namibia and Brazil. As the Atlantic widened, the same plume built the Walvis Ridge. Tristan is the youngest island at the end of that track.", d="hotspot", head="A 130-million-year hotspot track"),
+    S("terrain", "The island is a single great cone rising to about two thousand and sixty metres. But most of the volcano is underwater: its flanks reach three thousand six hundred metres deep within twenty-five kilometres of the coast. Watch the sea drain away to reveal it.",
+      dem="tristan", exag=1.5, sea=[0, -2500], seaAt=4, seaLen=7, title="Tristan da Cunha: the hidden volcano", az0=-25, az1=35,
+      labels=[[-37.111, -12.289, "Queen Mary's Peak", "≈2,060 m"], [-37.067, -12.311, "Edinburgh of the Seven Seas", ""]]),
+    S("photo", "In 2020, Wolfram Geissler and colleagues published sonar maps of the seafloor around the islands. They found four hundred and thirty young volcanic cones, and two previously unknown seamounts. One of them, Isolde Seamount, was probably the source of a submarine eruption in 2004 that washed pumice onto Tristan's beaches.", photo="tristan-aster", caption="Tristan da Cunha", subcap="NASA ASTER false-colour image: vegetation shows red"),
+)
+video("tristan-1", U4 + " · Landforms",
+    S("title", "From summit crater to sea cliff.", eyebrow="Unit 4 · Tristan da Cunha", title="Landforms"),
+    S("photo", "Queen Mary's Peak holds a small crater lake and is snow-capped in winter. Below the central cone is a dissected plateau the islanders call the Base, cut by deep gulches.", photo="tristan-peak", caption="Queen Mary's Peak from the ISS", subcap="2018", zoom=[1.0, 1.15], pan=[0, 6, 0, 0]),
+    S("points", "Sea cliffs hundreds of metres high ring most of the island. Only narrow coastal plains, built by lava flows and debris fans, offer flat land. The plain on the north-west coast is the only one large enough for a village and its potato patches. And in 1961, a new vent opened right at its edge.",
+      head="Cliffs and coastal plains", items=["Sea cliffs <b>hundreds of metres</b> high", "Narrow <b>coastal plains</b> of lava and debris", "One plain holds the <b>only village</b>", "1961: a new vent at its edge"]),
+    S("photo", "From the sea you can see how little flat land there is: the village is squeezed between the cliffs and the shore.", photo="tristan-settlement", caption="Tristan da Cunha from the sea", subcap="Expedition photograph, 2012"),
+    S("terrain", "On the seafloor around the island, lobe-shaped deposits record past flank collapses: giant landslides, of a kind that can cause tsunamis.",
+      dem="tristan", exag=1, title="True scale, 1×", az0=150, az1=200, el0=30, el1=22, labels=[[-37.067, -12.311, "Settlement", ""]]),
+)
+video("tristan-2", U4 + " · Ecology",
+    S("title", "No land mammal ever reached Tristan by itself. Its birds evolved without predators.", eyebrow="Unit 4 · Tristan da Cunha", title="Ecology: flightless birds and mice"),
+    S("photo", "On Inaccessible Island lives the Inaccessible Island rail, the smallest living flightless bird in the world. It survives because no rats or mice have reached its island.", photo="rail", caption="Inaccessible Island rail"),
+    S("points", "The buntings of Inaccessible and Nightingale islands have split into small-billed and large-billed forms that eat different seeds, a textbook case of evolution on islands.",
+      head="Island evolution", items=["Smallest flightless bird: the <b>Inaccessible rail</b>", "<b>Nesospiza buntings</b>: bills shaped by diet"], photo="nesospiza"),
+    S("photo", "Gough Island lies about four hundred kilometres to the south-south-east. Scientists have studied it since a scientific survey in 1955.", photo="gough-landsat", caption="Gough Island", subcap="Landsat image"),
+    S("stat", "There, introduced house mice eat seabird chicks alive. A 2019 study estimated that about one point seven million eggs and chicks are lost to mice every year. The critically endangered Tristan albatross breeds almost nowhere else.",
+      eyebrow="Caravaggi et al. 2019 · Gough Island", value="1.74 million", label="eggs and chicks lost to mice each year"),
+    S("photo", "The sea is the islands' wealth: rockhopper penguins, fur seals, and the Tristan rock lobster that funds the island economy. In 2020 Tristan closed about ninety percent of its waters to fishing in a marine protection zone of nearly seven hundred thousand square kilometres.", photo="tristan-iss", caption="Tristan da Cunha from the ISS", subcap="2013"),
+)
+video("tristan-3", U4 + " · History",
+    S("title", "From a passing navigator to a community of seven families.", eyebrow="Unit 4 · Tristan da Cunha", title="History"),
+    S("timeline", "The Portuguese navigator Tristão da Cunha sighted the island in 1506. Britain garrisoned it in 1816, officially to stop it being used to rescue Napoleon from St Helena. When the soldiers left, Corporal William Glass and his family stayed. Women from St Helena joined in 1827, and two Italian sailors shipwrecked in 1892 added the names Repetto and Lavarello.",
+      head="Founding a community", range=[1500, 1900], events=[[1506, "Sighted by|Tristão da Cunha"], [1816, "British garrison"], [1817, "William Glass stays"], [1885, "Lifeboat disaster:|15 men lost"], [1892, "Italian sailors|shipwrecked"]]),
+    S("photo", "On the tenth of October 1961, after weeks of earthquakes, a vent opened beside the village and built a dome of lava. The whole population was evacuated, first to Nightingale Island, then to England.", photo="tristan-aster", caption="The 1961 eruption site lies beside the settlement", zoom=[1.3, 1.55], pan=[8, 10, 6, 8]),
+    S("points", "They lived near Southampton for two years. Although they were offered permanent resettlement, most voted to go home, and returned in 1963. Journalists turned the return into a parable about modern life. The islanders' own accounts stress their land, their boats and their independence.",
+      head="Evacuation and return", items=["1961: whole population <b>evacuated</b>", "Two years near <b>Southampton</b>", "1963: most chose to <b>return</b>"]),
+)
+video("tristan-4", U4 + " · People and culture",
+    S("title", "About two hundred and forty people, seven surnames, and land that cannot be sold.", eyebrow="Unit 4 · Tristan da Cunha", title="People and culture"),
+    S("photo", "Edinburgh of the Seven Seas is the only settlement. Land is held in common, and no outsider may buy it. Families farm potatoes in an area called the Patches, and keep cattle and sheep under strict quotas.", photo="edinburgh", caption="Edinburgh of the Seven Seas"),
+    S("photo", "The economy rests on the Tristan rock lobster, fished from longboats and processed on the island.", photo="tristan-longboat", caption="A lobster longboat, Tristan da Cunha"),
+    S("points", "A tiny founding population has made Tristan a classic subject for genetics. Researchers have studied the unusually high rate of asthma, and matched family trees going back to 1816 against DNA. That raises Baldacchino's question sharply: what does a community gain, or give up, by becoming a research site?",
+      head="A community as a research site", items=["Communal land; <b>no outside buyers</b>", "Economy: <b>rock lobster</b>, stamps, coins", "Genetic studies since the founding <b>1816</b> families"]),
+)
+
+# ===================================================================== Unit 5 Surtsey
+U5 = "Unit 5 · Surtsey"
+video("surtsey-0", U5 + " · Formation",
+    S("title", "On the fourteenth of November 1963, fishermen off southern Iceland saw dark columns rising from the sea. A new island was being born.", eyebrow="Unit 5 · An island born in 1963", title="Surtsey, Iceland", coords="63°18′N 20°36′W", photo="surtsey-air"),
+    S("globe", "Surtsey lies about thirty-two kilometres off Iceland's south coast, in the Westman Islands.", lon=-20.6, lat=63.3, label="Surtsey", small="63°18′N 20°36′W", origin=[-40, 50]),
+    S("photo", "This photograph was taken from an aircraft on the thirtieth of November 1963, sixteen days after the eruption began: a black cone of ash, wreathed in steam.", photo="surtsey-1963", caption="Surtsey, 30 November 1963", subcap="NOAA photograph by Howell Williams"),
+    S("diagram", "The eruption began on the seafloor, about one hundred and thirty metres down. At first it was explosive, because seawater flooded the vent: magma meeting water shatters into glassy ash, thrown out in jets and in columns up to nine kilometres high. Geologists now call this a Surtseyan eruption. In April 1964 the growing cone sealed out the sea, and lava flows began to armour the island.", d="surtseyan", head="Three stages of a Surtseyan island"),
+    S("points", "Hot water then circulated through the loose ash and cemented it into hard rock called palagonite tuff, within years to decades. Drilling in 2017 found the inside of the island still above one hundred degrees, with a funnel-shaped vent cutting down into the old seafloor.",
+      head="Turning ash to rock", items=["<b>Hydrothermal</b> circulation", "Ash cemented into <b>palagonite tuff</b>", "2017 drilling: <b>>100 °C</b> inside", "A <b>diatreme</b> below the crater"]),
+    S("terrain", "The eruption ended in June 1967. Surtsey had reached two point seven square kilometres. Its neighbours, Heimaey and the other Westman Islands, are the products of older eruptions in the same volcanic system.",
+      dem="surtsey", exag=4, title="Surtsey and the Westman Islands", az0=-30, az1=25,
+      labels=[[63.303, -20.604, "Surtsey", "1963–67"], [63.437, -20.27, "Heimaey", ""]]),
+)
+video("surtsey-1", U5 + " · Erosion",
+    S("title", "Surtsey is already disappearing.", eyebrow="Unit 5 · Surtsey", title="Landforms and erosion"),
+    S("photo", "Surtsey has two tuff cones, a lava shield in the south, and a low spit of eroded sand and gravel on its sheltered northern side. North Atlantic storms have cut high cliffs into its south-west coast.", photo="surtsey-air", caption="Surtsey from the air", zoom=[1.05, 1.25], pan=[0, 0, -3, 2]),
+    S("stat", "By 2012 the island had lost half its area. The loose material and lava apron will keep eroding, but the hard tuff cores will last much longer, as small steep stacks like the older Westman islets.",
+      eyebrow="Magnússon et al. 2014", stats=[dict(v="2.7 km²", label="area in 1967"), dict(v="1.3 km²", label="area in 2012")]),
+    S("diagram", "Surtsey shows in decades what the General Dynamic Model describes over millions of years: an island's area and height peak early, then decline.", d="gdm", head="The life cycle, fast-forwarded"),
+)
+video("surtsey-2", U5 + " · Colonisation",
+    S("title", "No island has a better record of how life arrives on new land.", eyebrow="Unit 5 · Surtsey", title="Ecology: colonisation from zero"),
+    S("points", "The first plant, sea rocket, was found in 1965, its seeds carried by the sea. In the first decade, shore plants with big, well-stocked seeds took hold on the bare sand. Then, from 1975 to 1985, colonisation stalled: the barren ash and lava could not support most new arrivals.",
+      head="Pioneers and stagnation", items=["1965: <b>sea rocket</b>, carried by the sea", "First decade: <b>shore plants</b>", "1975–85: <b>stagnation</b> on barren ground"]),
+    S("photo", "Then the gulls came. From about 1985, gulls began breeding on Surtsey. Their droppings added about forty-seven kilograms of nitrogen per hectare every year, around forty times the natural input, and their guts carried seeds.", photo="puffins", caption="Seabirds of the Westman Islands", subcap="Juvenile Atlantic puffins, Vestmannaeyjar"),
+    S("diagram", "A second wave of colonisation followed, centred on the gull colony, which became dense grassland. Species numbers peaked at sixty-four in 2007. Since then, competitive grasses and erosion have caused a net loss.", d="surtsey_timeline", head="Four phases of colonisation", reveal=0.85),
+    S("stat", "By 2013, sixty-nine plant species had been recorded on Surtsey, fifty-nine were present, and thirty-nine had viable populations. About three quarters of them arrived with birds.",
+      eyebrow="Magnússon et al. 2014", stats=[dict(v="69", label="species ever recorded"), dict(v="59", label="present in 2013"), dict(v="39", label="viable populations")], sub="≈75% bird-dispersed · ≈15% wind · ≈10% sea"),
+)
+video("surtsey-3", U5 + " · History",
+    S("title", "A reserve before it had finished forming, beside an island with twelve centuries of history.", eyebrow="Unit 5 · Surtsey", title="History and the neighbouring islands"),
+    S("points", "Surtsey was declared a nature reserve in 1965, two years before the eruption ended, and has been closed to everyone except permitted scientists ever since. No seeds, soil or living things may be carried ashore.",
+      head="A closed island", items=["Reserve since <b>1965</b>", "World Heritage Site <b>2008</b>", "Scientists only; strict <b>biosecurity</b>"]),
+    S("photo", "Heimaey, the largest Westman Island, has been settled since the ninth century. On the twenty-third of January 1973, a fissure opened at the edge of its town and built a new volcano, Eldfell. Nearly all of the town's roughly five thousand three hundred people were evacuated overnight by the fishing fleet.", photo="heimaey-buried", caption="Houses buried by Eldfell's ash, Heimaey", subcap="1973 eruption"),
+    S("photo", "Crews pumped seawater onto the advancing lava to slow it and save the harbour. Today the new lava field stands right beside the rebuilt town.", photo="heimaey-panorama", caption="Heimaey and the 1973 lava", zoom=[1.0, 1.05], pan=[6, 0, -6, 0]),
+)
+video("surtsey-4", U5 + " · People and culture",
+    S("title", "An island without people, and an island full of them.", eyebrow="Unit 5 · Surtsey", title="People and culture"),
+    S("compare", "Surtsey has no inhabitants, but it holds a special place in Icelandic culture: a national laboratory and a symbol of a land still being made. Next door, Heimaey's culture is tied to the sea and the seabird cliffs. Each August, children rescue young puffins drawn into town by the lights.",
+      head="Locus and focus", cols=[["Surtsey: locus", ["A place for research", "No residents", "Protected laboratory"]], ["Heimaey: focus", ["A community with its own story", "Fishing and seabirds", "Survived the 1973 eruption"]]]),
+    S("photo", "In Grydehøj's terms, Surtsey is almost pure locus, a place where research happens. Heimaey is focus: an island community with its own story and its own stakes.", photo="puffins", caption="Puffins, Westman Islands"),
+)
+
+# ===================================================================== Unit 6 Socotra
+U6 = "Unit 6 · Socotra"
+video("socotra-0", U6 + " · Formation",
+    S("title", "Socotra: a slab of ancient continent, stranded in the Arabian Sea.", eyebrow="Unit 6 · An ancient fragment of Arabia", title="Socotra, Yemen", coords="12°30′N 53°50′E", photo="dragon-trees"),
+    S("globe", "It lies off the Horn of Africa, about three hundred and eighty kilometres south of the Arabian coast.", lon=53.85, lat=12.5, label="Socotra", small="12°30′N 53°50′E", origin=[20, 30]),
+    S("points", "Socotra's foundation is very old: granites and metamorphic rocks, some dated to about eight hundred million years. Over them lie limestones laid down in shallow seas, which now form the island's high plateaux.",
+      head="Ancient foundations", items=["<b>Granite</b> basement, ≈800 million years old", "<b>Limestone</b> plateaux above"]),
+    S("diagram", "About thirty million years ago, rifting began to tear Arabia away from Africa, opening the Gulf of Aden. Socotra was left on the southern side, a stretched and faulted block of continental crust facing its counterpart in Dhofar, in Oman.", d="socotra_rift", head="Rifted from Arabia"),
+    S("terrain", "Because it is continental, Socotra mixes ancient relict lineages, like the dragon's blood tree, with later colonists that crossed the sea, like its geckos.",
+      dem="socotra", exag=5, title="Socotra", az0=-15, az1=20, labels=[[12.58, 54.03, "Haggeher mountains", "≈1,500 m"], [12.65, 54.02, "Hadibo", ""]]),
+)
+video("socotra-1", U6 + " · Landforms and climate",
+    S("title", "Granite peaks, limestone plateaux, and the monsoon.", eyebrow="Unit 6 · Socotra", title="Landforms and climate"),
+    S("photo", "The Haggeher mountains rise to about fifteen hundred metres above the north coast, their granite peaks often in cloud.", photo="haggeher", caption="The Haggeher mountains"),
+    S("points", "Below them, limestone plateaux are riddled with sinkholes and caves. Hoq Cave, on the north coast, holds inscriptions left by sailors from India, southern Arabia, Ethiopia, Greece and beyond, mostly from the first to sixth centuries of the common era.",
+      head="Plateaux and caves", items=["<b>Limestone plateaux</b>: Diksam, Firmihin, Homhil", "<b>Karst</b>: sinkholes and caves", "<b>Hoq Cave</b>: ancient sailors' inscriptions"]),
+    S("photo", "On the south coast, broad plains and dunes run down to the sea. From June to September the south-west monsoon brings gale-force winds that cut the island off by sea.", photo="socotra-iss", caption="Socotra's southern coast from the ISS", subcap="2023"),
+    S("points", "The monsoon also brings mist and low cloud to the uplands. The umbrella-shaped dragon's blood trees comb water from that mist, a process called horizontal precipitation.",
+      head="Water from fog", items=["Monsoon <b>mist</b> on the uplands", "Trees <b>comb water</b> from the air", "<b>Horizontal precipitation</b>"], photo="dragon-tree"),
+)
+video("socotra-2", U6 + " · Biodiversity",
+    S("title", "They call it the Galápagos of the Indian Ocean.", eyebrow="Unit 6 · Socotra", title="Ecology"),
+    S("stat", "About a third of Socotra's plant species grow nowhere else, along with around ninety percent of its reptiles.",
+      eyebrow="Endemism on Socotra", stats=[dict(v="≈37%", label="of plant species endemic"), dict(v="≈90%", label="of reptiles endemic")]),
+    S("photo", "The most famous plant is the dragon's blood tree, source of a red resin traded since antiquity. But its populations are over-mature: there are too few young trees, because goats eat the seedlings.", photo="firmihin", caption="Dragon's blood woodland, Firmihin"),
+    S("photo", "Other strange plants include the Socotran desert rose and the cucumber tree, both with swollen, water-storing trunks.", photo="desert-rose", caption="Socotran desert rose"),
+    S("photo", "The cucumber tree is the only tree-sized member of the gourd family.", photo="cucumber-tree", caption="Cucumber tree, Dendrosicyos socotranus"),
+    S("points", "Socotra's geckos include both the largest and the smallest species in their group. A 2016 study tested whether this is an island effect, and found that body size evolved unusually fast on the islands, but head shape did not.",
+      head="Giants and dwarfs", items=["Largest gecko of its group: on <b>Abd al Kuri</b>", "Smallest: on <b>Socotra</b>", "Body size changed fast; <b>head shape did not</b>"]),
+    S("points", "The threats are overgrazing, climate change, and development. In 2015, two cyclones, Chapala and Megh, felled many old trees.",
+      head="Threats", items=["<b>Goats</b> prevent regeneration", "<b>Cyclones</b> Chapala and Megh, 2015", "Roads, war and new investment"], photo="goats"),
+)
+video("socotra-3", U6 + " · History",
+    S("title", "A waypoint of Indian Ocean trade for two thousand years.", eyebrow="Unit 6 · Socotra", title="History"),
+    S("timeline", "A Greek sailing guide of the first century, the Periplus of the Erythraean Sea, describes Socotra as a trading post for tortoiseshell, aloes and dragon's blood. Marco Polo reported Christians living here. In 1507 a Portuguese fleet under Tristão da Cunha, the same navigator who sighted Tristan, captured its fort, but left a few years later.",
+      head="Trade and conquest", range=[0, 1600], events=[[50, "Periplus describes|'Dioscorida'"], [300, "Hoq Cave inscriptions|(1st–6th c.)"], [1290, "Marco Polo|reports Christians"], [1507, "Portuguese capture|the fort"]]),
+    S("photo", "Sailors who sheltered in Hoq Cave left inscriptions in Indian Brahmi, Greek, Aramaic, South Arabian and other scripts, mostly from the first to sixth centuries.", photo="hoq", caption="Inscriptions in Hoq Cave"),
+    S("photo", "Western scientific expeditions arrived in the nineteenth century. Henry Ogg Forbes photographed Hadibo and the Haggeher mountains in 1898.", photo="hadibo-1898", caption="Hadibo and the Haggeher mountains, 1898", subcap="Expedition photograph by Henry Ogg Forbes", fit="contain", zoom=[1.0, 1.06], pan=[0, 0, 0, 0]),
+    S("timeline", "Later the island was ruled by the Mahra sultans, became a British protectorate in 1886, and joined South Yemen in 1967 and unified Yemen in 1990. Since the civil war, the United Arab Emirates has built influence on the island, and in 2020 a UAE-backed council took control.",
+      head="Sultans to civil war", range=[1850, 2026], events=[[1886, "British protectorate"], [1967, "South Yemen"], [1990, "Unified Yemen"], [1999, "Airport opens"], [2020, "UAE-backed STC|takes control"]]),
+)
+video("socotra-4", U6 + " · People and culture",
+    S("title", "An unwritten language with a living literature.", eyebrow="Unit 6 · Socotra", title="People and culture"),
+    S("points", "Most islanders speak Soqotri, one of the Modern South Arabian languages: a Semitic group distinct from Arabic. It has traditionally been unwritten, with a rich oral literature of poetry, proverbs and knowledge of plants.",
+      head="The Soqotri language", items=["A <b>Modern South Arabian</b> language", "Traditionally <b>unwritten</b>", "Rich <b>oral poetry</b> and plant lore"]),
+    S("photo", "Traditional life combines herding in the mountains, fishing on the coast, and date gardens in the valleys. Resource use was long regulated: nineteenth-century accounts describe dragon's blood land divided into lots and leased to herding groups.", photo="hadibo", caption="Hadibo, Socotra's main town"),
+    S("quote", "Today Socotra faces Baldacchino's question in its sharpest form. Rapid change is being decided far from the island, while the people with the deepest knowledge of its ecosystems have the least formal power.",
+      text="Both external and internal understandings are necessary for a fuller, deeper understanding of island life.", cite="Baldacchino 2008"),
+)
+
+# ===================================================================== Unit 7 Synthesis
+U7 = "Unit 7 · Synthesis"
+video("synthesis-0", U7 + " · Comparison",
+    S("title", "Six islands, side by side.", eyebrow="Unit 7 · Capstone", title="Comparing islands"),
+    S("map", "We have travelled from the central Pacific to the South Atlantic, the North Atlantic and the Arabian Sea.",
+      points=[[179.15, -8.52, "Funafuti"], [-130.1, -25.07, "Pitcairn"], [-59.3, -51.75, "Falklands"], [-12.29, -37.11, "Tristan"], [-20.6, 63.3, "Surtsey"], [53.85, 12.5, "Socotra"]]),
+    S("compare", "Their areas span four orders of magnitude, from Surtsey's one point three square kilometres to the Falklands' twelve thousand. Their ages span eight orders: from rocks a billion years old to land made in the 1960s.",
+      head="Scale", cols=[["Smallest", ["Surtsey, 1.3 km²", "Funafuti's land, 2.6 km²"]], ["Largest", ["Falklands, ≈12,000 km²", "Socotra, 3,625 km²"]], ["Oldest / youngest", ["Falklands rocks ≈1 billion years", "Surtsey, 1963–67"]]]),
+    S("points", "Notice that the inhabited islands are not necessarily the largest or most fertile. Access matters more: a landing place, a harbour, a lagoon. And so does history.",
+      head="Who lives where, and why", items=["Inhabited ≠ largest or most fertile", "<b>Access</b>: landing, harbour, lagoon", "<b>History</b>: who arrived, who stayed"]),
+)
+video("synthesis-1", U7 + " · Testing theories",
+    S("title", "How well did our theories do?", eyebrow="Unit 7 · Capstone", title="Testing the theories"),
+    S("compare", "Equilibrium theory fits Surtsey in outline, but seabirds moved the equilibrium. The General Dynamic Model describes Surtsey's shrinking and the Pitcairn chain, but not continental fragments. The island rule holds for gecko body size on Socotra, but not head shape. And Darwin's subsidence explains Funafuti, while Henderson shows the reverse: uplift.",
+      head="Scorecard", cols=[["Equilibrium", ["Fits Surtsey", "Seabirds shift it", "People shift extinction"]], ["General Dynamic", ["Surtsey, Pitcairn chain", "Not for Socotra or Falklands"]], ["Island rule", ["Gecko size: yes", "Head shape: no"]], ["Subsidence", ["Funafuti, Oeno, Ducie", "Henderson: uplift"]]]),
+    S("quote", "And the ethical question applies everywhere. In every case, the most-cited knowledge was produced by visiting scientists. Ask where islanders were: as authors, collaborators, or decision-makers.",
+      text="The study of islands on their own terms.", cite="McCall 1994"),
+)
+video("synthesis-2", U7 + " · Capstone",
+    S("title", "Your capstone: a profile of an island of your own choosing.", eyebrow="Unit 7 · Capstone", title="Write a nissological profile"),
+    S("points", "Choose an island not covered in this course, ideally a lesser-known one. In three to four thousand words, explain its physical geography with a map or terrain figure, its ecology through theory, its history, and its culture and governance. Review at least four peer-reviewed papers using the five-question method. And finish with a reflection: whose terms does your own profile use?",
+      head="What to include", items=["<b>Physical geography</b>, with a figure", "<b>Ecology</b>, explained with theory", "<b>History</b> and <b>governance</b>", "Critical review of <b>4+ papers</b>", "A <b>reflexive</b> statement"]),
+    S("map", "Need ideas? Try Kiritimati, Aldabra, Nauru, St Kilda, South Georgia, Rapa Iti, Lord Howe Island, Jan Mayen, or one of the many islands of Indonesia and the Philippines, which island studies has largely overlooked.",
+      points=[[-157.4, 1.9, "Kiritimati"], [46.4, -9.4, "Aldabra"], [166.9, -0.5, "Nauru"], [-8.57, 57.8, "St Kilda"], [-36.6, -54.3, "South Georgia"], [-144.3, -27.6, "Rapa Iti"], [159.1, -31.6, "Lord Howe"], [-8.5, 71.0, "Jan Mayen"]]),
+)
