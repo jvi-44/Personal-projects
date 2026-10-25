@@ -533,8 +533,8 @@ PHOTOS = {
   "credit": "Rod Waddington from Kergunyah, Australia · CC BY-SA 2.0 · Wikimedia Commons"
  },
  "hoq": {
-  "caption": "Hoq Cave, with Brahmi, Greek, Aramaic and other ancient inscriptions",
-  "alt": "Hoq Cave, with Brahmi, Greek, Aramaic and other ancient inscriptions",
+  "caption": "Inside Hoq Cave, where ancient sailors left inscriptions",
+  "alt": "Inside Hoq Cave, where ancient sailors left inscriptions",
   "author": "Valerian Guillot",
   "license": "CC BY 2.0",
   "page": "https://commons.wikimedia.org/wiki/File:Al_Hoq_Cave_with_Brahmi_Greek_Aramaic_and_other_inscriptions,_Socotra_Yemen_02.jpg",

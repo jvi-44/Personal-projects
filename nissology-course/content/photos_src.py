@@ -69,7 +69,7 @@ COMMONS = {
     "cucumber-tree": ("File:Cucumber tree (6407165121).jpg", "Cucumber tree (Dendrosicyos socotranus)"),
     "hadibo-1898": ("File:View of Hadibu and the Haghier Mountains from Tamarida Bay.jpg", "Hadibo and the Haggeher mountains from Tamarida Bay, photographed by Henry Ogg Forbes in 1898"),
     "hadibo": ("File:Mosque, Hadibo, Socotra Island (11007460353).jpg", "A mosque in Hadibo, Socotra"),
-    "hoq": ("File:Al Hoq Cave with Brahmi Greek Aramaic and other inscriptions, Socotra Yemen 02.jpg", "Hoq Cave, with Brahmi, Greek, Aramaic and other ancient inscriptions"),
+    "hoq": ("File:Al Hoq Cave with Brahmi Greek Aramaic and other inscriptions, Socotra Yemen 02.jpg", "Inside Hoq Cave, where ancient sailors left inscriptions"),
     "puffins": ("File:Juvenile atlantic puffins at Vestmannaeyjar 2.jpg", "Atlantic puffins, Westman Islands"),
 }
 
