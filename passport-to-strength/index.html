@@ -202,7 +202,7 @@ footer { padding-block: 26px 40px; color: var(--muted); font-size: 0.85rem; text
     <div>
       <p class="eyebrow">Passport · Passeport · Pasaporte</p>
       <h1>Passport <em>to</em> Strength</h1>
-      <p class="lede">Every morning from 05:00 to 06:30: posture, bands, dumbbells, dance and a run. Building the strength and stamina to see the whole world.</p>
+      <p class="lede">Every morning from 05:00 to 06:30: posture, bands, dumbbells, dance and a 3-mile treadmill run. Building the strength and stamina to see the whole world.</p>
       <div class="holder">
         <span><b>Holder</b>Angel in training</span>
         <span><b>Visa</b>Strength + Stamina</span>
@@ -307,6 +307,7 @@ footer { padding-block: 26px 40px; color: var(--muted); font-size: 0.85rem; text
           <button class="btn solid" id="btnPlay">Start</button>
           <button class="btn" id="btnNext">Skip</button>
           <button class="btn" id="btnSound" aria-pressed="true">Sound on</button>
+          <a class="btn" id="btnVideo" href="https://youtu.be/94MRAHzFx94" target="_blank" rel="noopener" hidden>Open video</a>
           <span class="spacer"></span>
           <span class="boardtime" id="boardTime">Local time 05:00</span>
         </div>
@@ -333,7 +334,7 @@ footer { padding-block: 26px 40px; color: var(--muted); font-size: 0.85rem; text
         <p class="eyebrow">Visa pages</p>
         <h2 id="lib-h">The move library</h2>
       </div>
-      <p style="max-width:32em;color:var(--muted);font-size:0.92rem">Moves marked <span class="badge">From your video</span> come from links you sent. <span class="badge draft">Starter pick</span> moves hold their place until you send videos for those blocks.</p>
+      <p style="max-width:32em;color:var(--muted);font-size:0.92rem">Moves marked <span class="badge">From your video</span> come from links you sent. <span class="badge draft">Starter pick</span> dumbbell moves hold their place until you send videos for that block.</p>
     </div>
     <div id="library"></div>
   </section>
@@ -348,12 +349,12 @@ footer { padding-block: 26px 40px; color: var(--muted); font-size: 0.85rem; text
       </div>
       <div class="card">
         <h4>Training every day</h4>
-        <p>Arms get bands daily, so the band style alternates heavy and light days. Sunday in Bali is the recovery day: light Pilates and an easy run-walk. If your arms feel sore, use a lighter band and keep the reps.</p>
+        <p>Arms get bands daily, so the band style alternates heavy and light days. Sunday in Bali is the lighter day for Pilates and bands. If your arms feel sore, use a lighter band and keep the reps.</p><p>Treadmill every day: 1.6 km warm-up in 10 minutes, then 3.2 km in 20 minutes, 3 miles in total. Both targets are about 9.7 km/h (6.0 mph).</p>
       </div>
       <div class="card">
         <h4>Sources</h4>
         <p>Bands: <a href="https://youtu.be/4N7dlYLb1wE" target="_blank" rel="noopener">12 min Resistance Band Arm Workout</a> by fitbymik (curls, overhead press L/R, tricep extension L/R).</p>
-        <p>Neck: <a href="https://youtu.be/94MRAHzFx94" target="_blank" rel="noopener">10 min Posture Fix Workout</a> by Hailey C. Check the 8 steps here against the video and tell me what to change.</p>
+        <p>Neck: <a href="https://youtu.be/94MRAHzFx94" target="_blank" rel="noopener">10 min Posture Fix Workout</a> by Hailey C. Follow along with all 8 steps.</p><p>Dance: placeholder. Use any 10-minute dance workout on YouTube.</p>
       </div>
     </div>
   </section>
@@ -459,52 +460,21 @@ function cyclePose(keys, phase) {
 /* =========================================================
    2. Exercise library
    ========================================================= */
-const SRC_BAND = { label: "fitbymik · 12 min Resistance Band Arm Workout", url: "https://youtu.be/4N7dlYLb1wE", mine: true };
-const SRC_NECK = { label: "Hailey C. · 10 min Posture Fix Workout", url: "https://youtu.be/94MRAHzFx94", mine: true };
-const STARTER = { label: "Starter pick: send a video and I'll swap it for your favourite", mine: false };
+const SRC_BAND = { label: "fitbymik · 12 min Resistance Band Arm Workout", url: "https://youtu.be/4N7dlYLb1wE", mine: true, badge: "From your video" };
+const SRC_NECK = { label: "Hailey C. · 10 min Posture Fix Workout", url: "https://youtu.be/94MRAHzFx94", mine: true, badge: "Your video" };
+const SRC_DANCE = { label: "Placeholder: follow any 10-minute YouTube dance workout", mine: false, badge: "Placeholder" };
+const SRC_RUN = { label: "Your plan: 10 min warm-up (1.6 km) + 20 min run (3.2 km) = 3 miles", mine: true, badge: "Your plan" };
+const STARTER = { label: "Starter pick: send a video and I'll swap it for your favourite", mine: false, badge: "Starter pick" };
 
 const standW = { lta: 6, rta: 6, lsa: 6, rsa: 6 };
 const EX = {};
 function ex(id, o) { o.id = id; o.keys = (o.keys || []).map(P); if (o.target) o.target = P(o.target); o.anchor = o.anchor || "feet"; EX[id] = o; }
 
-/* ---- Neck & posture (8 steps) ---- */
-ex("chinTuck", { name: "Chin Tucks", group: "neck", mode: "reps", tempo: 4, src: SRC_NECK, step: 1, muscles: "Deep neck flexors",
-  keys: [{ tuck: 0.035, neckFlex: -4 }, { tuck: -0.03, neckFlex: 6 }, { tuck: -0.03, neckFlex: 6 }],
-  cue: "Make a double chin, then hold for two breaths.",
-  tips: ["Glide your head straight back, as if a string pulls the back of your skull.", "Keep your eyes level. Don't nod down.", "Shoulders stay relaxed and low."] });
-ex("neckTilt", { name: "Ear-to-Shoulder Stretch", group: "neck", mode: "hold", sides: true, src: SRC_NECK, step: 2, muscles: "Upper traps, scalenes",
-  target: { neckTilt: 38, rua: 14, rfa: 14, shrug: -0.01 },
-  cue: "Ear drifts toward the shoulder. Opposite hand reaches to the floor.",
-  tips: ["Don't lift the shoulder to meet the ear.", "Breathe out to sink a little deeper each breath.", "Keep your nose facing forward."] });
-ex("neckRotation", { name: "Look Over Your Shoulder", group: "neck", mode: "reps", tempo: 6, src: SRC_NECK, step: 3, muscles: "Neck rotators",
-  keys: [{}, { neckRot: 70 }, {}, { neckRot: -70 }],
-  cue: "Slow turns, chin level, like checking a departures board.",
-  tips: ["Turn only as far as is comfortable.", "Keep your chest facing forward.", "Pause for a breath at each end."] });
-ex("levator", { name: "Nose-to-Armpit Stretch", group: "neck", mode: "hold", sides: true, src: SRC_NECK, step: 4, muscles: "Levator scapulae",
-  target: { neckRot: 42, neckFlex: 38, rua: 12, shrug: -0.01 },
-  cue: "Turn 45°, then look down toward your armpit.",
-  tips: ["Gentle pressure only. Never yank the head.", "Keep the opposite shoulder pulled down.", "You should feel it along the back of the neck."] });
-ex("shoulderRoll", { name: "Shoulder Rolls", group: "neck", mode: "reps", tempo: 4, src: SRC_NECK, step: 5, muscles: "Traps, rhomboids",
-  keys: [{ shrug: 0.055 }, { shrug: 0.035, retract: 0.04 }, { shrug: -0.015, retract: 0.025 }, { shrug: 0, retract: -0.025 }],
-  cue: "Up, back, down. Big slow circles.",
-  tips: ["Emphasise the backward and downward part of the circle.", "Arms stay heavy and loose.", "Breathe in going up, out going down."] });
-ex("wSqueeze", { name: "W Squeeze", group: "neck", mode: "reps", tempo: 4, src: SRC_NECK, step: 6, muscles: "Rhomboids, mid traps",
-  keys: [{ lua: 58, luf: 8, lfa: 158, lff: 8, rua: 58, ruf: 8, rfa: 158, rff: 8 },
-         { lua: 58, luf: -14, lfa: 158, lff: -16, rua: 58, ruf: -14, rfa: 158, rff: -16, retract: 0.045 },
-         { lua: 58, luf: -14, lfa: 158, lff: -16, rua: 58, ruf: -14, rfa: 158, rff: -16, retract: 0.045 }],
-  cue: "Pull elbows back and down into your back pockets.",
-  tips: ["Squeeze shoulder blades together for a two-count.", "Don't arch the lower back. Ribs stay down.", "Chin stays tucked."] });
-ex("yRaise", { name: "W to Y Raise", group: "neck", mode: "reps", tempo: 4, src: SRC_NECK, step: 7, muscles: "Lower traps, shoulders",
-  keys: [{ lua: 58, luf: -6, lfa: 158, lff: -6, rua: 58, ruf: -6, rfa: 158, rff: -6, retract: 0.03 },
-         { lua: 150, luf: 4, lfa: 158, lff: 4, rua: 150, ruf: 4, rfa: 158, rff: 4, retract: 0.02 }],
-  cue: "Slide up to a Y, as if your back were against a wall.",
-  tips: ["Thumbs point behind you.", "Shoulders stay away from your ears.", "Lower slowly back to the W."] });
-ex("chestOpener", { name: "Clasped Chest Opener", group: "neck", mode: "reps", tempo: 6, src: SRC_NECK, step: 8, muscles: "Chest, front shoulders",
-  keys: [{ luf: -18, lua: -2, lff: -32, lfa: -38, ruf: -18, rua: -2, rff: -32, rfa: -38, retract: 0.02 },
-         { luf: -48, lua: -2, lff: -55, lfa: -32, ruf: -48, rua: -2, rff: -55, rfa: -32, retract: 0.05, neckFlex: -14, lean: -4 },
-         { luf: -48, lua: -2, lff: -55, lfa: -32, ruf: -48, rua: -2, rff: -55, rfa: -32, retract: 0.05, neckFlex: -14, lean: -4 }],
-  cue: "Clasp hands behind you, lift, and open the collarbones.",
-  tips: ["Lift the chest up toward the ceiling.", "Keep a soft bend in the elbows if your shoulders are tight.", "Hold and breathe into the front of the chest."] });
+/* ---- Neck & posture (follow-along video) ---- */
+ex("neckVideo", { name: "10 min Posture Fix", group: "neck", mode: "timed", tempo: 5, src: SRC_NECK, muscles: "Neck, upper back, shoulders",
+  keys: [{ tuck: 0.012 }, { tuck: -0.02, shrug: -0.008, retract: 0.02 }],
+  cue: "Press play on Hailey C.'s video and follow all 8 steps.",
+  tips: ["Open the video before 05:00 so it's ready to go.", "Move slowly and stay pain-free. Stretch, never strain.", "Keep breathing through every hold.", "This timer keeps your 10 minutes on schedule."] });
 
 /* ---- Resistance bands (from fitbymik video) ---- */
 ex("bandCurl", { name: "Band Bicep Curl", group: "bands", mode: "reps", tempo: 3, src: SRC_BAND, muscles: "Biceps",
@@ -613,48 +583,22 @@ ex("russianTwist", { name: "Russian Twist", group: "db", mode: "reps", tempo: 3,
   cue: "Rotate from the ribs, not the arms.",
   tips: ["Lean back until your core switches on.", "Keep your chest lifted.", "Heels down to make it easier."] });
 
-/* ---- Dance & run ---- */
-ex("stepTouch", { name: "Parisian Step-Touch", group: "dance", mode: "timed", tempo: 1.6, anchor: "none", src: STARTER, muscles: "Cardio, coordination",
+/* ---- Dance (placeholder) & run ---- */
+ex("danceVideo", { name: "Dance Workout", group: "dance", mode: "timed", tempo: 1.6, anchor: "none", src: SRC_DANCE, muscles: "Cardio, coordination",
   keys: [{ rx: 0.1, side: 5, lta: 12, lsa: 12, rta: -1, rsa: 2, rtf: 14, rsf: -32, lua: 128, lfa: 150, rua: 30, rfa: 60, ruf: 10 },
          { rx: 0, ltf: 18, lsf: -18, rtf: 18, rsf: -18, lua: 70, lfa: 100, rua: 70, rfa: 100 },
          { rx: -0.1, side: -5, rta: 12, rsa: 12, lta: -1, lsa: 2, ltf: 14, lsf: -32, rua: 128, rfa: 150, lua: 30, lfa: 60, luf: 10 },
          { rx: 0, ltf: 18, lsf: -18, rtf: 18, rsf: -18, lua: 70, lfa: 100, rua: 70, rfa: 100 }],
-  cue: "Step, tap, sweep the arm across the sky.", tips: ["Stay light on the balls of your feet.", "Bend the knees on every step.", "Smile. It's Paris."] });
-ex("grapevine", { name: "Grapevine Getaway", group: "dance", mode: "timed", tempo: 3.2, anchor: "none", src: STARTER, muscles: "Cardio, agility",
-  keys: [{ rx: 0 },
-         { rx: 0.18, lta: 16, lsa: 16, lua: 40, rua: 40, lfa: 60, rfa: 60 },
-         { rx: 0.3, rta: -14, rsa: -14, rtf: -10, lua: 20, rua: 20 },
-         { rx: 0.46, lta: 14, lsa: 14, rtf: 30, rsf: -40, lua: 160, lfa: 170, rua: 160, rfa: 170 },
-         { rx: 0.3 },
-         { rx: 0.12, rta: 16, rsa: 16, lua: 40, rua: 40, lfa: 60, rfa: 60 },
-         { rx: 0.0, lta: -14, lsa: -14, ltf: -10, lua: 20, rua: 20 },
-         { rx: -0.16, rta: 14, rsa: 14, ltf: 30, lsf: -40, lua: 160, lfa: 170, rua: 160, rfa: 170 }],
-  cue: "Side, behind, side, tap and clap!", tips: ["Cross the trailing foot behind.", "Clap overhead on the tap.", "Keep your chest facing forward."] });
-ex("hipSway", { name: "Bali Hip Sway", group: "dance", mode: "timed", tempo: 2, anchor: "none", src: STARTER, muscles: "Hips, core",
-  keys: [{ rx: 0.05, side: -7, ltf: 4, rtf: 20, rsf: -22, lta: 8, rta: 8, lua: 150, lfa: 210, rua: 120, rfa: 160, neckTilt: -6 },
-         { rx: -0.05, side: 7, rtf: 4, ltf: 20, lsf: -22, lta: 8, rta: 8, rua: 150, rfa: 210, lua: 120, lfa: 160, neckTilt: 6 }],
-  cue: "Let the hips lead, arms float like waves.", tips: ["Soft knees, alternate the bend.", "Roll through the ribs.", "Breathe and enjoy the music."] });
-ex("sambaKnees", { name: "Rio Samba Knees", group: "dance", mode: "timed", tempo: 1.3, anchor: "none", src: STARTER, muscles: "Cardio, core",
-  keys: [{ twist: 14, ltf: 82, lsf: -12, luf: -20, lff: 70, ruf: 50, rff: 120, lta: 4 },
-         { },
-         { twist: -14, rtf: 82, rsf: -12, ruf: -20, rff: 70, luf: 50, lff: 120, rta: 4 },
-         { }],
-  cue: "Knee up, opposite elbow down, keep the rhythm.", tips: ["Lift knees to hip height when you can.", "Stay tall through the spine.", "Land softly."] });
-ex("jetJacks", { name: "Jet-Set Jacks", group: "dance", mode: "timed", tempo: 1.1, anchor: "none", src: STARTER, muscles: "Full-body cardio",
-  keys: [{ ltf: 10, lsf: -12, rtf: 10, rsf: -12 },
-         { lta: 20, lsa: 18, rta: 20, rsa: 18, lua: 165, lfa: 172, rua: 165, rfa: 172 }],
-  cue: "Arms to the sky like you just landed somewhere new.", tips: ["Step out instead of jumping if your knees need it.", "Land with soft knees.", "Keep the pace steady."] });
+  cue: "Put on any 10-minute YouTube dance workout you love.",
+  tips: ["Pick the video the night before so you just press play.", "Stay light on your feet and bend your knees.", "Go big with the arms. It's a cardio boost before the run."] });
 const RUN_KEYS = [
   { lean: 9, ltf: 46, lsf: -18, rtf: -24, rsf: -98, luf: -38, lff: 48, ruf: 40, rff: 128, neckFlex: -6 },
   { lean: 9, ltf: 8, lsf: -14, rtf: 34, rsf: -70, luf: 2, lff: 92, ruf: 2, rff: 92, neckFlex: -6 },
 ];
-ex("run", { name: "Run / Jog", group: "run", mode: "timed", tempo: 0.72, anchor: "none", src: STARTER, muscles: "Heart, lungs, legs",
+ex("run", { name: "Treadmill Run", group: "run", mode: "timed", tempo: 0.72, anchor: "none", src: SRC_RUN, muscles: "Heart, lungs, legs",
   keys: [RUN_KEYS[0], RUN_KEYS[1], mirror(P(RUN_KEYS[0])), mirror(P(RUN_KEYS[1]))],
-  cue: "Tall posture, quick light feet.", tips: ["Land under your hips, not out in front.", "Relaxed shoulders, arms swing forward and back.", "Easy pace means you can still chat."] });
-ex("walk", { name: "Brisk Walk", group: "run", mode: "timed", tempo: 1.15, anchor: "none", src: STARTER, muscles: "Recovery",
-  keys: [{ ltf: 22, lsf: 4, rtf: -14, rsf: -26, luf: -16, lff: -4, ruf: 18, rff: 30 }, { ltf: 2, rtf: 12, rsf: -30, luf: 0, ruf: 0 },
-         { rtf: 22, rsf: 4, ltf: -14, lsf: -26, ruf: -16, rff: -4, luf: 18, lff: 30 }, { rtf: 2, ltf: 12, lsf: -30, luf: 0, ruf: 0 }],
-  cue: "Walk tall, breathe through the nose.", tips: ["Shoulders back and relaxed.", "Swing the arms.", "Use this to recover."] });
+  cue: "Tall posture, quick light feet.",
+  tips: ["Warm-up: 1.6 km (1 mile) in 10 minutes.", "Run: 3.2 km (2 more miles) in 20 minutes, 4.8 km (3 miles) total.", "Both targets are about 9.7 km/h (6.0 mph), a 10-minute mile.", "Set a 1% incline to feel like outdoor running.", "Land under your hips and keep your shoulders relaxed."] });
 // run/walk keys were already full poses for the mirrored ones — normalise
 EX.run.keys = EX.run.keys.map(k => Object.assign({}, BASE, k));
 
@@ -662,20 +606,20 @@ EX.run.keys = EX.run.keys.map(k => Object.assign({}, BASE, k));
    3. Days, blocks, plan builder
    ========================================================= */
 const DAYS = [
-  { d: "Mon", full: "Monday", city: "Paris", country: "France", code: "CDG", focus: "Full body", db: ["gobletSquat", "row", "press", "rdl"], band: "strength", run: "steady",
+  { d: "Mon", full: "Monday", city: "Paris", country: "France", code: "CDG", focus: "Full body", db: ["gobletSquat", "row", "press", "rdl"], band: "strength",
     note: "Croissant energy. Strong, steady and elegant from start to finish." },
-  { d: "Tue", full: "Tuesday", city: "Santorini", country: "Greece", code: "JTR", focus: "Glutes", db: ["gluteBridge", "sumoSquat", "reverseLunge", "rdl"], band: "endurance", run: "intervals",
+  { d: "Tue", full: "Tuesday", city: "Santorini", country: "Greece", code: "JTR", focus: "Glutes", db: ["gluteBridge", "sumoSquat", "reverseLunge", "rdl"], band: "endurance",
     note: "Climbing those white-washed stairs needs glutes. Light band day for the arms." },
-  { d: "Wed", full: "Wednesday", city: "Kyoto", country: "Japan", code: "KIX", focus: "Arms & shoulders", db: ["hammerCurl", "lateralRaise", "row", "press"], band: "tempo", run: "easy",
+  { d: "Wed", full: "Wednesday", city: "Kyoto", country: "Japan", code: "KIX", focus: "Arms & shoulders", db: ["hammerCurl", "lateralRaise", "row", "press"], band: "tempo",
     note: "Slow and precise, like a tea ceremony. Every rep under control." },
-  { d: "Thu", full: "Thursday", city: "Marrakech", country: "Morocco", code: "RAK", focus: "Pilates sculpt", db: ["deadBug", "gluteBridge", "russianTwist", "sumoSquat"], band: "endurance", run: "tempo",
-    note: "Core and control, then a tempo run through the souk." },
-  { d: "Fri", full: "Friday", city: "Rio", country: "Brazil", code: "GIG", focus: "Legs", db: ["gobletSquat", "reverseLunge", "sumoSquat", "rdl"], band: "strength", run: "fartlek",
+  { d: "Thu", full: "Thursday", city: "Marrakech", country: "Morocco", code: "RAK", focus: "Pilates sculpt", db: ["deadBug", "gluteBridge", "russianTwist", "sumoSquat"], band: "endurance",
+    note: "Core and control, like a calm morning in the riad." },
+  { d: "Fri", full: "Friday", city: "Rio", country: "Brazil", code: "GIG", focus: "Legs", db: ["gobletSquat", "reverseLunge", "sumoSquat", "rdl"], band: "strength",
     note: "Legs for Sugarloaf Mountain, rhythm for the samba." },
-  { d: "Sat", full: "Saturday", city: "Reykjavík", country: "Iceland", code: "KEF", focus: "Full-body stamina", db: ["thruster", "row", "reverseLunge", "russianTwist"], band: "pulse", run: "long",
+  { d: "Sat", full: "Saturday", city: "Reykjavík", country: "Iceland", code: "KEF", focus: "Full-body stamina", db: ["thruster", "row", "reverseLunge", "russianTwist"], band: "pulse",
     note: "Stamina day. Chasing the northern lights takes lungs." },
-  { d: "Sun", full: "Sunday", city: "Bali", country: "Indonesia", code: "DPS", focus: "Pilates & mobility", db: ["deadBug", "birdDog", "gluteBridge", "lateralRaise"], band: "light", run: "recovery",
-    note: "Active recovery. Lighter everything, still showing up." },
+  { d: "Sun", full: "Sunday", city: "Bali", country: "Indonesia", code: "DPS", focus: "Pilates & mobility", db: ["deadBug", "birdDog", "gluteBridge", "lateralRaise"], band: "light",
+    note: "Lighter Pilates and bands. Still showing up." },
 ];
 const BAND_STYLE = {
   strength: { label: "Strength", reps: 10, tempo: 4, cue: "Heavier band, 2 s up and 2 s down." },
@@ -684,15 +628,6 @@ const BAND_STYLE = {
   pulse: { label: "Pulse", reps: 12, tempo: 3, cue: "Finish each set with 5 small pulses at the hardest point." },
   light: { label: "Light", reps: 12, tempo: 3, cue: "Lightest band. Just move the blood." },
 };
-const RUNS = {
-  steady: { label: "Steady jog", desc: "5 min walk, 20 min steady jog, 5 min walk", parts: [["walk", 300, "Warm-up walk, then build into a jog", 1], ["run", 1200, "Steady jog: you can still talk in sentences", 0.85], ["walk", 300, "Cool-down walk", 1]] },
-  intervals: { label: "Intervals", desc: "8 × (1 min fast + 90 s easy)", parts: [["walk", 300, "Warm-up walk", 1], ...Array.from({ length: 8 }, () => [["run", 60, "Fast! Run like you're catching a ferry", 1.25], ["run", 90, "Easy jog to recover", 0.75]]).flat(), ["walk", 300, "Cool-down walk", 1]] },
-  easy: { label: "Easy run", desc: "27 min conversational pace + walk", parts: [["run", 1620, "Easy conversational pace", 0.8], ["walk", 180, "Walk it out", 1]] },
-  tempo: { label: "Tempo", desc: "3 × 5 min comfortably hard", parts: [["walk", 300, "Warm-up walk and jog", 1], ...Array.from({ length: 3 }, () => [["run", 300, "Tempo: comfortably hard", 1.05], ["run", 60, "Easy jog", 0.75]]).flat(), ["walk", 420, "Cool-down walk", 1]] },
-  fartlek: { label: "Fartlek", desc: "10 × (30 s burst + 90 s jog)", parts: [["walk", 300, "Warm-up walk", 1], ...Array.from({ length: 10 }, () => [["run", 30, "Sprint-ish burst!", 1.35], ["run", 90, "Jog and breathe", 0.8]]).flat(), ["walk", 300, "Cool-down walk", 1]] },
-  long: { label: "Long steady", desc: "28 min steady rhythm + walk", parts: [["run", 1680, "Long steady jog: settle into your rhythm", 0.82], ["walk", 120, "Walk and stretch", 1]] },
-  recovery: { label: "Run-walk", desc: "10 × (2 min jog + 1 min walk)", parts: Array.from({ length: 10 }, () => [["run", 120, "Gentle jog", 0.72], ["walk", 60, "Walk", 1]]).flat() },
-};
 const BLOCKS = [
   { id: "neck", name: "Neck & posture", min: 10, start: 0 },
   { id: "bands", name: "Resistance bands · arms", min: 20, start: 10 },
@@ -700,8 +635,6 @@ const BLOCKS = [
   { id: "dance", name: "Dance", min: 10, start: 50 },
   { id: "run", name: "Run / jog", min: 30, start: 60 },
 ];
-const NECK_ORDER = ["chinTuck", "neckTilt", "neckRotation", "levator", "shoulderRoll", "wSqueeze", "yRaise", "chestOpener"];
-const DANCE_ORDER = ["stepTouch", "grapevine", "hipSway", "sambaKnees", "jetJacks"];
 
 function unitsFor(exId, reps, tempo, hold) {
   const e = EX[exId];
@@ -745,14 +678,8 @@ function buildDay(dayIdx, week) {
   const day = DAYS[dayIdx];
   const bump = Math.min(4, Math.floor((week - 1) / 2));
   const segs = [];
-  // Neck: 8 steps, timed holds
-  const neckUnits = NECK_ORDER.flatMap(id => {
-    const e = EX[id];
-    if (e.mode === "hold") return unitsFor(id, null, null, 35);
-    const reps = { chinTuck: 10, neckRotation: 6, shoulderRoll: 10, wSqueeze: 10, yRaise: 10, chestOpener: 6 }[id];
-    return unitsFor(id, reps, e.tempo);
-  });
-  segs.push(...fitBlock("neck", neckUnits, 600, { maxRounds: 1, minRest: 5, maxRest: 25 }));
+  // Neck: follow-along video
+  segs.push({ block: "neck", kind: "work", ex: "neckVideo", dur: 600, timed: true, cue: "Follow Hailey C.'s video · all 8 steps" });
   // Bands
   const bs = BAND_STYLE[day.band];
   const bandUnits = ["bandCurl", "bandPress", "bandTricep"].flatMap(id => unitsFor(id, bs.reps + bump, bs.tempo));
@@ -765,12 +692,11 @@ function buildDay(dayIdx, week) {
     return unitsFor(id, base + bump, e.tempo);
   });
   segs.push(...fitBlock("db", dbUnits, 1200, { maxRounds: 4, minRest: 20, maxRest: 75 }));
-  // Dance
-  const rot = dayIdx % DANCE_ORDER.length;
-  const dOrder = DANCE_ORDER.slice(rot).concat(DANCE_ORDER.slice(0, rot));
-  dOrder.forEach(id => segs.push({ block: "dance", kind: "work", ex: id, hold: 120, dur: 120, timed: true }));
-  // Run
-  RUNS[day.run].parts.forEach(([id, dur, cue, speed]) => segs.push({ block: "run", kind: "work", ex: id, dur, timed: true, cue, speed }));
+  // Dance: placeholder for a YouTube follow-along
+  segs.push({ block: "dance", kind: "work", ex: "danceVideo", dur: 600, timed: true, cue: "Follow your YouTube dance video" });
+  // Run: treadmill, 3 miles total
+  segs.push({ block: "run", kind: "work", ex: "run", dur: 600, timed: true, speed: 0.92, km: [0, 1.6], cue: "Treadmill warm-up · aim 1.6 km (1 mile)" });
+  segs.push({ block: "run", kind: "work", ex: "run", dur: 1200, timed: true, speed: 1.05, km: [1.6, 4.8], cue: "Run · aim 3.2 km more (2 miles), 4.8 km total" });
   // annotate next work + absolute start
   let t = 0;
   segs.forEach(s => { s.t0 = t; t += s.dur; });
@@ -1022,11 +948,11 @@ function renderStamps() {
 
 function legSummary(plan, bid) {
   const segs = plan.segs.filter(s => s.block === bid && s.kind === "work");
-  if (bid === "neck") return "8 steps · chin tucks to chest opener";
+  if (bid === "neck") return "Follow along · Hailey C. 10 min Posture Fix";
   if (bid === "bands") { const r = segs[0].rounds; return `${plan.bandStyle.label} · ${r} rounds · ${segs[0].reps} reps per set`; }
   if (bid === "db") { const r = segs[0].rounds; return `${plan.day.focus} · ${segs.slice(0, segs.length / r).map(s => EX[s.ex].name).join(", ")} · ${r} rounds`; }
-  if (bid === "dance") return segs.map(s => EX[s.ex].name).join(" → ");
-  if (bid === "run") return RUNS[plan.day.run].label + " · " + RUNS[plan.day.run].desc;
+  if (bid === "dance") return "Placeholder · your YouTube dance video";
+  if (bid === "run") return "Treadmill · 10 min warm-up (1.6 km) + 20 min run (3.2 km) = 3 miles";
 }
 
 function loadDay() {
@@ -1095,7 +1021,6 @@ function finish() {
 function describe(seg) {
   const e = EX[seg.ex];
   const sideTxt = seg.side ? (seg.side === "L" ? "Left side" : "Right side") : "";
-  if (seg.block === "neck") return `Step ${e.step} of 8${sideTxt ? " · " + sideTxt : ""}${seg.reps ? ` · ${seg.reps} reps` : ` · hold ${seg.hold}s`}`;
   if (seg.timed) return seg.cue || "Keep moving for " + fmt(seg.dur);
   const parts = [`Round ${seg.round} of ${seg.rounds}`];
   if (sideTxt) parts.push(sideTxt);
@@ -1126,6 +1051,7 @@ function updatePanel(full) {
     }
     $("cue").textContent = (s && s.timed && s.cue) ? e.cue : e.cue;
     $("tips").innerHTML = e.tips.map(t => `<li>${t}</li>`).join("");
+    $("btnVideo").hidden = !e.src.url; if (e.src.url) { $("btnVideo").href = e.src.url; $("btnVideo").textContent = e.group === "neck" ? "Open neck video" : "Open video"; }
     $("src").innerHTML = e.src.url ? `From your video: <a href="${e.src.url}" target="_blank" rel="noopener">${e.src.label}</a>` : e.src.label;
     // next list
     const nx = $("next"); nx.innerHTML = "";
@@ -1148,7 +1074,8 @@ function updatePanel(full) {
     let reps = " ";
     if (s.kind === "work" && s.reps) reps = `Rep ${Math.min(s.reps, Math.floor(S.el / s.tempo) + 1)} / ${s.reps}`;
     else if (s.kind === "work" && s.hold && !s.timed) reps = "Hold & breathe";
-    else if (s.kind === "work" && s.timed) reps = s.block === "run" ? (s.speed > 1.1 ? "Push" : s.speed < 0.8 ? "Easy" : "Steady") : "Dance it out";
+    else if (s.kind === "work" && s.km) reps = `On pace: ${(s.km[0] + (s.km[1] - s.km[0]) * Math.min(1, S.el / s.dur)).toFixed(2)} / ${s.km[1].toFixed(1)} km`;
+    else if (s.kind === "work" && s.timed) reps = s.block === "neck" ? "Follow the video" : "Dance it out";
     $("nowReps").textContent = reps;
     $("segBar").style.width = (100 * S.el / s.dur).toFixed(2) + "%";
     $("sesBar").style.width = (100 * (s.t0 + S.el) / S.plan.total).toFixed(2) + "%";
@@ -1172,7 +1099,7 @@ mainCv.forEach(c => ro.observe(c));
 /* ---- library ---- */
 const libVisible = new Set();
 function renderLibrary() {
-  const groups = [["neck", "Neck & posture · 8 steps, every day"], ["bands", "Resistance bands · arms, every day"], ["db", "Dumbbells · varies by day"], ["dance", "Dance · 10 minutes"], ["run", "Run / jog · 30 minutes"]];
+  const groups = [["neck", "Neck & posture · 10 minutes, follow-along video"], ["bands", "Resistance bands · arms, every day"], ["db", "Dumbbells · varies by day"], ["dance", "Dance · 10 minutes, placeholder"], ["run", "Treadmill · 30 minutes, 3 miles"]];
   const lib = $("library"); lib.innerHTML = "";
   const io = new IntersectionObserver(es => es.forEach(en => en.isIntersecting ? libVisible.add(en.target) : libVisible.delete(en.target)), { rootMargin: "80px" });
   for (const [g, title] of groups) {
@@ -1183,13 +1110,13 @@ function renderLibrary() {
       const card = document.createElement("div"); card.className = "ex";
       const cv = document.createElement("canvas"); cv.dataset.ex = e.id; cv.setAttribute("aria-label", e.name + " animation");
       const lying = e.keys.length && e.keys[0].rootPitch !== 0;
-      cv.dataset.view = lying || e.id === "rdl" || e.id === "row" || e.id === "chinTuck" || e.id === "run" || e.id === "walk" ? 1 : (e.id === "chestOpener" || e.id === "bandTricep" ? 2 : 0);
+      cv.dataset.view = lying || e.id === "rdl" || e.id === "row" || e.id === "run" ? 1 : (e.id === "bandTricep" ? 2 : 0);
       card.appendChild(cv);
       const info = document.createElement("div");
       info.innerHTML = `<div class="nm">${e.step ? e.step + ". " : ""}${e.name}</div><div class="tg">${e.muscles}</div>`;
       card.appendChild(info);
       const row = document.createElement("div"); row.className = "row";
-      row.innerHTML = `<span class="badge ${e.src.mine ? "" : "draft"}">${e.src.mine ? "From your video" : "Starter pick"}</span>`;
+      row.innerHTML = `<span class="badge ${e.src.mine ? "" : "draft"}">${e.src.badge}</span>`;
       const b = document.createElement("button"); b.className = "btn small"; b.textContent = "Preview";
       b.addEventListener("click", () => { S.mode = "preview"; S.running = false; S.preview = { ex: e.id, side: e.sides ? "L" : null }; S.el = 0; updatePanel(true); $("flight").scrollIntoView({ behavior: "smooth", block: "start" }); });
       row.appendChild(b); card.appendChild(row);
