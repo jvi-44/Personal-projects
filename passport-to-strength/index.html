@@ -138,6 +138,9 @@ a { color: var(--pink-ink); }
 .leg .n { font-weight: 500; font-size: 0.92rem; line-height: 1.3; }
 .leg .s { font-size: 0.78rem; color: var(--muted); line-height: 1.35; grid-column: 1 / -1; }
 .leg.active { border-color: var(--pink); background: var(--blush); }
+.leg.sun { background: transparent; border-style: dashed; }
+.leg.sun .t { color: var(--muted); }
+.leg.sun .n { font-weight: 400; font-size: 0.84rem; color: var(--muted); }
 .leg .ok { font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.12em; padding: 1px 6px; border-radius: 99px; background: var(--good); color: var(--paper); }
 .tear { border-top: 2px dashed var(--line); margin: 4px 0 0; position: relative; }
 .pass-stub { padding: 12px 16px 16px; background: var(--blush); display: grid; gap: 10px; }
@@ -269,7 +272,7 @@ footer { padding-block: 20px 36px; color: var(--muted); font-size: 0.85rem; text
         <path d="M100 26 l5 10 11 1 -8 7 3 11 -11 -6 -11 6 3 -11 -8 -7 11 -1z" stroke-width="3.5" />
       </svg>
       <div style="min-width:0">
-        <p class="eyebrow">Passport · 05:00–06:30 daily · no rest days</p>
+        <p class="eyebrow">Passport · workout 05:10–06:20 daily · no rest days</p>
         <h1>Passport <em>to</em> Strength</h1>
       </div>
     </div>
@@ -298,19 +301,20 @@ footer { padding-block: 20px 36px; color: var(--muted); font-size: 0.85rem; text
         <div class="end"><div class="code" id="passCode">CDG</div><div class="city" id="passCity">Paris</div></div>
       </div>
       <div class="pass-meta">
-        <div><div class="k">Departs</div><div class="v mono">05:00</div></div>
-        <div><div class="k">Lands</div><div class="v mono">06:30</div></div>
+        <div><div class="k">Departs</div><div class="v mono">05:10</div></div>
+        <div><div class="k">Lands</div><div class="v mono">06:20</div></div>
         <div><div class="k">Dumbbells</div><div class="v" id="passFocus">Full body</div></div>
         <div><div class="k">Bands</div><div class="v" id="passBand">Strength</div></div>
       </div>
     </div>
     <ol class="legs" id="legs"></ol>
+    <p style="padding:0 16px 12px;font-size:0.8rem;color:var(--muted)">Dashed rows belong to your <a href="https://claude.ai/artifact/9avG8RmPYPsjXqNHVyJfXy" target="_blank" rel="noopener">Sunshine morning</a> (05:00–07:20).</p>
     <div class="tear" aria-hidden="true"></div>
     <div class="pass-stub">
       <p id="passNote"></p>
       <div class="barcode" aria-hidden="true"></div>
       <p class="mono" style="font-size:0.66rem;letter-spacing:0.12em;color:var(--muted)" id="passRef">WK1 · MON · SEAT 1A</p>
-      <button class="btn solid" id="startAll">Start the 05:00 flight</button>
+      <button class="btn solid" id="startAll">Start the 05:10 flight</button>
     </div>
   </aside>
 
@@ -342,7 +346,7 @@ footer { padding-block: 20px 36px; color: var(--muted); font-size: 0.85rem; text
         <button class="btn" id="btnSound" aria-pressed="true">Sound on</button>
         <a class="btn" id="btnVideo" href="https://youtu.be/94MRAHzFx94" target="_blank" rel="noopener" hidden>Open video</a>
         <span class="spacer"></span>
-        <span class="boardtime" id="boardTime">Local time 05:00</span>
+        <span class="boardtime" id="boardTime">Local time 05:10</span>
       </div>
       <div class="done-msg" id="doneMsg" hidden></div>
     </div>
@@ -411,6 +415,7 @@ footer { padding-block: 20px 36px; color: var(--muted); font-size: 0.85rem; text
       <h4 class="panel-h">Tracking</h4>
       <p>When you play a leg for most of its time, the flight log ticks it off for you. Tick or untick any leg yourself, and add your band, dumbbell weight and distances. All five legs ticked stamps the day as visited.</p>
       <p>Treadmill every day: 1.6 km warm-up in 10 minutes, then 3.2 km in 20 minutes, 3 miles in total.</p>
+      <p>The workout sits inside your Sunshine morning: rise and brush at 05:00, workout 05:10–06:20, then journal, goals, shower, breakfast and reading until 07:20. Bands and dumbbells are 10 minutes each to make room.</p>
     </div>
     <div class="panel">
       <h4 class="panel-h">Sources</h4>
@@ -420,7 +425,7 @@ footer { padding-block: 20px 36px; color: var(--muted); font-size: 0.85rem; text
     </div>
   </div>
 </section>
-<footer class="wrap">Stamped with love · 05:00 boarding, every day</footer>
+<footer class="wrap">Stamped with love · 05:10 boarding, every day</footer>
 <script>
 (() => {
 "use strict";
@@ -534,7 +539,7 @@ function ex(id, o) { o.id = id; o.keys = (o.keys || []).map(P); if (o.target) o.
 ex("neckVideo", { name: "10 min Posture Fix", group: "neck", mode: "timed", tempo: 5, src: SRC_NECK, muscles: "Neck, upper back, shoulders",
   keys: [{ tuck: 0.012 }, { tuck: -0.02, shrug: -0.008, retract: 0.02 }],
   cue: "Press play on Hailey C.'s video and follow all 8 steps.",
-  tips: ["Open the video before 05:00 so it's ready to go.", "Move slowly and stay pain-free. Stretch, never strain.", "Keep breathing through every hold.", "This timer keeps your 10 minutes on schedule."] });
+  tips: ["Open the video before 05:10 so it's ready to go.", "Move slowly and stay pain-free. Stretch, never strain.", "Keep breathing through every hold.", "This timer keeps your 10 minutes on schedule."] });
 
 /* ---- Resistance bands (from fitbymik video) ---- */
 ex("bandCurl", { name: "Band Bicep Curl", group: "bands", mode: "reps", tempo: 3, src: SRC_BAND, muscles: "Biceps",
@@ -690,10 +695,10 @@ const BAND_STYLE = {
 };
 const BLOCKS = [
   { id: "neck", name: "Neck & posture", min: 10, start: 0 },
-  { id: "bands", name: "Resistance bands · arms", min: 20, start: 10 },
-  { id: "db", name: "Dumbbells", min: 20, start: 30 },
-  { id: "dance", name: "Dance", min: 10, start: 50 },
-  { id: "run", name: "Run / jog", min: 30, start: 60 },
+  { id: "bands", name: "Resistance bands · arms", min: 10, start: 10 },
+  { id: "db", name: "Dumbbells", min: 10, start: 20 },
+  { id: "dance", name: "Dance", min: 10, start: 30 },
+  { id: "run", name: "Run / jog", min: 30, start: 40 },
 ];
 
 function unitsFor(exId, reps, tempo, hold) {
@@ -743,7 +748,7 @@ function buildDay(dayIdx, week) {
   // Bands
   const bs = BAND_STYLE[day.band];
   const bandUnits = ["bandCurl", "bandPress", "bandTricep"].flatMap(id => unitsFor(id, bs.reps + bump, bs.tempo));
-  segs.push(...fitBlock("bands", bandUnits, 1200, { maxRounds: 5, minRest: 18, maxRest: 75 }));
+  segs.push(...fitBlock("bands", bandUnits, 600, { maxRounds: 4, minRest: 15, maxRest: 60 }));
   // Dumbbells
   const light = day.band === "light";
   const dbUnits = day.db.flatMap(id => {
@@ -751,7 +756,7 @@ function buildDay(dayIdx, week) {
     const base = e.repNote ? 8 : (light ? 10 : 12);
     return unitsFor(id, base + bump, e.tempo);
   });
-  segs.push(...fitBlock("db", dbUnits, 1200, { maxRounds: 4, minRest: 20, maxRest: 75 }));
+  segs.push(...fitBlock("db", dbUnits, 600, { maxRounds: 3, minRest: 15, maxRest: 60 }));
   // Dance: placeholder for a YouTube follow-along
   segs.push({ block: "dance", kind: "work", ex: "danceVideo", dur: 600, timed: true, cue: "Follow your YouTube dance video" });
   // Run: treadmill, 3 miles total
@@ -988,7 +993,8 @@ const S = {
 const $ = id => document.getElementById(id);
 const esc = t => String(t ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 const fmt = s => { s = Math.max(0, Math.ceil(s)); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); };
-const clockAt = sec => { const m = 300 + Math.floor(sec / 60); return String(Math.floor(m / 60)).padStart(2, "0") + ":" + String(m % 60).padStart(2, "0"); };
+const WORKOUT_START = 310; // 05:10, inside the 05:00–07:20 Sunshine morning
+const clockAt = sec => { const m = WORKOUT_START + Math.floor(sec / 60); return String(Math.floor(m / 60)).padStart(2, "0") + ":" + String(m % 60).padStart(2, "0"); };
 const blockName = id => BLOCKS.find(b => b.id === id).name;
 const SHORT = { neck: "Neck & posture", bands: "Bands · arms", db: "Dumbbells", dance: "Dance", run: "Treadmill run" };
 const KM_MI = 0.621371;
@@ -1174,7 +1180,7 @@ function renderStamps() {
   $("weekLabel").textContent = "Week " + S.week;
 }
 function renderLegStatus() {
-  document.querySelectorAll(".leg").forEach(li => {
+  document.querySelectorAll(".leg[data-block]").forEach(li => {
     const ok = li.querySelector(".ok"); const done = CUR.blocks[li.dataset.block].done;
     if (ok) ok.hidden = !done;
   });
@@ -1262,6 +1268,9 @@ function loadDay() {
     btn.addEventListener("click", () => { startAt(S.plan.segs.findIndex(s => s.block === b.id)); if (window.innerWidth <= 860) $("flight").scrollIntoView({ behavior: "smooth", block: "start" }); });
     li.insertBefore(btn, li.children[1]); legs.appendChild(li);
   });
+  const sun = (t, n) => { const li = document.createElement("li"); li.className = "leg sun"; li.innerHTML = `<div style="min-width:0"><div class="t">${t}</div><div class="n">${n}</div></div>`; return li; };
+  legs.prepend(sun("05:00–05:10", "Rise & shine, brush with affirmations"));
+  legs.appendChild(sun("06:20–07:20", "Journal, goals, shower, breakfast, read"));
   S.running = false; S.mode = "preview"; S.idx = 0; S.el = 0; S.played = {};
   S.preview = { ex: S.plan.segs[0].ex, side: S.plan.segs[0].side };
   $("doneMsg").hidden = true;
@@ -1309,7 +1318,7 @@ function finish() {
   S.running = false;
   const d = DAYS[S.day];
   const m = $("doneMsg"); m.hidden = false;
-  m.textContent = blocksDone(CUR) === 5 ? `Landed in ${d.city} at 06:30. Passport stamped for Week ${S.week}. Add your notes in the flight log.` : `Flight finished. ${blocksDone(CUR)} of 5 legs logged. Tick any you did off-timer in the flight log.`;
+  m.textContent = blocksDone(CUR) === 5 ? `Landed in ${d.city} at 06:20. Passport stamped for Week ${S.week}. Add your notes in the flight log.` : `Flight finished. ${blocksDone(CUR)} of 5 legs logged. Tick any you did off-timer in the flight log.`;
   beep(784, 0.15); setTimeout(() => beep(1046, 0.25), 180);
   updatePanel(true);
 }
@@ -1335,7 +1344,7 @@ function updatePanel(full) {
     if (!s) {
       $("nowBlock").textContent = "Preview · " + blockName(e.group);
       $("nowName").textContent = e.name;
-      $("nowSub").textContent = e.muscles + ". Press Start for the full 05:00 flight, or Board any leg on your pass.";
+      $("nowSub").textContent = e.muscles + ". Press Start for the full 05:10 flight, or Board any leg on your pass.";
     } else if (s.kind === "work") {
       $("nowBlock").textContent = blockName(s.block);
       $("nowName").textContent = e.name;
@@ -1374,7 +1383,7 @@ function updatePanel(full) {
     $("boardTime").textContent = "Local time " + clockAt(s.t0 + S.el);
   } else {
     $("nowTime").textContent = "0:00"; $("nowReps").textContent = " ";
-    $("segBar").style.width = "0%"; $("sesBar").style.width = "0%"; $("boardTime").textContent = "Local time 05:00";
+    $("segBar").style.width = "0%"; $("sesBar").style.width = "0%"; $("boardTime").textContent = "Local time 05:10";
   }
 }
 
