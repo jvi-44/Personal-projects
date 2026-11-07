@@ -1,0 +1,1282 @@
+<title>Passport to Strength</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..800&family=Jost:wght@300..600&family=DM+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a passport — embossed cover, a boarding pass for today, the in-flight player, then the visa pages (move library). */
+:root {
+  --bg: #fff8fa;
+  --paper: #ffffff;
+  --blush: #fde8ef;
+  --rose: #f6bfd0;
+  --pink: #d93a74;
+  --pink-ink: #b82860;
+  --ink: #3b1828;
+  --muted: #86606f;
+  --line: #f0d3dd;
+  --cover: #e9578d;
+  --cover-ink: #ffffff;
+  --stamp: #c42a63;
+  --good: #2f8f6c;
+  --fig-skin: #f1c7ab;
+  --fig-hair: #5a3226;
+  --fig-top: #fbd3e1;
+  --fig-legs: #e2588e;
+  --fig-shoe: #ffffff;
+  --fig-band: #ff4d94;
+  --fig-db: #6d5562;
+  --fig-ground: #f3d6e0;
+  --fig-face: #5a3226;
+  --display: "Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
+  --body: "Jost", "Futura", "Century Gothic", system-ui, sans-serif;
+  --mono: "DM Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1d0f16; --paper: #28141e; --blush: #34192a; --rose: #5d2a43; --pink: #ff6fa5; --pink-ink: #ff8db8;
+    --ink: #fbe9f0; --muted: #c99db1; --line: #47243a; --cover: #8e2552; --cover-ink: #fff3f8; --stamp: #ff7aad; --good: #6cd3a8;
+    --fig-skin: #f0c4a8; --fig-hair: #2e1812; --fig-top: #fbd3e1; --fig-legs: #ff6fa5; --fig-shoe: #fff3f8;
+    --fig-band: #ff86b5; --fig-db: #d9bfcc; --fig-ground: #47243a; --fig-face: #3a1d16;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1d0f16; --paper: #28141e; --blush: #34192a; --rose: #5d2a43; --pink: #ff6fa5; --pink-ink: #ff8db8;
+  --ink: #fbe9f0; --muted: #c99db1; --line: #47243a; --cover: #8e2552; --cover-ink: #fff3f8; --stamp: #ff7aad; --good: #6cd3a8;
+  --fig-skin: #f0c4a8; --fig-hair: #2e1812; --fig-top: #fbd3e1; --fig-legs: #ff6fa5; --fig-shoe: #fff3f8;
+  --fig-band: #ff86b5; --fig-db: #d9bfcc; --fig-ground: #47243a; --fig-face: #3a1d16;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.55; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { font-family: var(--display); font-weight: 600; text-wrap: balance; margin: 0; line-height: 1.1; }
+h2 { font-size: clamp(1.6rem, 3.4vw, 2.2rem); }
+h2 em, h1 em { font-weight: 400; }
+p { margin: 0; }
+button { font: inherit; color: inherit; }
+button:focus-visible, a:focus-visible { outline: 2px solid var(--pink); outline-offset: 2px; }
+a { color: var(--pink-ink); }
+.eyebrow { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+/* ---------- Cover ---------- */
+.cover-band { padding-block: 20px 8px; }
+.cover {
+  position: relative; overflow: hidden; border-radius: 18px 18px 18px 18px;
+  background-color: var(--cover); color: var(--cover-ink);
+  background-image:
+    repeating-radial-gradient(circle at 85% 40%, rgba(255,255,255,0.10) 0 1px, transparent 1px 9px),
+    repeating-radial-gradient(circle at 10% 120%, rgba(255,255,255,0.07) 0 1px, transparent 1px 13px);
+  padding: clamp(22px, 4vw, 40px);
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: center;
+}
+.cover .eyebrow { color: var(--cover-ink); opacity: 0.85; }
+.cover h1 { font-size: clamp(2.4rem, 7vw, 4.6rem); font-weight: 500; letter-spacing: -0.01em; margin-top: 10px; }
+.cover h1 em { font-style: italic; }
+.cover .lede { margin-top: 12px; max-width: 34em; font-weight: 300; font-size: 1.05rem; }
+.holder { margin-top: 18px; display: flex; flex-wrap: wrap; gap: 8px 22px; font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.holder span b { font-weight: 500; opacity: 0.75; margin-right: 6px; }
+.crest { width: clamp(110px, 18vw, 190px); height: auto; color: var(--cover-ink); }
+.mrz { grid-column: 1 / -1; font-family: var(--mono); font-size: clamp(0.62rem, 1.6vw, 0.85rem); letter-spacing: 0.12em; opacity: 0.8; overflow: hidden; white-space: nowrap; text-overflow: clip; border-top: 1px dashed rgba(255,255,255,0.45); padding-top: 12px; }
+@media (max-width: 640px) { .cover { grid-template-columns: 1fr; } .crest { position: absolute; right: 12px; top: 12px; width: 84px; opacity: 0.55; } }
+
+/* ---------- Day stamps ---------- */
+.section { padding-block: 28px; }
+.section-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+.stamps { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 760px) { .stamps { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 118px; overflow-x: auto; padding: 12px 2px 6px; scroll-snap-type: x proximity; } .stamp { scroll-snap-align: start; } }
+.stamp {
+  position: relative; cursor: pointer; text-align: center; background: var(--paper);
+  border: 1.5px solid var(--line); border-radius: 12px; padding: 12px 6px 10px; min-width: 0;
+  transition: transform .15s ease, border-color .15s ease;
+}
+.stamp:hover { transform: translateY(-2px); border-color: var(--rose); }
+.stamp[aria-pressed="true"] { border-color: var(--pink); box-shadow: 0 0 0 3px var(--blush); }
+.stamp .d { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.14em; color: var(--muted); text-transform: uppercase; }
+.stamp .c { font-family: var(--display); font-size: 1.15rem; font-weight: 600; line-height: 1.15; margin-top: 2px; }
+.stamp .f { font-size: 0.74rem; color: var(--muted); margin-top: 2px; }
+.stamp .today { position: absolute; top: -9px; left: 50%; transform: translateX(-50%); background: var(--pink); color: var(--paper); font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.14em; padding: 1px 7px; border-radius: 99px; }
+.stamp .ink {
+  position: absolute; inset: 8px; border: 2px solid var(--stamp); border-radius: 50%; color: var(--stamp);
+  display: grid; place-items: center; font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.12em; font-weight: 500;
+  transform: rotate(-14deg); opacity: 0.85; pointer-events: none; background: color-mix(in srgb, var(--paper) 55%, transparent);
+}
+
+/* ---------- Boarding pass ---------- */
+.pass { display: grid; grid-template-columns: minmax(0, 1fr) 220px; background: var(--paper); border: 1.5px solid var(--line); border-radius: 18px; overflow: hidden; }
+@media (max-width: 760px) { .pass { grid-template-columns: 1fr; } }
+.pass-main { padding: clamp(16px, 3vw, 28px); min-width: 0; }
+.pass-stub { border-left: 2px dashed var(--line); padding: 22px; background: var(--blush); display: flex; flex-direction: column; gap: 14px; justify-content: space-between; }
+@media (max-width: 760px) { .pass-stub { border-left: 0; border-top: 2px dashed var(--line); } }
+.route { display: grid; grid-template-columns: auto minmax(0,1fr) auto; align-items: center; gap: 14px; margin-top: 10px; }
+.route .code { font-family: var(--display); font-size: clamp(2rem, 5vw, 3rem); font-weight: 700; line-height: 1; }
+.route .city { font-size: 0.8rem; color: var(--muted); }
+.route .end { text-align: right; }
+.route .path { position: relative; height: 2px; background: repeating-linear-gradient(90deg, var(--rose) 0 6px, transparent 6px 12px); }
+.route .path svg { position: absolute; left: 50%; top: 50%; width: 26px; height: 26px; transform: translate(-50%, -50%); color: var(--pink); background: var(--paper); padding: 2px; }
+.pass-meta { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); }
+@media (max-width: 520px) { .pass-meta { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.pass-meta div { min-width: 0; }
+.pass-meta .k { font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.pass-meta .v { font-weight: 500; overflow-wrap: anywhere; }
+.legs { list-style: none; margin: 20px 0 0; padding: 0; display: grid; gap: 8px; }
+.leg { display: grid; grid-template-columns: 112px minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 12px 14px; border-radius: 12px; background: var(--bg); border: 1px solid var(--line); }
+@media (max-width: 520px) { .leg { grid-template-columns: 1fr auto; } .leg .t { grid-column: 1 / -1; } }
+.leg .t { font-family: var(--mono); font-size: 0.86rem; font-variant-numeric: tabular-nums; color: var(--pink-ink); }
+.leg .n { font-weight: 500; }
+.leg .s { font-size: 0.86rem; color: var(--muted); }
+.leg.active { border-color: var(--pink); background: var(--blush); }
+.btn {
+  appearance: none; border: 1.5px solid var(--pink); background: transparent; color: var(--pink-ink); border-radius: 99px;
+  padding: 7px 16px; cursor: pointer; font-weight: 500; font-size: 0.9rem; white-space: nowrap;
+}
+.btn:hover { background: var(--blush); }
+.btn.solid { background: var(--pink); color: var(--paper); }
+.btn.solid:hover { background: var(--pink-ink); }
+.btn.small { padding: 4px 12px; font-size: 0.82rem; }
+.week { display: flex; align-items: center; gap: 8px; }
+.week .btn { padding: 2px 10px; }
+.barcode { height: 54px; background: repeating-linear-gradient(90deg, var(--ink) 0 2px, transparent 2px 4px, var(--ink) 4px 5px, transparent 5px 9px, var(--ink) 9px 12px, transparent 12px 14px); opacity: 0.8; border-radius: 2px; }
+
+/* ---------- Player ---------- */
+.player { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 18px; }
+@media (max-width: 900px) { .player { grid-template-columns: 1fr; } }
+.stage { background: var(--paper); border: 1.5px solid var(--line); border-radius: 18px; padding: clamp(12px, 2.4vw, 22px); min-width: 0; }
+.views { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.view { position: relative; background: var(--bg); border-radius: 12px; overflow: hidden; min-width: 0; }
+.view canvas { display: block; width: 100%; aspect-ratio: 4 / 5; max-width: 100%; }
+.view .lbl { position: absolute; left: 8px; top: 6px; font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.14em; color: var(--muted); text-transform: uppercase; }
+.overlay { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
+.overlay span { font-family: var(--display); font-style: italic; font-size: clamp(1.1rem, 3vw, 1.8rem); color: var(--pink-ink); background: color-mix(in srgb, var(--paper) 80%, transparent); padding: 2px 12px; border-radius: 99px; }
+.now { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 18px; align-items: end; margin-top: 16px; }
+.now .blk { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--pink-ink); }
+.now h3 { font-size: clamp(1.5rem, 4vw, 2.2rem); margin-top: 2px; }
+.now .sub { color: var(--muted); font-size: 0.95rem; margin-top: 2px; }
+.clock { text-align: right; }
+.clock .big { font-family: var(--mono); font-size: clamp(2.2rem, 6vw, 3.4rem); line-height: 1; font-variant-numeric: tabular-nums; }
+.clock .reps { font-family: var(--mono); font-size: 1rem; color: var(--pink-ink); margin-top: 4px; font-variant-numeric: tabular-nums; }
+.bar { height: 6px; border-radius: 99px; background: var(--blush); overflow: hidden; margin-top: 12px; }
+.bar i { display: block; height: 100%; width: 0; background: var(--pink); border-radius: 99px; }
+.bar.session { height: 3px; margin-top: 6px; }
+.bar.session i { background: var(--rose); }
+.ctrls { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; align-items: center; }
+.ctrls .spacer { flex: 1; }
+.ctrls .boardtime { font-family: var(--mono); font-size: 0.82rem; color: var(--muted); }
+.side { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.card { background: var(--paper); border: 1.5px solid var(--line); border-radius: 18px; padding: 18px; min-width: 0; }
+.card h4 { margin: 0 0 8px; font-family: var(--mono); font-weight: 500; font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+.tips { margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: 0.95rem; }
+.tips li::marker { color: var(--pink); }
+.cue { font-family: var(--display); font-style: italic; font-size: 1.1rem; color: var(--pink-ink); margin-bottom: 10px; }
+.next { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: 0.9rem; }
+.next li { display: flex; justify-content: space-between; gap: 10px; border-bottom: 1px dashed var(--line); padding-bottom: 6px; }
+.next li span:last-child { font-family: var(--mono); color: var(--muted); white-space: nowrap; font-size: 0.82rem; }
+.src { font-size: 0.85rem; color: var(--muted); margin-top: 10px; }
+.done-msg { margin-top: 12px; padding: 12px 14px; border-radius: 12px; background: var(--blush); color: var(--pink-ink); font-weight: 500; }
+
+/* ---------- Library ---------- */
+.lib-group { margin-top: 22px; }
+.lib-group > .eyebrow { margin-bottom: 10px; display: block; }
+.lib { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
+@media (max-width: 520px) { .lib { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } .ex .row { flex-wrap: wrap; } }
+.ex { background: var(--paper); border: 1.5px solid var(--line); border-radius: 14px; padding: 10px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.ex canvas { width: 100%; aspect-ratio: 1 / 1; display: block; background: var(--bg); border-radius: 10px; max-width: 100%; }
+.ex .nm { font-weight: 500; line-height: 1.25; }
+.ex .tg { font-size: 0.8rem; color: var(--muted); }
+.ex .row { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: auto; }
+.badge { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 7px; border-radius: 99px; border: 1px solid var(--rose); color: var(--pink-ink); white-space: nowrap; }
+.badge.draft { border-style: dashed; color: var(--muted); border-color: var(--line); }
+
+/* ---------- Notes ---------- */
+.notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+.notes p { font-size: 0.95rem; }
+.notes p + p { margin-top: 8px; }
+footer { padding-block: 26px 40px; color: var(--muted); font-size: 0.85rem; text-align: center; }
+@media (prefers-reduced-motion: reduce) { .stamp { transition: none; } }
+</style>
+
+<div class="wrap cover-band">
+  <header class="cover">
+    <div>
+      <p class="eyebrow">Passport · Passeport · Pasaporte</p>
+      <h1>Passport <em>to</em> Strength</h1>
+      <p class="lede">Every morning from 05:00 to 06:30: posture, bands, dumbbells, dance and a run. Building the strength and stamina to see the whole world.</p>
+      <div class="holder">
+        <span><b>Holder</b>Angel in training</span>
+        <span><b>Visa</b>Strength + Stamina</span>
+        <span><b>Valid</b>7 days a week</span>
+      </div>
+    </div>
+    <svg class="crest" viewBox="0 0 200 160" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+      <g opacity="0.95">
+        <path d="M70 92 C40 88 18 70 8 44 C26 58 44 62 62 64" />
+        <path d="M70 102 C38 104 16 90 4 70 C24 80 44 82 64 78" />
+        <path d="M74 112 C46 120 26 114 12 98 C32 104 50 102 68 94" />
+        <path d="M130 92 C160 88 182 70 192 44 C174 58 156 62 138 64" />
+        <path d="M130 102 C162 104 184 90 196 70 C176 80 156 82 136 78" />
+        <path d="M126 112 C154 120 174 114 188 98 C168 104 150 102 132 94" />
+      </g>
+      <circle cx="100" cy="88" r="36" />
+      <ellipse cx="100" cy="88" rx="16" ry="36" />
+      <path d="M64 88 H136 M70 70 H130 M70 106 H130" />
+      <path d="M100 24 l4 9 10 1 -8 6 3 10 -9 -6 -9 6 3 -10 -8 -6 10 -1z" stroke-width="1.6" />
+      <text x="100" y="148" text-anchor="middle" fill="currentColor" stroke="none" font-family="DM Mono, monospace" font-size="10" letter-spacing="3">WORLD · TOUR</text>
+    </svg>
+    <div class="mrz" aria-hidden="true">P&lt;WLD&lt;ANGEL&lt;&lt;STRENGTH&lt;AND&lt;STAMINA&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;<br>0500&lt;0630WLD&lt;7DAYS&lt;NECK&lt;BANDS&lt;DUMBBELL&lt;DANCE&lt;RUN&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</div>
+  </header>
+</div>
+
+<main>
+  <section class="wrap section" aria-labelledby="itin-h">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Itinerary · no rest days</p>
+        <h2 id="itin-h">Seven destinations, <em>one week</em></h2>
+      </div>
+      <div class="week" aria-label="Training week">
+        <button class="btn small" id="weekDown" aria-label="Previous week">−</button>
+        <span class="mono" id="weekLabel">Week 1</span>
+        <button class="btn small" id="weekUp" aria-label="Next week">+</button>
+      </div>
+    </div>
+    <div class="stamps" id="stamps" role="group" aria-label="Choose a day"></div>
+  </section>
+
+  <section class="wrap section" aria-labelledby="pass-h" style="padding-top:0">
+    <div class="pass">
+      <div class="pass-main">
+        <p class="eyebrow" id="pass-h">Boarding pass · <span id="passDay">Monday</span></p>
+        <div class="route">
+          <div><div class="code">HOME</div><div class="city">Living room</div></div>
+          <div class="path"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></svg></div>
+          <div class="end"><div class="code" id="passCode">CDG</div><div class="city" id="passCity">Paris, France</div></div>
+        </div>
+        <div class="pass-meta">
+          <div><div class="k">Departs</div><div class="v mono">05:00</div></div>
+          <div><div class="k">Lands</div><div class="v mono">06:30</div></div>
+          <div><div class="k">Dumbbells</div><div class="v" id="passFocus">Full body</div></div>
+          <div><div class="k">Bands</div><div class="v" id="passBand">Strength</div></div>
+        </div>
+        <ol class="legs" id="legs"></ol>
+      </div>
+      <aside class="pass-stub">
+        <div>
+          <p class="eyebrow">Today's mood</p>
+          <p id="passNote" style="margin-top:6px;font-size:0.95rem"></p>
+        </div>
+        <div>
+          <div class="barcode" aria-hidden="true"></div>
+          <p class="mono" style="font-size:0.7rem;letter-spacing:0.12em;margin-top:6px;color:var(--muted)" id="passRef">WK1 · MON · SEAT 1A</p>
+        </div>
+        <button class="btn solid" id="startAll">Start the 05:00 flight</button>
+      </aside>
+    </div>
+  </section>
+
+  <section class="wrap section" aria-labelledby="flight-h" id="flight">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">In-flight</p>
+        <h2 id="flight-h">Move with <em>her</em>, three angles at once</h2>
+      </div>
+    </div>
+    <div class="player">
+      <div class="stage">
+        <div class="views">
+          <div class="view"><canvas id="cvFront" aria-label="Front view animation"></canvas><span class="lbl">Front</span><div class="overlay" id="ov0" hidden><span></span></div></div>
+          <div class="view"><canvas id="cvSide" aria-label="Side view animation"></canvas><span class="lbl">Profile</span><div class="overlay" id="ov1" hidden><span></span></div></div>
+          <div class="view"><canvas id="cvQuarter" aria-label="Three-quarter view animation"></canvas><span class="lbl">Three-quarter</span><div class="overlay" id="ov2" hidden><span></span></div></div>
+        </div>
+        <div class="now">
+          <div style="min-width:0">
+            <div class="blk" id="nowBlock">Preview</div>
+            <h3 id="nowName">Band Bicep Curl</h3>
+            <p class="sub" id="nowSub">Press start, or pick a leg of today's flight.</p>
+          </div>
+          <div class="clock">
+            <div class="big" id="nowTime">0:00</div>
+            <div class="reps" id="nowReps">&nbsp;</div>
+          </div>
+        </div>
+        <div class="bar" aria-hidden="true"><i id="segBar"></i></div>
+        <div class="bar session" aria-hidden="true"><i id="sesBar"></i></div>
+        <div class="ctrls">
+          <button class="btn" id="btnPrev">Back</button>
+          <button class="btn solid" id="btnPlay">Start</button>
+          <button class="btn" id="btnNext">Skip</button>
+          <button class="btn" id="btnSound" aria-pressed="true">Sound on</button>
+          <span class="spacer"></span>
+          <span class="boardtime" id="boardTime">Local time 05:00</span>
+        </div>
+        <div class="done-msg" id="doneMsg" hidden></div>
+      </div>
+      <div class="side">
+        <div class="card">
+          <h4>Form notes</h4>
+          <p class="cue" id="cue">Elbows glued to your sides.</p>
+          <ul class="tips" id="tips"></ul>
+          <p class="src" id="src"></p>
+        </div>
+        <div class="card">
+          <h4>Up next</h4>
+          <ul class="next" id="next"></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap section" aria-labelledby="lib-h">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Visa pages</p>
+        <h2 id="lib-h">The move library</h2>
+      </div>
+      <p style="max-width:32em;color:var(--muted);font-size:0.92rem">Moves marked <span class="badge">From your video</span> come from links you sent. <span class="badge draft">Starter pick</span> moves hold their place until you send videos for those blocks.</p>
+    </div>
+    <div id="library"></div>
+  </section>
+
+  <section class="wrap section" aria-labelledby="notes-h">
+    <div class="section-head"><div><p class="eyebrow">Travel notes</p><h2 id="notes-h">How the plan is built</h2></div></div>
+    <div class="notes">
+      <div class="card">
+        <h4>Auto sets &amp; reps</h4>
+        <p>Every day has a band style: Strength (slow 4-second reps), Endurance (more reps, lighter band), Tempo (6-second reps) or Pulse. The planner picks the most rounds that fit inside each block, then spreads the remaining time into rests, so every block ends exactly on the clock.</p>
+        <p>Reps go up by one every two weeks (up to +4). Use the week buttons to move ahead.</p>
+      </div>
+      <div class="card">
+        <h4>Training every day</h4>
+        <p>Arms get bands daily, so the band style alternates heavy and light days. Sunday in Bali is the recovery day: light Pilates and an easy run-walk. If your arms feel sore, use a lighter band and keep the reps.</p>
+      </div>
+      <div class="card">
+        <h4>Sources</h4>
+        <p>Bands: <a href="https://youtu.be/4N7dlYLb1wE" target="_blank" rel="noopener">12 min Resistance Band Arm Workout</a> by fitbymik (curls, overhead press L/R, tricep extension L/R).</p>
+        <p>Neck: <a href="https://youtu.be/94MRAHzFx94" target="_blank" rel="noopener">10 min Posture Fix Workout</a> by Hailey C. Check the 8 steps here against the video and tell me what to change.</p>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="wrap">Stamped with love · 05:00 boarding, every day</footer>
+
+<script>
+(() => {
+"use strict";
+/* =========================================================
+   1. Math + skeleton
+   ========================================================= */
+const D = Math.PI / 180;
+const rotX = a => { const c = Math.cos(a), s = Math.sin(a); return [[1,0,0],[0,c,-s],[0,s,c]]; };
+const rotY = a => { const c = Math.cos(a), s = Math.sin(a); return [[c,0,s],[0,1,0],[-s,0,c]]; };
+const rotZ = a => { const c = Math.cos(a), s = Math.sin(a); return [[c,-s,0],[s,c,0],[0,0,1]]; };
+const mul = (A, B) => A.map((r, i) => [0,1,2].map(j => A[i][0]*B[0][j] + A[i][1]*B[1][j] + A[i][2]*B[2][j]));
+const mv = (M, v) => [M[0][0]*v[0]+M[0][1]*v[1]+M[0][2]*v[2], M[1][0]*v[0]+M[1][1]*v[1]+M[1][2]*v[2], M[2][0]*v[0]+M[2][1]*v[1]+M[2][2]*v[2]];
+const add = (a, b) => [a[0]+b[0], a[1]+b[1], a[2]+b[2]];
+const sub = (a, b) => [a[0]-b[0], a[1]-b[1], a[2]-b[2]];
+const sc = (a, k) => [a[0]*k, a[1]*k, a[2]*k];
+const len = a => Math.hypot(a[0], a[1], a[2]);
+const norm = a => { const l = len(a) || 1; return sc(a, 1 / l); };
+const cross = (a, b) => [a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]];
+const I3 = [[1,0,0],[0,1,0],[0,0,1]];
+
+const L = { spine: 0.50, neck: 0.075, head: 0.105, shW: 0.165, hipW: 0.085, ua: 0.29, fa: 0.25, th: 0.43, sh: 0.42, foot: 0.13 };
+
+// limb direction: flexion f (forward), abduction a (outward), side s (+1 left, -1 right), in frame M
+const limb = (M, s, f, a) => mv(M, mv(rotZ(s * a * D), mv(rotX(-f * D), [0, -1, 0])));
+
+const BASE = {
+  rootPitch: 0, rootYaw: 0, rx: 0, rz: 0, lean: 0, twist: 0, side: 0,
+  neckFlex: 0, neckTilt: 0, neckRot: 0, tuck: 0.012, shrug: 0, retract: 0,
+  luf: 0, lua: 7, lff: 4, lfa: 7, ruf: 0, rua: 7, rff: 4, rfa: 7,
+  ltf: 0, lta: 3, lsf: 0, lsa: 3, rtf: 0, rta: 3, rsf: 0, rsa: 3
+};
+const KEYS = Object.keys(BASE);
+const P = o => Object.assign({}, BASE, o);
+
+function fk(p) {
+  const R0 = mul(rotY(p.rootYaw * D), rotX(p.rootPitch * D));
+  const Rc = mul(R0, mul(rotY(p.twist * D), mul(rotX(p.lean * D), rotZ(-p.side * D))));
+  const pel = [0, 0, 0];
+  const chest = mv(Rc, [0, L.spine, 0]);
+  const waist = mv(Rc, [0, L.spine * 0.48, 0]);
+  const lS = add(chest, mv(Rc, [L.shW, -0.035 + p.shrug, -p.retract]));
+  const rS = add(chest, mv(Rc, [-L.shW, -0.035 + p.shrug, -p.retract]));
+  const lE = add(lS, sc(limb(Rc, 1, p.luf, p.lua), L.ua));
+  const lH = add(lE, sc(limb(Rc, 1, p.lff, p.lfa), L.fa));
+  const rE = add(rS, sc(limb(Rc, -1, p.ruf, p.rua), L.ua));
+  const rH = add(rE, sc(limb(Rc, -1, p.rff, p.rfa), L.fa));
+  const Rh = mul(Rc, mul(rotY(p.neckRot * D), mul(rotX(p.neckFlex * D), rotZ(-p.neckTilt * D))));
+  const neckB = add(chest, mv(Rc, [0, -0.01, 0]));
+  const neckT = add(add(neckB, mv(Rc, [0, 0, p.tuck])), mv(Rh, [0, L.neck, 0]));
+  const head = add(neckT, mv(Rh, [0, L.head * 0.85, 0.012]));
+  const lHip = mv(R0, [L.hipW, 0, 0]);
+  const rHip = mv(R0, [-L.hipW, 0, 0]);
+  const lK = add(lHip, sc(limb(R0, 1, p.ltf, p.lta), L.th));
+  const rK = add(rHip, sc(limb(R0, -1, p.rtf, p.rta), L.th));
+  const lSh = limb(I3, 1, p.lsf, p.lsa), rSh = limb(I3, -1, p.rsf, p.rsa);
+  const lA = add(lK, sc(mv(R0, lSh), L.sh));
+  const rA = add(rK, sc(mv(R0, rSh), L.sh));
+  const lT = add(lA, sc(mv(R0, norm([0, lSh[2], -lSh[1]])), L.foot));
+  const rT = add(rA, sc(mv(R0, norm([0, rSh[2], -rSh[1]])), L.foot));
+  return { pel, waist, chest, lS, rS, lE, rE, lH, rH, neckB, neckT, head, lHip, rHip, lK, rK, lA, rA, lT, rT, Rc, Rh, R0 };
+}
+const PT_NAMES = ["pel","waist","chest","lS","rS","lE","rE","lH","rH","neckB","neckT","head","lHip","rHip","lK","rK","lA","rA","lT","rT"];
+const RAD = { pel: 0.085, waist: 0.08, chest: 0.08, lS: 0.05, rS: 0.05, head: L.head, lA: 0.045, rA: 0.045, lT: 0.025, rT: 0.025 };
+
+function place(pts, p, anchor) {
+  let minY = Infinity;
+  for (const n of PT_NAMES) minY = Math.min(minY, pts[n][1] - (RAD[n] ?? 0.04));
+  let dz = 0;
+  if (anchor === "feet") dz = -((pts.lA[2] + pts.rA[2] + pts.lT[2] + pts.rT[2]) / 4);
+  else if (anchor === "front") dz = -Math.max((pts.lA[2] + pts.lT[2]) / 2, (pts.rA[2] + pts.rT[2]) / 2);
+  const t = [p.rx, -minY, dz + p.rz];
+  for (const n of PT_NAMES) pts[n] = add(pts[n], t);
+  return pts;
+}
+
+function mirror(p) {
+  const q = Object.assign({}, p);
+  for (const k of KEYS) {
+    if (k[0] === "l" && k.length === 3) { const r = "r" + k.slice(1); q[k] = p[r]; q[r] = p[k]; }
+  }
+  for (const k of ["rx", "side", "twist", "neckTilt", "neckRot", "rootYaw"]) q[k] = -p[k];
+  return q;
+}
+const mirrorProps = pr => {
+  if (!pr) return pr;
+  const sw = s => ({ lH: "rH", rH: "lH", lFoot: "rFoot", rFoot: "lFoot", left: "right", right: "left" })[s] || s;
+  return { db: pr.db && sw(pr.db), hammer: pr.hammer, band: pr.band && pr.band.map(b => b.map(sw)) };
+};
+
+function lerpPose(a, b, u) { const o = {}; for (const k of KEYS) o[k] = a[k] + (b[k] - a[k]) * u; return o; }
+const ease = u => (1 - Math.cos(Math.PI * u)) / 2;
+function cyclePose(keys, phase) {
+  const n = keys.length; const x = ((phase % 1) + 1) % 1 * n;
+  const i = Math.floor(x); return lerpPose(keys[i], keys[(i + 1) % n], ease(x - i));
+}
+
+/* =========================================================
+   2. Exercise library
+   ========================================================= */
+const SRC_BAND = { label: "fitbymik · 12 min Resistance Band Arm Workout", url: "https://youtu.be/4N7dlYLb1wE", mine: true };
+const SRC_NECK = { label: "Hailey C. · 10 min Posture Fix Workout", url: "https://youtu.be/94MRAHzFx94", mine: true };
+const STARTER = { label: "Starter pick: send a video and I'll swap it for your favourite", mine: false };
+
+const standW = { lta: 6, rta: 6, lsa: 6, rsa: 6 };
+const EX = {};
+function ex(id, o) { o.id = id; o.keys = (o.keys || []).map(P); if (o.target) o.target = P(o.target); o.anchor = o.anchor || "feet"; EX[id] = o; }
+
+/* ---- Neck & posture (8 steps) ---- */
+ex("chinTuck", { name: "Chin Tucks", group: "neck", mode: "reps", tempo: 4, src: SRC_NECK, step: 1, muscles: "Deep neck flexors",
+  keys: [{ tuck: 0.035, neckFlex: -4 }, { tuck: -0.03, neckFlex: 6 }, { tuck: -0.03, neckFlex: 6 }],
+  cue: "Make a double chin, then hold for two breaths.",
+  tips: ["Glide your head straight back, as if a string pulls the back of your skull.", "Keep your eyes level. Don't nod down.", "Shoulders stay relaxed and low."] });
+ex("neckTilt", { name: "Ear-to-Shoulder Stretch", group: "neck", mode: "hold", sides: true, src: SRC_NECK, step: 2, muscles: "Upper traps, scalenes",
+  target: { neckTilt: 38, rua: 14, rfa: 14, shrug: -0.01 },
+  cue: "Ear drifts toward the shoulder. Opposite hand reaches to the floor.",
+  tips: ["Don't lift the shoulder to meet the ear.", "Breathe out to sink a little deeper each breath.", "Keep your nose facing forward."] });
+ex("neckRotation", { name: "Look Over Your Shoulder", group: "neck", mode: "reps", tempo: 6, src: SRC_NECK, step: 3, muscles: "Neck rotators",
+  keys: [{}, { neckRot: 70 }, {}, { neckRot: -70 }],
+  cue: "Slow turns, chin level, like checking a departures board.",
+  tips: ["Turn only as far as is comfortable.", "Keep your chest facing forward.", "Pause for a breath at each end."] });
+ex("levator", { name: "Nose-to-Armpit Stretch", group: "neck", mode: "hold", sides: true, src: SRC_NECK, step: 4, muscles: "Levator scapulae",
+  target: { neckRot: 42, neckFlex: 38, rua: 12, shrug: -0.01 },
+  cue: "Turn 45°, then look down toward your armpit.",
+  tips: ["Gentle pressure only. Never yank the head.", "Keep the opposite shoulder pulled down.", "You should feel it along the back of the neck."] });
+ex("shoulderRoll", { name: "Shoulder Rolls", group: "neck", mode: "reps", tempo: 4, src: SRC_NECK, step: 5, muscles: "Traps, rhomboids",
+  keys: [{ shrug: 0.055 }, { shrug: 0.035, retract: 0.04 }, { shrug: -0.015, retract: 0.025 }, { shrug: 0, retract: -0.025 }],
+  cue: "Up, back, down. Big slow circles.",
+  tips: ["Emphasise the backward and downward part of the circle.", "Arms stay heavy and loose.", "Breathe in going up, out going down."] });
+ex("wSqueeze", { name: "W Squeeze", group: "neck", mode: "reps", tempo: 4, src: SRC_NECK, step: 6, muscles: "Rhomboids, mid traps",
+  keys: [{ lua: 58, luf: 8, lfa: 158, lff: 8, rua: 58, ruf: 8, rfa: 158, rff: 8 },
+         { lua: 58, luf: -14, lfa: 158, lff: -16, rua: 58, ruf: -14, rfa: 158, rff: -16, retract: 0.045 },
+         { lua: 58, luf: -14, lfa: 158, lff: -16, rua: 58, ruf: -14, rfa: 158, rff: -16, retract: 0.045 }],
+  cue: "Pull elbows back and down into your back pockets.",
+  tips: ["Squeeze shoulder blades together for a two-count.", "Don't arch the lower back. Ribs stay down.", "Chin stays tucked."] });
+ex("yRaise", { name: "W to Y Raise", group: "neck", mode: "reps", tempo: 4, src: SRC_NECK, step: 7, muscles: "Lower traps, shoulders",
+  keys: [{ lua: 58, luf: -6, lfa: 158, lff: -6, rua: 58, ruf: -6, rfa: 158, rff: -6, retract: 0.03 },
+         { lua: 150, luf: 4, lfa: 158, lff: 4, rua: 150, ruf: 4, rfa: 158, rff: 4, retract: 0.02 }],
+  cue: "Slide up to a Y, as if your back were against a wall.",
+  tips: ["Thumbs point behind you.", "Shoulders stay away from your ears.", "Lower slowly back to the W."] });
+ex("chestOpener", { name: "Clasped Chest Opener", group: "neck", mode: "reps", tempo: 6, src: SRC_NECK, step: 8, muscles: "Chest, front shoulders",
+  keys: [{ luf: -18, lua: -2, lff: -32, lfa: -38, ruf: -18, rua: -2, rff: -32, rfa: -38, retract: 0.02 },
+         { luf: -48, lua: -2, lff: -55, lfa: -32, ruf: -48, rua: -2, rff: -55, rfa: -32, retract: 0.05, neckFlex: -14, lean: -4 },
+         { luf: -48, lua: -2, lff: -55, lfa: -32, ruf: -48, rua: -2, rff: -55, rfa: -32, retract: 0.05, neckFlex: -14, lean: -4 }],
+  cue: "Clasp hands behind you, lift, and open the collarbones.",
+  tips: ["Lift the chest up toward the ceiling.", "Keep a soft bend in the elbows if your shoulders are tight.", "Hold and breathe into the front of the chest."] });
+
+/* ---- Resistance bands (from fitbymik video) ---- */
+ex("bandCurl", { name: "Band Bicep Curl", group: "bands", mode: "reps", tempo: 3, src: SRC_BAND, muscles: "Biceps",
+  props: { band: [["lH", "lFoot"], ["rH", "rFoot"]] },
+  keys: [{ ...standW, luf: 3, lua: 9, lff: 6, lfa: 9, ruf: 3, rua: 9, rff: 6, rfa: 9 },
+         { ...standW, luf: 9, lua: 9, lff: 148, lfa: 9, ruf: 9, rua: 9, rff: 148, rfa: 9 }],
+  cue: "Elbows glued to your sides. Curl, squeeze, slow down.",
+  tips: ["Stand on the band hip-width apart, handles palms-up.", "Only the forearms move. No swinging from the back.", "Take 2 seconds to lower. That's where the strength is built.", "Just the curl here (no outward extension)."] });
+ex("bandPress", { name: "Single-Arm Overhead Press", group: "bands", mode: "reps", tempo: 3, sides: true, src: SRC_BAND, muscles: "Shoulders, triceps",
+  props: { band: [["lH", "lFoot"]] },
+  keys: [{ ...standW, lua: 82, luf: 12, lfa: 174, lff: 8, rua: 34, ruf: -8, rfa: -55, rff: -6 },
+         { ...standW, lua: 166, luf: 8, lfa: 172, lff: 6, rua: 34, ruf: -8, rfa: -55, rff: -6 }],
+  cue: "Press up past your ear, then lower with control.",
+  tips: ["Stand on the band with the same-side foot.", "Brace your core. Don't lean away from the working arm.", "Start with the elbow at shoulder height and the wrist stacked over it.", "Free hand on your hip."] });
+ex("bandTricep", { name: "Single-Arm Overhead Tricep Extension", group: "bands", mode: "reps", tempo: 3, sides: true, src: SRC_BAND, muscles: "Triceps",
+  props: { band: [["lH", "rH"]] },
+  keys: [{ ...standW, luf: 172, lua: 6, lff: 345, lfa: 6, ruf: -30, rua: 8, rff: -40, rfa: -78 },
+         { ...standW, luf: 172, lua: 6, lff: 184, lfa: 6, ruf: -30, rua: 8, rff: -40, rfa: -78 }],
+  cue: "Upper arm stays still by your ear. Only the forearm moves.",
+  tips: ["Hold the band low behind your back with the other hand.", "Elbow points to the ceiling, not out to the side.", "Straighten fully and squeeze the back of the arm.", "Lower slowly behind your head."] });
+
+/* ---- Dumbbells (starter picks) ---- */
+ex("gobletSquat", { name: "Goblet Squat", group: "db", mode: "reps", tempo: 3, src: STARTER, muscles: "Quads, glutes, core",
+  props: { db: "goblet" },
+  keys: [{ lta: 10, rta: 10, lsa: 8, rsa: 8, luf: 22, lua: 6, lff: 152, lfa: 36, ruf: 22, rua: 6, rff: 152, rfa: 36 },
+         { lean: 22, ltf: 88, lta: 16, lsf: -28, lsa: 10, rtf: 88, rta: 16, rsf: -28, rsa: 10, luf: 40, lua: 6, lff: 168, lfa: 36, ruf: 40, rua: 6, rff: 168, rfa: 36 }],
+  cue: "Sit between your heels, chest proud.",
+  tips: ["Hold one dumbbell vertically at your chest.", "Knees track over your toes.", "Push the floor away to stand."] });
+ex("rdl", { name: "Romanian Deadlift", group: "db", mode: "reps", tempo: 3.5, src: STARTER, muscles: "Hamstrings, glutes",
+  props: { db: "both" },
+  keys: [{ luf: 4, lua: 4, lff: 4, lfa: 4, ruf: 4, rua: 4, rff: 4, rfa: 4 },
+         { lean: 72, ltf: 14, lsf: -6, rtf: 14, rsf: -6, luf: 70, lua: 4, lff: 72, lfa: 4, ruf: 70, rua: 4, rff: 72, rfa: 4, neckFlex: -10 }],
+  cue: "Push your hips back. Dumbbells slide down your legs.",
+  tips: ["Soft knees, flat back.", "Lower until you feel the hamstrings stretch.", "Squeeze your glutes to stand tall."] });
+ex("reverseLunge", { name: "Reverse Lunge", group: "db", mode: "reps", tempo: 5, src: STARTER, anchor: "front", repNote: "each leg", muscles: "Glutes, quads",
+  props: { db: "both" },
+  keys: [{},
+         { ltf: 78, lsf: -4, rtf: -22, rsf: -82 },
+         {},
+         { rtf: 78, rsf: -4, ltf: -22, lsf: -82 }],
+  cue: "Step back and drop the back knee straight down.",
+  tips: ["Most of your weight stays in the front heel.", "Torso tall, dumbbells by your sides.", "Front knee stays over the ankle."] });
+ex("gluteBridge", { name: "Dumbbell Glute Bridge", group: "db", mode: "reps", tempo: 3.5, src: STARTER, muscles: "Glutes, hamstrings",
+  props: { db: "hips" },
+  keys: [{ rootPitch: -90, ltf: 52, lsf: -72, rtf: 52, rsf: -72, luf: 24, lua: 10, lff: 70, lfa: 0, ruf: 24, rua: 10, rff: 70, rfa: 0, tuck: 0 },
+         { rootPitch: -114, ltf: 18, lsf: -100, rtf: 18, rsf: -100, luf: 40, lua: 10, lff: 92, lfa: 0, ruf: 40, rua: 10, rff: 92, rfa: 0, neckFlex: 20, tuck: 0 },
+         { rootPitch: -114, ltf: 18, lsf: -100, rtf: 18, rsf: -100, luf: 40, lua: 10, lff: 92, lfa: 0, ruf: 40, rua: 10, rff: 92, rfa: 0, neckFlex: 20, tuck: 0 }],
+  cue: "Drive through your heels, squeeze at the top.",
+  tips: ["Rest the dumbbell across your hip bones.", "Ribs down. Lift with glutes, not the lower back.", "Hold the top for a second."] });
+ex("row", { name: "Bent-Over Row", group: "db", mode: "reps", tempo: 3, src: STARTER, muscles: "Back, biceps",
+  props: { db: "both" },
+  keys: [{ lean: 60, ltf: 18, lsf: -14, rtf: 18, rsf: -14, luf: 60, lua: 6, lff: 60, lfa: 6, ruf: 60, rua: 6, rff: 60, rfa: 6, neckFlex: -12 },
+         { lean: 60, ltf: 18, lsf: -14, rtf: 18, rsf: -14, luf: -18, lua: 14, lff: 60, lfa: 6, ruf: -18, rua: 14, rff: 60, rfa: 6, retract: 0.03, neckFlex: -12 }],
+  cue: "Pull elbows toward your back pockets.",
+  tips: ["Hinge to about 45°, back flat.", "Squeeze your shoulder blades at the top.", "Lower slowly. Don't drop the weights."] });
+ex("press", { name: "Dumbbell Shoulder Press", group: "db", mode: "reps", tempo: 3, src: STARTER, muscles: "Shoulders, triceps",
+  props: { db: "both" },
+  keys: [{ ...standW, lua: 84, luf: 12, lfa: 176, lff: 8, rua: 84, ruf: 12, rfa: 176, rff: 8 },
+         { ...standW, lua: 164, luf: 8, lfa: 172, lff: 6, rua: 164, ruf: 8, rfa: 172, rff: 6 }],
+  cue: "Press up and slightly in, ribs stay down.",
+  tips: ["Start with dumbbells at ear height.", "Don't arch your lower back.", "Lock out gently overhead."] });
+ex("hammerCurl", { name: "Hammer Curl", group: "db", mode: "reps", tempo: 3, src: STARTER, muscles: "Biceps, forearms",
+  props: { db: "both", hammer: true },
+  keys: [{ ...standW, luf: 3, lua: 6, lff: 5, lfa: 6, ruf: 3, rua: 6, rff: 5, rfa: 6 },
+         { ...standW, luf: 9, lua: 6, lff: 146, lfa: 6, ruf: 9, rua: 6, rff: 146, rfa: 6 }],
+  cue: "Thumbs up, elbows still.",
+  tips: ["Palms face each other the whole time.", "Curl to shoulder height, then lower slowly.", "Stand tall. No swinging."] });
+ex("lateralRaise", { name: "Lateral Raise", group: "db", mode: "reps", tempo: 3, src: STARTER, muscles: "Side delts",
+  props: { db: "both" },
+  keys: [{ ...standW, lua: 10, lfa: 12, lff: 10, rua: 10, rfa: 12, rff: 10 },
+         { ...standW, lua: 86, lfa: 92, lff: 12, rua: 86, rfa: 92, rff: 12 }],
+  cue: "Lift out to the sides, like spreading wings.",
+  tips: ["Slight bend in the elbows.", "Stop at shoulder height.", "Lead with the elbows. Pinkies slightly up."] });
+ex("sumoSquat", { name: "Plié Sumo Squat", group: "db", mode: "reps", tempo: 3, src: STARTER, muscles: "Inner thighs, glutes",
+  props: { db: "goblet-low" },
+  keys: [{ lta: 22, rta: 22, lsa: 16, rsa: 16, luf: 4, lua: -6, lff: 4, lfa: -14, ruf: 4, rua: -6, rff: 4, rfa: -14 },
+         { lta: 46, ltf: 52, lsa: 12, lsf: -8, rta: 46, rtf: 52, rsa: 12, rsf: -8, lean: 6, luf: 4, lua: -6, lff: 4, lfa: -14, ruf: 4, rua: -6, rff: 4, rfa: -14 }],
+  cue: "Wide stance, toes out, sink straight down like a ballerina.",
+  tips: ["Hold one dumbbell between your legs with both hands.", "Knees push out over the toes.", "Keep your torso upright."] });
+ex("thruster", { name: "Squat to Press", group: "db", mode: "reps", tempo: 3.5, src: STARTER, muscles: "Full body",
+  props: { db: "both" },
+  keys: [{ lta: 8, rta: 8, lsa: 6, rsa: 6, lua: 84, luf: 14, lfa: 176, lff: 10, rua: 84, ruf: 14, rfa: 176, rff: 10 },
+         { lean: 20, ltf: 86, lta: 14, lsf: -28, rtf: 86, rta: 14, rsf: -28, lua: 84, luf: 30, lfa: 176, lff: 26, rua: 84, ruf: 30, rfa: 176, rff: 26 },
+         { lta: 8, rta: 8, lsa: 6, rsa: 6, lua: 164, luf: 8, lfa: 172, lff: 6, rua: 164, ruf: 8, rfa: 172, rff: 6 }],
+  cue: "Squat down, drive up, and use the momentum to press.",
+  tips: ["Dumbbells rest at your shoulders as you squat.", "Push through your heels to press.", "Breathe out on the way up."] });
+ex("deadBug", { name: "Dumbbell Dead Bug", group: "db", mode: "reps", tempo: 5, src: STARTER, anchor: "none", repNote: "each side", muscles: "Deep core",
+  props: { db: "both" },
+  keys: [{ rootPitch: -90, luf: 90, lff: 90, ruf: 90, rff: 90, ltf: 90, lsf: 0, rtf: 90, rsf: 0, tuck: 0 },
+         { rootPitch: -90, luf: 170, lff: 172, ruf: 90, rff: 90, ltf: 90, lsf: 0, rtf: 18, rsf: 14, tuck: 0 },
+         { rootPitch: -90, luf: 90, lff: 90, ruf: 90, rff: 90, ltf: 90, lsf: 0, rtf: 90, rsf: 0, tuck: 0 },
+         { rootPitch: -90, ruf: 170, rff: 172, luf: 90, lff: 90, rtf: 90, rsf: 0, ltf: 18, lsf: 14, tuck: 0 }],
+  cue: "Lower back stays glued to the mat.",
+  tips: ["Light dumbbells, arms straight up over the shoulders.", "Opposite arm and leg lower together.", "Breathe out as you extend."] });
+ex("birdDog", { name: "Bird Dog", group: "db", mode: "reps", tempo: 5, src: STARTER, anchor: "none", repNote: "each side", muscles: "Core, glutes, back",
+  keys: [{ rootPitch: 90, luf: 90, lff: 90, ruf: 90, rff: 90, ltf: 90, lsf: 0, rtf: 90, rsf: 0 },
+         { rootPitch: 90, luf: 176, lff: 176, ruf: 90, rff: 90, ltf: 90, lsf: 0, rtf: 2, rsf: 2 },
+         { rootPitch: 90, luf: 90, lff: 90, ruf: 90, rff: 90, ltf: 90, lsf: 0, rtf: 90, rsf: 0 },
+         { rootPitch: 90, ruf: 176, rff: 176, luf: 90, lff: 90, ltf: 2, lsf: 2, rtf: 90, rsf: 0 }],
+  cue: "Reach long, like you're being pulled from both ends.",
+  tips: ["Hands under shoulders, knees under hips.", "Hips stay level. Imagine a teacup on your back.", "Pause at full reach."] });
+ex("russianTwist", { name: "Russian Twist", group: "db", mode: "reps", tempo: 3, src: STARTER, anchor: "none", repNote: "each side", muscles: "Obliques",
+  props: { db: "goblet-h" },
+  keys: [{ lean: -34, twist: 38, ltf: 122, lta: 10, lsf: 28, lsa: 6, rtf: 122, rta: 10, rsf: 28, rsa: 6, luf: 58, lua: -4, lff: 108, lfa: -48, ruf: 58, rua: -4, rff: 108, rfa: -48 },
+         { lean: -34, twist: -38, ltf: 122, lta: 10, lsf: 28, lsa: 6, rtf: 122, rta: 10, rsf: 28, rsa: 6, luf: 58, lua: -4, lff: 108, lfa: -48, ruf: 58, rua: -4, rff: 108, rfa: -48 }],
+  cue: "Rotate from the ribs, not the arms.",
+  tips: ["Lean back until your core switches on.", "Keep your chest lifted.", "Heels down to make it easier."] });
+
+/* ---- Dance & run ---- */
+ex("stepTouch", { name: "Parisian Step-Touch", group: "dance", mode: "timed", tempo: 1.6, anchor: "none", src: STARTER, muscles: "Cardio, coordination",
+  keys: [{ rx: 0.1, side: 5, lta: 12, lsa: 12, rta: -1, rsa: 2, rtf: 14, rsf: -32, lua: 128, lfa: 150, rua: 30, rfa: 60, ruf: 10 },
+         { rx: 0, ltf: 18, lsf: -18, rtf: 18, rsf: -18, lua: 70, lfa: 100, rua: 70, rfa: 100 },
+         { rx: -0.1, side: -5, rta: 12, rsa: 12, lta: -1, lsa: 2, ltf: 14, lsf: -32, rua: 128, rfa: 150, lua: 30, lfa: 60, luf: 10 },
+         { rx: 0, ltf: 18, lsf: -18, rtf: 18, rsf: -18, lua: 70, lfa: 100, rua: 70, rfa: 100 }],
+  cue: "Step, tap, sweep the arm across the sky.", tips: ["Stay light on the balls of your feet.", "Bend the knees on every step.", "Smile. It's Paris."] });
+ex("grapevine", { name: "Grapevine Getaway", group: "dance", mode: "timed", tempo: 3.2, anchor: "none", src: STARTER, muscles: "Cardio, agility",
+  keys: [{ rx: 0 },
+         { rx: 0.18, lta: 16, lsa: 16, lua: 40, rua: 40, lfa: 60, rfa: 60 },
+         { rx: 0.3, rta: -14, rsa: -14, rtf: -10, lua: 20, rua: 20 },
+         { rx: 0.46, lta: 14, lsa: 14, rtf: 30, rsf: -40, lua: 160, lfa: 170, rua: 160, rfa: 170 },
+         { rx: 0.3 },
+         { rx: 0.12, rta: 16, rsa: 16, lua: 40, rua: 40, lfa: 60, rfa: 60 },
+         { rx: 0.0, lta: -14, lsa: -14, ltf: -10, lua: 20, rua: 20 },
+         { rx: -0.16, rta: 14, rsa: 14, ltf: 30, lsf: -40, lua: 160, lfa: 170, rua: 160, rfa: 170 }],
+  cue: "Side, behind, side, tap and clap!", tips: ["Cross the trailing foot behind.", "Clap overhead on the tap.", "Keep your chest facing forward."] });
+ex("hipSway", { name: "Bali Hip Sway", group: "dance", mode: "timed", tempo: 2, anchor: "none", src: STARTER, muscles: "Hips, core",
+  keys: [{ rx: 0.05, side: -7, ltf: 4, rtf: 20, rsf: -22, lta: 8, rta: 8, lua: 150, lfa: 210, rua: 120, rfa: 160, neckTilt: -6 },
+         { rx: -0.05, side: 7, rtf: 4, ltf: 20, lsf: -22, lta: 8, rta: 8, rua: 150, rfa: 210, lua: 120, lfa: 160, neckTilt: 6 }],
+  cue: "Let the hips lead, arms float like waves.", tips: ["Soft knees, alternate the bend.", "Roll through the ribs.", "Breathe and enjoy the music."] });
+ex("sambaKnees", { name: "Rio Samba Knees", group: "dance", mode: "timed", tempo: 1.3, anchor: "none", src: STARTER, muscles: "Cardio, core",
+  keys: [{ twist: 14, ltf: 82, lsf: -12, luf: -20, lff: 70, ruf: 50, rff: 120, lta: 4 },
+         { },
+         { twist: -14, rtf: 82, rsf: -12, ruf: -20, rff: 70, luf: 50, lff: 120, rta: 4 },
+         { }],
+  cue: "Knee up, opposite elbow down, keep the rhythm.", tips: ["Lift knees to hip height when you can.", "Stay tall through the spine.", "Land softly."] });
+ex("jetJacks", { name: "Jet-Set Jacks", group: "dance", mode: "timed", tempo: 1.1, anchor: "none", src: STARTER, muscles: "Full-body cardio",
+  keys: [{ ltf: 10, lsf: -12, rtf: 10, rsf: -12 },
+         { lta: 20, lsa: 18, rta: 20, rsa: 18, lua: 165, lfa: 172, rua: 165, rfa: 172 }],
+  cue: "Arms to the sky like you just landed somewhere new.", tips: ["Step out instead of jumping if your knees need it.", "Land with soft knees.", "Keep the pace steady."] });
+const RUN_KEYS = [
+  { lean: 9, ltf: 46, lsf: -18, rtf: -24, rsf: -98, luf: -38, lff: 48, ruf: 40, rff: 128, neckFlex: -6 },
+  { lean: 9, ltf: 8, lsf: -14, rtf: 34, rsf: -70, luf: 2, lff: 92, ruf: 2, rff: 92, neckFlex: -6 },
+];
+ex("run", { name: "Run / Jog", group: "run", mode: "timed", tempo: 0.72, anchor: "none", src: STARTER, muscles: "Heart, lungs, legs",
+  keys: [RUN_KEYS[0], RUN_KEYS[1], mirror(P(RUN_KEYS[0])), mirror(P(RUN_KEYS[1]))],
+  cue: "Tall posture, quick light feet.", tips: ["Land under your hips, not out in front.", "Relaxed shoulders, arms swing forward and back.", "Easy pace means you can still chat."] });
+ex("walk", { name: "Brisk Walk", group: "run", mode: "timed", tempo: 1.15, anchor: "none", src: STARTER, muscles: "Recovery",
+  keys: [{ ltf: 22, lsf: 4, rtf: -14, rsf: -26, luf: -16, lff: -4, ruf: 18, rff: 30 }, { ltf: 2, rtf: 12, rsf: -30, luf: 0, ruf: 0 },
+         { rtf: 22, rsf: 4, ltf: -14, lsf: -26, ruf: -16, rff: -4, luf: 18, lff: 30 }, { rtf: 2, ltf: 12, lsf: -30, luf: 0, ruf: 0 }],
+  cue: "Walk tall, breathe through the nose.", tips: ["Shoulders back and relaxed.", "Swing the arms.", "Use this to recover."] });
+// run/walk keys were already full poses for the mirrored ones — normalise
+EX.run.keys = EX.run.keys.map(k => Object.assign({}, BASE, k));
+
+/* =========================================================
+   3. Days, blocks, plan builder
+   ========================================================= */
+const DAYS = [
+  { d: "Mon", full: "Monday", city: "Paris", country: "France", code: "CDG", focus: "Full body", db: ["gobletSquat", "row", "press", "rdl"], band: "strength", run: "steady",
+    note: "Croissant energy. Strong, steady and elegant from start to finish." },
+  { d: "Tue", full: "Tuesday", city: "Santorini", country: "Greece", code: "JTR", focus: "Glutes", db: ["gluteBridge", "sumoSquat", "reverseLunge", "rdl"], band: "endurance", run: "intervals",
+    note: "Climbing those white-washed stairs needs glutes. Light band day for the arms." },
+  { d: "Wed", full: "Wednesday", city: "Kyoto", country: "Japan", code: "KIX", focus: "Arms & shoulders", db: ["hammerCurl", "lateralRaise", "row", "press"], band: "tempo", run: "easy",
+    note: "Slow and precise, like a tea ceremony. Every rep under control." },
+  { d: "Thu", full: "Thursday", city: "Marrakech", country: "Morocco", code: "RAK", focus: "Pilates sculpt", db: ["deadBug", "gluteBridge", "russianTwist", "sumoSquat"], band: "endurance", run: "tempo",
+    note: "Core and control, then a tempo run through the souk." },
+  { d: "Fri", full: "Friday", city: "Rio", country: "Brazil", code: "GIG", focus: "Legs", db: ["gobletSquat", "reverseLunge", "sumoSquat", "rdl"], band: "strength", run: "fartlek",
+    note: "Legs for Sugarloaf Mountain, rhythm for the samba." },
+  { d: "Sat", full: "Saturday", city: "Reykjavík", country: "Iceland", code: "KEF", focus: "Full-body stamina", db: ["thruster", "row", "reverseLunge", "russianTwist"], band: "pulse", run: "long",
+    note: "Stamina day. Chasing the northern lights takes lungs." },
+  { d: "Sun", full: "Sunday", city: "Bali", country: "Indonesia", code: "DPS", focus: "Pilates & mobility", db: ["deadBug", "birdDog", "gluteBridge", "lateralRaise"], band: "light", run: "recovery",
+    note: "Active recovery. Lighter everything, still showing up." },
+];
+const BAND_STYLE = {
+  strength: { label: "Strength", reps: 10, tempo: 4, cue: "Heavier band, 2 s up and 2 s down." },
+  endurance: { label: "Endurance", reps: 15, tempo: 2.6, cue: "Lighter band, smooth steady reps." },
+  tempo: { label: "Tempo", desc: "3 × 5 min comfortably hard", reps: 8, tempo: 6, cue: "3 s up, 3 s down. Feel every inch." },
+  pulse: { label: "Pulse", reps: 12, tempo: 3, cue: "Finish each set with 5 small pulses at the hardest point." },
+  light: { label: "Light", reps: 12, tempo: 3, cue: "Lightest band. Just move the blood." },
+};
+const RUNS = {
+  steady: { label: "Steady jog", desc: "5 min walk, 20 min steady jog, 5 min walk", parts: [["walk", 300, "Warm-up walk, then build into a jog", 1], ["run", 1200, "Steady jog: you can still talk in sentences", 0.85], ["walk", 300, "Cool-down walk", 1]] },
+  intervals: { label: "Intervals", desc: "8 × (1 min fast + 90 s easy)", parts: [["walk", 300, "Warm-up walk", 1], ...Array.from({ length: 8 }, () => [["run", 60, "Fast! Run like you're catching a ferry", 1.25], ["run", 90, "Easy jog to recover", 0.75]]).flat(), ["walk", 300, "Cool-down walk", 1]] },
+  easy: { label: "Easy run", desc: "27 min conversational pace + walk", parts: [["run", 1620, "Easy conversational pace", 0.8], ["walk", 180, "Walk it out", 1]] },
+  tempo: { label: "Tempo", desc: "3 × 5 min comfortably hard", parts: [["walk", 300, "Warm-up walk and jog", 1], ...Array.from({ length: 3 }, () => [["run", 300, "Tempo: comfortably hard", 1.05], ["run", 60, "Easy jog", 0.75]]).flat(), ["walk", 420, "Cool-down walk", 1]] },
+  fartlek: { label: "Fartlek", desc: "10 × (30 s burst + 90 s jog)", parts: [["walk", 300, "Warm-up walk", 1], ...Array.from({ length: 10 }, () => [["run", 30, "Sprint-ish burst!", 1.35], ["run", 90, "Jog and breathe", 0.8]]).flat(), ["walk", 300, "Cool-down walk", 1]] },
+  long: { label: "Long steady", desc: "28 min steady rhythm + walk", parts: [["run", 1680, "Long steady jog: settle into your rhythm", 0.82], ["walk", 120, "Walk and stretch", 1]] },
+  recovery: { label: "Run-walk", desc: "10 × (2 min jog + 1 min walk)", parts: Array.from({ length: 10 }, () => [["run", 120, "Gentle jog", 0.72], ["walk", 60, "Walk", 1]]).flat() },
+};
+const BLOCKS = [
+  { id: "neck", name: "Neck & posture", min: 10, start: 0 },
+  { id: "bands", name: "Resistance bands · arms", min: 20, start: 10 },
+  { id: "db", name: "Dumbbells", min: 20, start: 30 },
+  { id: "dance", name: "Dance", min: 10, start: 50 },
+  { id: "run", name: "Run / jog", min: 30, start: 60 },
+];
+const NECK_ORDER = ["chinTuck", "neckTilt", "neckRotation", "levator", "shoulderRoll", "wSqueeze", "yRaise", "chestOpener"];
+const DANCE_ORDER = ["stepTouch", "grapevine", "hipSway", "sambaKnees", "jetJacks"];
+
+function unitsFor(exId, reps, tempo, hold) {
+  const e = EX[exId];
+  if (e.sides) return [{ ex: exId, side: "L", reps, tempo, hold }, { ex: exId, side: "R", reps, tempo, hold }];
+  return [{ ex: exId, side: null, reps, tempo, hold }];
+}
+const udur = u => u.hold ?? u.reps * u.tempo;
+
+function fitBlock(blockId, units, T, opt) {
+  const SW = opt.switch ?? 6;
+  for (let r = opt.maxRounds; r >= 1; r--) {
+    const seq = [];
+    for (let k = 0; k < r; k++) units.forEach(u => seq.push({ ...u, round: k + 1, rounds: r }));
+    const work = seq.reduce((s, u) => s + udur(u), 0);
+    let nSw = 0, nRest = 0;
+    for (let i = 0; i < seq.length - 1; i++) (seq[i].ex === seq[i + 1].ex && opt.switch !== 0 ? nSw++ : nRest++);
+    const free = T - work - nSw * SW;
+    const rest = nRest ? free / nRest : 0;
+    if (r > 1 && rest < opt.minRest) continue;
+    const restDur = nRest ? Math.max(opt.minRest === 0 ? 0 : 5, Math.min(Math.floor(rest), opt.maxRest)) : 0;
+    const out = [];
+    seq.forEach((u, i) => {
+      out.push({ block: blockId, kind: "work", ...u, dur: udur(u) });
+      if (i < seq.length - 1) {
+        if (seq[i].ex === seq[i + 1].ex && opt.switch !== 0) out.push({ block: blockId, kind: "switch", dur: SW });
+        else if (restDur > 0) out.push({ block: blockId, kind: "rest", dur: restDur });
+      }
+    });
+    const used = out.reduce((s, x) => s + x.dur, 0);
+    const left = T - used;
+    if (left > 0) {
+      const lastRest = [...out].reverse().find(x => x.kind === "rest");
+      if (left < 12 && lastRest) lastRest.dur += left;
+      else out.push({ block: blockId, kind: "breather", dur: left });
+    }
+    return out;
+  }
+}
+
+function buildDay(dayIdx, week) {
+  const day = DAYS[dayIdx];
+  const bump = Math.min(4, Math.floor((week - 1) / 2));
+  const segs = [];
+  // Neck: 8 steps, timed holds
+  const neckUnits = NECK_ORDER.flatMap(id => {
+    const e = EX[id];
+    if (e.mode === "hold") return unitsFor(id, null, null, 35);
+    const reps = { chinTuck: 10, neckRotation: 6, shoulderRoll: 10, wSqueeze: 10, yRaise: 10, chestOpener: 6 }[id];
+    return unitsFor(id, reps, e.tempo);
+  });
+  segs.push(...fitBlock("neck", neckUnits, 600, { maxRounds: 1, minRest: 5, maxRest: 25 }));
+  // Bands
+  const bs = BAND_STYLE[day.band];
+  const bandUnits = ["bandCurl", "bandPress", "bandTricep"].flatMap(id => unitsFor(id, bs.reps + bump, bs.tempo));
+  segs.push(...fitBlock("bands", bandUnits, 1200, { maxRounds: 5, minRest: 18, maxRest: 75 }));
+  // Dumbbells
+  const light = day.band === "light";
+  const dbUnits = day.db.flatMap(id => {
+    const e = EX[id];
+    const base = e.repNote ? 8 : (light ? 10 : 12);
+    return unitsFor(id, base + bump, e.tempo);
+  });
+  segs.push(...fitBlock("db", dbUnits, 1200, { maxRounds: 4, minRest: 20, maxRest: 75 }));
+  // Dance
+  const rot = dayIdx % DANCE_ORDER.length;
+  const dOrder = DANCE_ORDER.slice(rot).concat(DANCE_ORDER.slice(0, rot));
+  dOrder.forEach(id => segs.push({ block: "dance", kind: "work", ex: id, hold: 120, dur: 120, timed: true }));
+  // Run
+  RUNS[day.run].parts.forEach(([id, dur, cue, speed]) => segs.push({ block: "run", kind: "work", ex: id, dur, timed: true, cue, speed }));
+  // annotate next work + absolute start
+  let t = 0;
+  segs.forEach(s => { s.t0 = t; t += s.dur; });
+  for (let i = segs.length - 1, nx = null; i >= 0; i--) { segs[i].next = nx; if (segs[i].kind === "work") nx = segs[i]; }
+  return { segs, total: t, bandStyle: bs, day };
+}
+
+/* =========================================================
+   4. Rendering
+   ========================================================= */
+let COL = {};
+function readColors() {
+  const cs = getComputedStyle(document.documentElement);
+  for (const k of ["skin", "hair", "top", "legs", "shoe", "band", "db", "ground", "face"]) COL[k] = cs.getPropertyValue("--fig-" + k).trim() || "#999";
+  COL.bg = cs.getPropertyValue("--bg").trim();
+  COL.ink = cs.getPropertyValue("--ink").trim();
+  COL.blush = cs.getPropertyValue("--blush").trim();
+}
+function hexMix(a, b, t) {
+  const pa = parseHex(a), pb = parseHex(b);
+  if (!pa || !pb) return a;
+  const m = pa.map((v, i) => Math.round(v + (pb[i] - v) * t));
+  return `rgb(${m[0]},${m[1]},${m[2]})`;
+}
+function parseHex(h) { const m = /^#?([0-9a-f]{6})$/i.exec(h); if (!m) return null; const n = parseInt(m[1], 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+
+const VIEWS = [0, 90, 38];
+
+function poseFor(exId, side, phase, seg, elapsed) {
+  const e = EX[exId];
+  let p;
+  if (e.mode === "hold") {
+    const dur = seg ? seg.dur : 8;
+    const t = seg ? elapsed : (phase * 8);
+    const inU = Math.min(1, t / 2.2), outU = seg ? Math.min(1, Math.max(0, (t - (dur - 1.8)) / 1.8)) : Math.max(0, (t - 6) / 2);
+    const u = ease(inU) * (1 - ease(outU));
+    p = lerpPose(BASE, e.target, u);
+    p.lean += Math.sin(t * 1.4) * 0.8;
+  } else {
+    p = cyclePose(e.keys, phase);
+  }
+  if (side === "R") p = mirror(p);
+  return p;
+}
+function propsFor(exId, side) { const pr = EX[exId].props; return side === "R" ? mirrorProps(pr) : pr; }
+
+const fitCache = new Map();
+function fitFor(exId, side, viewIdx) {
+  const key = exId + side + viewIdx;
+  if (fitCache.has(key)) return fitCache.get(key);
+  const e = EX[exId];
+  let x0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+  const R = rotY(VIEWS[viewIdx] * D);
+  const samples = e.mode === "hold" ? [0, 0.5] : Array.from({ length: 16 }, (_, i) => i / 16);
+  for (const ph of samples) {
+    const p = e.mode === "hold" ? (ph ? (side === "R" ? mirror(e.target) : e.target) : BASE) : poseFor(exId, side, ph);
+    const pts = place(fk(p), p, e.anchor);
+    for (const n of PT_NAMES) { const v = mv(R, pts[n]); const r = RAD[n] ?? 0.05; x0 = Math.min(x0, v[0] - r); x1 = Math.max(x1, v[0] + r); y1 = Math.max(y1, v[1] + r); }
+  }
+  const f = { cx: (x0 + x1) / 2, w: Math.max(x1 - x0, 0.9), h: Math.max(y1 + 0.08, 1.95) };
+  fitCache.set(key, f);
+  return f;
+}
+
+function drawScene(ctx, W, H, exId, side, p, viewIdx, opt = {}) {
+  const e = EX[exId];
+  const pts = place(fk(p), p, e.anchor);
+  const fit = fitFor(exId, side || "L", viewIdx);
+  const s = Math.min((W * 0.86) / fit.w, (H * 0.84) / fit.h);
+  const gy = H * 0.9;
+  const R = rotY(VIEWS[viewIdx] * D);
+  const pr = (v) => { const q = mv(R, v); return [W / 2 + (q[0] - fit.cx) * s, gy - q[1] * s, q[2]]; };
+  const P2 = {}; for (const n of PT_NAMES) P2[n] = pr(pts[n]);
+
+  ctx.clearRect(0, 0, W, H);
+  // floor
+  ctx.strokeStyle = COL.ground; ctx.lineWidth = Math.max(1, s * 0.01);
+  ctx.beginPath(); ctx.moveTo(W * 0.06, gy + 1); ctx.lineTo(W * 0.94, gy + 1); ctx.stroke();
+  const fx = (P2.lA[0] + P2.rA[0] + P2.pel[0]) / 3;
+  ctx.fillStyle = COL.ground; ctx.globalAlpha = 0.7;
+  ctx.beginPath(); ctx.ellipse(fx, gy + 1, s * 0.36, s * 0.035, 0, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha = 1;
+
+  const zT = (P2.pel[2] + P2.chest[2]) / 2;
+  const items = [];
+  const seg = (a, b, w, col, bias = 0) => items.push({ z: (P2[a][2] + P2[b][2]) / 2 + bias, f: () => {
+    const far = ((P2[a][2] + P2[b][2]) / 2) < zT - 0.04;
+    ctx.strokeStyle = far ? hexMix(col, COL.ink, 0.14) : col; ctx.lineWidth = w * s; ctx.lineCap = "round";
+    ctx.beginPath(); ctx.moveTo(P2[a][0], P2[a][1]); ctx.lineTo(P2[b][0], P2[b][1]); ctx.stroke();
+  } });
+  // torso polygons
+  const Rc = pts.Rc;
+  const side3 = (base, w) => [pr(add(pts[base], mv(Rc, [w, 0, 0]))), pr(add(pts[base], mv(Rc, [-w, 0, 0])))];
+  items.push({ z: zT, f: () => {
+    const [hl, hr] = side3("pel", 0.11), [wl, wr] = side3("waist", 0.1), [sl, sr] = [P2.lS, P2.rS];
+    ctx.lineJoin = "round"; ctx.lineCap = "round";
+    // spine stroke for depth
+    ctx.strokeStyle = COL.legs; ctx.lineWidth = 0.17 * s;
+    ctx.beginPath(); ctx.moveTo(P2.pel[0], P2.pel[1]); ctx.lineTo(P2.waist[0], P2.waist[1]); ctx.stroke();
+    ctx.fillStyle = COL.legs; ctx.lineWidth = 0.06 * s;
+    ctx.beginPath(); ctx.moveTo(hl[0], hl[1]); ctx.lineTo(hr[0], hr[1]); ctx.lineTo(wr[0], wr[1]); ctx.lineTo(wl[0], wl[1]); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.strokeStyle = COL.top; ctx.fillStyle = COL.top; ctx.lineWidth = 0.17 * s;
+    ctx.beginPath(); ctx.moveTo(P2.waist[0], P2.waist[1]); ctx.lineTo(P2.chest[0], P2.chest[1]); ctx.stroke();
+    ctx.lineWidth = 0.07 * s;
+    ctx.beginPath(); ctx.moveTo(wl[0], wl[1]); ctx.lineTo(wr[0], wr[1]); ctx.lineTo(sr[0], sr[1]); ctx.lineTo(sl[0], sl[1]); ctx.closePath(); ctx.fill(); ctx.stroke();
+    // waistband
+    ctx.strokeStyle = hexMix(COL.legs, COL.ink, 0.2); ctx.lineWidth = 0.025 * s;
+    ctx.beginPath(); ctx.moveTo(wl[0], wl[1]); ctx.lineTo(wr[0], wr[1]); ctx.stroke();
+  } });
+  // legs
+  seg("lHip", "lK", 0.12, COL.legs); seg("lK", "lA", 0.095, COL.legs); seg("lA", "lT", 0.07, COL.shoe, 0.001);
+  seg("rHip", "rK", 0.12, COL.legs); seg("rK", "rA", 0.095, COL.legs); seg("rA", "rT", 0.07, COL.shoe, 0.001);
+  // arms
+  seg("lS", "lE", 0.082, COL.skin, 0.01); seg("lE", "lH", 0.068, COL.skin, 0.012);
+  seg("rS", "rE", 0.082, COL.skin, 0.01); seg("rE", "rH", 0.068, COL.skin, 0.012);
+  // neck
+  seg("neckB", "neckT", 0.07, COL.skin, -0.01);
+  // head
+  const Rh = pts.Rh;
+  const hairC = pr(add(pts.head, mv(Rh, [0, 0.022, -0.03])));
+  const tailA = pr(add(pts.head, mv(Rh, [0, 0.07, -0.1])));
+  const swing = opt.swing || 0;
+  const tailB = pr(add(add(pts.head, mv(Rh, [0, 0.0, -0.15])), [swing * 0.04, -0.2, -0.03]));
+  items.push({ z: P2.head[2] + 0.02, f: () => {
+    const hr = L.head * s;
+    const drawTail = () => {
+      ctx.strokeStyle = COL.hair; ctx.lineCap = "round"; ctx.lineWidth = 0.055 * s;
+      ctx.beginPath(); ctx.moveTo(tailA[0], tailA[1]); ctx.quadraticCurveTo((tailA[0] + tailB[0]) / 2 + swing * s * 0.02, (tailA[1] + tailB[1]) / 2, tailB[0], tailB[1]); ctx.stroke();
+      ctx.fillStyle = COL.band; ctx.beginPath(); ctx.arc(tailA[0], tailA[1], 0.022 * s, 0, Math.PI * 2); ctx.fill();
+    };
+    const face = () => { ctx.fillStyle = COL.skin; ctx.beginPath(); ctx.arc(P2.head[0], P2.head[1], hr, 0, Math.PI * 2); ctx.fill(); };
+    const hair = () => { ctx.fillStyle = COL.hair; ctx.beginPath(); ctx.arc(hairC[0], hairC[1], hr * 1.02, 0, Math.PI * 2); ctx.fill(); };
+    const tailBehind = tailA[2] < P2.head[2];
+    if (hairC[2] < P2.head[2]) { hair(); face(); } else { face(); hair(); }
+    // face features when facing camera
+    const fdir = mv(R, mv(Rh, [0, 0, 1]));
+    if (fdir[2] > 0.15) {
+      ctx.fillStyle = COL.face;
+      for (const sx of [1, -1]) {
+        const ep = pr(add(pts.head, mv(Rh, [sx * 0.036, 0.008, 0.094])));
+        ctx.beginPath(); ctx.arc(ep[0], ep[1], 0.011 * s, 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.fillStyle = COL.band; ctx.globalAlpha = 0.35;
+      for (const sx of [1, -1]) {
+        const cp = pr(add(pts.head, mv(Rh, [sx * 0.055, -0.028, 0.08])));
+        ctx.beginPath(); ctx.arc(cp[0], cp[1], 0.017 * s, 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      // fringe line
+      ctx.strokeStyle = COL.hair; ctx.lineWidth = 0.03 * s;
+      const a1 = pr(add(pts.head, mv(Rh, [0.08, 0.06, 0.06]))), a2 = pr(add(pts.head, mv(Rh, [-0.08, 0.06, 0.06]))), am = pr(add(pts.head, mv(Rh, [0, 0.085, 0.085])));
+      ctx.beginPath(); ctx.moveTo(a1[0], a1[1]); ctx.quadraticCurveTo(am[0], am[1], a2[0], a2[1]); ctx.stroke();
+    } else if (Math.abs(fdir[0]) > 0.3) {
+      // profile nose
+      const np = pr(add(pts.head, mv(Rh, [0, -0.005, 0.112])));
+      ctx.fillStyle = COL.skin; ctx.beginPath(); ctx.arc(np[0], np[1], 0.016 * s, 0, Math.PI * 2); ctx.fill();
+      const ep = pr(add(pts.head, mv(Rh, [0, 0.01, 0.085])));
+      ctx.fillStyle = COL.face; ctx.beginPath(); ctx.arc(ep[0], ep[1], 0.01 * s, 0, Math.PI * 2); ctx.fill();
+    }
+    if (!tailBehind) drawTail();
+  } });
+  if (tailA[2] < P2.head[2]) items.push({ z: Math.min(tailA[2], tailB[2]) - 0.02, f: () => {
+    ctx.strokeStyle = COL.hair; ctx.lineCap = "round"; ctx.lineWidth = 0.055 * s;
+    ctx.beginPath(); ctx.moveTo(tailA[0], tailA[1]); ctx.quadraticCurveTo((tailA[0] + tailB[0]) / 2 + swing * s * 0.02, (tailA[1] + tailB[1]) / 2, tailB[0], tailB[1]); ctx.stroke();
+    ctx.fillStyle = COL.band; ctx.beginPath(); ctx.arc(tailA[0], tailA[1], 0.022 * s, 0, Math.PI * 2); ctx.fill();
+  } });
+  // hands
+  for (const h of ["lH", "rH"]) items.push({ z: P2[h][2] + 0.013, f: () => { ctx.fillStyle = COL.skin; ctx.beginPath(); ctx.arc(P2[h][0], P2[h][1], 0.04 * s, 0, Math.PI * 2); ctx.fill(); } });
+
+  // props
+  const props = propsFor(exId, side);
+  if (props && props.db) {
+    const dbAt = (center, axis, length) => {
+      const a = pr(add(center, sc(axis, length / 2))), b = pr(add(center, sc(axis, -length / 2)));
+      items.push({ z: (a[2] + b[2]) / 2 + 0.02, f: () => {
+        ctx.strokeStyle = COL.db; ctx.lineCap = "round"; ctx.lineWidth = 0.022 * s;
+        ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
+        ctx.fillStyle = COL.db;
+        for (const q of [a, b]) { ctx.beginPath(); ctx.arc(q[0], q[1], 0.048 * s, 0, Math.PI * 2); ctx.fill(); }
+        ctx.fillStyle = COL.band;
+        for (const q of [a, b]) { ctx.beginPath(); ctx.arc(q[0], q[1], 0.02 * s, 0, Math.PI * 2); ctx.fill(); }
+      } });
+    };
+    const xAxis = mv(Rc, [1, 0, 0]);
+    if (props.db === "goblet") dbAt(sc(add(pts.lH, pts.rH), 0.5), mv(Rc, [0, 1, 0]), 0.2);
+    else if (props.db === "goblet-low") dbAt(add(sc(add(pts.lH, pts.rH), 0.5), [0, -0.08, 0]), [0, 1, 0], 0.2);
+    else if (props.db === "goblet-h") dbAt(sc(add(pts.lH, pts.rH), 0.5), xAxis, 0.2);
+    else if (props.db === "hips") dbAt(add(pts.pel, mv(pts.R0, [0, 0, 0.1])), mv(pts.R0, [1, 0, 0]), 0.3);
+    else {
+      for (const h of props.db === "both" ? ["lH", "rH"] : [props.db === "left" ? "lH" : "rH"]) {
+        let axis = xAxis;
+        if (props.hammer) { const fa = norm(sub(pts[h], pts[h === "lH" ? "lE" : "rE"])); axis = norm(cross(fa, xAxis)); }
+        dbAt(pts[h], axis, 0.15);
+      }
+    }
+  }
+  if (props && props.band) {
+    for (const [a, b] of props.band) {
+      const pt = n => n === "lFoot" ? [ (pts.lA[0] + pts.lT[0]) / 2, 0.005, (pts.lA[2] + pts.lT[2]) / 2 ]
+                   : n === "rFoot" ? [ (pts.rA[0] + pts.rT[0]) / 2, 0.005, (pts.rA[2] + pts.rT[2]) / 2 ] : pts[n];
+      const A = pr(pt(a)), B = pr(pt(b));
+      const l3 = len(sub(pt(a), pt(b)));
+      items.push({ z: Math.max(A[2], B[2]) + 0.015, f: () => {
+        ctx.strokeStyle = COL.band; ctx.lineCap = "round";
+        ctx.lineWidth = Math.max(1.5, s * 0.026 * Math.min(1.4, 0.75 / Math.max(0.3, l3)));
+        const mx = (A[0] + B[0]) / 2 + (B[1] - A[1]) * 0.04, my = (A[1] + B[1]) / 2 - (B[0] - A[0]) * 0.04;
+        ctx.beginPath(); ctx.moveTo(A[0], A[1]); ctx.quadraticCurveTo(mx, my, B[0], B[1]); ctx.stroke();
+        ctx.fillStyle = COL.ink; ctx.globalAlpha = 0.75;
+        ctx.beginPath(); ctx.arc(A[0], A[1], 0.03 * s, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha = 1;
+      } });
+    }
+  }
+  items.sort((a, b) => a.z - b.z).forEach(it => it.f());
+}
+
+/* =========================================================
+   5. App state + UI
+   ========================================================= */
+const store = {
+  get(k, d) { try { const v = localStorage.getItem("pts-" + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem("pts-" + k, JSON.stringify(v)); } catch (e) {} },
+};
+const todayIdx = (new Date().getDay() + 6) % 7;
+const S = {
+  week: store.get("week", 1),
+  day: todayIdx,
+  plan: null,
+  idx: 0, el: 0, running: false, preview: { ex: "bandCurl", side: null }, mode: "preview",
+  sound: store.get("sound", true),
+  stamps: store.get("stamps", {}),
+};
+const $ = id => document.getElementById(id);
+const fmt = s => { s = Math.max(0, Math.ceil(s)); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); };
+const clockAt = sec => { const m = 300 + Math.floor(sec / 60); return String(Math.floor(m / 60)).padStart(2, "0") + ":" + String(m % 60).padStart(2, "0"); };
+const blockName = id => BLOCKS.find(b => b.id === id).name;
+
+function renderStamps() {
+  const el = $("stamps"); el.innerHTML = "";
+  DAYS.forEach((d, i) => {
+    const b = document.createElement("button");
+    b.className = "stamp"; b.setAttribute("aria-pressed", String(i === S.day));
+    const done = S.stamps[`w${S.week}-${i}`];
+    b.innerHTML = `${i === todayIdx ? '<span class="today">TODAY</span>' : ""}<div class="d">${d.d} · ${d.code}</div><div class="c">${d.city}</div><div class="f">${d.focus}</div>${done ? '<span class="ink">VISITED</span>' : ""}`;
+    b.setAttribute("aria-label", `${d.full}: ${d.city}, ${d.focus}${done ? ", visited" : ""}`);
+    b.addEventListener("click", () => { S.day = i; loadDay(); });
+    el.appendChild(b);
+  });
+  $("weekLabel").textContent = "Week " + S.week;
+}
+
+function legSummary(plan, bid) {
+  const segs = plan.segs.filter(s => s.block === bid && s.kind === "work");
+  if (bid === "neck") return "8 steps · chin tucks to chest opener";
+  if (bid === "bands") { const r = segs[0].rounds; return `${plan.bandStyle.label} · ${r} rounds · ${segs[0].reps} reps per set`; }
+  if (bid === "db") { const r = segs[0].rounds; return `${plan.day.focus} · ${segs.slice(0, segs.length / r).map(s => EX[s.ex].name).join(", ")} · ${r} rounds`; }
+  if (bid === "dance") return segs.map(s => EX[s.ex].name).join(" → ");
+  if (bid === "run") return RUNS[plan.day.run].label + " · " + RUNS[plan.day.run].desc;
+}
+
+function loadDay() {
+  const d = DAYS[S.day];
+  S.plan = buildDay(S.day, S.week);
+  $("passDay").textContent = d.full + " · Week " + S.week;
+  $("passCode").textContent = d.code; $("passCity").textContent = d.city + ", " + d.country;
+  $("passFocus").textContent = d.focus; $("passBand").textContent = BAND_STYLE[d.band].label;
+  $("passNote").textContent = d.note;
+  $("passRef").textContent = `WK${S.week} · ${d.d.toUpperCase()} · ${d.code} · SEAT 1A`;
+  const legs = $("legs"); legs.innerHTML = "";
+  BLOCKS.forEach(b => {
+    const li = document.createElement("li"); li.className = "leg"; li.dataset.block = b.id;
+    const t0 = b.start * 60, t1 = (b.start + b.min) * 60;
+    li.innerHTML = `<span class="t">${clockAt(t0)}–${clockAt(t1)}</span><div style="min-width:0"><div class="n">${b.name} <span class="s">· ${b.min} min</span></div><div class="s">${legSummary(S.plan, b.id)}</div></div>`;
+    const btn = document.createElement("button"); btn.className = "btn small"; btn.textContent = "Board";
+    btn.setAttribute("aria-label", "Start " + b.name);
+    btn.addEventListener("click", () => { startAt(S.plan.segs.findIndex(s => s.block === b.id)); $("flight").scrollIntoView({ behavior: "smooth", block: "start" }); });
+    li.appendChild(btn); legs.appendChild(li);
+  });
+  renderStamps();
+  S.running = false; S.mode = "preview"; S.idx = 0; S.el = 0;
+  S.preview = { ex: S.plan.segs[0].ex, side: S.plan.segs[0].side };
+  $("doneMsg").hidden = true;
+  updatePanel(true);
+}
+
+/* ---- audio + wake lock ---- */
+let actx = null, wake = null;
+function beep(freq = 880, dur = 0.12, vol = 0.12) {
+  if (!S.sound) return;
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const o = actx.createOscillator(), g = actx.createGain();
+    o.frequency.value = freq; o.type = "sine"; g.gain.value = vol;
+    g.gain.setTargetAtTime(0, actx.currentTime + dur * 0.6, 0.03);
+    o.connect(g); g.connect(actx.destination); o.start(); o.stop(actx.currentTime + dur + 0.1);
+  } catch (e) {}
+}
+async function keepAwake() { try { if ("wakeLock" in navigator && !wake) { wake = await navigator.wakeLock.request("screen"); wake.addEventListener("release", () => wake = null); } } catch (e) {} }
+
+function startAt(i) {
+  S.mode = "session"; S.idx = Math.max(0, i); S.el = 0; S.running = true;
+  $("doneMsg").hidden = true; beep(660); keepAwake(); updatePanel(true);
+}
+function curSeg() { return S.mode === "session" ? S.plan.segs[S.idx] : null; }
+function advance(dir) {
+  if (S.mode !== "session") { startAt(0); return; }
+  const n = S.idx + dir;
+  if (n < 0) { S.el = 0; return; }
+  if (n >= S.plan.segs.length) { finish(); return; }
+  S.idx = n; S.el = 0;
+  const s = curSeg();
+  beep(s.kind === "work" ? 990 : 520, 0.16);
+  updatePanel(true);
+}
+function finish() {
+  S.running = false;
+  S.stamps[`w${S.week}-${S.day}`] = true; store.set("stamps", S.stamps);
+  const d = DAYS[S.day];
+  const m = $("doneMsg"); m.hidden = false; m.textContent = `Landed in ${d.city} at 06:30. Passport stamped for Week ${S.week}.`;
+  beep(784, 0.15); setTimeout(() => beep(1046, 0.25), 180);
+  renderStamps(); updatePanel(true);
+}
+
+function describe(seg) {
+  const e = EX[seg.ex];
+  const sideTxt = seg.side ? (seg.side === "L" ? "Left side" : "Right side") : "";
+  if (seg.block === "neck") return `Step ${e.step} of 8${sideTxt ? " · " + sideTxt : ""}${seg.reps ? ` · ${seg.reps} reps` : ` · hold ${seg.hold}s`}`;
+  if (seg.timed) return seg.cue || "Keep moving for " + fmt(seg.dur);
+  const parts = [`Round ${seg.round} of ${seg.rounds}`];
+  if (sideTxt) parts.push(sideTxt);
+  parts.push(`${seg.reps} reps${e.repNote ? " " + e.repNote : ""}`);
+  return parts.join(" · ");
+}
+
+function updatePanel(full) {
+  const s = curSeg();
+  const show = s ? (s.kind === "work" ? s : s.next) : null;
+  const exId = show ? show.ex : S.preview.ex;
+  const e = EX[exId];
+  if (full) {
+    $("btnPlay").textContent = S.mode === "session" ? (S.running ? "Pause" : "Resume") : "Start";
+    $("btnSound").textContent = S.sound ? "Sound on" : "Sound off"; $("btnSound").setAttribute("aria-pressed", String(S.sound));
+    if (!s) {
+      $("nowBlock").textContent = "Preview · " + blockName(e.group === "db" ? "db" : e.group);
+      $("nowName").textContent = e.name;
+      $("nowSub").textContent = e.muscles + ". Press Start for the full 05:00 flight, or Board any leg above.";
+    } else if (s.kind === "work") {
+      $("nowBlock").textContent = blockName(s.block);
+      $("nowName").textContent = e.name;
+      $("nowSub").textContent = describe(s);
+    } else {
+      $("nowBlock").textContent = blockName(s.block) + " · " + (s.kind === "switch" ? "switch sides" : s.kind === "breather" ? "breather" : "rest");
+      $("nowName").textContent = s.kind === "breather" ? "Breathe, sip water" : "Up next: " + (show ? EX[show.ex].name : "");
+      $("nowSub").textContent = show ? describe(show) : "";
+    }
+    $("cue").textContent = (s && s.timed && s.cue) ? e.cue : e.cue;
+    $("tips").innerHTML = e.tips.map(t => `<li>${t}</li>`).join("");
+    $("src").innerHTML = e.src.url ? `From your video: <a href="${e.src.url}" target="_blank" rel="noopener">${e.src.label}</a>` : e.src.label;
+    // next list
+    const nx = $("next"); nx.innerHTML = "";
+    if (S.plan) {
+      const from = s ? S.idx + 1 : 0;
+      const list = S.plan.segs.slice(from).filter(x => x.kind === "work").slice(0, 5);
+      list.forEach(x => {
+        const li = document.createElement("li");
+        li.innerHTML = `<span>${EX[x.ex].name}${x.side ? " (" + x.side + ")" : ""}</span><span>${clockAt(x.t0)}</span>`;
+        nx.appendChild(li);
+      });
+    }
+    document.querySelectorAll(".leg").forEach(li => li.classList.toggle("active", !!s && li.dataset.block === s.block));
+    const label = s && s.kind !== "work" ? (s.kind === "switch" ? "Switch sides" : s.kind === "breather" ? "Breathe" : "Rest") : (S.mode === "session" && !S.running ? "Paused" : "");
+    [0, 1, 2].forEach(i => { const ov = $("ov" + i); ov.hidden = !label || i !== 0; ov.querySelector("span").textContent = label; });
+  }
+  // fast fields
+  if (s) {
+    $("nowTime").textContent = fmt(s.dur - S.el);
+    let reps = " ";
+    if (s.kind === "work" && s.reps) reps = `Rep ${Math.min(s.reps, Math.floor(S.el / s.tempo) + 1)} / ${s.reps}`;
+    else if (s.kind === "work" && s.hold && !s.timed) reps = "Hold & breathe";
+    else if (s.kind === "work" && s.timed) reps = s.block === "run" ? (s.speed > 1.1 ? "Push" : s.speed < 0.8 ? "Easy" : "Steady") : "Dance it out";
+    $("nowReps").textContent = reps;
+    $("segBar").style.width = (100 * S.el / s.dur).toFixed(2) + "%";
+    $("sesBar").style.width = (100 * (s.t0 + S.el) / S.plan.total).toFixed(2) + "%";
+    $("boardTime").textContent = "Local time " + clockAt(s.t0 + S.el);
+  } else {
+    $("nowTime").textContent = "0:00"; $("nowReps").textContent = " ";
+    $("segBar").style.width = "0%"; $("sesBar").style.width = "0%"; $("boardTime").textContent = "Local time 05:00";
+  }
+}
+
+/* ---- canvases ---- */
+const mainCv = [$("cvFront"), $("cvSide"), $("cvQuarter")];
+function sizeCanvas(c) {
+  const r = c.getBoundingClientRect(); const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const w = Math.max(10, Math.round(r.width * dpr)), h = Math.max(10, Math.round(r.height * dpr));
+  if (c.width !== w || c.height !== h) { c.width = w; c.height = h; }
+}
+const ro = new ResizeObserver(entries => entries.forEach(en => sizeCanvas(en.target)));
+mainCv.forEach(c => ro.observe(c));
+
+/* ---- library ---- */
+const libVisible = new Set();
+function renderLibrary() {
+  const groups = [["neck", "Neck & posture · 8 steps, every day"], ["bands", "Resistance bands · arms, every day"], ["db", "Dumbbells · varies by day"], ["dance", "Dance · 10 minutes"], ["run", "Run / jog · 30 minutes"]];
+  const lib = $("library"); lib.innerHTML = "";
+  const io = new IntersectionObserver(es => es.forEach(en => en.isIntersecting ? libVisible.add(en.target) : libVisible.delete(en.target)), { rootMargin: "80px" });
+  for (const [g, title] of groups) {
+    const wrap = document.createElement("div"); wrap.className = "lib-group";
+    wrap.innerHTML = `<span class="eyebrow">${title}</span>`;
+    const grid = document.createElement("div"); grid.className = "lib";
+    Object.values(EX).filter(e => e.group === g).forEach(e => {
+      const card = document.createElement("div"); card.className = "ex";
+      const cv = document.createElement("canvas"); cv.dataset.ex = e.id; cv.setAttribute("aria-label", e.name + " animation");
+      const lying = e.keys.length && e.keys[0].rootPitch !== 0;
+      cv.dataset.view = lying || e.id === "rdl" || e.id === "row" || e.id === "chinTuck" || e.id === "run" || e.id === "walk" ? 1 : (e.id === "chestOpener" || e.id === "bandTricep" ? 2 : 0);
+      card.appendChild(cv);
+      const info = document.createElement("div");
+      info.innerHTML = `<div class="nm">${e.step ? e.step + ". " : ""}${e.name}</div><div class="tg">${e.muscles}</div>`;
+      card.appendChild(info);
+      const row = document.createElement("div"); row.className = "row";
+      row.innerHTML = `<span class="badge ${e.src.mine ? "" : "draft"}">${e.src.mine ? "From your video" : "Starter pick"}</span>`;
+      const b = document.createElement("button"); b.className = "btn small"; b.textContent = "Preview";
+      b.addEventListener("click", () => { S.mode = "preview"; S.running = false; S.preview = { ex: e.id, side: e.sides ? "L" : null }; S.el = 0; updatePanel(true); $("flight").scrollIntoView({ behavior: "smooth", block: "start" }); });
+      row.appendChild(b); card.appendChild(row);
+      grid.appendChild(card);
+      ro.observe(cv); io.observe(cv);
+    });
+    wrap.appendChild(grid); lib.appendChild(wrap);
+  }
+}
+
+/* ---- main loop ---- */
+const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+let last = performance.now(), clock = 0, lastPanel = 0, lastLib = 0;
+function frame(now) {
+  const dt = Math.min(0.1, (now - last) / 1000); last = now; clock += dt;
+  if (S.mode === "session" && S.running) {
+    const s = curSeg(); const prevEl = S.el;
+    S.el += dt;
+    if (s.kind !== "work" && s.dur - S.el <= 3 && Math.ceil(s.dur - prevEl) !== Math.ceil(s.dur - S.el) && s.dur - S.el > 0) beep(660, 0.08);
+    if (s.kind === "work" && s.reps && Math.floor(prevEl / s.tempo) !== Math.floor(S.el / s.tempo) && S.el < s.dur) beep(1320, 0.03, 0.04);
+    if (S.el >= s.dur) advance(1);
+  }
+  // main stage
+  const s = curSeg();
+  let exId, side, phase, seg = null, el = clock;
+  if (s) {
+    if (s.kind === "work") {
+      exId = s.ex; side = s.side; seg = s; el = S.el;
+      const e = EX[exId];
+      if (s.timed) phase = (S.el * (s.speed || 1)) / e.tempo; else if (s.reps) phase = S.el / s.tempo; else phase = 0;
+      if (!S.running && s.reps) phase = Math.floor(S.el / s.tempo) + 0.0001 + (S.el % s.tempo) / s.tempo;
+    } else {
+      const n = s.next || s; exId = n.ex; side = s.kind === "switch" ? n.side : n.side;
+      phase = s.kind === "switch" ? 0 : clock / (EX[exId].tempo || 3); seg = null;
+    }
+  } else { exId = S.preview.ex; side = S.preview.side; const e = EX[exId]; phase = clock / (e.tempo || 3); }
+  const e = EX[exId];
+  if (s && s.kind !== "work") side = (s.next || {}).side;
+  const holdT = seg ? S.el : (clock % 8);
+  const pose = e.mode === "hold" ? poseFor(exId, side, (clock % 8) / 8, seg, holdT) : poseFor(exId, side, reduced && !S.running ? 0.5 : phase);
+  const swing = Math.sin(clock * 6) * (e.group === "run" || e.group === "dance" ? 1 : 0.2);
+  mainCv.forEach((c, i) => { const ctx = c.getContext("2d"); drawScene(ctx, c.width, c.height, exId, side, pose, i, { swing }); });
+  if (now - lastPanel > 200) { updatePanel(false); lastPanel = now; }
+  // library thumbs at ~20fps
+  if (now - lastLib > 50 && !reduced) {
+    lastLib = now;
+    libVisible.forEach(c => {
+      const ex = EX[c.dataset.ex]; const sd = ex.sides ? "L" : null;
+      const ph = clock / (ex.tempo || 3);
+      const p = ex.mode === "hold" ? poseFor(ex.id, sd, 0, null, (clock % 8)) : poseFor(ex.id, sd, ph);
+      drawScene(c.getContext("2d"), c.width, c.height, ex.id, sd, p, +c.dataset.view, { swing: Math.sin(clock * 6) * 0.3 });
+    });
+  }
+  requestAnimationFrame(frame);
+}
+function drawLibStatic() {
+  document.querySelectorAll(".ex canvas").forEach(c => {
+    sizeCanvas(c); const ex = EX[c.dataset.ex]; const sd = ex.sides ? "L" : null;
+    const p = ex.mode === "hold" ? lerpPose(BASE, ex.target, 1) : poseFor(ex.id, sd, 0.5);
+    drawScene(c.getContext("2d"), c.width, c.height, ex.id, sd, sd === "R" ? mirror(p) : p, +c.dataset.view);
+  });
+}
+
+/* ---- controls ---- */
+$("btnPlay").addEventListener("click", () => {
+  if (S.mode !== "session") { startAt(0); return; }
+  S.running = !S.running; if (S.running) { beep(660); keepAwake(); }
+  updatePanel(true);
+});
+$("btnNext").addEventListener("click", () => advance(1));
+$("btnPrev").addEventListener("click", () => { if (S.mode === "session" && S.el > 3) { S.el = 0; } else advance(-1); updatePanel(true); });
+$("btnSound").addEventListener("click", () => { S.sound = !S.sound; store.set("sound", S.sound); updatePanel(true); if (S.sound) beep(880); });
+$("startAll").addEventListener("click", () => { startAt(0); $("flight").scrollIntoView({ behavior: "smooth", block: "start" }); });
+$("weekDown").addEventListener("click", () => { S.week = Math.max(1, S.week - 1); store.set("week", S.week); loadDay(); });
+$("weekUp").addEventListener("click", () => { S.week = Math.min(52, S.week + 1); store.set("week", S.week); loadDay(); });
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && S.running) keepAwake(); });
+
+const refreshColors = () => { readColors(); drawLibStatic(); };
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", refreshColors);
+new MutationObserver(refreshColors).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+
+readColors();
+renderLibrary();
+loadDay();
+mainCv.forEach(sizeCanvas);
+drawLibStatic();
+requestAnimationFrame(frame);
+window.__pts = { EX, BASE, fk, place, drawScene, poseFor, buildDay, P, mirror, readColors };
+})();
+</script>
