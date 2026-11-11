@@ -1,0 +1,889 @@
+<title>Scranton Branch Intranet</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a corporate intranet. Fixed department directory on the left, one working "department page" on the right; memos, ledgers and nameplates carry the theme. */
+:root{
+  --bg:#eef0f2; --panel:#ffffff; --panel2:#f6f7f9; --ink:#17212e; --muted:#5b6777; --line:#d5dae1;
+  --navy:#1d3557; --navy-ink:#ffffff; --accent:#2a5fa5; --manila:#e9d9a8; --manila-ink:#4a3c10;
+  --good:#1f7a4d; --good-bg:#dff1e7; --warn:#96610a; --warn-bg:#fbeccb; --crit:#b3261e; --crit-bg:#fbe0dd; --info-bg:#dfe9f6;
+  --code-bg:#f3f5f8;
+  --display:"Archivo","Arial Narrow",Arial,sans-serif; --body:"IBM Plex Sans","Segoe UI",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#10161f; --panel:#18212d; --panel2:#1e2936; --ink:#e6ebf2; --muted:#9aa7b8; --line:#2f3c4d;
+  --navy:#0c1422; --navy-ink:#e6ebf2; --accent:#7fb0ee; --manila:#4b4124; --manila-ink:#f0e2b4;
+  --good:#6fd3a0; --good-bg:#173527; --warn:#f0c06a; --warn-bg:#3d2f10; --crit:#ff9b93; --crit-bg:#45201d; --info-bg:#1d3150;
+  --code-bg:#121a25; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#10161f; --panel:#18212d; --panel2:#1e2936; --ink:#e6ebf2; --muted:#9aa7b8; --line:#2f3c4d;
+  --navy:#0c1422; --navy-ink:#e6ebf2; --accent:#7fb0ee; --manila:#4b4124; --manila-ink:#f0e2b4;
+  --good:#6fd3a0; --good-bg:#173527; --warn:#f0c06a; --warn-bg:#3d2f10; --crit:#ff9b93; --crit-bg:#45201d; --info-bg:#1d3150;
+  --code-bg:#121a25; color-scheme:dark }
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--body);}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;line-height:1.15}
+h1{font-size:26px;font-weight:800;letter-spacing:-.01em}
+h2{font-size:17px;font-weight:700}
+h3{font-size:14px;font-weight:700}
+p{margin:0}
+a{color:var(--accent)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.eyebrow{font:600 11px/1.2 var(--body);letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.muted{color:var(--muted)} .small{font-size:13px} .num{font-variant-numeric:tabular-nums}
+
+.shell{display:grid;grid-template-columns:248px minmax(0,1fr);min-height:100%}
+.side{background:var(--navy);color:var(--navy-ink);padding-block:18px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:14px;display:flex;flex-direction:column;gap:16px}
+.brand{display:flex;flex-direction:column;gap:2px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,.18)}
+.brand b{font:800 19px/1.05 var(--display);letter-spacing:.02em;text-transform:uppercase}
+.brand span{font-size:12px;opacity:.75}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav a{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:10px;align-items:center;padding:7px 8px;border-radius:4px;color:inherit;text-decoration:none}
+.nav a:hover{background:rgba(255,255,255,.08)}
+.nav a[aria-current="page"]{background:rgba(255,255,255,.16)}
+.nav .t{display:flex;flex-direction:column;min-width:0}
+.nav .t b{font:600 14px/1.2 var(--body)}
+.nav .t span{font-size:11.5px;opacity:.72;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav .c{font:500 11px var(--mono);opacity:.8}
+.side .sync{margin-top:auto;font-size:11.5px;opacity:.75;line-height:1.4}
+.badge{display:inline-block;vertical-align:middle;width:30px;height:30px;border-radius:3px;background:var(--c,#456);color:#fff;font:700 11px/30px var(--display);text-align:center;letter-spacing:.04em;flex:none;box-shadow:inset 0 -3px 0 rgba(0,0,0,.22)}
+.badge.lg{width:44px;height:44px;line-height:44px;font-size:15px}
+
+.main{padding-block:22px 48px;padding-left:24px;padding-right:max(16px,env(safe-area-inset-right,0px));min-width:0;display:flex;flex-direction:column;gap:20px;max-width:1180px}
+.phead{display:flex;gap:14px;align-items:center;flex-wrap:wrap;padding-bottom:16px;border-bottom:2px solid var(--ink)}
+.phead .who{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1 1 260px}
+.memo{background:var(--manila);color:var(--manila-ink);padding:12px 16px;border-left:0;font-size:14px;display:grid;gap:4px;box-shadow:2px 3px 0 rgba(0,0,0,.08)}
+.memo .hd{font:500 11.5px var(--mono);text-transform:uppercase;letter-spacing:.05em;opacity:.8}
+.grid{display:grid;gap:20px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr))}
+.panel{background:var(--panel);border:1px solid var(--line);min-width:0}
+.panel>header{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:11px 14px;border-bottom:1px solid var(--line);background:var(--panel2)}
+.panel>.body{padding:14px;display:flex;flex-direction:column;gap:12px}
+.big{font:800 46px/1 var(--display);letter-spacing:-.02em}
+.bar{height:8px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent)}
+.bar.good i{background:var(--good)}
+table{border-collapse:collapse;width:100%}
+th{font:600 11px var(--body);letter-spacing:.07em;text-transform:uppercase;color:var(--muted);text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+.scroll{overflow-x:auto}
+.pill{display:inline-block;font:600 11.5px/1 var(--body);padding:4px 8px;border-radius:99px;background:var(--panel2);border:1px solid var(--line);white-space:nowrap}
+.pill.good{background:var(--good-bg);color:var(--good);border-color:transparent}
+.pill.warn{background:var(--warn-bg);color:var(--warn);border-color:transparent}
+.pill.crit{background:var(--crit-bg);color:var(--crit);border-color:transparent}
+.pill.info{background:var(--info-bg);color:var(--accent);border-color:transparent}
+.btn{border:1px solid var(--line);background:var(--panel);padding:7px 12px;border-radius:4px;cursor:pointer;font-weight:500;font-size:14px}
+.btn:hover{border-color:var(--accent)}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--panel)}
+.btn.ghost{border-color:transparent;background:transparent;color:var(--muted);padding:5px 8px}
+.btn:disabled{opacity:.5;cursor:default}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+input[type=text],input[type=date],select,textarea{border:1px solid var(--line);background:var(--panel);border-radius:4px;padding:7px 9px;min-width:0}
+.add{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+.empty{border:1px dashed var(--line);padding:18px;display:flex;flex-direction:column;gap:10px;align-items:flex-start;color:var(--muted)}
+.check{display:grid;grid-template-columns:20px minmax(0,1fr);gap:10px;align-items:start;padding:6px 0;cursor:pointer}
+.check input{width:17px;height:17px;margin:3px 0 0;accent-color:var(--accent)}
+.check.done span{color:var(--muted);text-decoration:line-through}
+.stage{display:flex;flex-direction:column;gap:2px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.stage:last-child{border-bottom:0;padding-bottom:0}
+.dept td:first-child{width:1%}
+.dundies{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.dundie{border:1px solid var(--line);padding:10px;display:flex;flex-direction:column;gap:4px;background:var(--panel2);opacity:.55}
+.dundie.on{opacity:1;background:var(--manila);color:var(--manila-ink);border-color:transparent}
+.dundie b{font:700 13.5px var(--display)}
+.dundie span{font-size:12px}
+.hab{display:grid;grid-template-columns:minmax(110px,1fr) repeat(7,34px) 30px;gap:6px;align-items:center;min-width:420px}
+.hab .d{font:600 11px var(--body);text-align:center;color:var(--muted);text-transform:uppercase}
+.hab .d.today{color:var(--accent)}
+.tick{width:34px;height:30px;border:1px solid var(--line);background:var(--panel);border-radius:3px;cursor:pointer;padding:0;font-weight:700;color:transparent}
+.tick[aria-pressed="true"]{background:var(--good);border-color:var(--good);color:var(--panel)}
+.tick:disabled{opacity:.35;cursor:default}
+
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tab{display:flex;gap:8px;align-items:center;border:1px solid var(--line);background:var(--panel);padding:6px 10px 6px 6px;border-radius:4px;cursor:pointer;text-align:left}
+.tab[aria-selected="true"]{border-color:var(--ink);box-shadow:inset 0 -3px 0 var(--ink)}
+.tab .badge{width:26px;height:26px;line-height:26px;font-size:10px}
+.tab b{display:block;font:600 13px/1.2 var(--body)} .tab .tx span{font-size:11.5px;color:var(--muted)} .tab .tx>span{display:block}
+.lab{display:grid;grid-template-columns:minmax(0,270px) minmax(0,1fr);gap:20px;align-items:start}
+.chlist{display:flex;flex-direction:column}
+.chlist button{display:grid;grid-template-columns:22px minmax(0,1fr);gap:8px;text-align:left;border:0;border-bottom:1px solid var(--line);background:transparent;padding:9px 12px;cursor:pointer}
+.chlist button:last-child{border-bottom:0}
+.chlist button[aria-current="true"]{background:var(--info-bg)}
+.chlist .n{font:500 12px var(--mono);color:var(--muted)}
+.chlist .ok{color:var(--good);font-weight:700}
+.brief{display:flex;flex-direction:column;gap:8px;max-width:72ch}
+.brief code,.inl{font:13px var(--mono);background:var(--code-bg);padding:1px 5px;border-radius:3px}
+pre{margin:0;font:13px/1.5 var(--mono);background:var(--code-bg);border:1px solid var(--line);padding:10px 12px;overflow-x:auto;white-space:pre-wrap;word-break:break-word}
+pre.io{white-space:pre}
+#code{width:100%;font:13.5px/1.55 var(--mono);background:var(--code-bg);tab-size:4;resize:vertical;white-space:pre;overflow:auto;min-height:260px}
+.verdict{font-weight:600}
+.verdict.pass{color:var(--good)} .verdict.fail{color:var(--crit)}
+
+@media (max-width:820px){
+  .shell{grid-template-columns:minmax(0,1fr)}
+  .side{padding-block:12px;padding-right:max(16px,env(safe-area-inset-right,0px));gap:10px}
+  .brand{padding-bottom:8px}
+  .nav{flex-direction:row;overflow-x:auto;gap:4px;padding-bottom:4px}
+  .nav a{grid-template-columns:26px auto;flex:none}
+  .nav .c,.nav .t span{display:none}
+  .nav .badge{width:26px;height:26px;line-height:26px;font-size:10px}
+  .side .sync{margin-top:0}
+  .main{padding-left:max(16px,env(safe-area-inset-left,0px));padding-block:16px 40px}
+  .lab{grid-template-columns:minmax(0,1fr)}
+  .big{font-size:38px}
+}
+</style>
+
+<div class="shell">
+  <aside class="side">
+    <div class="brand"><b>Scranton Branch</b><span>Employee intranet · Paper Company, Inc.</span></div>
+    <nav class="nav" id="nav" aria-label="Departments"></nav>
+    <div class="sync" id="sync">Loading your file…</div>
+  </aside>
+  <main class="main" id="main"></main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js"></script>
+<script>
+"use strict";
+const R = String.raw;
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const iso = d => d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+const today = () => iso(new Date());
+const addDays = (s, n) => { const d = new Date(s + 'T12:00:00'); d.setDate(d.getDate() + n); return iso(d); };
+const daysBetween = (a, b) => Math.round((new Date(b + 'T12:00:00') - new Date(a + 'T12:00:00')) / 864e5);
+const monday = s => { const d = new Date(s + 'T12:00:00'); return addDays(s, -((d.getDay() + 6) % 7)); };
+const uid = () => Math.random().toString(36).slice(2, 9);
+const fmtDate = s => s ? new Date(s + 'T12:00:00').toLocaleDateString(undefined, {day:'numeric', month:'short', year:'numeric'}) : '';
+
+/* ───────── People ───────── */
+const HEADS = {
+  michael:{n:'Michael Scott', r:'Regional Manager', i:'MS', c:'#2f5d8a', v:'warm, over-enthusiastic, slightly off-target motivational boss'},
+  jim:{n:'Jim Halpert', r:'Sales', i:'JH', c:'#4a7a5c', v:'dry, relaxed, quietly encouraging salesman'},
+  pam:{n:'Pam Beesly', r:'Office Administrator', i:'PB', c:'#b0607a', v:'kind, organised, gently honest'},
+  oscar:{n:'Oscar Martinez', r:'Accounting', i:'OM', c:'#7a5c3a', v:'precise, well-read accountant who explains the "actually" behind things'},
+  angela:{n:'Angela Martin', r:'Quality Assurance', i:'AM', c:'#6b6f7a', v:'strict, exacting, sparing with praise'},
+  andy:{n:'Andy Bernard', r:'Annex · C++ desk', i:'AB', c:'#b5532e', v:'upbeat, eager, a little too proud of his alma mater'},
+  ryan:{n:'Ryan Howard', r:'Temp · Machine learning', i:'RH', c:'#5a4b8a', v:'startup-minded, buzzword-prone but sharp'},
+  darryl:{n:'Darryl Philbin', r:'Warehouse Foreman', i:'DP', c:'#3d6f80', v:'calm, practical, no-nonsense foreman'},
+  dwight:{n:'Dwight Schrute', r:'Assistant to the Regional Manager', i:'DS', c:'#8a6d1f', v:'intense, disciplined, absolute about rules'},
+  kelly:{n:'Kelly Kapoor', r:'Customer Relations', i:'KK', c:'#b0468f', v:'excitable, social, enthusiastic about plans'},
+  toby:{n:'Toby Flenderson', r:'Human Resources', i:'TF', c:'#77705f', v:'soft-spoken, reflective HR rep'}
+};
+const DEPTS = [
+  {id:'front-desk', name:'Front Desk', head:'michael', sub:'Branch overview'},
+  {id:'sales', name:'Sales', head:'jim', sub:'Internship pipeline'},
+  {id:'admin', name:'Administration', head:'pam', sub:'Colleges & scholarships'},
+  {id:'lab', name:'Training Annex', head:'oscar', sub:'Coding lab'},
+  {id:'warehouse', name:'Warehouse', head:'darryl', sub:'Hardware & ECE'},
+  {id:'farm', name:'Schrute Farms', head:'dwight', sub:'Fitness regimen'},
+  {id:'social', name:'Customer Relations', head:'kelly', sub:'Friends & travel'},
+  {id:'hr', name:'Human Resources', head:'toby', sub:'Weekly review'}
+];
+const badge = (h, lg) => `<span class="badge${lg ? ' lg' : ''}" style="--c:${HEADS[h].c}" aria-hidden="true">${HEADS[h].i}</span>`;
+
+const MEMOS = [
+  "Eight months is a long time. It is also not a long time. Use both halves.",
+  "I am not saying you have to do everything today. I am saying somebody should, and you are the only one on the payroll.",
+  "An internship is just a job where they have not realised how good you are yet.",
+  "Write one line of code before lunch. Then the day cannot be a total loss. That is management science.",
+  "Applications are like sales calls. The answer is no until you actually send it.",
+  "Call a friend this week. A branch is only as strong as its conference room parties.",
+  "Do the hard department first. Then reward yourself with the easy department. I invented that.",
+  "Nobody remembers the day you skipped. Everybody remembers the streak."
+];
+
+/* ───────── Trackers ───────── */
+const TR = {
+  intern:{a:'Company, lab or team', b:'Role or contact', stages:['Lead','Applied','Interview','Offer','Closed'],
+    empty:'No leads on the board yet. Add the first place you would like to work, or start from my shortlist of ideas to research.',
+    suggest:[['Research institute attachment (e.g. A*STAR)','Find a lab doing embedded / signal processing work'],['Defence tech internship (e.g. DSTA, DSO)','Check pre-university programmes'],['Hardware or IoT startup','Cold email the founder with a small project'],['University lab attachment','Email a professor whose ECE research you can describe in two lines'],['Software internship at a tech SME','Lead with your GitHub']]},
+  apps:{a:'University or scholarship', b:'Course or notes', cats:['Singapore','United States','United Kingdom','Scholarship'], stages:['Researching','Drafting','Submitted','Interview','Decision'],
+    empty:'Nothing filed yet. Add each application as its own row and give it the deadline from the official site.',
+    suggest:[['NUS','Electrical / Computer Engineering','Singapore'],['NTU','Electrical & Electronic Engineering','Singapore'],['SUTD','Check interview format','Singapore'],['UCAS (up to 5 choices)','Personal statement + reference','United Kingdom'],['Common App','Main essay + supplements, test scores','United States'],['Government scholarship (e.g. PSC)','Essays, psychometric tests, interviews','Scholarship'],['Research scholarship (e.g. A*STAR)','Tie to research attachment','Scholarship'],['Industry-sponsored scholarship','Shortlist 3 engineering sponsors','Scholarship']]},
+  friends:{a:'Who', b:'What you will do', stages:['To plan','Scheduled','Done'],
+    empty:'Your social calendar is literally empty. Add someone you keep meaning to see.', suggest:[['A JC classmate you have not seen since A-levels','Meal, no agenda'],['CCA batch','Group outing before everyone scatters'],['Family','One proper day together']]},
+  trips:{a:'Where', b:'With whom, rough budget', stages:['Idea','Planning','Booked','Been'],
+    empty:'No trips yet. Even one weekend away counts.', suggest:[['Grad trip','Pick dates around application deadlines'],['A short solo trip','Somewhere reachable in under 4 hours']]}
+};
+const stageClass = (cfg, st) => { const i = cfg.stages.indexOf(st), n = cfg.stages.length; return i <= 0 ? '' : i >= n - 2 && cfg === TR.intern ? (st === 'Offer' ? 'good' : '') : i === n - 1 ? 'good' : i === 1 ? 'warn' : 'info'; };
+
+/* ───────── Checklists ───────── */
+const CK = {
+  prep:[['prep1','One-page resume: A-level subjects, projects, CCA leadership'],['prep2','GitHub profile with 3 pinned projects from the Training Annex'],['prep3','LinkedIn profile with a clear headline (incoming ECE student)'],['prep4','A reusable cold email: who you are, what you built, what you are asking for'],['prep5','A 60-second answer to "tell me about a project"'],['prep6','Ask one teacher for a reference you can reuse']],
+  pandas:[['pd1','Install Python + Jupyter (or open Google Colab)'],['pd2','Load the sales ledger with pandas.read_csv and repeat ledger tasks 2 to 5 with groupby'],['pd3','Plot monthly reams with matplotlib and label the axes'],['pd4','Write a one-paragraph finding as if reporting to the Regional Manager'],['pd5','Push the notebook to GitHub']],
+  hw:[
+    {t:'Stage 1 · Circuits on a breadboard', items:[['hw11','Light an LED with the right series resistor (do bench calculation 2 first)'],['hw12','Build a voltage divider and confirm the output with a multimeter'],['hw13','Measure current in series and parallel branches; compare with your calculation'],['hw14','No kit yet? Do all three in a circuit simulator (Tinkercad Circuits or Falstad)']]},
+    {t:'Stage 2 · Microcontroller in C++ (Arduino)', items:[['hw21','Blink, then blink without delay() using millis()'],['hw22','Read a push button with debouncing'],['hw23','Dim an LED with PWM from a potentiometer'],['hw24','Read an analog sensor and print to the serial monitor'],['hw25','Drive a servo or small motor through a driver or transistor']]},
+    {t:'Stage 3 · Digital logic', items:[['hw31','Write truth tables for AND, OR, XOR, NAND; build one from NAND gates only'],['hw32','Build a half adder, then a full adder, in a simulator'],['hw33','Drive a 7-segment display as a 0 to 9 counter'],['hw34','Set and clear bits on a port register directly (see C++ task 7)']]},
+    {t:'Stage 4 · Connected build', items:[['hw41','ESP32: read a temperature sensor over I2C'],['hw42','Send readings over Wi-Fi or log them to an SD card'],['hw43','Explain UART, I2C and SPI to a friend in one minute each'],['hw44','Analyse a week of your own sensor data in Python']]},
+    {t:'Stage 5 · Design it properly', items:[['hw51','Draw the schematic of your Stage 4 build in KiCad'],['hw52','Lay out a small PCB and run the design rule check'],['hw53','Solder a through-hole kit cleanly'],['hw54','Write and simulate a 4-bit counter in Verilog']]},
+    {t:'Capstone · Build your own Dundie', items:[['hw61','A trophy with addressable LEDs that reacts to a sensor'],['hw62','Document it: schematic, code, photos, what went wrong'],['hw63','Put it on GitHub and in your resume']]}
+  ],
+  ml:[
+    {t:'Project 1 · Will the client renew? (scikit-learn)', items:[['ml11','Pick a public tabular dataset (Titanic or a churn dataset) and explore it in pandas'],['ml12','Train logistic regression and a decision tree with a train/test split'],['ml13','Report accuracy, precision and recall, and say which errors matter more'],['ml14','Write a README explaining the result to a non-technical manager']]},
+    {t:'Project 2 · Read the handwriting on the fax (neural network)', items:[['ml21','Train a small dense network on MNIST with PyTorch or Keras'],['ml22','Swap it for a small CNN and compare accuracy'],['ml23','Plot the training curves and find one misclassified digit you agree is ambiguous']]},
+    {t:'Project 3 · ML on a microcontroller (ECE capstone)', items:[['ml31','Record accelerometer or microphone data from your board'],['ml32','Train a tiny classifier (gesture or keyword) on your laptop'],['ml33','Deploy it to the board with TensorFlow Lite Micro or Edge Impulse'],['ml34','Demo video: the board reacts with no laptop attached']]}
+  ]
+};
+const ckIds = k => k === 'hw' || k === 'ml' ? CK[k].flatMap(s => s.items.map(i => i[0])) : CK[k].map(i => i[0]);
+
+/* ───────── Sample ledger (generated, fictional) ───────── */
+const SALES_CSV = (() => {
+  let a = 20261111; const rnd = () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  const reps = ['Jim','Dwight','Stanley','Phyllis','Andy'], clients = ['Lackawanna County','Dunmore High','Vance Refrigeration','Scranton Business Park','Poor Richards Pub','Alfredos Pizza Cafe','Prince Family Paper','Electric City Sign Co'];
+  const prods = [['Copy 20lb',4.25],['Cardstock',9.80],['Legal pad',2.10],['Premium laser',6.75]];
+  const out = ['order_id,date,rep,client,product,reams,unit_price']; let d = '2026-01-05';
+  for (let i = 0; i < 48; i++) { const p = prods[Math.floor(rnd()*4)]; let q = 5 + Math.floor(rnd()*76); if (i === 17) q = 420; if (i === 39) q = 510;
+    out.push([1001+i, d, reps[Math.floor(rnd()*5)], clients[Math.floor(rnd()*8)], p[0], q, p[1].toFixed(2)].join(',')); d = addDays(d, 3 + Math.floor(rnd()*2)); }
+  return out.join('\n');
+})();
+const PRELUDE = 'SALES_CSV = ' + JSON.stringify(SALES_CSV) + '\n';
+const DREF = R`
+def _rows():
+    out = []
+    lines = SALES_CSV.strip().split("\n")
+    head = lines[0].split(",")
+    for ln in lines[1:]:
+        p = ln.split(",")
+        d = {}
+        for i in range(len(head)):
+            d[head[i]] = p[i]
+        d["order_id"] = int(d["order_id"]); d["reams"] = int(d["reams"]); d["unit_price"] = float(d["unit_price"])
+        out.append(d)
+    return out
+def _close(a, b, tol=0.011):
+    return abs(a - b) <= tol
+`;
+
+/* ───────── Challenges ───────── */
+const TRACKS = [
+  {id:'data', head:'oscar', name:'The Ledger', sub:'Data analysis · Python'},
+  {id:'cp', head:'angela', name:'Quality Assurance', sub:'Competitive programming'},
+  {id:'cpp', head:'andy', name:'C++ Desk', sub:'C++ from zero'},
+  {id:'ml', head:'ryan', name:'The Startup', sub:'Machine learning'},
+  {id:'bench', head:'darryl', name:'Bench Calculations', sub:'ECE in Python'}
+];
+const CH = [
+/* Oscar */
+{id:'d1', tr:'data', t:'Read the ledger', brief:`<p>The quarterly ledger arrives as one long string called <code>SALES_CSV</code>. Before anyone analyses anything, it needs to be rows.</p><p>Write <code>parse_csv(text)</code> that returns a list of dictionaries, one per order, keyed by the header names. Convert <code>order_id</code> and <code>reams</code> to <code>int</code> and <code>unit_price</code> to <code>float</code>. Leave the rest as strings.</p>`,
+ starter:R`def parse_csv(text):
+    rows = []
+    # split into lines, read the header, build one dict per line
+    return rows
+
+print(parse_csv(SALES_CSV)[:2])
+`, check:DREF + R`
+_g = parse_csv(SALES_CSV); _e = _rows()
+assert isinstance(_g, list), "parse_csv should return a list"
+assert len(_g) == len(_e), "Expected " + str(len(_e)) + " rows, got " + str(len(_g)) + ". Did you skip the header exactly once?"
+assert isinstance(_g[0], dict), "Each row should be a dict"
+assert _g[0] == _e[0], "First row should be " + str(_e[0])
+assert _g == _e, "Some rows differ. Check the int and float conversions."
+`},
+{id:'d2', tr:'data', t:'Revenue by sales rep', brief:`<p>Revenue for an order is <code>reams * unit_price</code>. Write <code>revenue_by_rep(rows)</code> returning a dictionary of rep name to total revenue, rounded to 2 decimal places.</p><p>Each row is a dict like the ones from task 1. Call your own <code>parse_csv</code> if you want to try it on the real ledger.</p>`,
+ starter:R`def revenue_by_rep(rows):
+    totals = {}
+    return totals
+`, check:DREF + R`
+_e = {}
+for r in _rows():
+    _e[r["rep"]] = _e.get(r["rep"], 0) + r["reams"] * r["unit_price"]
+_g = revenue_by_rep(_rows())
+assert isinstance(_g, dict), "Return a dict"
+assert sorted(_g.keys()) == sorted(_e.keys()), "Expected reps " + str(sorted(_e.keys())) + ", got " + str(sorted(_g.keys()))
+for k in _e:
+    assert _close(_g[k], _e[k]), "Total for " + k + " should be " + str(round(_e[k], 2)) + ", got " + str(_g[k])
+`},
+{id:'d3', tr:'data', t:'Top clients', brief:`<p>Write <code>top_clients(rows, n)</code> returning the <code>n</code> highest-revenue clients as a list of <code>(client, revenue)</code> tuples, largest first, revenue rounded to 2 decimal places.</p><p>Hint: <code>sorted(..., key=..., reverse=True)</code>.</p>`,
+ starter:R`def top_clients(rows, n):
+    return []
+`, check:DREF + R`
+_t = {}
+for r in _rows():
+    _t[r["client"]] = _t.get(r["client"], 0) + r["reams"] * r["unit_price"]
+_e = sorted(_t.items(), key=lambda kv: kv[1], reverse=True)
+for _n in (3, 1, len(_e)):
+    _g = top_clients(_rows(), _n)
+    assert len(_g) == _n, "top_clients(rows, " + str(_n) + ") should return " + str(_n) + " items"
+    assert [x[0] for x in _g] == [x[0] for x in _e[:_n]], "Expected order " + str([x[0] for x in _e[:_n]]) + ", got " + str([x[0] for x in _g])
+    for i in range(_n):
+        assert _close(_g[i][1], _e[i][1]), "Revenue for " + _e[i][0] + " should be " + str(round(_e[i][1], 2))
+`},
+{id:'d4', tr:'data', t:'Monthly volume', brief:`<p>Write <code>monthly_reams(rows)</code> returning a dictionary of month (<code>"YYYY-MM"</code>) to total reams sold in that month.</p><p>Dates are strings like <code>"2026-03-14"</code>. Slicing is enough.</p>`,
+ starter:R`def monthly_reams(rows):
+    return {}
+`, check:DREF + R`
+_e = {}
+for r in _rows():
+    _e[r["date"][:7]] = _e.get(r["date"][:7], 0) + r["reams"]
+_g = monthly_reams(_rows())
+assert sorted(_g.keys()) == sorted(_e.keys()), "Expected months " + str(sorted(_e.keys())) + ", got " + str(sorted(_g.keys()))
+for k in _e:
+    assert _g[k] == _e[k], k + " should total " + str(_e[k]) + " reams, got " + str(_g[k])
+`},
+{id:'d5', tr:'data', t:'Suspicious orders', brief:`<p>Two orders in this ledger are far larger than the rest. Find them the way an auditor would.</p><p>Write <code>outliers(rows)</code> returning the <code>order_id</code>s (ascending) whose <code>reams</code> exceed <em>mean + 2 × standard deviation</em>. Use the population standard deviation: the square root of the average squared distance from the mean. No imports needed; <code>x ** 0.5</code> is a square root.</p>`,
+ starter:R`def outliers(rows):
+    return []
+`, check:DREF + R`
+_q = [r["reams"] for r in _rows()]
+_m = sum(_q) / len(_q)
+_sd = (sum([(x - _m) ** 2 for x in _q]) / len(_q)) ** 0.5
+_e = sorted([r["order_id"] for r in _rows() if r["reams"] > _m + 2 * _sd])
+_g = outliers(_rows())
+assert list(_g) == _e, "Expected " + str(len(_e)) + " order ids. Yours: " + str(_g) + ". Threshold is mean + 2*sd = " + str(round(_m + 2 * _sd, 1))
+_s = [{"order_id": i, "reams": 10} for i in range(5)]
+assert list(outliers(_s)) == [], "With identical orders there are no outliers"
+`},
+{id:'d6', tr:'data', t:'Smooth the trend', brief:`<p>Daily numbers are noisy. Write <code>moving_average(values, k)</code> returning the list of averages of every run of <code>k</code> consecutive values. A list of length <code>n</code> gives <code>n - k + 1</code> averages.</p><p><code>moving_average([1, 2, 3, 4, 5], 2)</code> is <code>[1.5, 2.5, 3.5, 4.5]</code>.</p>`,
+ starter:R`def moving_average(values, k):
+    return []
+`, check:R`
+def _ma(v, k):
+    return [sum(v[i:i + k]) / float(k) for i in range(len(v) - k + 1)]
+for _v, _k in (([1, 2, 3, 4, 5], 2), ([10, 20, 30], 3), ([4, 8, 15, 16, 23, 42], 4), ([7], 1)):
+    _g = moving_average(_v, _k); _e = _ma(_v, _k)
+    assert len(_g) == len(_e), "moving_average(" + str(_v) + ", " + str(_k) + ") should have " + str(len(_e)) + " values"
+    for i in range(len(_e)):
+        assert abs(_g[i] - _e[i]) < 1e-6, "moving_average(" + str(_v) + ", " + str(_k) + ") should be " + str(_e)
+`},
+/* Angela */
+{id:'c1', tr:'cp', t:'Two invoices', brief:`<p>Two invoices in the pile add up to exactly the missing amount. Find them.</p><p>Write <code>two_sum(nums, target)</code> returning a tuple of two different indices whose values sum to <code>target</code>. Exactly one such pair exists.</p><p>The acceptable solution is one pass with a dictionary, O(n). Nested loops are not acceptable in my department.</p>`,
+ starter:R`def two_sum(nums, target):
+    seen = {}
+    return (0, 0)
+`, check:R`
+for _n, _t in (([2, 7, 11, 15], 9), ([3, 2, 4], 6), ([3, 3], 6), ([-5, 12, 8, 1, 40], 7), (list(range(1, 600)), 1197)):
+    _g = two_sum(_n, _t)
+    assert len(_g) == 2 and _g[0] != _g[1], "Return two different indices"
+    assert _n[_g[0]] + _n[_g[1]] == _t, "two_sum(" + str(_n[:6]) + "..., " + str(_t) + ") returned " + str(tuple(_g)) + " which does not sum to target"
+`},
+{id:'c2', tr:'cp', t:'Balanced brackets', brief:`<p>Write <code>balanced(s)</code> returning <code>True</code> when every <code>( [ {</code> in the string is closed by the right bracket in the right order. Other characters are ignored.</p><p>Use a list as a stack.</p>`,
+ starter:R`def balanced(s):
+    stack = []
+    return True
+`, check:R`
+for _s, _e in (("()", True), ("([]{})", True), ("(]", False), ("((", False), ("", True), ("{[()()]}", True), ("{[(])}", False), ("sum(a[0], b{1})", True), (")(", False)):
+    assert balanced(_s) == _e, "balanced(" + repr(_s) + ") should be " + str(_e)
+`},
+{id:'c3', tr:'cp', t:'First on or after', brief:`<p>The filing cabinet is sorted. Write <code>lower_bound(a, x)</code> returning the index of the first element <code>&gt;= x</code> in the sorted list <code>a</code>, or <code>len(a)</code> if there is none.</p><p>Binary search, O(log n). This is <code>std::lower_bound</code> in C++, and you will use it constantly.</p>`,
+ starter:R`def lower_bound(a, x):
+    lo, hi = 0, len(a)
+    return lo
+`, check:R`
+for _a, _x, _e in (([1, 3, 5, 7], 5, 2), ([1, 3, 5, 7], 4, 2), ([1, 3, 5, 7], 0, 0), ([1, 3, 5, 7], 8, 4), ([], 3, 0), ([2, 2, 2, 2], 2, 0), ([1, 2, 2, 2, 3], 3, 4)):
+    assert lower_bound(_a, _x) == _e, "lower_bound(" + str(_a) + ", " + str(_x) + ") should be " + str(_e)
+_c = [0]
+class _L(list):
+    def __getitem__(self, i):
+        _c[0] += 1
+        return list.__getitem__(self, i)
+_b = _L(range(0, 4000, 2))
+assert lower_bound(_b, 2501) == 1251, "Wrong answer on a large list"
+assert _c[0] <= 40, "That looked at " + str(_c[0]) + " elements of 2000. Binary search needs about 11."
+`},
+{id:'c4', tr:'cp', t:'Best sales streak', brief:`<p>Each day's result versus quota is a number, positive or negative. Write <code>best_streak(a)</code> returning the largest possible sum of a non-empty run of consecutive days.</p><p>One pass (Kadane's algorithm): keep the best sum ending today, and the best seen so far.</p>`,
+ starter:R`def best_streak(a):
+    return 0
+`, check:R`
+for _a, _e in (([-2, 1, -3, 4, -1, 2, 1, -5, 4], 6), ([5], 5), ([-3, -1, -2], -1), ([1, 2, 3], 6), ([2, -1, 2, -1, 2], 4), ([0, -1, 0], 0)):
+    assert best_streak(_a) == _e, "best_streak(" + str(_a) + ") should be " + str(_e)
+`},
+{id:'c5', tr:'cp', t:'Conference room bookings', brief:`<p>Bookings are <code>(start, end)</code> pairs. Write <code>merge(bookings)</code> returning the merged list, sorted by start, where overlapping or touching bookings are combined. <code>(1, 3)</code> and <code>(3, 5)</code> touch and become <code>(1, 5)</code>.</p><p>Sort first. Then one pass.</p>`,
+ starter:R`def merge(bookings):
+    return []
+`, check:R`
+for _b, _e in (([(1, 3), (2, 6), (8, 10), (15, 18)], [(1, 6), (8, 10), (15, 18)]), ([(1, 4), (4, 5)], [(1, 5)]), ([], []), ([(5, 6), (1, 2)], [(1, 2), (5, 6)]), ([(1, 10), (2, 3), (4, 5)], [(1, 10)]), ([(2, 3), (1, 2), (3, 4)], [(1, 4)])):
+    _g = [tuple(x) for x in merge(list(_b))]
+    assert _g == _e, "merge(" + str(_b) + ") should be " + str(_e) + ", got " + str(_g)
+`},
+{id:'c6', tr:'cp', t:'Fastest route to the break room', brief:`<p>The office is a grid of strings. <code>S</code> is your desk, <code>B</code> is the break room, <code>#</code> is a wall, <code>.</code> is carpet. You move up, down, left or right.</p><p>Write <code>steps(grid)</code> returning the fewest moves from <code>S</code> to <code>B</code>, or <code>-1</code> if it cannot be reached. Breadth-first search with a queue.</p>`,
+ starter:R`def steps(grid):
+    return -1
+
+office = ["S.#.",
+          "..#B",
+          "...."]
+print(steps(office))
+`, check:R`
+for _g, _e in ((["S.#.", "..#B", "...."], 6), (["SB"], 1), (["S#B"], -1), (["S...", ".##.", "...B"], 5), (["S#..", "##..", "...B"], -1), (["B..", "...", "..S"], 4)):
+    assert steps(_g) == _e, "steps(" + str(_g) + ") should be " + str(_e)
+`},
+{id:'c7', tr:'cp', t:'Exact change', brief:`<p>The vending machine takes only certain coins. Write <code>min_coins(coins, amount)</code> returning the fewest coins that sum to <code>amount</code>, or <code>-1</code> if it is impossible. You may reuse coins.</p><p>Greedy fails here. Use dynamic programming: <code>best[v]</code> is the fewest coins for value <code>v</code>.</p>`,
+ starter:R`def min_coins(coins, amount):
+    return -1
+`, check:R`
+for _c, _a, _e in (([1, 5, 10, 25], 30, 2), ([1, 3, 4], 6, 2), ([2], 3, -1), ([5, 10], 0, 0), ([2, 5], 11, 4), ([9, 6, 5, 1], 11, 2), ([3, 7], 5, -1)):
+    assert min_coins(_c, _a) == _e, "min_coins(" + str(_c) + ", " + str(_a) + ") should be " + str(_e)
+`},
+/* Andy · C++ */
+{id:'a1', tr:'cpp', cpp:1, t:'Hello, Scranton', brief:`<p>First day. Get a compiler working and talk to it.</p><p>Read a name (one word) and an integer <code>n</code>. Print <code>Hello, &lt;name&gt;!</code> on <code>n</code> separate lines.</p><p>Concepts: <code>#include &lt;iostream&gt;</code>, <code>int main()</code>, <code>std::cin</code>, <code>std::cout</code>, a <code>for</code> loop, compiling with <code>g++ -std=c++17 -Wall</code>.</p>`,
+ io:['Andy 2','Hello, Andy!\nHello, Andy!'],
+ starter:R`#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string name;
+    int n;
+    cin >> name >> n;
+    // your loop here
+    return 0;
+}
+`},
+{id:'a2', tr:'cpp', cpp:1, t:'Types have sizes', brief:`<p>Read <code>n</code> (up to 10<sup>9</sup>). Print the sum 1 + 2 + … + n.</p><p>Try it with <code>int</code> first and <code>n = 100000</code>. Then find out why the answer is wrong, and fix it.</p><p>Concepts: <code>int</code> versus <code>long long</code>, overflow, integer division.</p>`,
+ io:['100000','5000050000'],
+ starter:R`#include <iostream>
+using namespace std;
+
+int main() {
+    long long n;
+    cin >> n;
+
+    return 0;
+}
+`},
+{id:'a3', tr:'cpp', cpp:1, t:'A vector of sales', brief:`<p>Read <code>n</code>, then <code>n</code> integers. Print the minimum, the maximum and the mean (2 decimal places), separated by spaces.</p><p>Write a separate function <code>double mean(const vector&lt;int&gt;&amp; v)</code>.</p><p>Concepts: <code>std::vector</code>, range-for, passing by const reference, <code>&lt;iomanip&gt;</code> with <code>fixed</code> and <code>setprecision</code>.</p>`,
+ io:['5\n12 7 30 7 19','7 30 15.00'],
+ starter:R`#include <iostream>
+#include <vector>
+#include <iomanip>
+using namespace std;
+
+double mean(const vector<int>& v) {
+    return 0.0;
+}
+
+int main() {
+    int n;
+    cin >> n;
+    vector<int> v(n);
+    for (int& x : v) cin >> x;
+
+    return 0;
+}
+`},
+{id:'a4', tr:'cpp', cpp:1, t:'Who talks the most', brief:`<p>Read words until input ends. Print each distinct word with its count, in alphabetical order, one per line.</p><p>Concepts: <code>while (cin &gt;&gt; w)</code>, <code>std::map&lt;string, int&gt;</code>, iterating a map (it is already sorted).</p>`,
+ io:['bears beets bears','bears 2\nbeets 1'],
+ starter:R`#include <iostream>
+#include <map>
+#include <string>
+using namespace std;
+
+int main() {
+    map<string, int> count;
+    string w;
+
+    return 0;
+}
+`},
+{id:'a5', tr:'cpp', cpp:1, t:'References and pointers', brief:`<p>Write <code>void swap_ref(int&amp; a, int&amp; b)</code> and <code>void reverse(int* arr, int n)</code> that reverses an array in place using two indices. Read <code>n</code> and <code>n</code> integers, reverse them, and print them.</p><p>This is the idea Python hides from you: a reference is another name for the same variable; a pointer is its address.</p>`,
+ io:['4\n1 2 3 4','4 3 2 1'],
+ starter:R`#include <iostream>
+using namespace std;
+
+void swap_ref(int& a, int& b) {
+}
+
+void reverse(int* arr, int n) {
+}
+
+int main() {
+    int n;
+    cin >> n;
+    int arr[1000];
+    for (int i = 0; i < n; i++) cin >> arr[i];
+
+    return 0;
+}
+`},
+{id:'a6', tr:'cpp', cpp:1, t:'Employee of the month', brief:`<p>Define <code>struct Employee { string name; int sales; };</code>. Read <code>n</code> employees and print them sorted by sales, highest first. Ties go alphabetically.</p><p>Concepts: <code>struct</code>, <code>std::sort</code> from <code>&lt;algorithm&gt;</code> with a lambda comparator.</p>`,
+ io:['3\nJim 40\nDwight 55\nStanley 40','Dwight 55\nJim 40\nStanley 40'],
+ starter:R`#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+using namespace std;
+
+struct Employee {
+    string name;
+    int sales;
+};
+
+int main() {
+    int n;
+    cin >> n;
+    vector<Employee> staff(n);
+    for (auto& e : staff) cin >> e.name >> e.sales;
+
+    return 0;
+}
+`},
+{id:'a7', tr:'cpp', cpp:1, t:'Flip the right switch', brief:`<p>This one is for the Warehouse. A microcontroller port is an 8-bit register, and you control pins by changing single bits.</p><p>Read an initial value (0 to 255) and <code>q</code> commands: <code>set k</code>, <code>clear k</code> or <code>toggle k</code> for bit <code>k</code> (0 to 7). Print the register as a decimal number after each command.</p><p>Concepts: <code>uint8_t</code>, <code>|=</code>, <code>&amp;= ~</code>, <code>^=</code>, <code>1 &lt;&lt; k</code>. Cast to <code>int</code> before printing.</p>`,
+ io:['0 3\nset 3\ntoggle 0\nclear 3','8\n9\n1'],
+ starter:R`#include <iostream>
+#include <string>
+#include <cstdint>
+using namespace std;
+
+int main() {
+    int start, q;
+    cin >> start >> q;
+    uint8_t reg = (uint8_t)start;
+
+    return 0;
+}
+`},
+/* Ryan */
+{id:'m1', tr:'ml', t:'Fit a line', brief:`<p>Ad spend goes in, reams sold comes out. The simplest model there is: a straight line.</p><p>Write <code>fit_line(xs, ys)</code> returning <code>(slope, intercept)</code> of the least-squares line. slope = Σ(x − x̄)(y − ȳ) / Σ(x − x̄)², intercept = ȳ − slope · x̄.</p>`,
+ starter:R`spend = [1, 2, 3, 4, 5, 6]
+reams = [52, 61, 73, 78, 94, 99]
+
+def fit_line(xs, ys):
+    return (0.0, 0.0)
+
+print(fit_line(spend, reams))
+`, check:R`
+def _fit(xs, ys):
+    mx = sum(xs) / float(len(xs)); my = sum(ys) / float(len(ys))
+    s = sum([(xs[i] - mx) * (ys[i] - my) for i in range(len(xs))]) / sum([(x - mx) ** 2 for x in xs])
+    return (s, my - s * mx)
+for _x, _y in (([1, 2, 3, 4, 5, 6], [52, 61, 73, 78, 94, 99]), ([0, 1, 2], [1, 3, 5]), ([2, 4, 6, 8], [10, 8, 5, 1])):
+    _g = fit_line(_x, _y); _e = _fit(_x, _y)
+    assert abs(_g[0] - _e[0]) < 1e-6 and abs(_g[1] - _e[1]) < 1e-6, "fit_line(" + str(_x) + ", " + str(_y) + ") should be about (" + str(round(_e[0], 4)) + ", " + str(round(_e[1], 4)) + "), got " + str(_g)
+`},
+{id:'m2', tr:'ml', t:'Learn it instead', brief:`<p>Formulas do not scale. Models learn. Write <code>gradient_descent(xs, ys, lr, epochs)</code> that starts from <code>w = 0, b = 0</code> and repeats <code>epochs</code> times:</p><p>error<sub>i</sub> = (w·x<sub>i</sub> + b) − y<sub>i</sub>; grad_w = (2/n) Σ error<sub>i</sub>·x<sub>i</sub>; grad_b = (2/n) Σ error<sub>i</sub>; then <code>w -= lr * grad_w</code>, <code>b -= lr * grad_b</code>.</p><p>Return <code>(w, b)</code>. This loop is the core of every neural network you will train.</p>`,
+ starter:R`def gradient_descent(xs, ys, lr, epochs):
+    w, b = 0.0, 0.0
+    n = len(xs)
+    for _ in range(epochs):
+        pass
+    return (w, b)
+
+print(gradient_descent([1, 2, 3, 4, 5], [3, 5, 7, 9, 11], 0.05, 2000))
+`, check:R`
+_g = gradient_descent([1, 2, 3, 4, 5], [3, 5, 7, 9, 11], 0.05, 2000)
+assert abs(_g[0] - 2) < 0.02 and abs(_g[1] - 1) < 0.05, "On y = 2x + 1 you should land near (2, 1), got " + str(_g)
+_g = gradient_descent([0, 1, 2, 3], [4, 3, 2, 1], 0.1, 1500)
+assert abs(_g[0] + 1) < 0.02 and abs(_g[1] - 4) < 0.05, "On y = -x + 4 you should land near (-1, 4), got " + str(_g)
+_g = gradient_descent([1, 2, 3], [2, 4, 6], 0.05, 1)
+assert abs(_g[0] - 0.9333333) < 1e-4 and abs(_g[1] - 0.4) < 1e-4, "After exactly one step on ([1,2,3],[2,4,6]) with lr 0.05, expect about (0.9333, 0.4), got " + str(_g)
+`},
+{id:'m3', tr:'ml', t:'Ask the neighbours', brief:`<p>Classification without any training. Each known client is <code>((orders_per_month, avg_order_size), label)</code> where label is <code>"renew"</code> or <code>"churn"</code>.</p><p>Write <code>knn_predict(train, point, k)</code> returning the most common label among the <code>k</code> training points nearest to <code>point</code> (straight-line distance). <code>k</code> is odd, so there are no ties.</p>`,
+ starter:R`clients = [((8, 40), "renew"), ((7, 55), "renew"), ((9, 30), "renew"),
+           ((1, 10), "churn"), ((2, 25), "churn"), ((1, 5), "churn")]
+
+def knn_predict(train, point, k):
+    return ""
+
+print(knn_predict(clients, (6, 35), 3))
+`, check:R`
+_t = [((8, 40), "renew"), ((7, 55), "renew"), ((9, 30), "renew"), ((1, 10), "churn"), ((2, 25), "churn"), ((1, 5), "churn")]
+for _p, _k, _e in (((6, 35), 3, "renew"), ((2, 12), 3, "churn"), ((1, 5), 1, "churn"), ((8, 41), 1, "renew"), ((3, 24), 5, "churn")):
+    assert knn_predict(_t, _p, _k) == _e, "knn_predict(clients, " + str(_p) + ", " + str(_k) + ") should be " + _e
+_t2 = [((0, 0), "a"), ((10, 0), "b"), ((11, 0), "b"), ((1, 0), "a"), ((2, 0), "b")]
+assert knn_predict(_t2, (0.4, 0), 3) == "a", "Check that you sort by distance, not by position in the list"
+`},
+{id:'m4', tr:'ml', t:'Is the model any good', brief:`<p>Accuracy alone will mislead you. Write <code>metrics(y_true, y_pred)</code> for labels 0 and 1 (1 is the positive class) returning a dictionary with <code>"accuracy"</code>, <code>"precision"</code> and <code>"recall"</code>.</p><p>precision = TP / (TP + FP), recall = TP / (TP + FN). If a denominator is zero, use 0.0.</p>`,
+ starter:R`def metrics(y_true, y_pred):
+    return {"accuracy": 0.0, "precision": 0.0, "recall": 0.0}
+`, check:R`
+for _t, _p, _e in (([1, 0, 1, 1, 0, 0, 1, 0], [1, 0, 0, 1, 1, 0, 1, 0], (0.75, 0.75, 0.75)), ([1, 1, 1, 1], [1, 1, 1, 1], (1.0, 1.0, 1.0)), ([0, 0, 0, 1], [0, 0, 0, 0], (0.75, 0.0, 0.0)), ([1, 1, 0, 0, 0], [1, 1, 1, 1, 0], (0.6, 0.5, 1.0))):
+    _g = metrics(_t, _p)
+    for _i, _n in enumerate(("accuracy", "precision", "recall")):
+        assert _n in _g, "Missing key " + _n
+        assert abs(_g[_n] - _e[_i]) < 1e-6, _n + " for y_true=" + str(_t) + ", y_pred=" + str(_p) + " should be " + str(_e[_i]) + ", got " + str(_g[_n])
+`},
+/* Darryl */
+{id:'h1', tr:'bench', t:'Series, parallel, divider', brief:`<p>Before you plug anything in, do the maths.</p><p>Write three functions. <code>series(rs)</code>: total resistance of a list of resistors in series. <code>parallel(rs)</code>: total in parallel, 1 / Σ(1/R). <code>divider(vin, r1, r2)</code>: the voltage across <code>r2</code> when <code>r1</code> and <code>r2</code> are in series across <code>vin</code>.</p>`,
+ starter:R`def series(rs):
+    return 0
+
+def parallel(rs):
+    return 0
+
+def divider(vin, r1, r2):
+    return 0
+
+print(parallel([100, 100]), divider(5, 1000, 1000))
+`, check:R`
+assert abs(series([100, 220, 330]) - 650) < 1e-9, "series([100, 220, 330]) should be 650"
+assert abs(parallel([100, 100]) - 50) < 1e-9, "parallel([100, 100]) should be 50"
+assert abs(parallel([1000, 2200, 4700]) - 599.77) < 0.01, "parallel([1000, 2200, 4700]) should be about 599.77"
+assert abs(divider(5, 1000, 1000) - 2.5) < 1e-9, "divider(5, 1000, 1000) should be 2.5"
+assert abs(divider(3.3, 10000, 4700) - 1.0551) < 0.001, "divider(3.3, 10000, 4700) should be about 1.055"
+`},
+{id:'h2', tr:'bench', t:'Pick the LED resistor', brief:`<p>An LED needs a series resistor: R = (V<sub>supply</sub> − V<sub>forward</sub>) / I. You can only buy standard values.</p><p>Write <code>led_resistor(vs, vf, ma)</code> returning the smallest value in <code>E12</code> that is at least the exact resistance, with the current given in milliamps. Going up, never down, keeps the LED safe.</p>`,
+ starter:R`E12 = [10, 12, 15, 18, 22, 27, 33, 39, 47, 56, 68, 82,
+       100, 120, 150, 180, 220, 270, 330, 390, 470, 560, 680, 820,
+       1000, 1200, 1500, 1800, 2200, 2700, 3300, 3900, 4700]
+
+def led_resistor(vs, vf, ma):
+    return 0
+
+print(led_resistor(5, 1.8, 20))
+`, check:R`
+for _a, _e in (((5, 1.8, 20), 180), ((3.3, 2.0, 10), 150), ((9, 3.2, 20), 330), ((12, 2, 15), 680), ((5, 3.1, 2), 1000)):
+    assert led_resistor(_a[0], _a[1], _a[2]) == _e, "led_resistor" + str(_a) + " should be " + str(_e) + " ohms"
+`},
+{id:'h3', tr:'bench', t:'Bits on a register', brief:`<p>Every pin on a microcontroller is one bit in a register. Write four functions on an integer <code>reg</code> and a bit number <code>n</code> (bit 0 is the least significant):</p><p><code>set_bit(reg, n)</code>, <code>clear_bit(reg, n)</code>, <code>toggle_bit(reg, n)</code> return the new register value. <code>is_set(reg, n)</code> returns <code>True</code> or <code>False</code>.</p><p>Use <code>|</code>, <code>&amp;</code>, <code>^</code>, <code>~</code> and <code>&lt;&lt;</code>. Then do it again in C++ at Andy's desk, task 7.</p>`,
+ starter:R`def set_bit(reg, n):
+    return reg
+
+def clear_bit(reg, n):
+    return reg
+
+def toggle_bit(reg, n):
+    return reg
+
+def is_set(reg, n):
+    return False
+
+print(bin(set_bit(0b0000, 3)))
+`, check:R`
+assert set_bit(0, 3) == 8, "set_bit(0, 3) should be 8"
+assert set_bit(8, 3) == 8, "Setting a bit that is already set changes nothing"
+assert clear_bit(15, 0) == 14, "clear_bit(15, 0) should be 14"
+assert clear_bit(8, 1) == 8, "Clearing a bit that is already clear changes nothing"
+assert toggle_bit(5, 1) == 7 and toggle_bit(7, 1) == 5, "toggle_bit should flip the bit both ways"
+assert is_set(4, 2) is True and is_set(4, 1) is False, "is_set should return True or False"
+`}
+];
+const chOf = tr => CH.filter(c => c.tr === tr);
+
+/* ───────── State ───────── */
+const defaults = () => ({v:1, t:0, from:today(), start:'', tr:{intern:[], apps:[], friends:[], trips:[]}, ck:{}, done:{}, habits:[], log:{}, rev:{}});
+let S = defaults(), CODE = {}, codeT = 0;
+const ui = {track:'data', ch:{}, out:{}, sample:null};
+const store = {ref:null, cref:null, writing:false, ds:false, dc:false, timer:0};
+function loadLocal(){ try { const a = JSON.parse(localStorage.getItem('sbi.state')); if (a && a.v === 1) S = Object.assign(defaults(), a); const c = JSON.parse(localStorage.getItem('sbi.code')); if (c) { CODE = c.code || {}; codeT = c.t || 0; } } catch (e) {} }
+function keepLocal(){ try { localStorage.setItem('sbi.state', JSON.stringify(S)); localStorage.setItem('sbi.code', JSON.stringify({code:CODE, t:codeT})); } catch (e) {} }
+function save(){ S.t = Date.now(); keepLocal(); store.ds = true; sched(); }
+function saveCode(){ codeT = Date.now(); keepLocal(); store.dc = true; sched(); }
+function sched(){ clearTimeout(store.timer); store.timer = setTimeout(flush, 900); }
+async function flush(){
+  if (!store.ref || store.writing) return; store.writing = true;
+  try { if (store.ds) { store.ds = false; await store.ref.set(S); } if (store.dc) { store.dc = false; await store.cref.set({code:CODE, t:codeT}); } setSync('ok'); }
+  catch (e) { setSync('err'); }
+  store.writing = false; if (store.ds || store.dc) sched();
+}
+function setSync(m){ $('#sync').textContent = m === 'ok' ? 'Saved to your account. Your file follows you across devices.' : m === 'err' ? 'Could not reach your account just now. Changes are kept on this device and will retry on the next edit.' : 'Saved on this device only.'; }
+async function connect(){
+  if (!window.claude || !window.claude.use) return setSync('local');
+  const [db, user, sample] = await Promise.all([claude.use('db'), claude.use('user'), claude.use('sample')]);
+  ui.sample = sample; if (sample) render();
+  if (!db || !user) return setSync('local');
+  const id = await user.id(); if (!id) return setSync('local');
+  const col = db.collection('data/users/' + id); store.ref = col.doc('state'); store.cref = col.doc('code');
+  const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 10000));
+  const [a, b] = await Promise.race([Promise.all([store.ref.get(), store.cref.get()]), timeout]);
+  const ra = a.data(), rb = b.data();
+  if (ra && ra.v === 1 && (ra.t || 0) > (S.t || 0)) { S = Object.assign(defaults(), ra); } else if (S.t) store.ds = true;
+  if (rb && (rb.t || 0) > codeT) { CODE = rb.code || {}; codeT = rb.t; } else if (codeT) store.dc = true;
+  keepLocal(); setSync('ok'); render(); if (store.ds || store.dc) sched();
+}
+
+/* ───────── Derived numbers ───────── */
+const ckDone = k => ckIds(k).filter(i => S.ck[i]).length;
+const labDone = tr => (tr ? chOf(tr) : CH).filter(c => S.done[c.id]).length;
+const weekDays = () => { const m = monday(today()); return [0,1,2,3,4,5,6].map(i => addDays(m, i)); };
+const weekKey = () => monday(today());
+function streak(){ let d = today(), n = 0; const has = x => S.log[x] && Object.values(S.log[x]).some(Boolean); if (!has(d)) d = addDays(d, -1); while (has(d)) { n++; d = addDays(d, -1); } return n; }
+function weekTicks(){ const ids = S.habits.map(h => h.id); let n = 0; weekDays().forEach(d => ids.forEach(i => { if (S.log[d] && S.log[d][i]) n++; })); return n; }
+const nextDue = () => S.tr.apps.filter(a => a.due && a.st !== 'Submitted' && a.st !== 'Decision' && a.st !== 'Interview').sort((x, y) => x.due < y.due ? -1 : 1)[0];
+function deptStat(id){
+  const t = S.tr;
+  if (id === 'sales') { const c = s => t.intern.filter(x => x.st === s).length; return {txt: t.intern.length ? `${t.intern.length} on the board · ${c('Applied')} applied · ${c('Interview')} interviewing · ${c('Offer')} offers` : 'No leads yet', p: ckDone('prep') / ckIds('prep').length, c: `${t.intern.length}`, next: t.intern.length ? 'Move one lead forward' : 'Add your first lead'}; }
+  if (id === 'admin') { const sub = t.apps.filter(x => ['Submitted','Interview','Decision'].includes(x.st)).length, nd = nextDue(); return {txt: t.apps.length ? `${sub} of ${t.apps.length} submitted` : 'No applications filed', p: t.apps.length ? sub / t.apps.length : 0, c: `${sub}/${t.apps.length}`, next: nd ? `${nd.a} due ${fmtDate(nd.due)}` : t.apps.length ? 'Add deadlines from the official sites' : 'List your applications'}; }
+  if (id === 'lab') { const n = labDone(), nx = CH.find(c => !S.done[c.id]); return {txt: `${n} of ${CH.length} tasks approved`, p: n / CH.length, c: `${n}/${CH.length}`, next: nx ? nx.t : 'All tasks approved'}; }
+  if (id === 'warehouse') { const n = ckDone('hw'), tot = ckIds('hw').length, nx = CK.hw.flatMap(s => s.items).find(i => !S.ck[i[0]]); return {txt: `${n} of ${tot} builds done`, p: n / tot, c: `${n}/${tot}`, next: nx ? nx[1] : 'Ladder complete'}; }
+  if (id === 'farm') { const tot = S.habits.length * 7, n = weekTicks(); return {txt: S.habits.length ? `${n} of ${tot} this week · ${streak()}-day streak` : 'No regimen set', p: tot ? n / tot : 0, c: `${streak()}d`, next: S.habits.length ? 'Tick off today' : 'Set your regimen'}; }
+  if (id === 'social') { const f = t.friends.filter(x => x.st === 'Done').length, tr = t.trips.filter(x => x.st === 'Booked' || x.st === 'Been').length; return {txt: `${f} catch-ups done · ${tr} trips booked or taken`, p: (t.friends.length + t.trips.length) ? (f + tr) / (t.friends.length + t.trips.length) : 0, c: `${f + tr}`, next: t.friends.find(x => x.st === 'To plan') ? 'Message ' + t.friends.find(x => x.st === 'To plan').a : 'Plan something'}; }
+  if (id === 'hr') { const r = S.rev[weekKey()], ok = r && (r.win || r.stuck || r.next); return {txt: ok ? 'This week is filed' : 'This week is not filed', p: ok ? 1 : 0, c: `${Object.keys(S.rev).length}`, next: ok ? 'See you next week' : 'File this week\'s review'}; }
+  return {txt:'', p:0, c:'', next:''};
+}
+const DUNDIES = [
+  ['First Sale','Get one coding task approved', () => labDone() >= 1],
+  ['Accountant of the Month','Finish every Ledger task', () => labDone('data') === chOf('data').length],
+  ['Angela Approves','Finish every Quality Assurance task', () => labDone('cp') === chOf('cp').length],
+  ['Nard Dog Certified','Finish every C++ task', () => labDone('cpp') === chOf('cpp').length],
+  ['Paper Trail','Submit your first application', () => S.tr.apps.some(a => ['Submitted','Interview','Decision'].includes(a.st))],
+  ['The Closer','Land an internship offer', () => S.tr.intern.some(a => a.st === 'Offer')],
+  ['Assistant to the Regional Manager','Hold a 7-day regimen streak', () => streak() >= 7],
+  ['Warehouse Foreman','Finish Stage 2 of the hardware ladder', () => CK.hw[1].items.every(i => S.ck[i[0]])]
+];
+
+/* ───────── Views ───────── */
+let route = 'front-desk';
+function renderNav(){
+  $('#nav').innerHTML = DEPTS.map(d => `<a href="#${d.id}" ${d.id === route ? 'aria-current="page"' : ''}>${badge(d.head)}<span class="t"><b>${d.name}</b><span>${d.sub}</span></span><span class="c num">${d.id === 'front-desk' ? '' : esc(deptStat(d.id).c)}</span></a>`).join('');
+}
+function pageHead(d, extra){ const h = HEADS[d.head]; return `<div class="phead">${badge(d.head, true)}<div class="who"><span class="eyebrow">${esc(d.name)} · ${esc(h.n)}, ${esc(h.r)}</span><h1>${esc(d.sub)}</h1></div>${extra || ''}</div>`; }
+const memo = (from, re, body) => `<div class="memo"><span class="hd">Memo · From: ${esc(HEADS[from].n)} · Re: ${esc(re)}</span><p>${body}</p></div>`;
+const panel = (title, body, right) => `<section class="panel"><header><h2>${title}</h2>${right || ''}</header><div class="body">${body}</div></section>`;
+const bar = (p, good) => `<div class="bar${good ? ' good' : ''}" role="progressbar" aria-valuenow="${Math.round(p*100)}" aria-valuemin="0" aria-valuemax="100"><i style="width:${Math.round(Math.min(1, p)*100)}%"></i></div>`;
+
+function viewFront(d){
+  const t = today(), left = S.start ? daysBetween(t, S.start) : null, total = S.start ? Math.max(1, daysBetween(S.from, S.start)) : 1;
+  const dayN = Math.floor(Date.now() / 864e5);
+  const count = S.start
+    ? `<div class="row" style="align-items:flex-end;gap:14px"><span class="big num">${Math.max(0, left)}</span><span class="muted" style="padding-bottom:6px">days until university<br><span class="small">${Math.max(0, Math.floor(left / 7))} weeks · starts ${fmtDate(S.start)}</span></span></div>${bar(1 - Math.max(0, left) / total)}`
+    : `<p class="muted">Set the day university starts and I will count down for you.</p>`;
+  const rows = DEPTS.slice(1).map(x => { const s = deptStat(x.id); return `<tr><td>${badge(x.head)}</td><td><a href="#${x.id}"><b>${x.name}</b></a><div class="small muted">${esc(HEADS[x.head].n)}</div></td><td class="small">${esc(s.txt)}<div style="margin-top:5px;max-width:220px">${bar(s.p, s.p >= 1)}</div></td><td class="small">${esc(s.next)}</td></tr>`; }).join('');
+  const habits = S.habits.length ? S.habits.map(h => `<label class="check ${S.log[t] && S.log[t][h.id] ? 'done' : ''}"><input type="checkbox" data-act="tick" data-h="${h.id}" data-d="${t}" ${S.log[t] && S.log[t][h.id] ? 'checked' : ''}><span>${esc(h.name)}</span></label>`).join('') : `<p class="muted small">No regimen yet. <a href="#farm">Set one at Schrute Farms.</a></p>`;
+  return pageHead(d) + memo('michael', 'Today', esc(MEMOS[dayN % MEMOS.length])) +
+  `<div class="grid g2">` +
+    panel('Countdown', count + `<div class="row small"><label for="start">University starts</label><input type="date" id="start" data-act="start" value="${esc(S.start)}"></div>`) +
+    panel('Today at Schrute Farms', habits, `<span class="pill ${streak() ? 'good' : ''} num">${streak()}-day streak</span>`) +
+  `</div>` +
+  panel('Department status', `<div class="scroll"><table class="dept"><thead><tr><th></th><th>Department</th><th>Status</th><th>Next up</th></tr></thead><tbody>${rows}</tbody></table></div>`) +
+  panel('The Dundies', `<div class="dundies">${DUNDIES.map(x => { const on = x[2](); return `<div class="dundie ${on ? 'on' : ''}"><b>${esc(x[0])}</b><span>${esc(x[1])}</span><span class="eyebrow" style="color:inherit">${on ? 'Awarded' : 'Not yet'}</span></div>`; }).join('')}</div>`, `<span class="small muted num">${DUNDIES.filter(x => x[2]()).length} of ${DUNDIES.length}</span>`);
+}
+
+function tracker(key, title){
+  const cfg = TR[key], items = S.tr[key].slice().sort((a, b) => (a.due || '9') < (b.due || '9') ? -1 : 1), t = today();
+  const add = `<form class="add" data-form="${key}"><input type="text" id="${key}-a" placeholder="${esc(cfg.a)}" aria-label="${esc(cfg.a)}" required><input type="text" id="${key}-b" placeholder="${esc(cfg.b)}" aria-label="${esc(cfg.b)}">${cfg.cats ? `<select id="${key}-cat" aria-label="Category">${cfg.cats.map(c => `<option>${c}</option>`).join('')}</select>` : ''}<input type="date" id="${key}-due" aria-label="Deadline or date"><button class="btn pri" type="submit">Add</button></form>`;
+  const body = items.length ? `<div class="scroll"><table><thead><tr><th>${esc(cfg.a)}</th>${cfg.cats ? '<th>Category</th>' : ''}<th>Stage</th><th>Date</th><th></th></tr></thead><tbody>${items.map(x => {
+      const dd = x.due ? daysBetween(t, x.due) : null, open = cfg.stages.indexOf(x.st) < 2;
+      const due = x.due ? `<span class="num">${fmtDate(x.due)}</span>${open ? ` <span class="pill ${dd < 0 ? 'crit' : dd <= 14 ? 'warn' : ''} num">${dd < 0 ? Math.abs(dd) + 'd overdue' : dd === 0 ? 'today' : dd + 'd left'}</span>` : ''}` : `<span class="muted small">No date</span>`;
+      return `<tr><td><b>${esc(x.a)}</b>${x.b ? `<div class="small muted">${esc(x.b)}</div>` : ''}</td>${cfg.cats ? `<td><span class="pill">${esc(x.cat || '')}</span></td>` : ''}<td><select data-act="stage" data-k="${key}" data-id="${x.id}" aria-label="Stage for ${esc(x.a)}">${cfg.stages.map(s => `<option ${s === x.st ? 'selected' : ''}>${s}</option>`).join('')}</select></td><td><input type="date" data-act="due" data-k="${key}" data-id="${x.id}" value="${esc(x.due || '')}" aria-label="Date for ${esc(x.a)}"><div class="small" style="margin-top:3px">${due}</div></td><td><button class="btn ghost" data-act="del" data-k="${key}" data-id="${x.id}" aria-label="Remove ${esc(x.a)}">Remove</button></td></tr>`; }).join('')}</tbody></table></div>`
+    : `<div class="empty"><p>${esc(cfg.empty)}</p><button class="btn" data-act="suggest" data-k="${key}">Add the suggested starter list</button></div>`;
+  return panel(title, add + body, `<span class="small muted num">${items.length} ${items.length === 1 ? 'entry' : 'entries'}</span>`);
+}
+const checkItem = i => `<label class="check ${S.ck[i[0]] ? 'done' : ''}"><input type="checkbox" data-act="ck" data-id="${i[0]}" ${S.ck[i[0]] ? 'checked' : ''}><span>${esc(i[1])}</span></label>`;
+const checklist = (k, title) => panel(title, CK[k].map(checkItem).join(''), `<span class="small muted num">${ckDone(k)} of ${ckIds(k).length}</span>`);
+const ladder = (k, title) => panel(title, CK[k].map(s => `<div class="stage"><h3>${esc(s.t)}</h3>${s.items.map(checkItem).join('')}</div>`).join(''), `<span class="small muted num">${ckDone(k)} of ${ckIds(k).length}</span>`);
+
+function viewSales(d){ return pageHead(d) + memo('jim', 'Getting an internship', 'Nobody hires a resume. They hire the person who sent a short, specific email and followed up once. Keep the board honest: every lead gets a next step and a date.') + tracker('intern', 'Lead board') + checklist('prep', 'Before you make the call'); }
+function viewAdmin(d){ return pageHead(d) + memo('pam', 'Applications and scholarships', 'One row per application. I have not filled in any deadlines, because they change every cycle. Copy each one from the official site, and I will flag anything inside two weeks.') + tracker('apps', 'Application register'); }
+function viewWarehouse(d){ return pageHead(d) + memo('darryl', 'Hardware', 'You learn electronics with your hands. Work down the ladder in order, do the bench calculations before you power anything, and write down what broke. The C++ you learn at Andy\'s desk is the same C++ that runs on the board.') + `<p><a href="#lab" data-act="track" data-tr="bench">Open bench calculations in the Training Annex</a></p>` + ladder('hw', 'Build ladder'); }
+function viewFarm(d){
+  const days = weekDays(), t = today(), lbl = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const grid = S.habits.length ? `<div class="scroll"><div class="hab"><span></span>${days.map((x, i) => `<span class="d ${x === t ? 'today' : ''}">${lbl[i]}</span>`).join('')}<span></span>${S.habits.map(h => `<span>${esc(h.name)}</span>${days.map((x, i) => `<button class="tick" data-act="tick" data-h="${h.id}" data-d="${x}" aria-pressed="${!!(S.log[x] && S.log[x][h.id])}" aria-label="${esc(h.name)}, ${lbl[i]}" ${x > t ? 'disabled' : ''}>✓</button>`).join('')}<button class="btn ghost" data-act="delhabit" data-h="${h.id}" aria-label="Remove ${esc(h.name)}">×</button>`).join('')}</div></div>`
+    : `<div class="empty"><p>No regimen. Unacceptable. Add your own habits, or take mine.</p><button class="btn" data-act="regimen">Use Dwight's starter regimen</button></div>`;
+  return pageHead(d) + memo('dwight', 'Physical readiness', 'A week has seven days. I expect a tick in most of them. You do not need motivation. You need a schedule and the fear of an empty box.') +
+    panel('This week', `<form class="add" data-form="habit"><input type="text" id="habit-a" placeholder="New habit, e.g. 30-minute run" aria-label="New habit" required><button class="btn pri" type="submit">Add habit</button></form>` + grid, `<span class="pill ${streak() ? 'good' : ''} num">${streak()}-day streak</span>`);
+}
+function viewSocial(d){ return pageHead(d) + memo('kelly', 'Your social life', 'Okay so everyone is about to move to different countries and you will literally regret every lunch you did not have. Put names down. Put dates on them. A plan without a date is just a text you did not send.') + tracker('friends', 'People to see') + tracker('trips', 'Trips'); }
+function viewHR(d){
+  const k = weekKey(), r = S.rev[k] || {}, past = Object.keys(S.rev).filter(x => x !== k).sort().reverse();
+  const f = (id, label, ph) => `<label class="small" for="rev-${id}"><b>${label}</b></label><textarea id="rev-${id}" rows="3" data-act="rev" data-f="${id}" placeholder="${ph}">${esc(r[id] || '')}</textarea>`;
+  return pageHead(d) + memo('toby', 'Weekly review', 'It only takes five minutes. Nobody else reads these. Three questions, once a week, and after a few months you will be able to see how far you have come. That is all I wanted to say.') +
+    panel(`Week of ${fmtDate(k)}`, f('win', 'What went well', 'One thing you finished or are proud of') + f('stuck', 'What got in the way', 'Be specific, and kind') + f('next', 'The one thing for next week', 'If only one thing happens, it is this')) +
+    (past.length ? panel('Filed reviews', past.map(x => `<div class="stage"><h3>Week of ${fmtDate(x)}</h3>${['win','stuck','next'].filter(q => S.rev[x][q]).map(q => `<p class="small"><span class="muted">${q === 'win' ? 'Went well' : q === 'stuck' ? 'In the way' : 'Next'}:</span> ${esc(S.rev[x][q])}</p>`).join('')}</div>`).join('')) : '');
+}
+
+/* ───────── Coding lab ───────── */
+function curCh(){ const list = chOf(ui.track); return list.find(c => c.id === ui.ch[ui.track]) || list.find(c => !S.done[c.id]) || list[0]; }
+function chList(){ const cur = curCh(); return chOf(ui.track).map((c, i) => `<button data-act="open" data-id="${c.id}" ${c.id === cur.id ? 'aria-current="true"' : ''}><span class="${S.done[c.id] ? 'ok' : 'n'}">${S.done[c.id] ? '✓' : i + 1}</span><span>${esc(c.t)}</span></button>`).join(''); }
+function viewLab(d){
+  const tr = TRACKS.find(t => t.id === ui.track), c = curCh(), h = HEADS[tr.head], code = CODE[c.id] != null ? CODE[c.id] : c.starter, o = ui.out[c.id];
+  const tabs = `<div class="tabs" role="tablist">${TRACKS.map(t => `<button class="tab" role="tab" aria-selected="${t.id === ui.track}" data-act="track" data-tr="${t.id}">${badge(t.head)}<span class="tx"><b>${t.name}</b><span>${t.sub} · <span class="num">${labDone(t.id)}/${chOf(t.id).length}</span></span></span></button>`).join('')}</div>`;
+  const dataPanel = ui.track === 'data' ? `<details><summary class="small"><b>The ledger</b> is available in your code as <span class="inl">SALES_CSV</span> (48 fictional orders). Show the first rows.</summary><pre class="io" style="margin-top:8px">${esc(SALES_CSV.split('\n').slice(0, 9).join('\n'))}\n…</pre><div class="row" style="margin-top:8px"><button class="btn" data-act="copycsv">Copy the full CSV</button><span class="small muted" id="copymsg">Paste it into a file called sales.csv for the pandas take-home.</span></div></details>` : '';
+  const io = c.io ? `<div class="grid g2" style="gap:10px"><div><div class="eyebrow">Sample input</div><pre class="io">${esc(c.io[0])}</pre></div><div><div class="eyebrow">Expected output</div><pre class="io">${esc(c.io[1])}</pre></div></div>` : '';
+  const actions = c.cpp
+    ? `<button class="btn pri" data-act="cppdone">${S.done[c.id] ? 'Mark as not done' : 'It compiles and matches the sample'}</button>`
+    : `<button class="btn pri" data-act="run" id="runbtn">Run and submit</button>`;
+  const ai = ui.sample ? `<button class="btn" data-act="ask" id="askbtn">${c.cpp ? 'Request a code review from ' + h.n.split(' ')[0] : 'Ask ' + h.n.split(' ')[0] + ' for a hint'}</button>` : '';
+  const cppNote = c.cpp ? `<p class="small muted">C++ does not run in this page. Write and compile it on your machine with <span class="inl">g++ -std=c++17 -Wall main.cpp</span>, or in an online compiler such as <a href="https://godbolt.org" target="_blank" rel="noopener">Compiler Explorer</a>, then paste your final version here so it is kept with your file.</p>` : '';
+  const extra = ui.track === 'data' ? checklist('pandas', 'Take-home: the same ledger in pandas') : ui.track === 'ml' ? ladder('ml', 'Take-home projects') : ui.track === 'cp' ? `<p class="small muted">After a task is approved in Python, solve it again in C++. Speed with <span class="inl">vector</span>, <span class="inl">map</span> and <span class="inl">sort</span> is what contests reward.</p>` : '';
+  return pageHead(d, `<span class="pill info num">${labDone()} of ${CH.length} approved</span>`) + tabs +
+  `<div class="lab"><section class="panel"><header><h2>${esc(tr.name)}</h2><span class="small muted">${esc(h.n)}</span></header><div class="chlist" id="chlist">${chList()}</div></section>
+   <section class="panel"><header><h2>${esc(c.t)}</h2><span class="pill ${S.done[c.id] ? 'good' : ''}" id="chstate">${S.done[c.id] ? 'Approved' : c.cpp ? 'C++ · self-checked' : 'Python · auto-checked'}</span></header>
+   <div class="body"><div class="brief">${c.brief}</div>${io}${dataPanel}${cppNote}
+   <label class="eyebrow" for="code">${c.cpp ? 'main.cpp' : 'solution.py'}</label>
+   <textarea id="code" spellcheck="false" autocapitalize="off" autocomplete="off" rows="16">${esc(code)}</textarea>
+   <div class="row">${actions}${ai}<button class="btn ghost" data-act="reset">Reset to starter</button></div>
+   <div id="outwrap" ${o ? '' : 'hidden'}><div class="verdict ${o ? o.cls : ''}" id="verdict">${o ? esc(o.v) : ''}</div><pre id="out" style="margin-top:6px">${o ? esc(o.text) : ''}</pre></div>
+   </div></section></div>` + extra;
+}
+function showOut(id, cls, v, text){ ui.out[id] = {cls, v, text}; if (curCh().id !== id) return; $('#outwrap').hidden = false; const e = $('#verdict'); e.className = 'verdict ' + cls; e.textContent = v; $('#out').textContent = text; }
+function runPy(code, c){
+  if (!window.Sk) return Promise.resolve({ok:false, out:'', err:'The Python runner did not load. Check your connection and reload the page.'});
+  const pre = c.tr === 'data' ? PRELUDE : '', off = pre ? 1 : 0, userLines = code.split('\n').length;
+  let out = '';
+  Sk.configure({output: t => { if (out.length < 20000) out += t; }, read: x => { if (Sk.builtinFiles === undefined || Sk.builtinFiles.files[x] === undefined) throw "File not found: '" + x + "'"; return Sk.builtinFiles.files[x]; }, __future__: Sk.python3, execLimit: 8000});
+  return Sk.misceval.asyncToPromise(() => Sk.importMainWithBody('<stdin>', false, pre + code + '\n' + (c.check || ''), true)).then(() => ({ok:true, out}), e => {
+    let m = String(e && e.toString ? e.toString() : e);
+    m = m.replace(/ on line (\d+)/, (s, n) => { n = +n - off; return n >= 1 && n <= userLines ? ' on line ' + n : ''; });
+    if (/TimeLimitError|exceeded run time/i.test(m)) m = 'Your program ran for more than 8 seconds and was stopped. Look for a loop that never ends.';
+    return {ok:false, out, err:m};
+  });
+}
+window.__lab = {CH, runPy};
+async function doRun(){
+  const c = curCh(), code = $('#code').value; CODE[c.id] = code; saveCode();
+  const btn = $('#runbtn'); btn.disabled = true; btn.textContent = 'Running…';
+  const r = await runPy(code, c);
+  btn.disabled = false; btn.textContent = 'Run and submit';
+  if (r.ok) { const first = !S.done[c.id]; S.done[c.id] = S.done[c.id] || today(); save(); showOut(c.id, 'pass', 'Approved. All checks passed.', r.out || '(no output)'); if (first) { $('#chlist').innerHTML = chList(); const s = $('#chstate'); s.textContent = 'Approved'; s.className = 'pill good'; renderNav(); } }
+  else showOut(c.id, 'fail', 'Not approved yet.', (r.out ? r.out + '\n' : '') + r.err);
+}
+async function doAsk(){
+  const c = curCh(), tr = TRACKS.find(t => t.id === c.tr), h = HEADS[tr.head], code = $('#code').value, last = ui.out[c.id];
+  CODE[c.id] = code; saveCode();
+  const btn = $('#askbtn'), label = btn.textContent; btn.disabled = true; btn.textContent = 'Asking…';
+  const task = c.brief.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
+  const prompt = `You are a coding mentor on a personal practice dashboard themed as a paper company office. Reply in the voice of ${h.n} (${h.v}), but keep the technical content accurate and useful. The learner is a pre-university student who knows basic Python, is new to C++, and plans to study Electrical and Computer Engineering.\n\nTask (${c.cpp ? 'C++17' : 'Python'}): ${c.t}. ${task}\n${c.io ? `Sample input:\n${c.io[0]}\nExpected output:\n${c.io[1]}\n` : ''}\nTheir code:\n${code}\n${last && !c.cpp ? `\nLatest run result: ${last.v}\n${last.text.slice(0, 1500)}\n` : ''}\n${c.cpp ? 'Give a code review: say whether it looks correct for the sample, name one thing done well, and give up to three specific improvements (correctness first, then idiomatic C++).' : 'Give one hint that moves them forward. Point at the concept or the line that needs attention. Do not write the full solution.'} Under 170 words. Plain text only, no markdown.`;
+  showOut(c.id, '', h.n + ' is reading your code…', '');
+  try { const r = await ui.sample(prompt, {cache:false, onText: u => { if (curCh().id === c.id) $('#out').textContent = u.text; }}); showOut(c.id, '', h.n + ' says:', r.text); }
+  catch (e) { const code = e && e.code; showOut(c.id, 'fail', 'No reply.', code === 'rate_limited' ? 'Too many requests for now. Try again in a few minutes.' : code === 'not_granted' ? 'Mentor replies are turned off for this page. You can allow them in the page\'s Permissions menu.' : 'The mentor could not be reached. Try again later.'); if (code === 'not_granted') { btn.hidden = true; } }
+  btn.disabled = false; btn.textContent = label;
+}
+
+/* ───────── Render and events ───────── */
+const VIEWS = {'front-desk':viewFront, sales:viewSales, admin:viewAdmin, lab:viewLab, warehouse:viewWarehouse, farm:viewFarm, social:viewSocial, hr:viewHR};
+function render(){
+  const h = location.hash.slice(1); route = VIEWS[h] ? h : 'front-desk';
+  const a = document.activeElement, keep = a && a.id && a.closest('#main') ? {id:a.id, s:a.selectionStart, e:a.selectionEnd, v:a.id === 'code' ? a.value : null, top:a.scrollTop} : null;
+  renderNav(); $('#main').innerHTML = VIEWS[route](DEPTS.find(d => d.id === route));
+  if (keep) { const el = document.getElementById(keep.id); if (el) { if (keep.v != null && el.dataset.keep !== '0') el.value = keep.v; el.focus({preventScroll:true}); try { el.setSelectionRange(keep.s, keep.e); el.scrollTop = keep.top; } catch (e) {} } }
+}
+function stashCode(){ const el = $('#code'); if (el && route === 'lab') { const c = curCh(); if (el.value !== (CODE[c.id] != null ? CODE[c.id] : c.starter)) { CODE[c.id] = el.value; saveCode(); } } }
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-act]'); if (!b || b.matches('input,select,textarea')) return;
+  const a = b.dataset.act, k = b.dataset.k;
+  if (a === 'track') { stashCode(); ui.track = b.dataset.tr; if (route === 'lab') { document.activeElement.blur(); render(); } return; }
+  if (a === 'open') { stashCode(); ui.ch[ui.track] = b.dataset.id; document.activeElement.blur(); return render(); }
+  if (a === 'run') return doRun();
+  if (a === 'ask') return doAsk();
+  if (a === 'reset') { const c = curCh(); delete CODE[c.id]; delete ui.out[c.id]; saveCode(); document.activeElement.blur(); return render(); }
+  if (a === 'cppdone') { const c = curCh(); CODE[c.id] = $('#code').value; saveCode(); if (S.done[c.id]) delete S.done[c.id]; else S.done[c.id] = today(); save(); document.activeElement.blur(); return render(); }
+  if (a === 'copycsv') { const m = $('#copymsg'); navigator.clipboard.writeText(SALES_CSV).then(() => { m.textContent = 'Copied.'; }, () => { m.textContent = 'Copy was blocked. Print SALES_CSV in the editor and copy it from the output.'; }); return; }
+  if (a === 'del') { S.tr[k] = S.tr[k].filter(x => x.id !== b.dataset.id); save(); return render(); }
+  if (a === 'suggest') { S.tr[k] = TR[k].suggest.map(s => ({id:uid(), a:s[0], b:s[1] || '', cat:s[2] || '', st:TR[k].stages[0], due:''})); save(); return render(); }
+  if (a === 'regimen') { S.habits = ['Strength or run session','8,000 steps','Asleep before midnight','Two litres of water'].map(n => ({id:uid(), name:n})); save(); return render(); }
+  if (a === 'delhabit') { S.habits = S.habits.filter(h => h.id !== b.dataset.h); save(); return render(); }
+  if (a === 'tick') { const d = b.dataset.d, h = b.dataset.h; S.log[d] = S.log[d] || {}; S.log[d][h] = !S.log[d][h]; save(); return render(); }
+});
+document.addEventListener('change', e => {
+  const el = e.target, a = el.dataset.act; if (!a) return;
+  if (a === 'start') { S.start = el.value; save(); return render(); }
+  if (a === 'ck') { S.ck[el.dataset.id] = el.checked; save(); return render(); }
+  if (a === 'tick') { const d = el.dataset.d, h = el.dataset.h; S.log[d] = S.log[d] || {}; S.log[d][h] = el.checked; save(); return render(); }
+  if (a === 'stage' || a === 'due') { const x = S.tr[el.dataset.k].find(i => i.id === el.dataset.id); if (x) { x[a === 'stage' ? 'st' : 'due'] = el.value; save(); render(); } return; }
+  if (a === 'rev') { const k = weekKey(); S.rev[k] = S.rev[k] || {}; S.rev[k][el.dataset.f] = el.value; save(); renderNav(); }
+});
+document.addEventListener('submit', e => {
+  const f = e.target.closest('[data-form]'); if (!f) return; e.preventDefault();
+  const k = f.dataset.form, v = id => { const el = document.getElementById(k + '-' + id); return el ? el.value.trim() : ''; };
+  if (!v('a')) return;
+  if (k === 'habit') S.habits.push({id:uid(), name:v('a')});
+  else S.tr[k].push({id:uid(), a:v('a'), b:v('b'), cat:v('cat'), st:TR[k].stages[0], due:v('due')});
+  save(); document.activeElement.blur(); render();
+});
+document.addEventListener('keydown', e => {
+  if (e.target.id !== 'code') return;
+  if (e.key === 'Tab' && !e.shiftKey) { e.preventDefault(); const t = e.target, s = t.selectionStart; t.setRangeText('    ', s, t.selectionEnd, 'end'); }
+  if (e.key === 'Enter' && (e.metaKey || e.ctrlKey) && $('#runbtn')) { e.preventDefault(); doRun(); }
+});
+document.addEventListener('focusout', e => { if (e.target.id === 'code') stashCode(); });
+window.addEventListener('hashchange', () => { document.activeElement && document.activeElement.blur(); render(); window.scrollTo(0, 0); });
+
+loadLocal(); render(); connect().catch(() => setSync(store.ref ? 'err' : 'local'));
+</script>
