@@ -1,25 +1,26 @@
 <title>Scranton Branch Intranet</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Courier+Prime:wght@400;700&display=swap">
 <style>
 /* Layout: a corporate intranet. Fixed department directory on the left, one working "department page" on the right; memos, ledgers and nameplates carry the theme. */
 :root{
   --bg:#eef0f2; --panel:#ffffff; --panel2:#f6f7f9; --ink:#17212e; --muted:#5b6777; --line:#d5dae1;
   --navy:#1d3557; --navy-ink:#ffffff; --accent:#2a5fa5; --manila:#e9d9a8; --manila-ink:#4a3c10;
   --good:#1f7a4d; --good-bg:#dff1e7; --warn:#96610a; --warn-bg:#fbeccb; --crit:#b3261e; --crit-bg:#fbe0dd; --info-bg:#dfe9f6;
-  --code-bg:#f3f5f8;
+  --code-bg:#f3f5f8; --sticky:#fff3a3; --sticky-ink:#4a4210; --cork:#c8a577; --card:#ffffff;
+  --type:"Courier Prime","Courier New",monospace;
   --display:"Archivo","Arial Narrow",Arial,sans-serif; --body:"IBM Plex Sans","Segoe UI",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
 }
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
   --bg:#10161f; --panel:#18212d; --panel2:#1e2936; --ink:#e6ebf2; --muted:#9aa7b8; --line:#2f3c4d;
   --navy:#0c1422; --navy-ink:#e6ebf2; --accent:#7fb0ee; --manila:#4b4124; --manila-ink:#f0e2b4;
   --good:#6fd3a0; --good-bg:#173527; --warn:#f0c06a; --warn-bg:#3d2f10; --crit:#ff9b93; --crit-bg:#45201d; --info-bg:#1d3150;
-  --code-bg:#121a25; color-scheme:dark } }
+  --code-bg:#121a25; --sticky:#5c5322; --sticky-ink:#fff3c0; --cork:#4d3c28; --card:#1e2936; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#10161f; --panel:#18212d; --panel2:#1e2936; --ink:#e6ebf2; --muted:#9aa7b8; --line:#2f3c4d;
   --navy:#0c1422; --navy-ink:#e6ebf2; --accent:#7fb0ee; --manila:#4b4124; --manila-ink:#f0e2b4;
   --good:#6fd3a0; --good-bg:#173527; --warn:#f0c06a; --warn-bg:#3d2f10; --crit:#ff9b93; --crit-bg:#45201d; --info-bg:#1d3150;
-  --code-bg:#121a25; color-scheme:dark }
+  --code-bg:#121a25; --sticky:#5c5322; --sticky-ink:#fff3c0; --cork:#4d3c28; --card:#1e2936; color-scheme:dark }
 *{box-sizing:border-box}
 html,body{height:100%}
 body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--body);}
@@ -40,7 +41,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .brand b{font:800 19px/1.05 var(--display);letter-spacing:.02em;text-transform:uppercase}
 .brand span{font-size:12px;opacity:.75}
 .nav{display:flex;flex-direction:column;gap:2px}
-.nav a{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:10px;align-items:center;padding:7px 8px;border-radius:4px;color:inherit;text-decoration:none}
+.nav a{display:grid;grid-template-columns:36px minmax(0,1fr) auto;gap:10px;align-items:center;padding:7px 8px;border-radius:4px;color:inherit;text-decoration:none}
 .nav a:hover{background:rgba(255,255,255,.08)}
 .nav a[aria-current="page"]{background:rgba(255,255,255,.16)}
 .nav .t{display:flex;flex-direction:column;min-width:0}
@@ -90,17 +91,55 @@ input[type=text],input[type=date],select,textarea{border:1px solid var(--line);b
 .stage{display:flex;flex-direction:column;gap:2px;padding-bottom:10px;border-bottom:1px solid var(--line)}
 .stage:last-child{border-bottom:0;padding-bottom:0}
 .dept td:first-child{width:1%}
-.dundies{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.dundies{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:16px 12px}
 .dundie{border:1px solid var(--line);padding:10px;display:flex;flex-direction:column;gap:4px;background:var(--panel2);opacity:.55}
 .dundie.on{opacity:1;background:var(--manila);color:var(--manila-ink);border-color:transparent}
-.dundie b{font:700 13.5px var(--display)}
-.dundie span{font-size:12px}
+.dundie b{font:700 14px/1.2 var(--display)}
 .hab{display:grid;grid-template-columns:minmax(110px,1fr) repeat(7,34px) 30px;gap:6px;align-items:center;min-width:420px}
 .hab .d{font:600 11px var(--body);text-align:center;color:var(--muted);text-transform:uppercase}
 .hab .d.today{color:var(--accent)}
 .tick{width:34px;height:30px;border:1px solid var(--line);background:var(--panel);border-radius:3px;cursor:pointer;padding:0;font-weight:700;color:transparent}
 .tick[aria-pressed="true"]{background:var(--good);border-color:var(--good);color:var(--panel)}
 .tick:disabled{opacity:.35;cursor:default}
+
+.face{display:inline-block;vertical-align:middle;border-radius:50%;width:36px;height:36px;object-fit:cover;flex:none;box-shadow:0 0 0 2px rgba(255,255,255,.55),0 1px 3px rgba(0,0,0,.3)}
+.face.md{width:54px;height:54px} .face.xs{width:28px;height:28px}
+.logo{border:2px solid currentColor;padding:7px 10px 6px;align-self:flex-start;display:flex;flex-direction:column;gap:3px}
+.logo b{font:800 20px/.95 var(--display);letter-spacing:.06em}
+.logo i{font:600 8.5px/1 var(--body);letter-spacing:.2em;font-style:normal}
+.plate{background:linear-gradient(#34302a,#15130f);color:#ecd089;padding:9px 16px 10px;border-radius:2px;box-shadow:0 3px 0 #8a7334,0 6px 10px rgba(0,0,0,.25);display:inline-flex;flex-direction:column;gap:2px}
+.plate b{font:800 16px/1.1 var(--display);letter-spacing:.13em;text-transform:uppercase}
+.plate span{font:600 10.5px/1.2 var(--body);letter-spacing:.1em;text-transform:uppercase;opacity:.8}
+.th{display:grid;grid-template-columns:minmax(0,280px) minmax(0,1fr);margin:0;background:var(--panel);border:1px solid var(--line);box-shadow:0 3px 0 rgba(0,0,0,.07)}
+.th-shot{position:relative;aspect-ratio:4/3;overflow:hidden;background:repeating-linear-gradient(#d5dde2 0 10px,#b3c0c9 10px 12px)}
+.th-shot::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 50px rgba(0,0,0,.35);pointer-events:none}
+.th-shot>svg{position:absolute;left:50%;bottom:-8%;height:108%;transform:translateX(-50%)}
+.th-shot>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.lower{position:absolute;left:0;bottom:12px;z-index:1;background:rgba(255,255,255,.95);color:#10151c;padding:4px 14px 5px 10px;border-left:5px solid #1d3557;display:flex;flex-direction:column;max-width:90%}
+.lower b{font:700 13.5px/1.2 var(--display)} .lower span{font-size:10.5px;line-height:1.2}
+.rec{position:absolute;top:8px;left:10px;z-index:1;font:500 10px var(--mono);color:#fff;text-shadow:0 1px 2px #000;letter-spacing:.08em}
+.rec::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#e5372c;margin-right:5px}
+.th-ctl{position:absolute;top:6px;right:6px;z-index:1;display:flex;gap:4px}
+.th-ctl label,.th-ctl button{font:500 11px var(--body);background:rgba(0,0,0,.6);color:#fff;border:0;border-radius:3px;padding:3px 7px;cursor:pointer}
+.th-ctl label:focus-within{outline:2px solid #fff}
+.th-q{margin:0;padding:16px 20px;display:flex;flex-direction:column;justify-content:center;gap:8px;min-width:0}
+.th-q .hd{font:500 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.th-q p{font:400 17px/1.5 var(--type);max-width:62ch}
+.staff{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:12px}
+.card{border:1px solid var(--line);background:var(--card);padding:12px;display:flex;flex-direction:column;gap:9px;text-decoration:none;color:inherit}
+.card:hover{border-color:var(--accent)}
+.card .top{display:flex;gap:10px;align-items:center}
+.card .top b{display:block;font:700 15px/1.2 var(--display)}
+.sticky{background:var(--sticky);color:var(--sticky-ink);padding:7px 9px;font:400 13.5px/1.35 var(--type);box-shadow:1px 2px 0 rgba(0,0,0,.12);transform:rotate(-.7deg);margin-top:auto}
+.card:nth-child(even) .sticky{transform:rotate(.6deg)}
+.cork{background:var(--cork);background-image:radial-gradient(rgba(0,0,0,.12) 1px,transparent 1.4px);background-size:9px 9px}
+.dundie{position:relative;border:0;padding:12px 10px 10px;display:grid;grid-template-columns:34px minmax(0,1fr);gap:8px;align-items:center;background:var(--card);box-shadow:1px 2px 0 rgba(0,0,0,.18);opacity:1}
+.dundie::before{content:"";position:absolute;top:-5px;left:50%;width:10px;height:10px;border-radius:50%;background:#c0392b;box-shadow:0 1px 2px rgba(0,0,0,.4)}
+.dundie svg{width:34px;height:46px}
+.dundie:not(.on) svg{filter:grayscale(1);opacity:.4}
+.dundie.on{background:var(--card);color:inherit}
+.dundie div{display:flex;flex-direction:column;gap:2px;min-width:0}
+.tab .face{box-shadow:none}
 
 .tabs{display:flex;gap:6px;flex-wrap:wrap}
 .tab{display:flex;gap:8px;align-items:center;border:1px solid var(--line);background:var(--panel);padding:6px 10px 6px 6px;border-radius:4px;cursor:pointer;text-align:left}
@@ -127,7 +166,9 @@ pre.io{white-space:pre}
   .side{padding-block:12px;padding-right:max(16px,env(safe-area-inset-right,0px));gap:10px}
   .brand{padding-bottom:8px}
   .nav{flex-direction:row;overflow-x:auto;gap:4px;padding-bottom:4px}
-  .nav a{grid-template-columns:26px auto;flex:none}
+  .nav a{grid-template-columns:28px auto;flex:none}
+  .nav .face{width:28px;height:28px}
+  .th{grid-template-columns:minmax(0,1fr)} .th-shot{aspect-ratio:16/9} .th-q p{font-size:15.5px}
   .nav .c,.nav .t span{display:none}
   .nav .badge{width:26px;height:26px;line-height:26px;font-size:10px}
   .side .sync{margin-top:0}
@@ -139,7 +180,7 @@ pre.io{white-space:pre}
 
 <div class="shell">
   <aside class="side">
-    <div class="brand"><b>Scranton Branch</b><span>Employee intranet · Paper Company, Inc.</span></div>
+    <div class="brand"><div class="logo"><b>DUNDER<br>MIFFLIN</b><i>INC · PAPER COMPANY</i></div><span style="margin-top:8px">Scranton Branch employee intranet</span></div>
     <nav class="nav" id="nav" aria-label="Departments"></nav>
     <div class="sync" id="sync">Loading your file…</div>
   </aside>
@@ -185,7 +226,48 @@ const DEPTS = [
   {id:'social', name:'Customer Relations', head:'kelly', sub:'Friends & travel'},
   {id:'hr', name:'Human Resources', head:'toby', sub:'Weekly review'}
 ];
-const badge = (h, lg) => `<span class="badge${lg ? ' lg' : ''}" style="--c:${HEADS[h].c}" aria-hidden="true">${HEADS[h].i}</span>`;
+
+const FACE = {
+  michael:{s:'#f0c9a8',hc:'#2b2320',hs:'short',top:'#4b5563',tie:'#8a2330'}, jim:{s:'#f1cdb0',hc:'#5a3d28',hs:'floppy',top:'#7fa3c9',tie:'#2f3e55'},
+  pam:{s:'#f6d5bd',hc:'#a5552f',hs:'long',top:'#e3a3b5'}, oscar:{s:'#d9a77c',hc:'#1d1a18',hs:'short',top:'#6b7f5a',tie:'#3a3a3a'},
+  angela:{s:'#f6d9c4',hc:'#e8cf8a',hs:'bun',top:'#8d939e',mouth:'flat'}, andy:{s:'#f2cbb0',hc:'#5b4030',hs:'floppy',top:'#d9793b',bow:'#1f4f8a'},
+  ryan:{s:'#eac4a6',hc:'#1f1b1a',hs:'short',top:'#23252b',beard:'stubble'}, darryl:{s:'#8a5a3c',hc:'#1a1513',hs:'bald',top:'#3d6f80',beard:'goatee'},
+  dwight:{s:'#f0c8a6',hc:'#6b4a2a',hs:'part',top:'#c9a03a',tie:'#4a3418',glasses:1,mouth:'flat'}, kelly:{s:'#b97c56',hc:'#17110f',hs:'long',top:'#e0569c'},
+  toby:{s:'#f3d2bb',hc:'#b89a6a',hs:'thin',top:'#cdbf9f',tie:'#6b5d45',brow:'sad'}
+};
+const HAIR = {
+  short:'M20 27c-1.5-12 5-16.5 12-16.500s13.5 4.5 12 16.500c-1-6-3-9-12-9s-11 3-12 9z',
+  floppy:'M19.5 28c-2-13 5-18 13-17 8 0 13 5 11.5 17-1.5-6-3.5-8.5-7.5-9.5-4 2.5-10 2.5-13.5 1-2 2-3 5-3.5 8.500z',
+  part:'M19.5 29c-2.5-13 4-18.5 12.5-18.500S47 16 44.5 29c-1-7-4.5-11-12.5-13-8 2-11.5 6-12.5 13z',
+  long:'M20 27c-1.5-12 5-16.5 12-16.500s13.5 4.5 12 16.500c-2-6-5-9-9-9.5-5 3-11 3-15 9.500z',
+  bun:'M20 27c-1.5-12 5-16 12-16s13.5 4 12 16c-1.5-6-4-9.5-12-11-8 1.5-10.5 5-12 11z',
+  thin:'M20.5 25c0-7.5 4.5-11 11.5-11s11.5 3.5 11.5 11c-2-5.5-5-7-11.5-7s-9.5 1.5-11.5 7z',
+  bald:'M20.6 24.500c1-8.5 5-11 11.4-11s10.4 2.5 11.4 11c-3-5.5-6-7-11.4-7s-8.4 1.5-11.4 7z'
+};
+function faceSvg(k, cls, scene){
+  const f = FACE[k], h = HEADS[k]; let o = `<svg class="${cls}" viewBox="0 0 64 64" aria-hidden="true">`;
+  if (!scene) o += `<rect width="64" height="64" fill="${h.c}"/><rect width="64" height="64" fill="#ffffff" opacity=".38"/>`;
+  if (f.hs === 'long') o += `<path d="M16.5 52c-3.5-24 2-41.5 15.5-41.500S51 28 47.5 52c-4 2-27 2-31 0z" fill="${f.hc}"/>`;
+  if (f.hs === 'bun') o += `<circle cx="32" cy="10.5" r="5" fill="${f.hc}"/>`;
+  o += `<path d="M7 64c0-14 10-19.5 25-19.500S57 50 57 64z" fill="${f.top}"/>`;
+  if (f.tie || f.bow) o += `<path d="M25.5 45.500l6.5 9 6.5-9z" fill="#ffffff"/>`;
+  if (f.tie) o += `<path d="M32 47l-2.5 3.500L32 63l2.5-12.500z" fill="${f.tie}"/>`;
+  if (f.bow) o += `<path d="M32 49.500l-6-3v6zM32 49.500l6-3v6z" fill="${f.bow}"/>`;
+  o += `<rect x="27" y="37" width="10" height="10" rx="3" fill="${f.s}"/><circle cx="20.3" cy="29" r="2.3" fill="${f.s}"/><circle cx="43.7" cy="29" r="2.3" fill="${f.s}"/><ellipse cx="32" cy="28" rx="11.6" ry="13.6" fill="${f.s}"/>`;
+  if (f.beard === 'stubble') o += `<path d="M20.8 31c1 9 5 11 11.2 11s10.2-2 11.2-11c-2 6-5 7.5-11.2 7.500S22.8 37 20.8 31z" fill="${f.hc}" opacity=".3"/>`;
+  o += `<path d="${HAIR[f.hs]}" fill="${f.hc}"${f.hs === 'bald' ? ' opacity=".75"' : ''}/>`;
+  o += f.brow === 'sad' ? `<path d="M25 25.500l4.5-1.300M39 25.500l-4.5-1.3" stroke="${f.hc}" stroke-width="1.1" stroke-linecap="round" fill="none"/>` : `<path d="M25 24.300h4.500M34.5 24.300H39" stroke="${f.hc}" stroke-width="1.2" stroke-linecap="round" fill="none"/>`;
+  o += `<circle cx="27.4" cy="28.3" r="1.350" fill="#1c1c1c"/><circle cx="36.6" cy="28.3" r="1.350" fill="#1c1c1c"/>`;
+  if (f.glasses) o += `<path d="M23 25.800h8.300v5.400H23zM32.7 25.800H41v5.400h-8.300zM31.3 28h1.4" stroke="#3a3326" stroke-width="1" fill="none"/>`;
+  o += f.mouth === 'flat' ? `<path d="M28.5 35.300h7" stroke="#7a3f36" stroke-width="1.2" stroke-linecap="round" fill="none"/>` : `<path d="M27.8 34.200q4.2 3.4 8.4 0" stroke="#7a3f36" stroke-width="1.2" stroke-linecap="round" fill="none"/>`;
+  if (f.beard === 'goatee') o += `<path d="M28.3 37.300q3.7-1.6 7.4 0l-1 3.600q-2.7 1.3-5.4 0z" fill="${f.hc}"/>`;
+  return o + '</svg>';
+}
+let PICS = {};
+const pic = k => PICS[k] && PICS[k].d;
+const face = (k, cls) => pic(k) ? `<img class="face ${cls || ''}" src="${pic(k)}" alt="">` : faceSvg(k, 'face ' + (cls || ''));
+const badge = (h, lg) => face(h, lg ? 'md' : '');
+const TROPHY = '<svg viewBox="0 0 32 44" aria-hidden="true"><rect x="6" y="37" width="20" height="6" rx="1" fill="#2a2520"/><rect x="10" y="32" width="12" height="5" fill="#a67f25"/><path d="M11.5 32l2-17h5l2 17z" fill="#d9b24a"/><circle cx="16" cy="9" r="4.2" fill="#d9b24a"/><path d="M13.5 16.500l-6.5-6M18.5 16.500l6.5-6" stroke="#d9b24a" stroke-width="2.6" stroke-linecap="round" fill="none"/></svg>';
 
 const MEMOS = [
   "Eight months is a long time. It is also not a long time. Use both halves.",
@@ -660,11 +742,13 @@ const chOf = tr => CH.filter(c => c.tr === tr);
 const defaults = () => ({v:1, t:0, from:today(), start:'', tr:{intern:[], apps:[], friends:[], trips:[]}, ck:{}, done:{}, habits:[], log:{}, rev:{}});
 let S = defaults(), CODE = {}, codeT = 0;
 const ui = {track:'data', ch:{}, out:{}, sample:null};
-const store = {ref:null, cref:null, writing:false, ds:false, dc:false, timer:0};
-function loadLocal(){ try { const a = JSON.parse(localStorage.getItem('sbi.state')); if (a && a.v === 1) S = Object.assign(defaults(), a); const c = JSON.parse(localStorage.getItem('sbi.code')); if (c) { CODE = c.code || {}; codeT = c.t || 0; } } catch (e) {} }
+const store = {col:null, ref:null, cref:null, writing:false, ds:false, dc:false, timer:0};
+function loadLocal(){ try { const a = JSON.parse(localStorage.getItem('sbi.state')); if (a && a.v === 1) S = Object.assign(defaults(), a); const c = JSON.parse(localStorage.getItem('sbi.code')); if (c) { CODE = c.code || {}; codeT = c.t || 0; } PICS = JSON.parse(localStorage.getItem('sbi.pics')) || {}; } catch (e) {} }
 function keepLocal(){ try { localStorage.setItem('sbi.state', JSON.stringify(S)); localStorage.setItem('sbi.code', JSON.stringify({code:CODE, t:codeT})); } catch (e) {} }
 function save(){ S.t = Date.now(); keepLocal(); store.ds = true; sched(); }
 function saveCode(){ codeT = Date.now(); keepLocal(); store.dc = true; sched(); }
+function setPic(k, d){ PICS[k] = {d, t:Date.now()}; try { localStorage.setItem('sbi.pics', JSON.stringify(PICS)); } catch (e) {} if (store.col) store.col.doc('pic_' + k).set(PICS[k]).then(() => setSync('ok'), () => setSync('err')); render(); }
+function loadPic(file, k){ const u = URL.createObjectURL(file), im = new Image(); im.onload = () => { const W = 480, H = 360, c = document.createElement('canvas'); c.width = W; c.height = H; const sc = Math.max(W / im.width, H / im.height), w = im.width * sc, h = im.height * sc; c.getContext('2d').drawImage(im, (W - w) / 2, (H - h) * 0.3, w, h); URL.revokeObjectURL(u); setPic(k, c.toDataURL('image/jpeg', 0.82)); }; im.onerror = () => URL.revokeObjectURL(u); im.src = u; }
 function sched(){ clearTimeout(store.timer); store.timer = setTimeout(flush, 900); }
 async function flush(){
   if (!store.ref || store.writing) return; store.writing = true;
@@ -679,12 +763,15 @@ async function connect(){
   ui.sample = sample; if (sample) render();
   if (!db || !user) return setSync('local');
   const id = await user.id(); if (!id) return setSync('local');
-  const col = db.collection('data/users/' + id); store.ref = col.doc('state'); store.cref = col.doc('code');
+  const col = db.collection('data/users/' + id); store.col = col; store.ref = col.doc('state'); store.cref = col.doc('code');
   const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 10000));
   const [a, b] = await Promise.race([Promise.all([store.ref.get(), store.cref.get()]), timeout]);
   const ra = a.data(), rb = b.data();
   if (ra && ra.v === 1 && (ra.t || 0) > (S.t || 0)) { S = Object.assign(defaults(), ra); } else if (S.t) store.ds = true;
   if (rb && (rb.t || 0) > codeT) { CODE = rb.code || {}; codeT = rb.t; } else if (codeT) store.dc = true;
+  const ks = Object.keys(HEADS), ps = await Promise.all(ks.map(k => col.doc('pic_' + k).get().then(x => x.data(), () => null)));
+  ks.forEach((k, i) => { const r = ps[i], l = PICS[k]; if (r && (r.t || 0) > ((l && l.t) || 0)) PICS[k] = {d:r.d || '', t:r.t}; else if (l && l.t) col.doc('pic_' + k).set(l).catch(() => {}); });
+  try { localStorage.setItem('sbi.pics', JSON.stringify(PICS)); } catch (e) {}
   keepLocal(); setSync('ok'); render(); if (store.ds || store.dc) sched();
 }
 
@@ -723,8 +810,8 @@ let route = 'front-desk';
 function renderNav(){
   $('#nav').innerHTML = DEPTS.map(d => `<a href="#${d.id}" ${d.id === route ? 'aria-current="page"' : ''}>${badge(d.head)}<span class="t"><b>${d.name}</b><span>${d.sub}</span></span><span class="c num">${d.id === 'front-desk' ? '' : esc(deptStat(d.id).c)}</span></a>`).join('');
 }
-function pageHead(d, extra){ const h = HEADS[d.head]; return `<div class="phead">${badge(d.head, true)}<div class="who"><span class="eyebrow">${esc(d.name)} · ${esc(h.n)}, ${esc(h.r)}</span><h1>${esc(d.sub)}</h1></div>${extra || ''}</div>`; }
-const memo = (from, re, body) => `<div class="memo"><span class="hd">Memo · From: ${esc(HEADS[from].n)} · Re: ${esc(re)}</span><p>${body}</p></div>`;
+function pageHead(d, extra){ const h = HEADS[d.head]; return `<div class="phead"><div class="who"><span class="eyebrow">${esc(d.name)}</span><h1>${esc(d.sub)}</h1></div>${extra || ''}<div class="plate"><b>${esc(h.n)}</b><span>${esc(h.r)}</span></div></div>`; }
+const memo = (from, re, body) => { const h = HEADS[from]; return `<figure class="th"><div class="th-shot">${pic(from) ? `<img src="${pic(from)}" alt="">` : faceSvg(from, '', true)}<span class="rec">REC</span><div class="th-ctl"><label>${pic(from) ? 'Change photo' : 'Use your photo'}<input type="file" accept="image/*" data-act="pic" data-h="${from}" id="pic-${from}" hidden></label>${pic(from) ? `<button data-act="unpic" data-h="${from}">Remove</button>` : ''}</div><div class="lower"><b>${esc(h.n)}</b><span>${esc(h.r)}</span></div></div><figcaption class="th-q"><span class="hd">Re: ${esc(re)}</span><p>${body}</p></figcaption></figure>`; };
 const panel = (title, body, right) => `<section class="panel"><header><h2>${title}</h2>${right || ''}</header><div class="body">${body}</div></section>`;
 const bar = (p, good) => `<div class="bar${good ? ' good' : ''}" role="progressbar" aria-valuenow="${Math.round(p*100)}" aria-valuemin="0" aria-valuemax="100"><i style="width:${Math.round(Math.min(1, p)*100)}%"></i></div>`;
 
@@ -734,15 +821,15 @@ function viewFront(d){
   const count = S.start
     ? `<div class="row" style="align-items:flex-end;gap:14px"><span class="big num">${Math.max(0, left)}</span><span class="muted" style="padding-bottom:6px">days until university<br><span class="small">${Math.max(0, Math.floor(left / 7))} weeks · starts ${fmtDate(S.start)}</span></span></div>${bar(1 - Math.max(0, left) / total)}`
     : `<p class="muted">Set the day university starts and I will count down for you.</p>`;
-  const rows = DEPTS.slice(1).map(x => { const s = deptStat(x.id); return `<tr><td>${badge(x.head)}</td><td><a href="#${x.id}"><b>${x.name}</b></a><div class="small muted">${esc(HEADS[x.head].n)}</div></td><td class="small">${esc(s.txt)}<div style="margin-top:5px;max-width:220px">${bar(s.p, s.p >= 1)}</div></td><td class="small">${esc(s.next)}</td></tr>`; }).join('');
+  const rows = DEPTS.slice(1).map(x => { const s = deptStat(x.id); return `<a class="card" href="#${x.id}"><span class="top">${face(x.head, 'md')}<span><b>${x.name}</b><span class="small muted">${esc(HEADS[x.head].n)}</span></span></span><span class="small">${esc(s.txt)}</span>${bar(s.p, s.p >= 1)}<span class="sticky">${esc(s.next)}</span></a>`; }).join('');
   const habits = S.habits.length ? S.habits.map(h => `<label class="check ${S.log[t] && S.log[t][h.id] ? 'done' : ''}"><input type="checkbox" data-act="tick" data-h="${h.id}" data-d="${t}" ${S.log[t] && S.log[t][h.id] ? 'checked' : ''}><span>${esc(h.name)}</span></label>`).join('') : `<p class="muted small">No regimen yet. <a href="#farm">Set one at Schrute Farms.</a></p>`;
   return pageHead(d) + memo('michael', 'Today', esc(MEMOS[dayN % MEMOS.length])) +
   `<div class="grid g2">` +
     panel('Countdown', count + `<div class="row small"><label for="start">University starts</label><input type="date" id="start" data-act="start" value="${esc(S.start)}"></div>`) +
     panel('Today at Schrute Farms', habits, `<span class="pill ${streak() ? 'good' : ''} num">${streak()}-day streak</span>`) +
   `</div>` +
-  panel('Department status', `<div class="scroll"><table class="dept"><thead><tr><th></th><th>Department</th><th>Status</th><th>Next up</th></tr></thead><tbody>${rows}</tbody></table></div>`) +
-  panel('The Dundies', `<div class="dundies">${DUNDIES.map(x => { const on = x[2](); return `<div class="dundie ${on ? 'on' : ''}"><b>${esc(x[0])}</b><span>${esc(x[1])}</span><span class="eyebrow" style="color:inherit">${on ? 'Awarded' : 'Not yet'}</span></div>`; }).join('')}</div>`, `<span class="small muted num">${DUNDIES.filter(x => x[2]()).length} of ${DUNDIES.length}</span>`);
+  `<section><h2 style="margin-bottom:10px">Staff directory</h2><div class="staff">${rows}</div></section>` +
+  `<section class="panel"><header><h2>The Dundies</h2><span class="small muted num">${DUNDIES.filter(x => x[2]()).length} of ${DUNDIES.length} awarded</span></header><div class="body cork"><div class="dundies">${DUNDIES.map(x => { const on = x[2](); return `<div class="dundie ${on ? 'on' : ''}">${TROPHY}<div><b>${esc(x[0])}</b><span class="small">${esc(x[1])}</span><span class="pill ${on ? 'good' : ''}" style="align-self:flex-start">${on ? 'Awarded' : 'Not yet'}</span></div></div>`; }).join('')}</div></div></section>`;
 }
 
 function tracker(key, title){
@@ -855,6 +942,7 @@ document.addEventListener('click', e => {
   if (a === 'reset') { const c = curCh(); delete CODE[c.id]; delete ui.out[c.id]; saveCode(); document.activeElement.blur(); return render(); }
   if (a === 'cppdone') { const c = curCh(); CODE[c.id] = $('#code').value; saveCode(); if (S.done[c.id]) delete S.done[c.id]; else S.done[c.id] = today(); save(); document.activeElement.blur(); return render(); }
   if (a === 'copycsv') { const m = $('#copymsg'); navigator.clipboard.writeText(SALES_CSV).then(() => { m.textContent = 'Copied.'; }, () => { m.textContent = 'Copy was blocked. Print SALES_CSV in the editor and copy it from the output.'; }); return; }
+  if (a === 'unpic') return setPic(b.dataset.h, '');
   if (a === 'del') { S.tr[k] = S.tr[k].filter(x => x.id !== b.dataset.id); save(); return render(); }
   if (a === 'suggest') { S.tr[k] = TR[k].suggest.map(s => ({id:uid(), a:s[0], b:s[1] || '', cat:s[2] || '', st:TR[k].stages[0], due:''})); save(); return render(); }
   if (a === 'regimen') { S.habits = ['Strength or run session','8,000 steps','Asleep before midnight','Two litres of water'].map(n => ({id:uid(), name:n})); save(); return render(); }
@@ -863,6 +951,7 @@ document.addEventListener('click', e => {
 });
 document.addEventListener('change', e => {
   const el = e.target, a = el.dataset.act; if (!a) return;
+  if (a === 'pic') { if (el.files && el.files[0]) loadPic(el.files[0], el.dataset.h); return; }
   if (a === 'start') { S.start = el.value; save(); return render(); }
   if (a === 'ck') { S.ck[el.dataset.id] = el.checked; save(); return render(); }
   if (a === 'tick') { const d = el.dataset.d, h = el.dataset.h; S.log[d] = S.log[d] || {}; S.log[d][h] = el.checked; save(); return render(); }
