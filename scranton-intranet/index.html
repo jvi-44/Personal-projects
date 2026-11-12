@@ -141,6 +141,23 @@ input[type=text],input[type=date],select,textarea{border:1px solid var(--line);b
 .dundie div{display:flex;flex-direction:column;gap:2px;min-width:0}
 .tab .face{box-shadow:none}
 
+.floor{position:relative;height:clamp(380px,72vh,760px);border:1px solid var(--line);background:radial-gradient(ellipse at 50% 35%,var(--panel),var(--bg) 78%);overflow:hidden;touch-action:none}
+.floor canvas{display:block;width:100%;height:100%;cursor:grab}
+.floor canvas:active{cursor:grabbing}
+.pins{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.pin{position:absolute;left:0;top:0;pointer-events:auto;display:flex;align-items:center;gap:6px;padding:3px 10px 3px 3px;border-radius:99px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.3);white-space:nowrap;font:500 11.5px/1.15 var(--body);text-align:left}
+.pin .face{width:28px;height:28px;box-shadow:none}
+.pin b{font:700 12.5px/1.1 var(--display);display:block}
+.pin span{color:var(--muted);display:none}
+.pin small{font:500 10.5px var(--mono);color:var(--accent);margin-left:2px;display:none}
+.pin:hover span,.pin:focus-visible span,.pin:hover small,.pin:focus-visible small{display:block}
+.pin::after{content:"";position:absolute;left:50%;top:100%;width:2px;height:14px;background:var(--ink);opacity:.55}
+.pin:hover,.pin:focus-visible{border-color:var(--accent);z-index:9999!important}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:7px;padding:3px 11px 3px 3px;border:1px solid var(--line);border-radius:99px;background:var(--panel);color:inherit;text-decoration:none;font-size:13px}
+.chip:hover{border-color:var(--accent)}
+.chip .face{box-shadow:none}
+
 .tabs{display:flex;gap:6px;flex-wrap:wrap}
 .tab{display:flex;gap:8px;align-items:center;border:1px solid var(--line);background:var(--panel);padding:6px 10px 6px 6px;border-radius:4px;cursor:pointer;text-align:left}
 .tab[aria-selected="true"]{border-color:var(--ink);box-shadow:inset 0 -3px 0 var(--ink)}
@@ -168,6 +185,7 @@ pre.io{white-space:pre}
   .nav{flex-direction:row;overflow-x:auto;gap:4px;padding-bottom:4px}
   .nav a{grid-template-columns:28px auto;flex:none}
   .nav .face{width:28px;height:28px}
+  .pin{padding:2px} .pin b{display:none} .pin:hover b,.pin:focus-visible b{display:block;padding-right:6px}
   .th{grid-template-columns:minmax(0,1fr)} .th-shot{aspect-ratio:16/9} .th-q p{font-size:15.5px}
   .nav .c,.nav .t span{display:none}
   .nav .badge{width:26px;height:26px;line-height:26px;font-size:10px}
@@ -187,6 +205,9 @@ pre.io{white-space:pre}
   <main class="main" id="main"></main>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/environments/RoomEnvironment.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js"></script>
 <script>
@@ -217,6 +238,7 @@ const HEADS = {
   toby:{n:'Toby Flenderson', r:'Human Resources', i:'TF', c:'#77705f', v:'soft-spoken, reflective HR rep'}
 };
 const DEPTS = [
+  {id:'floor', name:'Office Floor', head:'michael', sub:'3D walkthrough'},
   {id:'front-desk', name:'Front Desk', head:'michael', sub:'Branch overview'},
   {id:'sales', name:'Sales', head:'jim', sub:'Internship pipeline'},
   {id:'admin', name:'Administration', head:'pam', sub:'Colleges & scholarships'},
@@ -806,9 +828,10 @@ const DUNDIES = [
 ];
 
 /* ───────── Views ───────── */
-let route = 'front-desk';
+let route = 'floor';
+const CUBE = '<svg class="face" viewBox="0 0 36 36" aria-hidden="true"><rect width="36" height="36" fill="#e9d9a8"/><path d="M18 7l10 5v11l-10 6-10-6V12z" fill="#c9a877"/><path d="M18 7l10 5-10 5-10-5z" fill="#f3e6c2"/><path d="M18 17v12l10-6V12z" fill="#8f6238"/></svg>';
 function renderNav(){
-  $('#nav').innerHTML = DEPTS.map(d => `<a href="#${d.id}" ${d.id === route ? 'aria-current="page"' : ''}>${badge(d.head)}<span class="t"><b>${d.name}</b><span>${d.sub}</span></span><span class="c num">${d.id === 'front-desk' ? '' : esc(deptStat(d.id).c)}</span></a>`).join('');
+  $('#nav').innerHTML = DEPTS.map(d => `<a href="#${d.id}" ${d.id === route ? 'aria-current="page"' : ''}>${d.id === 'floor' ? CUBE : badge(d.head)}<span class="t"><b>${d.name}</b><span>${d.sub}</span></span><span class="c num">${esc(deptStat(d.id).c)}</span></a>`).join('');
 }
 function pageHead(d, extra){ const h = HEADS[d.head]; return `<div class="phead"><div class="who"><span class="eyebrow">${esc(d.name)}</span><h1>${esc(d.sub)}</h1></div>${extra || ''}<div class="plate"><b>${esc(h.n)}</b><span>${esc(h.r)}</span></div></div>`; }
 const memo = (from, re, body) => { const h = HEADS[from]; return `<figure class="th"><div class="th-shot">${pic(from) ? `<img src="${pic(from)}" alt="">` : faceSvg(from, '', true)}<span class="rec">REC</span><div class="th-ctl"><label>${pic(from) ? 'Change photo' : 'Use your photo'}<input type="file" accept="image/*" data-act="pic" data-h="${from}" id="pic-${from}" hidden></label>${pic(from) ? `<button data-act="unpic" data-h="${from}">Remove</button>` : ''}</div><div class="lower"><b>${esc(h.n)}</b><span>${esc(h.r)}</span></div></div><figcaption class="th-q"><span class="hd">Re: ${esc(re)}</span><p>${body}</p></figcaption></figure>`; };
@@ -821,7 +844,7 @@ function viewFront(d){
   const count = S.start
     ? `<div class="row" style="align-items:flex-end;gap:14px"><span class="big num">${Math.max(0, left)}</span><span class="muted" style="padding-bottom:6px">days until university<br><span class="small">${Math.max(0, Math.floor(left / 7))} weeks · starts ${fmtDate(S.start)}</span></span></div>${bar(1 - Math.max(0, left) / total)}`
     : `<p class="muted">Set the day university starts and I will count down for you.</p>`;
-  const rows = DEPTS.slice(1).map(x => { const s = deptStat(x.id); return `<a class="card" href="#${x.id}"><span class="top">${face(x.head, 'md')}<span><b>${x.name}</b><span class="small muted">${esc(HEADS[x.head].n)}</span></span></span><span class="small">${esc(s.txt)}</span>${bar(s.p, s.p >= 1)}<span class="sticky">${esc(s.next)}</span></a>`; }).join('');
+  const rows = DEPTS.slice(2).map(x => { const s = deptStat(x.id); return `<a class="card" href="#${x.id}"><span class="top">${face(x.head, 'md')}<span><b>${x.name}</b><span class="small muted">${esc(HEADS[x.head].n)}</span></span></span><span class="small">${esc(s.txt)}</span>${bar(s.p, s.p >= 1)}<span class="sticky">${esc(s.next)}</span></a>`; }).join('');
   const habits = S.habits.length ? S.habits.map(h => `<label class="check ${S.log[t] && S.log[t][h.id] ? 'done' : ''}"><input type="checkbox" data-act="tick" data-h="${h.id}" data-d="${t}" ${S.log[t] && S.log[t][h.id] ? 'checked' : ''}><span>${esc(h.name)}</span></label>`).join('') : `<p class="muted small">No regimen yet. <a href="#farm">Set one at Schrute Farms.</a></p>`;
   return pageHead(d) + memo('michael', 'Today', esc(MEMOS[dayN % MEMOS.length])) +
   `<div class="grid g2">` +
@@ -923,12 +946,203 @@ async function doAsk(){
   btn.disabled = false; btn.textContent = label;
 }
 
+/* ───────── 3D office floor ───────── */
+const Floor = (() => {
+  let el, pinsEl, renderer, scene, camera, controls, running = false, tween = null, failed = false, touched = false;
+  const ST = {michael:{go:'front-desk'}, pam:{go:'admin'}, jim:{go:'sales'}, dwight:{go:'farm'}, andy:{go:'lab', tr:'cpp'}, oscar:{go:'lab', tr:'data'}, angela:{go:'lab', tr:'cp'}, ryan:{go:'lab', tr:'ml'}, darryl:{go:'warehouse'}, kelly:{go:'social'}, toby:{go:'hr'}};
+  const W = 28, D = 17, H = 1.6, PI = Math.PI;
+  let sd = 7; const rnd = () => { sd = (sd * 16807) % 2147483647; return sd / 2147483647; };
+
+  function build(){
+    const T = THREE;
+    const tex = (w, h, draw, rx, ry) => { const c = document.createElement('canvas'); c.width = w; c.height = h; draw(c.getContext('2d'), w, h); const t = new T.CanvasTexture(c); t.wrapS = t.wrapT = T.RepeatWrapping; t.repeat.set(rx || 1, ry || 1); t.encoding = T.sRGBEncoding; t.anisotropy = 8; return t; };
+    const speck = (g, w, h, base, amp) => { g.fillStyle = base; g.fillRect(0, 0, w, h); const id = g.getImageData(0, 0, w, h), d = id.data; for (let i = 0; i < d.length; i += 4) { const v = (Math.random() - .5) * amp; d[i] += v; d[i+1] += v; d[i+2] += v; } g.putImageData(id, 0, 0); };
+    const carpetT = tex(256, 256, (g, w, h) => { speck(g, w, h, '#555a66', 46); for (let i = 0; i < 2600; i++) { g.fillStyle = ['rgba(40,48,70,.5)','rgba(150,150,160,.45)','rgba(90,70,60,.4)'][i % 3]; g.fillRect(Math.random() * w, Math.random() * h, 1.5, 1.5); } }, 20, 12);
+    const woodT = (base, line) => tex(512, 256, (g, w, h) => { speck(g, w, h, base, 10); for (let i = 0; i < 150; i++) { g.strokeStyle = `rgba(${line},${.04 + Math.random() * .13})`; g.lineWidth = .5 + Math.random() * 1.6; const y = Math.random() * h; g.beginPath(); g.moveTo(0, y); g.bezierCurveTo(w * .3, y + Math.random() * 14 - 7, w * .6, y + Math.random() * 14 - 7, w, y + Math.random() * 6 - 3); g.stroke(); } });
+    const mapleT = woodT('#c9a877', '95,60,25'), oakT = woodT('#8f6238', '50,28,10'), darkWoodT = woodT('#5a3a24', '25,12,5');
+    const wallT = base => tex(128, 128, (g, w, h) => speck(g, w, h, base, 9), 4, 1);
+    const tileT = tex(128, 128, (g, w, h) => { speck(g, w, h, '#d8d2c2', 10); g.strokeStyle = 'rgba(90,85,75,.55)'; g.lineWidth = 2; g.strokeRect(0, 0, w, h); }, 1, 1);
+    const concT = tex(256, 256, (g, w, h) => { speck(g, w, h, '#8f8f8b', 26); for (let i = 0; i < 30; i++) { g.fillStyle = 'rgba(60,60,58,.08)'; g.beginPath(); g.arc(Math.random() * w, Math.random() * h, 8 + Math.random() * 30, 0, 7); g.fill(); } }, 3, 3);
+    const blindsT = lit => tex(64, 256, (g, w, h) => { for (let y = 0; y < h; y += 8) { const gr = g.createLinearGradient(0, y, 0, y + 8); gr.addColorStop(0, lit ? '#ffffff' : '#eeeeea'); gr.addColorStop(.75, lit ? '#e9eef2' : '#cfcfc8'); gr.addColorStop(.76, lit ? '#9fb4c4' : '#6f6f6a'); gr.addColorStop(1, lit ? '#b9cad6' : '#8a8a84'); g.fillStyle = gr; g.fillRect(0, y, w, 8); } g.fillStyle = 'rgba(120,120,115,.5)'; g.fillRect(14, 0, 1, h); g.fillRect(49, 0, 1, h); });
+    const screenT = tex(256, 160, (g, w, h) => { const gr = g.createLinearGradient(0, 0, w, h); gr.addColorStop(0, '#2d5fa8'); gr.addColorStop(1, '#16335f'); g.fillStyle = gr; g.fillRect(0, 0, w, h); g.fillStyle = '#e9edf2'; g.fillRect(28, 20, 170, 112); g.fillStyle = '#27457a'; g.fillRect(28, 20, 170, 13); g.fillStyle = '#8b97a8'; for (let i = 0; i < 9; i++) g.fillRect(38, 42 + i * 9, 60 + Math.random() * 90, 3); g.fillStyle = '#c9ced6'; g.fillRect(0, h - 11, w, 11); g.fillStyle = '#3c8a4a'; g.fillRect(0, h - 11, 30, 11); });
+    const kbT = tex(128, 48, (g, w, h) => { g.fillStyle = '#26272b'; g.fillRect(0, 0, w, h); g.fillStyle = '#3d3f45'; for (let y = 0; y < 5; y++) for (let x = 0; x < 15; x++) g.fillRect(4 + x * 8, 4 + y * 8.4, 6.4, 6.6); });
+    const boxT = tex(128, 128, (g, w, h) => { speck(g, w, h, '#b58a57', 14); g.fillStyle = 'rgba(210,190,150,.8)'; g.fillRect(0, 56, w, 14); g.fillStyle = '#f2efe6'; g.fillRect(18, 82, 54, 30); g.fillStyle = '#333'; g.fillRect(24, 90, 40, 3); g.fillRect(24, 98, 28, 3); g.strokeStyle = 'rgba(70,45,20,.5)'; g.strokeRect(1, 1, w - 2, h - 2); });
+    const reamT = tex(128, 64, (g, w, h) => { g.fillStyle = '#f3f1ea'; g.fillRect(0, 0, w, h); g.fillStyle = '#27457a'; g.fillRect(0, 18, w, 26); g.fillStyle = '#fff'; g.fillRect(20, 28, 60, 5); g.strokeStyle = 'rgba(0,0,0,.25)'; g.strokeRect(0, 0, w, h); });
+    const binderT = tex(256, 256, (g, w, h) => { g.fillStyle = '#3b2a1c'; g.fillRect(0, 0, w, h); const cols = ['#27457a','#8a2330','#2f6b45','#c9a03a','#444','#e9e6dc','#6b4a8a','#b5532e']; for (let r = 0; r < 4; r++) { let x = 4; while (x < w - 12) { const bw = 8 + Math.random() * 10, bh = 44 + Math.random() * 12; g.fillStyle = cols[Math.floor(Math.random() * cols.length)]; g.fillRect(x, r * 64 + 60 - bh, bw, bh); g.fillStyle = 'rgba(255,255,255,.75)'; g.fillRect(x + 2, r * 64 + 60 - bh + 8, bw - 4, 9); x += bw + 1; } g.fillStyle = '#7a5a3a'; g.fillRect(0, r * 64 + 60, w, 4); } });
+    const vendT = tex(128, 256, (g, w, h) => { g.fillStyle = '#15171c'; g.fillRect(0, 0, w, h); const cols = ['#e5372c','#f2b632','#3c8a4a','#2d7fd8','#e87b2a','#b0468f']; for (let r = 0; r < 6; r++) for (let c = 0; c < 5; c++) { g.fillStyle = cols[(r * 3 + c) % 6]; g.fillRect(10 + c * 17, 14 + r * 30, 13, 22); } g.fillStyle = '#2a2d35'; g.fillRect(98, 10, 22, 190); g.fillStyle = '#0c0d10'; g.fillRect(10, 208, 84, 30); });
+    const artT = tex(128, 96, (g, w, h) => { const gr = g.createLinearGradient(0, 0, 0, h); gr.addColorStop(0, '#9fc3dd'); gr.addColorStop(.6, '#dfe8e6'); gr.addColorStop(.61, '#5d7a52'); gr.addColorStop(1, '#3c5236'); g.fillStyle = gr; g.fillRect(0, 0, w, h); g.fillStyle = '#6f7f8a'; g.beginPath(); g.moveTo(10, 58); g.lineTo(45, 20); g.lineTo(70, 46); g.lineTo(92, 28); g.lineTo(122, 58); g.fill(); g.strokeStyle = '#2a2018'; g.lineWidth = 8; g.strokeRect(0, 0, w, h); });
+    const fabricT = tex(64, 64, (g, w, h) => speck(g, w, h, '#808080', 60), 3, 3);
+
+    const S = (o) => new T.MeshStandardMaterial(Object.assign({roughness:.8, metalness:0, envMapIntensity:.7}, o));
+    const M = {
+      carpet:S({map:carpetT, bumpMap:carpetT, bumpScale:.03, roughness:1}), maple:S({map:mapleT, roughness:.42, bumpMap:mapleT, bumpScale:.004}), oak:S({map:oakT, roughness:.5}), dark:S({map:darkWoodT, roughness:.35}),
+      wall:S({map:wallT('#c9c6b2'), roughness:.95}), wallG:S({map:wallT('#9da38f'), roughness:.95}), wallB:S({map:wallT('#b9c2c8'), roughness:.95}), cap:S({color:'#f3f2ec', roughness:.7}),
+      tile:S({map:tileT, roughness:.35}), conc:S({map:concT, roughness:.9, bumpMap:concT, bumpScale:.01}), slab:S({color:'#77756f', roughness:1}),
+      metal:S({color:'#565a61', metalness:.7, roughness:.42}), chrome:S({color:'#d5d9de', metalness:1, roughness:.18}), cab:S({color:'#9a9da1', metalness:.55, roughness:.48}), cabTan:S({color:'#b3a98f', metalness:.4, roughness:.5}),
+      fabric:S({color:'#2a2d34', roughness:1, bumpMap:fabricT, bumpScale:.02}), fabricB:S({color:'#51627a', roughness:1, bumpMap:fabricT, bumpScale:.03}), fabricR:S({color:'#6b3b3b', roughness:1, bumpMap:fabricT, bumpScale:.02}),
+      plastic:S({color:'#1b1c20', roughness:.45}), beige:S({color:'#d6d0c0', roughness:.5}), paper:S({color:'#f6f4ec', roughness:.9}), white:S({color:'#eceae6', roughness:.3, metalness:.1}),
+      screen:S({map:screenT, emissive:'#ffffff', emissiveMap:screenT, emissiveIntensity:.85, roughness:.2}), kb:S({map:kbT, roughness:.6}), box:S({map:boxT, roughness:.92}), ream:S({map:reamT, roughness:.8}), binder:S({map:binderT, roughness:.7}),
+      vend:S({map:vendT, emissive:'#ffffff', emissiveMap:vendT, emissiveIntensity:.6, roughness:.25}), art:S({map:artT, roughness:.5}),
+      blinds:S({map:blindsT(false), roughness:.6, transparent:true, opacity:.93, side:T.DoubleSide}), window:S({map:blindsT(true), emissive:'#dfeaf2', emissiveMap:blindsT(true), emissiveIntensity:.75, roughness:.6}),
+      glass:S({color:'#bcd3dd', roughness:.05, metalness:.2, transparent:true, opacity:.28}), water:S({color:'#7fb6e6', roughness:.05, transparent:true, opacity:.6}),
+      leaf:S({color:'#3d7a3c', roughness:.75}), leaf2:S({color:'#2f6331', roughness:.75}), pot:S({color:'#a85f3a', roughness:.85}), gold:S({color:'#d9b24a', metalness:1, roughness:.22}), black:S({color:'#08090b', roughness:1}),
+      lampShade:S({color:'#fff1cf', emissive:'#ffdf9a', emissiveIntensity:.8, roughness:.8}), red:S({color:'#b83228', roughness:.5}), mugs:['#f3f1ea','#27457a','#b83228','#3c8a4a','#c9a03a'].map(c => S({color:c, roughness:.35}))
+    };
+    const root = new T.Group(); root.position.set(-W / 2, 0, -D / 2); scene.add(root);
+    const boxG = new T.BoxGeometry(1, 1, 1), cylG = new T.CylinderGeometry(1, 1, 1, 24), sphG = new T.SphereGeometry(1, 18, 14), icoG = new T.IcosahedronGeometry(1, 1), planeG = new T.PlaneGeometry(1, 1);
+    const add = (m, p, noCast) => { m.castShadow = !noCast; m.receiveShadow = true; (p || root).add(m); return m; };
+    const B = (w, h, d, mat, x, y, z, p, ry) => { const m = new T.Mesh(boxG, mat); m.scale.set(w, h, d); m.position.set(x, y, z); if (ry) m.rotation.y = ry; return add(m, p); };
+    const C = (rt, rb, h, mat, x, y, z, p) => { const m = new T.Mesh(new T.CylinderGeometry(rt, rb, h, 24), mat); m.position.set(x, y, z); return add(m, p); };
+    const P = (w, h, mat, x, y, z, p, ry) => { const m = new T.Mesh(planeG, mat); m.scale.set(w, h, 1); m.position.set(x, y, z); if (ry) m.rotation.y = ry; return add(m, p, true); };
+    const G = (x, z, r, p) => { const g = new T.Group(); g.position.set(x, 0, z); g.rotation.y = r || 0; (p || root).add(g); return g; };
+
+    /* shell */
+    B(W + .5, .3, D + .5, M.slab, W / 2, -.152, D / 2).castShadow = false;
+    const fl = (mat, x1, z1, x2, z2, y, rx, rz) => { const m = new T.Mesh(planeG, mat.clone()); if (m.material.map) { m.material.map = m.material.map.clone(); m.material.map.needsUpdate = true; m.material.map.repeat.set(rx, rz); if (m.material.bumpMap) m.material.bumpMap = m.material.map; } m.rotation.x = -PI / 2; m.scale.set(x2 - x1, z2 - z1, 1); m.position.set((x1 + x2) / 2, y, (z1 + z2) / 2); m.receiveShadow = true; root.add(m); };
+    fl(M.carpet, 0, 0, W, D, 0, 22, 13);
+    fl(M.tile, 15, 7, 20.5, 17, .004, 11, 20); fl(M.tile, 19.5, 0, 28, 5, .004, 17, 10); fl(M.conc, 13.5, 0, 19.5, 5, .004, 3, 2.5);
+    const wall = (x1, z1, x2, z2, mat, h, y0) => { h = h || H; y0 = y0 || 0; const horiz = z1 === z2, len = horiz ? x2 - x1 : z2 - z1, t = .13; B(horiz ? len + t : t, h, horiz ? t : len + t, mat || M.wall, (x1 + x2) / 2, y0 + h / 2, (z1 + z2) / 2); B(horiz ? len + t : t + .02, .025, horiz ? t + .02 : len + t, M.cap, (x1 + x2) / 2, y0 + h + .012, (z1 + z2) / 2).castShadow = false; };
+    const glassWall = (x1, z1, x2, z2, mat) => { const horiz = z1 === z2, len = horiz ? x2 - x1 : z2 - z1, cx = (x1 + x2) / 2, cz = (z1 + z2) / 2, kh = .78;
+      B(horiz ? len : .13, kh, horiz ? .13 : len, mat || M.wall, cx, kh / 2, cz); B(horiz ? len + .04 : .19, .05, horiz ? .19 : len + .04, M.oak, cx, kh + .025, cz); B(horiz ? len + .04 : .1, .07, horiz ? .1 : len + .04, M.oak, cx, H - .035, cz);
+      const n = Math.max(1, Math.round(len / 1.3)); for (let i = 0; i <= n; i++) { const o = -len / 2 + len * i / n; B(.08, H - kh, .08, M.oak, horiz ? cx + o : cx, kh + (H - kh) / 2, horiz ? cz : cz + o); }
+      const pane = P(len - .1, H - kh - .12, M.blinds, cx, kh + (H - kh) / 2, cz, root, horiz ? 0 : PI / 2); pane.castShadow = true; };
+    const door = (x, z, ry) => { const g = G(x, z, ry); B(.86, H - .02, .045, M.oak, .43, (H - .02) / 2, 0, g); B(.03, .03, .1, M.chrome, .76, .95, 0, g); };
+    wall(0, 0, W, 0); wall(0, D, W, D); wall(W, 0, W, D); wall(0, 0, 0, 5.9); wall(0, 7.1, 0, D);
+    for (const [x, w] of [[1.6, 1.8], [4, 1.6], [7.6, 2], [10.6, 2], [22, 2], [25.3, 2]]) B(w, .9, .03, M.window, x, 1.05, .085).castShadow = false;
+    for (const z of [9, 12, 15]) { const m = B(.03, .9, 1.9, M.window, W - .085, 1.05, z); m.castShadow = false; }
+    wall(5.5, 0, 5.5, 5, M.wallG); glassWall(0, 5, 4.2, 5, M.wallG); door(4.25, 5, .9); wall(5.2, 5, 5.5, 5, M.wallG);
+    glassWall(5.5, 5, 11.6, 5); door(11.65, 5, -2.2); wall(12.7, 5, 13.5, 5); wall(13.5, 0, 13.5, 5);
+    wall(13.5, 5, 14.6, 5); wall(18.4, 5, 19.5, 5); wall(19.5, 0, 19.5, 5); wall(19.5, 5, 23.8, 5, M.wallB); door(23.85, 5, -1); wall(25, 5, W, 5, M.wallB);
+    wall(15, 7, 20.5, 7); wall(15, 7, 15, 9.2); wall(15, 10.4, 15, D); wall(20.5, 7, 20.5, 8.4); wall(20.5, 9.6, 20.5, D); wall(15, 11, 20.5, 11); wall(17.75, 11, 17.75, D);
+    door(15, 9.25, -PI / 2 - .7); door(20.5, 8.45, -PI / 2 + .8);
+
+    /* furniture */
+    const chair = (p, x, z, ry, mat) => { const g = G(x, z, ry, p); mat = mat || M.fabric; B(.5, .09, .48, mat, 0, .47, 0, g); const bk = B(.46, .5, .07, mat, 0, .83, .25, g); bk.rotation.x = .1; C(.028, .028, .32, M.chrome, 0, .27, 0, g); for (let i = 0; i < 5; i++) { const a = i * PI * .4; const s = B(.3, .03, .045, M.plastic, Math.cos(a) * .15, .07, Math.sin(a) * .15, g); s.rotation.y = -a; C(.03, .03, .04, M.plastic, Math.cos(a) * .29, .03, Math.sin(a) * .29, g); } for (const sx of [-.27, .27]) { B(.05, .03, .3, M.plastic, sx, .68, .02, g); B(.03, .2, .03, M.plastic, sx, .58, .08, g); } return g; };
+    const gchair = (p, x, z, ry, mat) => { const g = G(x, z, ry, p); mat = mat || M.fabricR; B(.48, .07, .46, mat, 0, .45, 0, g); B(.46, .42, .06, mat, 0, .76, .22, g); for (const sx of [-.21, .21]) for (const sz of [-.2, .2]) C(.014, .014, .42, M.chrome, sx, .21, sz, g); return g; };
+    const monitor = (g, x, z, ry) => { const m = G(x, z, ry, g); C(.1, .12, .02, M.plastic, 0, .77, -.02, m); B(.045, .16, .04, M.plastic, 0, .85, -.03, m); B(.5, .33, .04, M.plastic, 0, 1.06, 0, m); P(.46, .29, M.screen, 0, 1.06, .0215, m); };
+    const lamp = (g, x, z) => { C(.07, .08, .02, M.plastic, x, .77, z, g); const a = B(.02, .34, .02, M.chrome, x, .93, z, g); a.rotation.z = .25; const s = new T.Mesh(new T.ConeGeometry(.09, .1, 20, 1, true), M.lampShade); s.material.side = T.DoubleSide; s.position.set(x - .06, 1.11, z); add(s, g); };
+    const desk = (o) => { const w = o.w || 1.6, d = o.d || .8, g = G(o.x, o.z, o.r), top = o.top || M.maple;
+      B(w, .04, d, top, 0, .74, 0, g); B(w + .01, .012, d + .01, M.oak, 0, .716, 0, g);
+      for (const sx of [-1, 1]) B(.035, .71, d - .06, M.metal, sx * (w / 2 - .03), .355, 0, g); B(w - .1, .42, .02, M.metal, 0, .49, -d / 2 + .06, g);
+      const px = (o.ped || 1) * (w / 2 - .27); B(.42, .6, d - .12, M.cab, px, .31, 0, g); for (let i = 0; i < 3; i++) { B(.38, .17, .012, M.cabTan, px, .12 + i * .19, d / 2 - .055, g); B(.12, .014, .02, M.chrome, px, .12 + i * .19, d / 2 - .04, g); }
+      monitor(g, -.12 * (o.ped || 1), -.14, (rnd() - .5) * .4); B(.42, .02, .14, M.kb, -.12 * (o.ped || 1), .77, .14, g); B(.06, .028, .1, M.plastic, .2 * (o.ped || 1) - .12, .774, .16, g);
+      const ph = G(-(o.ped || 1) * (w / 2 - .22), -.08, .2, g); B(.18, .05, .21, M.plastic, 0, .785, 0, ph); B(.05, .035, .2, M.plastic, -.05, .825, 0, ph);
+      for (let i = 0, n = 1 + Math.floor(rnd() * 3); i < n; i++) B(.22, .012 + rnd() * .05, .3, M.paper, px + (rnd() - .5) * .1, .78 + i * .03, -.1 + (rnd() - .5) * .1, g, (rnd() - .5) * .5);
+      C(.04, .034, .09, M.mugs[Math.floor(rnd() * 5)], px - .3 * (o.ped || 1), .805, .22, g);
+      if (o.lamp) lamp(g, -(o.ped || 1) * (w / 2 - .18), -.26);
+      chair(g, (rnd() - .5) * .2, d / 2 + .38, (rnd() - .5) * .5);
+      if (o.k) { const v = new T.Vector3(0, 1.45, d / 2 + .38); root.updateMatrixWorld(true); ST[o.k].pos = g.localToWorld(v); }
+      return g; };
+    const cabinet = (x, z, ry, h) => { const g = G(x, z, ry); h = h || 1.3; B(.48, h, .6, M.cabTan, 0, h / 2, 0, g); const n = Math.round(h / .32); for (let i = 0; i < n; i++) { B(.44, h / n - .03, .012, M.cab, 0, (i + .5) * h / n, .305, g); B(.14, .016, .02, M.chrome, 0, (i + .72) * h / n, .318, g); } return g; };
+    const shelf = (x, z, ry, w, h) => { const g = G(x, z, ry); w = w || 1.2; h = h || 1.4; B(w, h, .32, M.oak, 0, h / 2, 0, g); P(w - .06, h - .06, M.binder, 0, h / 2, .162, g); };
+    const plant = (x, z, s) => { const g = G(x, z); s = s || 1; C(.17 * s, .13 * s, .3 * s, M.pot, 0, .15 * s, 0, g); for (let i = 0; i < 9; i++) { const m = new T.Mesh(icoG, i % 2 ? M.leaf : M.leaf2); const a = rnd() * 7, r = rnd() * .2 * s; m.scale.set((.13 + rnd() * .1) * s, (.2 + rnd() * .16) * s, (.13 + rnd() * .1) * s); m.position.set(Math.cos(a) * r, (.45 + rnd() * .55) * s, Math.sin(a) * r); m.rotation.set(rnd(), rnd(), rnd()); add(m, g); } };
+    const art = (x, z, ry, w) => P(w || .9, (w || .9) * .7, M.art, x, 1.05, z, root, ry);
+    const boxes = (x, z, n, mat) => { for (let i = 0; i < n; i++) B(.45, .32, .36, mat || M.box, x + (rnd() - .5) * .06, .16 + i * .32, z + (rnd() - .5) * .06, root, (rnd() - .5) * .3); };
+    const roundTable = (x, z, n) => { C(.55, .55, .04, M.white, x, .74, z); C(.04, .04, .72, M.chrome, x, .37, z); C(.28, .3, .03, M.metal, x, .02, z); for (let i = 0; i < n; i++) { const a = i * 2 * PI / n + .4; gchair(root, x + Math.sin(a) * .85, z + Math.cos(a) * .85, a, M.fabricB); } };
+
+    /* Michael's office */
+    desk({x:2.9, z:2.3, r:PI, w:1.9, d:.9, top:M.dark, k:'michael', lamp:1}); gchair(root, 2.4, 3.7, 0); gchair(root, 3.4, 3.7, 0);
+    shelf(.25, 2.4, PI / 2, 1.6, 1.3); plant(5, .5, 1.2); art(5.42, 2.5, -PI / 2, 1.1); cabinet(.4, 4.4, PI / 2, .7);
+    { const g = G(3.55, 2.45); C(.035, .045, .03, M.plastic, 0, .775, 0, g); C(.012, .02, .1, M.gold, 0, .84, 0, g); const hd = new T.Mesh(sphG, M.gold); hd.scale.setScalar(.022); hd.position.set(0, .905, 0); add(hd, g); }
+    /* conference room */
+    B(4.4, .05, 1.3, M.dark, 9.3, .74, 2.6); for (const sx of [-1.6, 1.6]) B(.12, .72, .9, M.metal, 9.3 + sx, .36, 2.6);
+    for (let i = 0; i < 5; i++) { gchair(root, 7.5 + i * .9, 1.55, PI); gchair(root, 7.5 + i * .9, 3.65, 0); } gchair(root, 6.7, 2.6, -PI / 2); gchair(root, 11.9, 2.6, PI / 2);
+    B(1.8, .95, .04, M.white, 9.3, 1.05, .1); B(1.86, 1.01, .02, M.metal, 9.3, 1.05, .085); plant(13, .5); art(13.42, 2.6, -PI / 2);
+    /* warehouse corner */
+    desk({x:16, z:3.5, r:PI, w:1.4, k:'darryl', top:M.oak});
+    { for (let s = 0; s < 2; s++) { const x0 = 14 + s * 2.3; for (const sx of [0, 2]) for (const sz of [.25, .85]) B(.05, 1.6, .05, M.metal, x0 + sx, .8, sz); for (let l = 0; l < 3; l++) { B(2.05, .04, .66, M.metal, x0 + 1, .1 + l * .55, .55); for (let i = 0; i < 4; i++) if (rnd() > .15) B(.42, .3 + rnd() * .12, .5, rnd() > .4 ? M.box : M.ream, x0 + .27 + i * .49, .12 + l * .55 + .17, .55, root, (rnd() - .5) * .1); } } }
+    B(1.1, .14, 1.1, M.oak, 18.6, .07, 1.3); for (let i = 0; i < 3; i++) for (let j = 0; j < 2; j++) for (let l = 0; l < 3 - (i === 2 ? 1 : 0); l++) B(.36, .24, .5, M.ream, 18.25 + i * .36, .26 + l * .24, 1.03 + j * .52);
+    B(1.5, .01, 2.2, M.black, 18.6, .008, 3.6).castShadow = false; for (let i = 0; i < 5; i++) B(1.5, .06, .36, M.conc, 18.6, -.04 - i * .05, 2.75 + i * .4).castShadow = false; for (const sx of [-.78, .78]) { B(.04, .04, 2.2, M.chrome, 18.6 + sx, .9, 3.6); for (const sz of [2.55, 3.6, 4.65]) B(.04, .9, .04, M.chrome, 18.6 + sx, .45, sz); }
+    boxes(14.2, 4.4, 3); boxes(14.75, 4.45, 2);
+    /* break room */
+    roundTable(22, 2.9, 4); roundTable(25.6, 3.1, 3);
+    for (const x of [20.5, 21.5]) { const g = G(x, .5); B(.9, 1.55, .75, M.plastic, 0, .775, 0, g); P(.84, 1.48, M.vend, 0, .775, .38, g); }
+    B(2.6, .9, .6, M.cab, 26.3, .45, .4); B(2.66, .04, .66, M.white, 26.3, .92, .4); B(.5, .3, .36, M.plastic, 26.9, 1.09, .4); C(.12, .12, .3, M.chrome, 25.6, 1.09, .4); plant(27.5, 4.5);
+    /* reception */
+    { const g = desk({x:3.5, z:8.5, r:PI / 2, w:2.1, k:'pam', lamp:1}); B(2.3, 1.08, .1, M.maple, 0, .54, -.47, g); B(2.34, .04, .32, M.oak, 0, 1.09, -.4, g); B(.1, 1.08, .9, M.maple, -1.1, .54, -.05, g); C(.09, .09, .12, M.glass, .5, 1.17, -.4, g); const j = new T.Mesh(sphG, M.red); j.scale.set(.075, .05, .075); j.position.set(.5, 1.16, -.4); add(j, g); }
+    { const g = G(.5, 10.7, PI / 2); B(1.9, .4, .8, M.fabricB, 0, .22, 0, g); B(1.9, .5, .18, M.fabricB, 0, .62, -.32, g); for (const sx of [-.95, .95]) B(.16, .58, .8, M.fabricB, sx, .32, 0, g); for (const sx of [-.45, .45]) B(.82, .12, .56, M.fabricB, sx, .47, .08, g); }
+    plant(.5, 9.3, 1.1); plant(.5, 12.2); { C(.02, .02, 1.5, M.dark, .45, .75, 7.5); C(.2, .22, .03, M.dark, .45, .02, 7.5); }
+    B(.9, .5, .45, M.oak, 1.6, .25, 10.7); B(.3, .012, .22, M.paper, 1.6, .51, 10.7, root, .3);
+    /* bullpen */
+    desk({x:7.0, z:8.6, r:-PI / 2, k:'jim'}); desk({x:7.82, z:8.6, r:PI / 2, k:'dwight', lamp:1, ped:-1});
+    desk({x:11.6, z:8.6, r:-PI / 2, k:'andy'}); desk({x:12.42, z:8.6, r:PI / 2, ped:-1});
+    desk({x:8.8, z:13, r:-PI / 2}); desk({x:9.62, z:13, r:PI / 2, ped:-1, lamp:1}); desk({x:12.4, z:13.6, r:0});
+    { const g = G(7.82, 8.6, PI / 2); C(.03, .03, .05, M.dark, .55, .79, -.2, g); const hd = new T.Mesh(sphG, M.beige); hd.scale.setScalar(.04); hd.position.set(.55, .85, -.2); add(hd, g); }
+    cabinet(6, 16.6, PI); cabinet(6.55, 16.6, PI); cabinet(7.1, 16.6, PI); shelf(9.5, 16.75, PI, 1.8, 1.3); shelf(11.5, 16.75, PI, 1.8, 1.3);
+    { const g = G(13.9, 16.3, PI); B(.9, .95, .7, M.beige, 0, .475, 0, g); B(.94, .08, .74, M.plastic, 0, .99, 0, g); B(.5, .16, .5, M.beige, .6, .6, 0, g); B(.3, .012, .4, M.paper, .6, .69, 0, g); }
+    { const g = G(14.5, 12); B(.34, .95, .34, M.white, 0, .475, 0, g); C(.14, .14, .4, M.water, 0, 1.17, 0, g); C(.05, .14, .06, M.water, 0, .98, 0, g); }
+    plant(14.4, 6); plant(5.6, 6, .9); art(7, 16.92, PI); art(14.92, 13.5, -PI / 2); boxes(13.2, 6, 2, M.ream); boxes(1, 16.3, 2);
+    B(.9, .72, .5, M.oak, 10.2, .36, 5.45); B(.36, .28, .36, M.beige, 10.2, .86, 5.45);
+    /* accounting */
+    desk({x:2.4, z:13.4, r:-PI / 2, k:'oscar'}); desk({x:3.22, z:13.4, r:PI / 2, k:'angela', ped:-1}); desk({x:2.8, z:15.4, r:0, w:1.7});
+    B(.06, 1.1, 2.4, M.fabricB, 5.2, .55, 14); B(2.6, 1.1, .06, M.fabricB, 3.9, .55, 12.1); cabinet(.4, 15.2, PI / 2, .7); cabinet(.4, 15.8, PI / 2, .7); plant(4.8, 16.3);
+    /* kitchen */
+    B(3.6, .9, .6, M.cabTan, 17.3, .45, 7.45); B(3.66, .04, .66, M.white, 17.3, .92, 7.45); B(.5, .02, .4, M.chrome, 17, .945, 7.45); B(.5, .3, .38, M.plastic, 18.5, 1.09, 7.4); C(.07, .09, .26, M.plastic, 16.1, 1.07, 7.4);
+    B(.75, 1.55, .7, M.white, 19.9, .775, 7.5); B(.03, .5, .03, M.chrome, 19.56, 1, 7.87); roundTable(18, 9.5, 3);
+    for (const x of [16.4, 19.1]) { B(.5, .4, .7, M.white, x, .3, 16.3); B(.5, .5, .2, M.white, x, .75, 16.55); B(.6, .1, .45, M.white, x, .85, 11.5); }
+    /* annex */
+    desk({x:23, z:7, r:0, w:1.4, k:'ryan'}); desk({x:23.2, z:11.6, r:PI, k:'kelly', lamp:1}); desk({x:26.3, z:15, r:PI / 2, k:'toby', ped:-1});
+    B(.06, 1.2, 2.6, M.fabricB, 25.2, .6, 14.8); B(2.7, 1.2, .06, M.fabricB, 26.55, .6, 13.5); desk({x:26.6, z:9.5, r:PI / 2}); 
+    cabinet(21, 16.6, PI); cabinet(21.55, 16.6, PI); shelf(23.5, 16.75, PI, 1.6, 1.3); plant(27.4, 12.6); plant(21, 5.6, .9); boxes(27.3, 5.7, 3); boxes(26.7, 5.7, 2, M.ream); art(20.58, 13, PI / 2);
+    { const g = G(23.2, 11.6, PI); const m = new T.Mesh(sphG, S({color:'#e0569c', roughness:.6})); m.scale.setScalar(.06); m.position.set(.55, .82, -.2); add(m, g); }
+  }
+
+  function init(){
+    const T = THREE;
+    el = document.createElement('div'); el.className = 'floor';
+    renderer = new T.WebGLRenderer({antialias:true, alpha:true});
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2)); renderer.outputEncoding = T.sRGBEncoding; renderer.toneMapping = T.ACESFilmicToneMapping; renderer.toneMappingExposure = .92; renderer.physicallyCorrectLights = true;
+    renderer.shadowMap.enabled = true; renderer.shadowMap.type = T.PCFSoftShadowMap;
+    el.appendChild(renderer.domElement); pinsEl = document.createElement('div'); pinsEl.className = 'pins'; el.appendChild(pinsEl);
+    scene = new T.Scene();
+    if (T.RoomEnvironment) { const pm = new T.PMREMGenerator(renderer); scene.environment = pm.fromScene(new T.RoomEnvironment(), .04).texture; }
+    scene.add(new T.HemisphereLight('#ffffff', '#8a8578', .6));
+    const sun = new T.DirectionalLight('#fff4e2', 3.2); sun.position.set(9, 22, 12); sun.castShadow = true; sun.shadow.mapSize.set(4096, 4096); const sc = sun.shadow.camera; sc.left = -17; sc.right = 17; sc.top = 13; sc.bottom = -13; sc.near = 2; sc.far = 60; sun.shadow.bias = -.0005; sun.shadow.normalBias = .03; sun.shadow.radius = 3; scene.add(sun);
+    for (const [x, z] of [[-9, -5.5], [-4, 1], [3, 4], [10, 2], [9, -6]]) { const l = new T.PointLight('#ffe9c4', 9, 9, 2); l.position.set(x, 2.4, z); scene.add(l); }
+    camera = new T.PerspectiveCamera(32, 2, .5, 200); camera.position.set(0, 26, 23);
+    controls = new T.OrbitControls(camera, renderer.domElement); controls.target.set(0, 0, 1); controls.enableDamping = true; controls.dampingFactor = .08; controls.maxPolarAngle = 1.3; controls.minDistance = 4; controls.maxDistance = 55; controls.screenSpacePanning = false; controls.update(); controls.addEventListener('start', () => { touched = true; });
+    build();
+    for (const k in ST) { const b = document.createElement('button'); b.className = 'pin'; b.type = 'button'; b.dataset.k = k; pinsEl.appendChild(b); ST[k].el = b; }
+    pinsEl.addEventListener('click', e => { const b = e.target.closest('.pin'); if (b) walk(b.dataset.k); });
+    new ResizeObserver(size).observe(el);
+  }
+  function size(){ const w = el.clientWidth, h = el.clientHeight; if (!w || !h) return; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); if (!touched && !tween) { controls.target.set(0, 0, 1); camera.position.set(0, 26, 24).multiplyScalar(Math.max(1.06, 1.85 / camera.aspect)); controls.update(); } }
+  function walk(k){
+    const s = ST[k], go = () => { if (s.tr) ui.track = s.tr; location.hash = s.go; };
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return go();
+    const t0 = performance.now(), c0 = camera.position.clone(), g0 = controls.target.clone(), g1 = new THREE.Vector3(s.pos.x, .8, s.pos.z), c1 = g1.clone().add(new THREE.Vector3(2.6, 3.4, 4.4));
+    tween = now => { const u = Math.min(1, (now - t0) / 900), e = u < .5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2; camera.position.lerpVectors(c0, c1, e); controls.target.lerpVectors(g0, g1, e); if (u >= 1) { tween = null; setTimeout(() => { go(); camera.position.copy(c0); controls.target.copy(g0); }, 150); } };
+  }
+  const v = typeof THREE !== 'undefined' ? new THREE.Vector3() : null;
+  function frame(now){
+    if (!el.isConnected) { running = false; return; }
+    requestAnimationFrame(frame);
+    if (tween) tween(now); controls.update(); renderer.render(scene, camera);
+    const w = el.clientWidth, h = el.clientHeight;
+    for (const k in ST) { const s = ST[k]; v.copy(s.pos).project(camera); const x = (v.x * .5 + .5) * w, y = (-v.y * .5 + .5) * h; s.el.hidden = v.z > 1 || x < 0 || x > w || y < 20 || y > h + 30; s.el.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px) translate(-50%,-100%) translateY(-14px)`; s.el.style.zIndex = Math.round(y); }
+  }
+  function labels(){ for (const k in ST) { const s = ST[k], n = s.tr ? labDone(s.tr) + '/' + chOf(s.tr).length : deptStat(s.go).c, d = s.tr ? TRACKS.find(t => t.id === s.tr).name : DEPTS.find(x => x.id === s.go).name; s.el.innerHTML = face(k) + `<b>${esc(HEADS[k].n.split(' ')[0])}</b><span>${esc(d)}</span>${n ? `<small class="num">${esc(n)}</small>` : ''}`; s.el.setAttribute('aria-label', HEADS[k].n + ', ' + d); } }
+  function attach(slot){
+    if (failed || typeof THREE === 'undefined' || !THREE.OrbitControls) { slot.innerHTML = '<div class="empty"><p>The 3D office could not load on this device. Use the desk links below, or the department list.</p></div>'; return; }
+    try { if (!el) init(); } catch (e) { failed = true; el = null; return attach(slot); }
+    slot.appendChild(el); labels(); size(); if (!running) { running = true; requestAnimationFrame(frame); }
+  }
+  return {attach, ST};
+})();
+function viewFloor(){
+  const links = Object.keys(Floor.ST).map(k => { const s = Floor.ST[k]; return `<a class="chip" href="#${s.go}" ${s.tr ? `data-act="track" data-tr="${s.tr}"` : ''}>${face(k, 'xs')}<span>${esc(HEADS[k].n)}</span></a>`; }).join('');
+  return `<div class="phead"><div class="who"><span class="eyebrow">Scranton Business Park · Suite 200</span><h1>The office floor</h1></div><div class="plate"><b>Dunder Mifflin</b><span>Scranton Branch</span></div></div>
+  <p class="small muted">Drag to look around, scroll or pinch to zoom, right-drag or two fingers to slide. Hover a name to see its department and progress; pick it to walk to that desk.</p>
+  <div id="floor-slot"></div><div class="chips">${links}</div>`;
+}
+
 /* ───────── Render and events ───────── */
-const VIEWS = {'front-desk':viewFront, sales:viewSales, admin:viewAdmin, lab:viewLab, warehouse:viewWarehouse, farm:viewFarm, social:viewSocial, hr:viewHR};
+const VIEWS = {floor:viewFloor, 'front-desk':viewFront, sales:viewSales, admin:viewAdmin, lab:viewLab, warehouse:viewWarehouse, farm:viewFarm, social:viewSocial, hr:viewHR};
 function render(){
-  const h = location.hash.slice(1); route = VIEWS[h] ? h : 'front-desk';
+  const h = location.hash.slice(1); route = VIEWS[h] ? h : 'floor';
   const a = document.activeElement, keep = a && a.id && a.closest('#main') ? {id:a.id, s:a.selectionStart, e:a.selectionEnd, v:a.id === 'code' ? a.value : null, top:a.scrollTop} : null;
   renderNav(); $('#main').innerHTML = VIEWS[route](DEPTS.find(d => d.id === route));
+  if (route === 'floor') Floor.attach($('#floor-slot'));
   if (keep) { const el = document.getElementById(keep.id); if (el) { if (keep.v != null && el.dataset.keep !== '0') el.value = keep.v; el.focus({preventScroll:true}); try { el.setSelectionRange(keep.s, keep.e); el.scrollTop = keep.top; } catch (e) {} } }
 }
 function stashCode(){ const el = $('#code'); if (el && route === 'lab') { const c = curCh(); if (el.value !== (CODE[c.id] != null ? CODE[c.id] : c.starter)) { CODE[c.id] = el.value; saveCode(); } } }
