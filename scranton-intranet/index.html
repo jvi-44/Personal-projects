@@ -171,11 +171,13 @@ html,body{overflow:hidden}
 .seg button[aria-pressed="true"]{background:var(--navy);color:var(--navy-ink)}
 .hbtn{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:7px 12px;font-weight:600;font-size:13px;color:var(--ink);text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.18)}
 #sync{font-size:11px;line-height:1.3;color:var(--muted);background:var(--gpanel);padding:4px 8px;border-radius:4px;max-width:230px}
-.hint{position:fixed;z-index:15;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 10px);background:rgba(10,14,20,.74);color:#fff;font-size:12.5px;padding:6px 14px;border-radius:99px;max-width:calc(100% - 24px);text-align:center;pointer-events:none}
+.hint{position:fixed;z-index:15;left:calc(50% + 120px);transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 10px);background:rgba(10,14,20,.74);color:#fff;font-size:12.5px;padding:6px 14px;border-radius:99px;max-width:calc(100% - 24px);text-align:center;pointer-events:none}
 .cross{position:fixed;left:50%;top:50%;width:6px;height:6px;margin:-3px;border-radius:50%;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.6);z-index:14;pointer-events:none}
 .prompt{position:fixed;z-index:16;left:50%;top:60%;transform:translateX(-50%);display:flex;gap:8px;align-items:center;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:99px;padding:4px 12px 4px 4px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.4);font-weight:600;font-size:13.5px;white-space:nowrap;max-width:calc(100% - 24px)}
 .prompt kbd{font:600 11px var(--mono);border:1px solid var(--line);border-radius:4px;padding:1px 6px}
-.pad{position:fixed;z-index:16;left:max(14px,env(safe-area-inset-left,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 54px);display:grid;grid-template-columns:repeat(3,48px);gap:4px}
+.mini{position:fixed;z-index:15;left:max(12px,env(safe-area-inset-left,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 12px);width:224px;height:auto;border:1px solid var(--line);border-radius:6px;box-shadow:0 4px 14px rgba(0,0,0,.35)}
+.sheet:focus{outline:none}
+.pad{position:fixed;z-index:16;right:max(14px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 54px);display:grid;grid-template-columns:repeat(3,48px);gap:4px}
 .pad button{height:48px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink);font-size:17px;opacity:.88;touch-action:none;user-select:none}
 .sheet{position:fixed;z-index:30;top:0;right:0;bottom:0;width:min(880px,100%);overflow-y:auto;background:var(--glass);-webkit-backdrop-filter:blur(16px) saturate(1.25);backdrop-filter:blur(16px) saturate(1.25);border-left:1px solid var(--line);box-shadow:-14px 0 44px rgba(0,0,0,.28);padding-top:env(safe-area-inset-top,0px)}
 .sheet .main{padding-block:6px 44px;padding-left:20px;padding-right:max(16px,env(safe-area-inset-right,0px));max-width:none}
@@ -194,7 +196,7 @@ body.no3d .sheet{width:100%} body.no3d .seg,body.no3d .hint{display:none}
   .sheet{top:30%;width:100%;border-left:0;border-top:1px solid var(--line);border-radius:14px 14px 0 0;padding-top:0}
   .sheet .main{padding-left:max(16px,env(safe-area-inset-left,0px))}
   .sheet .lab{grid-template-columns:minmax(0,1fr)}
-  #sync{display:none}
+  #sync{display:none} .mini{width:150px;bottom:calc(env(safe-area-inset-bottom,0px) + 50px)}
   body.no3d .sheet{top:0;border-radius:0}
 }
 
@@ -240,14 +242,15 @@ pre.io{white-space:pre}
 <header class="hud">
   <a class="logo" href="#floor" aria-label="Back to the office floor"><b>DUNDER<br>MIFFLIN</b><i>INC · PAPER COMPANY</i></a>
   <div class="seg" role="group" aria-label="View"><button type="button" data-mode="overview" aria-pressed="true">Overview</button><button type="button" data-mode="walk" aria-pressed="false">Walk around</button></div>
+  <div class="seg" role="group" aria-label="Zoom"><button type="button" data-zoom="-1" aria-label="Zoom out">−</button><button type="button" data-zoom="1" aria-label="Zoom in">+</button></div>
   <a class="hbtn" href="#front-desk">Directory</a><a class="hbtn" href="#casting">Casting</a>
   <span id="sync">Loading your file…</span>
 </header>
-<span class="cross" id="cross" hidden></span>
+<canvas class="mini" id="mini" width="448" height="272" hidden aria-hidden="true"></canvas>
 <button class="prompt" id="prompt" type="button" hidden></button>
 <div class="pad" id="pad" hidden><span></span><button type="button" data-key="KeyW" aria-label="Forward">▲</button><span></span><button type="button" data-key="ArrowLeft" aria-label="Turn left">◀</button><button type="button" data-key="KeyS" aria-label="Back">▼</button><button type="button" data-key="ArrowRight" aria-label="Turn right">▶</button></div>
 <div class="hint" id="hint">Drag to orbit · scroll to zoom · pick a person to visit their desk</div>
-<aside class="sheet" id="sheet" hidden><div class="sheet-bar"><button class="btn" type="button" data-act="close">Back to the floor ✕</button></div><main class="main" id="main"></main></aside>
+<aside class="sheet" id="sheet" tabindex="-1" hidden><div class="sheet-bar"><button class="btn" type="button" data-act="close">Back to the floor ✕</button></div><main class="main" id="main"></main></aside>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
@@ -279,6 +282,7 @@ const HEADS = {
   darryl:{n:'Darryl Philbin', r:'Warehouse Foreman', i:'DP', c:'#3d6f80', v:'calm, practical, no-nonsense foreman'},
   dwight:{n:'Dwight Schrute', r:'Assistant to the Regional Manager', i:'DS', c:'#8a6d1f', v:'intense, disciplined, absolute about rules'},
   kelly:{n:'Kelly Kapoor', r:'Customer Relations', i:'KK', c:'#b0468f', v:'excitable, social, enthusiastic about plans'},
+  kevin:{n:'Kevin Malone', r:'Break Room', i:'KM', c:'#5f7f4a', v:'slow-talking, sincere, simple, fond of snacks'},
   toby:{n:'Toby Flenderson', r:'Human Resources', i:'TF', c:'#77705f', v:'soft-spoken, reflective HR rep'}
 };
 const DEPTS = [
@@ -289,7 +293,8 @@ const DEPTS = [
   {id:'warehouse', name:'Warehouse', head:'darryl', sub:'Hardware & ECE'},
   {id:'farm', name:'Schrute Farms', head:'dwight', sub:'Fitness regimen'},
   {id:'social', name:'Customer Relations', head:'kelly', sub:'Friends & travel'},
-  {id:'hr', name:'Human Resources', head:'toby', sub:'Weekly review'}
+  {id:'hr', name:'Human Resources', head:'toby', sub:'Weekly review'},
+  {id:'bucket', name:'Break Room', head:'kevin', sub:'Bucket list'}
 ];
 
 const FACE = {
@@ -298,6 +303,7 @@ const FACE = {
   angela:{s:'#f6d9c4',hc:'#e8cf8a',hs:'bun',top:'#8d939e',mouth:'flat'}, andy:{s:'#f2cbb0',hc:'#5b4030',hs:'floppy',top:'#d9793b',bow:'#1f4f8a'},
   ryan:{s:'#eac4a6',hc:'#1f1b1a',hs:'short',top:'#23252b',beard:'stubble'}, darryl:{s:'#8a5a3c',hc:'#1a1513',hs:'bald',top:'#3d6f80',beard:'goatee'},
   dwight:{s:'#f0c8a6',hc:'#6b4a2a',hs:'part',top:'#c9a03a',tie:'#4a3418',glasses:1,mouth:'flat'}, kelly:{s:'#b97c56',hc:'#17110f',hs:'long',top:'#e0569c'},
+  kevin:{s:'#f0c9a8',hc:'#3a2a20',hs:'bald',top:'#5b6b4f',tie:'#7a3b2a'},
   toby:{s:'#f3d2bb',hc:'#b89a6a',hs:'thin',top:'#cdbf9f',tie:'#6b5d45',brow:'sad'}
 };
 const HAIR = {
@@ -355,6 +361,9 @@ const TR = {
     suggest:[['NUS','Electrical / Computer Engineering','Singapore'],['NTU','Electrical & Electronic Engineering','Singapore'],['SUTD','Check interview format','Singapore'],['UCAS (up to 5 choices)','Personal statement + reference','United Kingdom'],['Common App','Main essay + supplements, test scores','United States'],['Government scholarship (e.g. PSC)','Essays, psychometric tests, interviews','Scholarship'],['Research scholarship (e.g. A*STAR)','Tie to research attachment','Scholarship'],['Industry-sponsored scholarship','Shortlist 3 engineering sponsors','Scholarship']]},
   friends:{a:'Who', b:'What you will do', stages:['To plan','Scheduled','Done'],
     empty:'Your social calendar is literally empty. Add someone you keep meaning to see.', suggest:[['A JC classmate you have not seen since A-levels','Meal, no agenda'],['CCA batch','Group outing before everyone scatters'],['Family','One proper day together']]},
+  bucket:{a:'What', b:'Why it matters to you', cats:['Travel','Adventure','Skill','People','Give back'], stages:['Someday','Planned','Done'],
+    empty:'The list is empty. That is like a vending machine with nothing in it. Add one thing you want to have done before university starts.',
+    suggest:[['Watch a sunrise from somewhere you had to hike to','','Adventure'],['Build one thing from scratch that a stranger actually uses','','Skill'],['Take a trip you planned and paid for yourself','','Travel'],['Cook a full dinner for your family','','People'],['Learn to solder and fix something broken at home','','Skill'],['Volunteer for a cause for a full month','','Give back'],['Run 10 km without stopping','','Adventure']]},
   trips:{a:'Where', b:'With whom, rough budget', stages:['Idea','Planning','Booked','Been'],
     empty:'No trips yet. Even one weekend away counts.', suggest:[['Grad trip','Pick dates around application deadlines'],['A short solo trip','Somewhere reachable in under 4 hours']]}
 };
@@ -808,7 +817,8 @@ const defaults = () => ({v:1, t:0, from:today(), start:'', tr:{intern:[], apps:[
 let S = defaults(), CODE = {}, codeT = 0;
 const ui = {castK:'', castR:5, castC:5, castImg:null, track:'data', ch:{}, out:{}, sample:null};
 const store = {col:null, ref:null, cref:null, writing:false, ds:false, dc:false, timer:0};
-function loadLocal(){ try { const a = JSON.parse(localStorage.getItem('sbi.state')); if (a && a.v === 1) S = Object.assign(defaults(), a); const c = JSON.parse(localStorage.getItem('sbi.code')); if (c) { CODE = c.code || {}; codeT = c.t || 0; } PICS = JSON.parse(localStorage.getItem('sbi.pics')) || {}; } catch (e) {} }
+function norm(){ for (const k in TR) if (!S.tr[k]) S.tr[k] = []; }
+function loadLocal(){ try { const a = JSON.parse(localStorage.getItem('sbi.state')); if (a && a.v === 1) S = Object.assign(defaults(), a); const c = JSON.parse(localStorage.getItem('sbi.code')); if (c) { CODE = c.code || {}; codeT = c.t || 0; } PICS = JSON.parse(localStorage.getItem('sbi.pics')) || {}; } catch (e) {} norm(); }
 function keepLocal(){ try { localStorage.setItem('sbi.state', JSON.stringify(S)); localStorage.setItem('sbi.code', JSON.stringify({code:CODE, t:codeT})); } catch (e) {} }
 function save(){ S.t = Date.now(); keepLocal(); store.ds = true; sched(); }
 function saveCode(){ codeT = Date.now(); keepLocal(); store.dc = true; sched(); }
@@ -832,7 +842,7 @@ async function connect(){
   const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 10000));
   const [a, b] = await Promise.race([Promise.all([store.ref.get(), store.cref.get()]), timeout]);
   const ra = a.data(), rb = b.data();
-  if (ra && ra.v === 1 && (ra.t || 0) > (S.t || 0)) { S = Object.assign(defaults(), ra); } else if (S.t) store.ds = true;
+  if (ra && ra.v === 1 && (ra.t || 0) > (S.t || 0)) { S = Object.assign(defaults(), ra); norm(); } else if (S.t) store.ds = true;
   if (rb && (rb.t || 0) > codeT) { CODE = rb.code || {}; codeT = rb.t; } else if (codeT) store.dc = true;
   const ks = Object.keys(HEADS).concat(['wall1', 'wall2', 'wall3']), ps = await Promise.all(ks.map(k => col.doc('pic_' + k).get().then(x => x.data(), () => null)));
   ks.forEach((k, i) => { const r = ps[i], l = PICS[k]; if (r && (r.t || 0) > ((l && l.t) || 0)) PICS[k] = {d:r.d || '', t:r.t}; else if (l && l.t) col.doc('pic_' + k).set(l).catch(() => {}); });
@@ -857,6 +867,7 @@ function deptStat(id){
   if (id === 'farm') { const tot = S.habits.length * 7, n = weekTicks(); return {txt: S.habits.length ? `${n} of ${tot} this week · ${streak()}-day streak` : 'No regimen set', p: tot ? n / tot : 0, c: `${streak()}d`, next: S.habits.length ? 'Tick off today' : 'Set your regimen'}; }
   if (id === 'social') { const f = t.friends.filter(x => x.st === 'Done').length, tr = t.trips.filter(x => x.st === 'Booked' || x.st === 'Been').length; return {txt: `${f} catch-ups done · ${tr} trips booked or taken`, p: (t.friends.length + t.trips.length) ? (f + tr) / (t.friends.length + t.trips.length) : 0, c: `${f + tr}`, next: t.friends.find(x => x.st === 'To plan') ? 'Message ' + t.friends.find(x => x.st === 'To plan').a : 'Plan something'}; }
   if (id === 'hr') { const r = S.rev[weekKey()], ok = r && (r.win || r.stuck || r.next); return {txt: ok ? 'This week is filed' : 'This week is not filed', p: ok ? 1 : 0, c: `${Object.keys(S.rev).length}`, next: ok ? 'See you next week' : 'File this week\'s review'}; }
+  if (id === 'bucket') { const n = t.bucket.length, dn = t.bucket.filter(x => x.st === 'Done').length, nx = t.bucket.find(x => x.st !== 'Done'); return {txt: n ? `${dn} of ${n} crossed off` : 'Nothing on the list', p: n ? dn / n : 0, c: `${dn}/${n}`, next: nx ? nx.a : n ? 'Add the next one' : 'Start your list'}; }
   return {txt:'', p:0, c:'', next:''};
 }
 const DUNDIES = [
@@ -871,7 +882,7 @@ const DUNDIES = [
 ];
 
 /* ───────── Views ───────── */
-let route = 'floor';
+let route = 'floor', lastRoute = '';
 function renderNav(){ Floor.labels(); }
 function pageHead(d, extra){ const h = HEADS[d.head]; return `<div class="phead"><div class="who"><span class="eyebrow">${esc(d.name)}</span><h1>${esc(d.sub)}</h1></div>${extra || ''}<div class="plate"><b>${esc(h.n)}</b><span>${esc(h.r)}</span></div></div>`; }
 const memo = (from, re, body) => { const h = HEADS[from]; return `<figure class="th"><div class="th-shot">${pic(from) ? `<img src="${pic(from)}" alt="">` : faceSvg(from, '', true)}<span class="rec">REC</span><div class="th-ctl"><label>${pic(from) ? 'Change photo' : 'Use your photo'}<input type="file" accept="image/*" data-act="pic" data-h="${from}" id="pic-${from}" hidden></label>${pic(from) ? `<button data-act="unpic" data-h="${from}">Remove</button>` : ''}</div><div class="lower"><b>${esc(h.n)}</b><span>${esc(h.r)}</span></div></div><figcaption class="th-q"><span class="hd">Re: ${esc(re)}</span><p>${body}</p></figcaption></figure>`; };
@@ -920,6 +931,7 @@ function viewFarm(d){
     panel('This week', `<form class="add" data-form="habit"><input type="text" id="habit-a" placeholder="New habit, e.g. 30-minute run" aria-label="New habit" required><button class="btn pri" type="submit">Add habit</button></form>` + grid, `<span class="pill ${streak() ? 'good' : ''} num">${streak()}-day streak</span>`);
 }
 function viewSocial(d){ return pageHead(d) + memo('kelly', 'Your social life', 'Okay so everyone is about to move to different countries and you will literally regret every lunch you did not have. Put names down. Put dates on them. A plan without a date is just a text you did not send.') + tracker('friends', 'People to see') + tracker('trips', 'Trips'); }
+function viewBucket(d){ return pageHead(d) + memo('kevin', 'The bucket list', 'Okay. So a bucket list is a list of things. That you want to do. Before the thing happens. The thing is university. Put them here, pick a date, and when you do one you get to cross it off, which is the best part.') + tracker('bucket', 'Before university starts'); }
 function viewHR(d){
   const k = weekKey(), r = S.rev[k] || {}, past = Object.keys(S.rev).filter(x => x !== k).sort().reverse();
   const f = (id, label, ph) => `<label class="small" for="rev-${id}"><b>${label}</b></label><textarea id="rev-${id}" rows="3" data-act="rev" data-f="${id}" placeholder="${ph}">${esc(r[id] || '')}</textarea>`;
@@ -988,9 +1000,9 @@ async function doAsk(){
 
 /* ───────── 3D office floor ───────── */
 const Floor = (() => {
-  let el, pinsEl, renderer, scene, camera, controls, tween = null, failed = false, touched = false, mode = 'overview', curKey = null, upper, caps, sunL, artMap, yaw = 0, pitch = 0, keys = {}, drag = null, near = null;
+  let el, pinsEl, renderer, scene, camera, controls, tween = null, failed = false, touched = false, mode = 'overview', curKey = null, upper, caps, sunL, artMap, yaw = 0, pitch = 0, keys = {}, drag = null, near = null, coarse = false;
   const COL = [], DESKS = [], FRAMES = {}, HC = 2.7, EYE = 1.62;
-  const ST = {michael:{go:'front-desk'}, pam:{go:'admin'}, jim:{go:'sales'}, dwight:{go:'farm'}, andy:{go:'lab', tr:'cpp'}, oscar:{go:'lab', tr:'data'}, angela:{go:'lab', tr:'cp'}, ryan:{go:'lab', tr:'ml'}, darryl:{go:'warehouse'}, kelly:{go:'social'}, toby:{go:'hr'}};
+  const ST = {michael:{go:'front-desk'}, pam:{go:'admin'}, jim:{go:'sales'}, dwight:{go:'farm'}, andy:{go:'lab', tr:'cpp'}, oscar:{go:'lab', tr:'data'}, angela:{go:'lab', tr:'cp'}, ryan:{go:'lab', tr:'ml'}, darryl:{go:'warehouse'}, kelly:{go:'social'}, toby:{go:'hr'}, kevin:{go:'bucket'}};
   const W = 28, D = 17, H = 1.6, PI = Math.PI;
   let sd = 7; const rnd = () => { sd = (sd * 16807) % 2147483647; return sd / 2147483647; };
 
@@ -1097,7 +1109,7 @@ const Floor = (() => {
     const plant = (x, z, s) => { const g = G(x, z); s = s || 1; C(.17 * s, .13 * s, .3 * s, M.pot, 0, .15 * s, 0, g); for (let i = 0; i < 9; i++) { const m = new T.Mesh(icoG, i % 2 ? M.leaf : M.leaf2); const a = rnd() * 7, r = rnd() * .2 * s; m.scale.set((.13 + rnd() * .1) * s, (.2 + rnd() * .16) * s, (.13 + rnd() * .1) * s); m.position.set(Math.cos(a) * r, (.45 + rnd() * .55) * s, Math.sin(a) * r); m.rotation.set(rnd(), rnd(), rnd()); add(m, g); } };
     const art = (x, z, ry, w, slot) => { const m = P(w || .9, (w || .9) * .72, slot ? M.art.clone() : M.art, x, 1.08, z, root, ry); if (slot) FRAMES[slot] = m; return m; };
     const boxes = (x, z, n, mat) => { for (let i = 0; i < n; i++) B(.45, .32, .36, mat || M.box, x + (rnd() - .5) * .06, .16 + i * .32, z + (rnd() - .5) * .06, root, (rnd() - .5) * .3); };
-    const roundTable = (x, z, n) => { C(.55, .55, .04, M.white, x, .74, z); C(.04, .04, .72, M.chrome, x, .37, z); C(.28, .3, .03, M.metal, x, .02, z); for (let i = 0; i < n; i++) { const a = i * 2 * PI / n + .4; gchair(root, x + Math.sin(a) * .85, z + Math.cos(a) * .85, a, M.fabricB); } };
+    const roundTable = (x, z, n, a0) => { C(.55, .55, .04, M.white, x, .74, z); C(.04, .04, .72, M.chrome, x, .37, z); C(.28, .3, .03, M.metal, x, .02, z); for (let i = 0; i < n; i++) { const a = i * 2 * PI / n + (a0 == null ? .4 : a0); gchair(root, x + Math.sin(a) * .85, z + Math.cos(a) * .85, a, M.fabricB); } };
 
     /* Michael's office */
     desk({x:2.9, z:2.3, r:PI, w:1.9, d:.9, top:M.dark, k:'michael', lamp:1}); gchair(root, 2.4, 3.7, 0); gchair(root, 3.4, 3.7, 0);
@@ -1114,7 +1126,8 @@ const Floor = (() => {
     B(1.5, .01, 2.2, M.black, 18.6, .008, 3.6).castShadow = false; for (let i = 0; i < 5; i++) B(1.5, .06, .36, M.conc, 18.6, -.04 - i * .05, 2.75 + i * .4).castShadow = false; for (const sx of [-.78, .78]) { B(.04, .04, 2.2, M.chrome, 18.6 + sx, .9, 3.6); for (const sz of [2.55, 3.6, 4.65]) B(.04, .9, .04, M.chrome, 18.6 + sx, .45, sz); }
     boxes(14.2, 4.4, 3); boxes(14.75, 4.45, 2);
     /* break room */
-    roundTable(22, 2.9, 4); roundTable(25.6, 3.1, 3);
+    roundTable(22, 2.9, 3, 0); roundTable(25.6, 3.1, 3);
+    { const kg = G(22, 2.05, PI); gchair(kg, 0, 0, 0, M.fabricB); person(kg, 'kevin', 0); root.updateMatrixWorld(true); const st = ST.kevin; st.pos = kg.localToWorld(new T.Vector3(0, 1.72, 0)); st.head = kg.localToWorld(new T.Vector3(0, 1.3, 0)); st.dir = new T.Vector3(0, 0, 1); st.r = PI; C(.045, .04, .1, M.mugs[2], 22.1, .81, 2.6); B(.2, .05, .14, M.ream, 21.85, .785, 2.62, root, .4); }
     for (const x of [20.5, 21.5]) { const g = G(x, .5); B(.9, 1.55, .75, M.plastic, 0, .775, 0, g); P(.84, 1.48, M.vend, 0, .775, .38, g); }
     B(2.6, .9, .6, M.cab, 26.3, .45, .4); B(2.66, .04, .66, M.white, 26.3, .92, .4); B(.5, .3, .36, M.plastic, 26.9, 1.09, .4); C(.12, .12, .3, M.chrome, 25.6, 1.09, .4); plant(27.5, 4.5);
     /* reception */
@@ -1175,15 +1188,15 @@ const Floor = (() => {
       const sun = new T.DirectionalLight('#fff4e2', 3.2); sun.position.set(9, 22, 12); sun.castShadow = true; sun.shadow.mapSize.set(4096, 4096); const sc = sun.shadow.camera; sc.left = -17; sc.right = 17; sc.top = 13; sc.bottom = -13; sc.near = 2; sc.far = 60; sun.shadow.bias = -.0005; sun.shadow.normalBias = .03; sun.shadow.radius = 3; scene.add(sun); sunL = sun;
       for (const [x, z] of [[-9, -5.5], [-4, 1], [3, 4], [10, 2], [9, -6], [-10, 5], [10, 6]]) { const l = new T.PointLight('#fff1d6', 6, 10, 2); l.position.set(x, 2.45, z); scene.add(l); }
       camera = new T.PerspectiveCamera(32, 2, .08, 200); camera.position.set(0, 26, 24);
-      controls = new T.OrbitControls(camera, renderer.domElement); controls.target.set(0, 0, 1); controls.enableDamping = true; controls.dampingFactor = .08; controls.maxPolarAngle = 1.3; controls.minDistance = 2; controls.maxDistance = 60; controls.screenSpacePanning = false; controls.update(); controls.addEventListener('start', () => { touched = true; });
+      controls = new T.OrbitControls(camera, renderer.domElement); controls.target.set(0, 0, 1); controls.enableDamping = true; controls.dampingFactor = .08; controls.maxPolarAngle = 1.3; controls.minDistance = 2; controls.maxDistance = 60; controls.screenSpacePanning = false; controls.update(); controls.addEventListener('start', () => { touched = true; }); coarse = window.matchMedia('(pointer: coarse)').matches; controls.enabled = coarse;
       build();
       for (const k in ST) { const b = document.createElement('button'); b.className = 'pin'; b.type = 'button'; b.dataset.k = k; pinsEl.appendChild(b); ST[k].el = b; }
       pinsEl.addEventListener('click', e => { const b = e.target.closest('.pin'); if (b) go(b.dataset.k); });
       const cv = renderer.domElement;
-      cv.addEventListener('pointerdown', e => { if (mode !== 'walk') return; drag = {x:e.clientX, y:e.clientY}; if (e.pointerType === 'mouse' && cv.requestPointerLock) { try { const r = cv.requestPointerLock(); if (r && r.catch) r.catch(() => {}); } catch (_) {} } });
-      window.addEventListener('pointermove', e => { if (mode !== 'walk' || tween) return; if (document.pointerLockElement === cv) { yaw -= e.movementX * .0024; pitch -= e.movementY * .0024; } else if (drag) { yaw -= (e.clientX - drag.x) * .005; pitch -= (e.clientY - drag.y) * .005; drag.x = e.clientX; drag.y = e.clientY; } pitch = Math.max(-1.2, Math.min(1.2, pitch)); });
-      window.addEventListener('pointerup', () => { drag = null; });
-      window.addEventListener('keydown', e => { if (e.target.closest && e.target.closest('input,textarea,select')) return; keys[e.code] = true; if (mode === 'walk') { if (e.code === 'KeyE' && near) go(near); if (/^Arrow|Space/.test(e.code) && !e.target.closest('.sheet')) e.preventDefault(); } });
+      window.addEventListener('keydown', e => { if (e.target.closest && e.target.closest('input,textarea,select')) return; if (e.ctrlKey || e.metaKey || e.altKey) return; keys[e.code] = true; if (!$('#sheet').hidden) return;
+        if ((e.code === 'KeyE' || e.code === 'Enter') && mode === 'walk' && near && !e.target.closest('button,a')) go(near);
+        if (e.code === 'KeyM') setMode(mode === 'walk' ? 'overview' : 'walk');
+        if (/^(Arrow|Space|PageUp|PageDown)/.test(e.code)) e.preventDefault(); });
       window.addEventListener('keyup', e => { keys[e.code] = false; });
       window.addEventListener('blur', () => { keys = {}; });
       stage.appendChild(el); new ResizeObserver(size).observe(el); size(); faces(); requestAnimationFrame(frame);
@@ -1208,36 +1221,59 @@ const Floor = (() => {
   }
   function setMode(m){
     if (!el || m === mode) return; mode = m; const walk = m === 'walk', T = THREE;
-    upper.visible = walk; caps.visible = !walk; controls.enabled = !walk; pinsEl.hidden = walk; sunL.intensity = walk ? .9 : 3.2; near = null;
-    if (!walk && document.exitPointerLock) document.exitPointerLock();
-    const k = curKey; if (k) { curKey = null; focus(k); }
+    upper.visible = walk; caps.visible = !walk; controls.enabled = !walk && coarse; camera.fov = walk ? 64 : 32; camera.updateProjectionMatrix(); pinsEl.hidden = walk; sunL.intensity = walk ? .9 : 3.2; near = null;
+        const k = curKey; if (k) { curKey = null; focus(k); }
     else if (walk) tweenTo(new T.Vector3(1.3 - W / 2, EYE, 6.5 - D / 2), new T.Vector3(8 - W / 2, 1.2, 7.5 - D / 2), 1100);
     else { touched = false; tweenTo(HOME(), new T.Vector3(0, 0, 1), 900); }
     hud();
   }
-  function hud(){ const walk = mode === 'walk'; document.querySelectorAll('[data-mode]').forEach(b => b.setAttribute('aria-pressed', b.dataset.mode === mode)); $('#hint').textContent = walk ? 'Click the floor to look around · W A S D to move · Shift to hurry · E to talk · Esc frees the mouse' : 'Drag to orbit · scroll to zoom · pick a person to visit their desk'; $('#pad').hidden = !(walk && window.matchMedia('(pointer: coarse)').matches); $('#cross').hidden = !walk; if (!walk) $('#prompt').hidden = true; }
+  function hud(){ const walk = mode === 'walk'; document.querySelectorAll('[data-mode]').forEach(b => b.setAttribute('aria-pressed', b.dataset.mode === mode)); $('#hint').textContent = walk ? '↑ ↓ walk · ← → turn · A D sidestep · R F look up and down · + − zoom · Enter talk · M overview' : '↑ ↓ ← → slide · A D rotate · W S tilt · + − zoom · Tab to a person then Enter · M walk around'; $('#pad').hidden = !(walk && coarse); $('#mini').hidden = !walk; if (!walk) $('#prompt').hidden = true; }
+  function zoom(st){ if (!el) return; if (mode === 'walk') { camera.fov = Math.max(24, Math.min(92, camera.fov - st)); camera.updateProjectionMatrix(); } else { const o = camera.position.clone().sub(controls.target), r = Math.max(2.5, Math.min(60, o.length() * Math.exp(-st * .03))); camera.position.copy(controls.target).add(o.setLength(r)); touched = true; } }
+  const ROOMS = [['Michael', 2.7, 4.3], ['Conference', 9.5, 4.3], ['Warehouse', 16.5, 4.5], ['Break room', 24, 4.4], ['Reception', 2.6, 6.4], ['Sales', 9.7, 10.9], ['Accounting', 3, 11.6], ['Kitchen', 17.8, 8.2], ['Annex', 24.5, 9.5]];
+  function mini(){
+    const c = $('#mini'), g = c.getContext('2d'), k = c.width / W; g.clearRect(0, 0, c.width, c.height); g.fillStyle = 'rgba(12,18,28,.86)'; g.fillRect(0, 0, c.width, c.height);
+    g.fillStyle = 'rgba(190,160,110,.75)'; for (const d of DESKS) g.fillRect((d[0] - .45) * k, (d[1] - .45) * k, .9 * k, .9 * k);
+    g.fillStyle = 'rgba(235,238,242,.9)'; for (const w of COL) g.fillRect(w[0] * k, w[1] * k, Math.max(2.5, (w[2] - w[0]) * k), Math.max(2.5, (w[3] - w[1]) * k));
+    g.font = '600 13px sans-serif'; g.textAlign = 'center'; g.fillStyle = 'rgba(255,255,255,.5)'; for (const r of ROOMS) g.fillText(r[0], r[1] * k, r[2] * k);
+    g.font = '700 12px sans-serif'; g.textBaseline = 'middle';
+    for (const key in ST) { const s = ST[key], x = (s.head.x + W / 2) * k, z = (s.head.z + D / 2) * k; g.beginPath(); g.arc(x, z, key === near ? 11 : 9, 0, 7); g.fillStyle = HEADS[key].c; g.fill(); g.lineWidth = key === near ? 3 : 1.5; g.strokeStyle = '#fff'; g.stroke(); g.fillStyle = '#fff'; g.fillText(HEADS[key].n[0], x, z + 1); }
+    g.textBaseline = 'alphabetic';
+    const px = (camera.position.x + W / 2) * k, pz = (camera.position.z + D / 2) * k; g.save(); g.translate(px, pz); g.rotate(Math.atan2(-Math.cos(yaw), -Math.sin(yaw))); g.fillStyle = 'rgba(255,214,90,.22)'; g.beginPath(); g.moveTo(0, 0); g.arc(0, 0, 52, -.55, .55); g.fill(); g.fillStyle = '#ffd65a'; g.strokeStyle = '#111'; g.lineWidth = 1.5; g.beginPath(); g.moveTo(13, 0); g.lineTo(-8, -8); g.lineTo(-3, 0); g.lineTo(-8, 8); g.closePath(); g.fill(); g.stroke(); g.restore();
+  }
   function go(k){ const s = ST[k]; if (s.tr) ui.track = s.tr; if (location.hash.slice(1) === s.go) render(); else location.hash = s.go; }
   const free = (x, z) => { if (x < .35 || z < .35 || x > W - .35 || z > D - .35) return false; for (const c of COL) if (x > c[0] - .25 && x < c[2] + .25 && z > c[1] - .25 && z < c[3] + .25) return false; for (const d of DESKS) if ((x - d[0]) * (x - d[0]) + (z - d[1]) * (z - d[1]) < d[2] * d[2]) return false; return true; };
   const v = typeof THREE !== 'undefined' ? new THREE.Vector3() : null;
-  let last = 0;
+  let last = 0; const sheetEl = $('#sheet');
   function frame(now){
-    requestAnimationFrame(frame); const dt = Math.min(.05, (now - last) / 1000 || 0); last = now;
+    requestAnimationFrame(frame); const dt = Math.min(.12, (now - last) / 1000 || 0); last = now;
     if (tween) tween(now);
     else if (mode === 'walk') {
-      const f = ((keys.KeyW || keys.ArrowUp) ? 1 : 0) - ((keys.KeyS || keys.ArrowDown) ? 1 : 0), r = (keys.KeyD ? 1 : 0) - (keys.KeyA ? 1 : 0), tn = (keys.ArrowRight ? 1 : 0) - (keys.ArrowLeft ? 1 : 0);
-      yaw -= tn * 1.9 * dt; const sp = ((keys.ShiftLeft || keys.ShiftRight) ? 5.5 : 3) * dt, dx = (-Math.sin(yaw) * f + Math.cos(yaw) * r) * sp, dz = (-Math.cos(yaw) * f - Math.sin(yaw) * r) * sp;
-      let px = camera.position.x + W / 2, pz = camera.position.z + D / 2; const stuck = !free(px, pz);
-      if (stuck || free(px + dx, pz)) px += dx; if (stuck || free(px, pz + dz)) pz += dz;
-      camera.position.set(px - W / 2, EYE, pz - D / 2); camera.rotation.set(pitch, yaw, 0, 'YXZ');
+      const open = !sheetEl.hidden, K = c => keys[c] ? 1 : 0;
+      if (!open) {
+        const f = Math.max(K('KeyW'), K('ArrowUp')) - Math.max(K('KeyS'), K('ArrowDown')), r = K('KeyD') - K('KeyA'), tn = K('ArrowRight') - K('ArrowLeft'), zz = Math.max(K('Equal'), K('NumpadAdd')) - Math.max(K('Minus'), K('NumpadSubtract'));
+        yaw -= tn * 1.9 * dt; pitch = Math.max(-1.1, Math.min(1.1, pitch + (Math.max(K('KeyR'), K('PageUp')) - Math.max(K('KeyF'), K('PageDown'))) * 1.2 * dt)); if (zz) zoom(zz * 45 * dt);
+        const sp = ((keys.ShiftLeft || keys.ShiftRight) ? 5.5 : 3) * dt, dx = (-Math.sin(yaw) * f + Math.cos(yaw) * r) * sp, dz = (-Math.cos(yaw) * f - Math.sin(yaw) * r) * sp;
+        let px = camera.position.x + W / 2, pz = camera.position.z + D / 2; const stuck = !free(px, pz);
+        if (stuck || free(px + dx, pz)) px += dx; if (stuck || free(px, pz + dz)) pz += dz;
+        camera.position.set(px - W / 2, EYE, pz - D / 2);
+      }
+      camera.rotation.set(pitch, yaw, 0, 'YXZ');
       let best = null, bd = 2.7; for (const k in ST) { const s = ST[k], d = Math.hypot(s.head.x - camera.position.x, s.head.z - camera.position.z); if (d < bd) { bd = d; best = k; } }
-      if (best !== near) { near = best; const pr = $('#prompt'); if (near && near !== curKey) { const s = ST[near]; pr.innerHTML = face(near) + `<span>Talk to ${esc(HEADS[near].n.split(' ')[0])} · ${esc(s.tr ? TRACKS.find(t => t.id === s.tr).name : DEPTS.find(x => x.id === s.go).sub)}</span><kbd>E</kbd>`; pr.hidden = false; } else pr.hidden = true; }
-    } else controls.update();
+      if (best !== near) { near = best; const pr = $('#prompt'); if (near && near !== curKey) { const s = ST[near]; pr.innerHTML = face(near) + `<span>Talk to ${esc(HEADS[near].n.split(' ')[0])} · ${esc(s.tr ? TRACKS.find(t => t.id === s.tr).name : DEPTS.find(x => x.id === s.go).sub)}</span><kbd>Enter</kbd>`; pr.hidden = false; } else pr.hidden = true; }
+      mini();
+    } else {
+      if (sheetEl.hidden) { const K = c => keys[c] ? 1 : 0, T = THREE, pf = K('ArrowUp') - K('ArrowDown'), pr = K('ArrowRight') - K('ArrowLeft'), rot = K('KeyD') - K('KeyA'), tilt = K('KeyS') - K('KeyW'), zz = Math.max(K('Equal'), K('NumpadAdd')) - Math.max(K('Minus'), K('NumpadSubtract'));
+        if (pf || pr || rot || tilt || zz) { touched = true; const o = camera.position.clone().sub(controls.target), sph = new T.Spherical().setFromVector3(o); sph.theta += rot * 1.3 * dt; sph.phi = Math.max(.12, Math.min(1.3, sph.phi + tilt * .9 * dt)); sph.radius = Math.max(2.5, Math.min(60, sph.radius * Math.exp(-zz * 1.4 * dt)));
+          const fx = -Math.sin(sph.theta), fz = -Math.cos(sph.theta), sp = sph.radius * .7 * dt; controls.target.x = Math.max(-W / 2, Math.min(W / 2, controls.target.x + (fx * pf - fz * pr) * sp)); controls.target.z = Math.max(-D / 2, Math.min(D / 2, controls.target.z + (fz * pf + fx * pr) * sp));
+          camera.position.copy(controls.target).add(o.setFromSpherical(sph)); camera.lookAt(controls.target); } }
+      if (controls.enabled) controls.update();
+    }
     for (const k in ST) { const s = ST[k]; let th = 0; if (k === curKey || (mode === 'walk' && Math.hypot(s.head.x - camera.position.x, s.head.z - camera.position.z) < 4.5)) { th = Math.atan2(camera.position.x - s.head.x, camera.position.z - s.head.z) - s.r - Math.PI; th = Math.atan2(Math.sin(th), Math.cos(th)); th = Math.max(-1.25, Math.min(1.25, th)); } s.hd.rotation.y += (th - s.hd.rotation.y) * Math.min(1, dt * 5); }
     renderer.render(scene, camera);
     if (mode !== 'walk') { const w = el.clientWidth, h = el.clientHeight; for (const k in ST) { const s = ST[k]; v.copy(s.pos).project(camera); const x = (v.x * .5 + .5) * w, y = (-v.y * .5 + .5) * h; s.el.hidden = v.z > 1 || x < 0 || x > w || y < 20 || y > h + 30; s.el.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px) translate(-50%,-100%) translateY(-14px)`; s.el.style.zIndex = Math.round(y); } }
   }
   function labels(){ if (!el) return; for (const k in ST) { const s = ST[k], n = s.tr ? labDone(s.tr) + '/' + chOf(s.tr).length : deptStat(s.go).c, d = s.tr ? TRACKS.find(t => t.id === s.tr).name : DEPTS.find(x => x.id === s.go).name; s.el.innerHTML = face(k) + `<b>${esc(HEADS[k].n.split(' ')[0])}</b><span>${esc(d)}</span>${n ? `<small class="num">${esc(n)}</small>` : ''}`; s.el.setAttribute('aria-label', HEADS[k].n + ', ' + d); } }
-  return {init, focus, setMode, faces, labels, ST, keys:() => keys, talk:() => { if (near) go(near); }, failed:() => failed};
+  return {init, focus, setMode, zoom, faces, labels, ST, keys:() => keys, talk:() => { if (near) go(near); }, failed:() => failed};
 })();
 
 const CAST_D = {id:'casting', name:'Casting', head:'pam', sub:'Faces and wall pictures'};
@@ -1257,21 +1293,23 @@ function paintCast(){
   for (let r = 0; r < R; r++) for (let c = 0; c < C; c++) { const b = document.createElement('button'); b.className = 'cell'; b.dataset.act = 'cell'; b.dataset.r = r; b.dataset.c = c; b.setAttribute('aria-label', `Row ${r + 1}, column ${c + 1}`); const cv = document.createElement('canvas'); cv.width = cv.height = 120; cv.getContext('2d').drawImage(im, c * cw, r * ch, cw, ch, 0, 0, 120, 120); b.appendChild(cv); gEl.appendChild(b); }
 }
 function castCell(r, c){ const im = ui.castImg, cw = im.width / ui.castC, ch = im.height / ui.castR, m = Math.min(cw, ch) * .03, cv = document.createElement('canvas'); cv.width = cv.height = 360; cv.getContext('2d').drawImage(im, c * cw + m, r * ch + m, cw - 2 * m, ch - 2 * m, 0, 0, 360, 360); const k = ui.castK, ks = Object.keys(HEADS); ui.castK = ks.find(x => x !== k && !pic(x)) || k; setPic(k, cv.toDataURL('image/jpeg', .85)); }
-const keyFor = r => ({'front-desk':'michael', admin:'pam', sales:'jim', farm:'dwight', warehouse:'darryl', social:'kelly', hr:'toby'})[r] || (r === 'lab' ? TRACKS.find(t => t.id === ui.track).head : null);
+const keyFor = r => ({'front-desk':'michael', admin:'pam', sales:'jim', farm:'dwight', warehouse:'darryl', social:'kelly', hr:'toby', bucket:'kevin'})[r] || (r === 'lab' ? TRACKS.find(t => t.id === ui.track).head : null);
 
 /* ───────── Render and events ───────── */
-const VIEWS = {floor:() => '', casting:viewCasting, 'front-desk':viewFront, sales:viewSales, admin:viewAdmin, lab:viewLab, warehouse:viewWarehouse, farm:viewFarm, social:viewSocial, hr:viewHR};
+const VIEWS = {floor:() => '', casting:viewCasting, bucket:viewBucket, 'front-desk':viewFront, sales:viewSales, admin:viewAdmin, lab:viewLab, warehouse:viewWarehouse, farm:viewFarm, social:viewSocial, hr:viewHR};
 function render(){
   const h = location.hash.slice(1); route = VIEWS[h] ? h : 'floor'; if (route === 'floor' && Floor.failed()) route = 'front-desk';
-  const open = route !== 'floor', sh = $('#sheet'); sh.hidden = !open; document.body.classList.toggle('no3d', Floor.failed());
+  const open = route !== 'floor', sh = $('#sheet'), changed = route !== lastRoute; lastRoute = route; sh.hidden = !open; document.body.classList.toggle('no3d', Floor.failed());
   const a = document.activeElement, keep = a && a.id && a.closest('#main') ? {id:a.id, s:a.selectionStart, e:a.selectionEnd, v:a.id === 'code' ? a.value : null, top:a.scrollTop} : null;
   $('#main').innerHTML = open ? VIEWS[route](route === 'casting' ? CAST_D : DEPTS.find(d => d.id === route)) : '';
   Floor.labels(); Floor.focus(open ? keyFor(route) : null, route === 'casting'); if (route === 'casting') paintCast();
+  if (changed) { if (open) sh.focus({preventScroll:true}); else if (document.activeElement) document.activeElement.blur(); }
   if (keep) { const el = document.getElementById(keep.id); if (el) { if (keep.v != null) el.value = keep.v; el.focus({preventScroll:true}); try { el.setSelectionRange(keep.s, keep.e); el.scrollTop = keep.top; } catch (e) {} } }
 }
 function stashCode(){ const el = $('#code'); if (el && route === 'lab') { const c = curCh(); if (el.value !== (CODE[c.id] != null ? CODE[c.id] : c.starter)) { CODE[c.id] = el.value; saveCode(); } } }
 document.addEventListener('click', e => {
-  const mb = e.target.closest('[data-mode]'); if (mb) return Floor.setMode(mb.dataset.mode);
+  const mb = e.target.closest('[data-mode]'); if (mb) { mb.blur(); return Floor.setMode(mb.dataset.mode); }
+  const zb = e.target.closest('[data-zoom]'); if (zb) return Floor.zoom(+zb.dataset.zoom * 10);
   if (e.target.closest('#prompt')) return Floor.talk();
   const b = e.target.closest('[data-act]'); if (!b || b.matches('input,select,textarea')) return;
   const a = b.dataset.act, k = b.dataset.k;
@@ -1319,7 +1357,7 @@ document.addEventListener('keydown', e => {
 });
 document.addEventListener('focusout', e => { if (e.target.id === 'code') stashCode(); });
 window.addEventListener('hashchange', () => { document.activeElement && document.activeElement.blur(); render(); $('#sheet').scrollTop = 0; });
-document.addEventListener('keydown', e => { if (e.key === 'Escape' && route !== 'floor' && !document.pointerLockElement) location.hash = 'floor'; });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && route !== 'floor') location.hash = 'floor'; });
 $('#pad').addEventListener('pointerdown', e => { const b = e.target.closest('[data-key]'); if (b) { e.preventDefault(); Floor.keys()[b.dataset.key] = true; } });
 ['pointerup', 'pointercancel', 'pointerleave'].forEach(n => $('#pad').addEventListener(n, e => { const b = e.target.closest('[data-key]'); if (b) Floor.keys()[b.dataset.key] = false; }, true));
 
