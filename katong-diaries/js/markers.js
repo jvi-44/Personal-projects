@@ -109,6 +109,25 @@
       slot.el.style.transform = 'translate(' + Math.round(lx) + 'px,' + Math.round(ly) + 'px)';
     }
     for (k = shown; k < pool.length; k++) if (pool[k].id !== null) { pool[k].id = null; pool[k].el.style.transform = 'translate(-9999px,-9999px)'; }
+    // street names (map view only)
+    var sp = this.spool, ss = 0;
+    if (sp && !walking && viewDist < 3200) {
+      var minLen = viewDist * 0.16, st = this.streets;
+      for (k = 0; k < st.length && ss < sp.length; k++) {
+        var r = st[k]; if (r.len < minLen) break;
+        v.set(r.x, 1, r.z).project(cam); if (v.z > 1 || v.z < -1 || Math.abs(v.x) > 0.96 || Math.abs(v.y) > 0.9) continue;
+        var tw = r.name.length * 7.4 + 8, tx = (v.x * 0.5 + 0.5) * w - tw / 2, ty = (-v.y * 0.5 + 0.5) * h - 8, free = true;
+        for (j = 0; j < used.length; j++) { var uu = used[j]; if (tx < uu[0] + uu[2] + 4 && tx + tw + 4 > uu[0] && ty < uu[1] + 20 && ty + 18 > uu[1]) { free = false; break; } }
+        if (!free) continue; used.push([tx, ty, tw]);
+        var sl = sp[ss++]; if (sl.id !== r.name) { sl.id = r.name; sl.el.textContent = r.name; }
+        sl.el.style.transform = 'translate(' + Math.round(tx) + 'px,' + Math.round(ty) + 'px)';
+      }
+    }
+    if (sp) for (k = ss; k < sp.length; k++) if (sp[k].id !== null) { sp[k].id = null; sp[k].el.style.transform = 'translate(-9999px,-9999px)'; }
+  };
+  Markers.prototype.setStreets = function (list) {
+    this.streets = list.slice().sort(function (a, b) { return b.len - a.len; }); this.spool = [];
+    for (var i = 0; i < (this.world.mobile ? 6 : 12); i++) { var el = document.createElement('div'); el.className = 'lbl street'; this.root.appendChild(el); this.spool.push({ el: el, id: null }); }
   };
   /* is there a building between the eye and this pin? (2D walk along the sight line) */
   Markers.prototype.clearSight = function (cx, cy, cz, p) {

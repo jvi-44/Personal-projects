@@ -83,6 +83,15 @@
     canvas.addEventListener('pointerdown', stopTour);
 
     var ui = new KD.UI(app); KD.app = app; KD.ui = ui;
+    markers.setStreets(ui.streets);
+    // start the avatar outside the Katong Square Starbucks, facing it
+    (function () {
+      var nr = world.nearestRoad(0, 0, 120, function (r) { return r.cls <= 12 && !r.h && W.names[r.name] === 'East Coast Road'; }) || world.nearestRoad(0, 0, 120, function (r) { return r.cls <= 12 && !r.h; });
+      var s0 = nr ? { x: nr.x, z: nr.z } : controls.standNear(0, 4);
+      if (!world.walkable(s0.x, s0.z)) s0 = controls.standNear(0, 4);
+      controls.pos.set(s0.x, 0, s0.z); controls.placed = true;
+      var y0 = Math.atan2(-(0 - s0.x), -(0 - s0.z)); controls.look.yaw = controls.lg.yaw = y0; controls.heading = y0 + Math.PI;
+    })();
     controls.onMode = function (m) { ui.setMode(m); if (m !== 'map') ui.toast(m === 'stroll' ? 'Strolling. Drag to look around' : 'Street view. Tap the road to walk there'); };
     ui.setMode('map'); app.syncPins();
 

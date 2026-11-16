@@ -358,8 +358,9 @@
     var mallPlace = {}; this.places.forEach(function (p) { if (p.mall) mallPlace[p.mall] = p; });
     Object.keys(malls).forEach(function (mid) { var mp = mallPlace[mid]; if (!mp) return; malls[mid].floors.forEach(function (f) { f[1].forEach(function (s) { if (s[3]) return; idx.push({ t: (s[0] + ' ' + malls[mid].name).toLowerCase(), n: s[0].toLowerCase(), k: 1, s: s, m: mp, fl: f[0] }); }); }); });
     var seen = {};
-    W.roads.forEach(function (r) { if (!r.name || r.cls > 14) return; var nm = W.names[r.name]; var e = seen[nm] || (seen[nm] = { len: 0 }); var p = r.pts, L = 0; for (var i = 2; i < p.length; i += 2) L += Math.hypot(p[i] - p[i - 2], p[i + 1] - p[i - 1]); if (L > e.len) { e.len = L; var m = Math.floor(p.length / 4) * 2; e.x = p[m]; e.z = p[m + 1]; } });
-    Object.keys(seen).forEach(function (nm) { idx.push({ t: nm.toLowerCase(), n: nm.toLowerCase(), k: 2, name: nm, x: seen[nm].x, z: seen[nm].z }); });
+    W.roads.forEach(function (r) { if (!r.name || r.cls > 14) return; var nm = W.names[r.name]; var e = seen[nm] || (seen[nm] = { len: 0, best: 0 }); var p = r.pts, L = 0; for (var i = 2; i < p.length; i += 2) L += Math.hypot(p[i] - p[i - 2], p[i + 1] - p[i - 1]); e.len += L; if (L > e.best) { e.best = L; var m = Math.floor(p.length / 4) * 2; e.x = p[m]; e.z = p[m + 1]; } });
+    this.streets = [];
+    Object.keys(seen).forEach(function (nm) { idx.push({ t: nm.toLowerCase(), n: nm.toLowerCase(), k: 2, name: nm, x: seen[nm].x, z: seen[nm].z }); self.streets.push({ name: nm, x: seen[nm].x, z: seen[nm].z, len: seen[nm].len }); });
   };
   UI.prototype._search = function (q) {
     var box = $('results'); q = q.trim().toLowerCase();

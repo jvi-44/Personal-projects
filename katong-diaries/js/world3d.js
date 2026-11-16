@@ -457,7 +457,7 @@
     }, { repeat: true });
     nm.colorSpace = T.NoColorSpace; nm.repeat.set(900, 900);
     this.waterNormal = nm;
-    this.matWater = new T.MeshPhongMaterial({ color: 0x3d8ca6, specular: 0x9fb8c4, shininess: 70, normalMap: nm, normalScale: new T.Vector2(0.5, 0.5) });
+    this.matWater = new T.MeshPhongMaterial({ color: 0x3d8ca6, specular: 0x9fb8c4, shininess: 70, normalMap: nm, normalScale: new T.Vector2(0.5, 0.5), depthFunc: T.AlwaysDepth });
     var sea = new T.Mesh(new T.PlaneGeometry(70000, 70000), this.matWater); sea.rotation.x = -Math.PI / 2; sea.position.y = -0.55; sea.renderOrder = -5;
     this.scene.add(sea); this.sea = sea;
     // land
@@ -466,7 +466,7 @@
     var g = f.toGeometry(), uv = new Float32Array(f.v * 2);
     for (i = 0; i < f.v; i++) { uv[i * 2] = f.p[i * 3] / 36; uv[i * 2 + 1] = f.p[i * 3 + 2] / 36; }
     g.setAttribute('uv', new T.BufferAttribute(uv, 2));
-    this.matLand = new T.MeshLambertMaterial({ color: 0xbfcfa6, map: this.noise });
+    this.matLand = new T.MeshLambertMaterial({ color: 0xbfcfa6, map: this.noise, depthFunc: T.AlwaysDepth });
     var land = new T.Mesh(g, this.matLand); land.receiveShadow = true; land.renderOrder = -4; this.scene.add(land); this.land = land;
     // soft mist beyond the mapped radius
     var R = W.radius, seg = 120, pos = [], col = [], idx = [];
@@ -479,7 +479,8 @@
   };
 
   World.prototype._flatMat = function (order) {
-    return new T.MeshLambertMaterial({ vertexColors: true, depthWrite: false, side: T.DoubleSide, polygonOffset: true, polygonOffsetFactor: -1 - order, polygonOffsetUnits: -2 - order * 2 });
+    // ground layers are painted in order straight after the land, before anything that stands on it, so they need no depth test
+    return new T.MeshLambertMaterial({ vertexColors: true, depthWrite: false, depthTest: false, side: T.DoubleSide });
   };
 
   World.prototype._buildAreas = function () {
@@ -495,7 +496,7 @@
     }
     var m = new T.Mesh(f.toGeometry(), this._flatMat(0)); m.receiveShadow = true; m.renderOrder = -3; this.scene.add(m); this.areasMesh = m;
     var wg = fw.toGeometry();
-    var wm = new T.Mesh(wg, new T.MeshPhongMaterial({ color: 0x4f9bb0, specular: 0x8fa8b4, shininess: 60, normalMap: this.waterNormal, normalScale: new T.Vector2(0.4, 0.4), vertexColors: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 }));
+    var wm = new T.Mesh(wg, new T.MeshPhongMaterial({ color: 0x4f9bb0, specular: 0x8fa8b4, shininess: 60, normalMap: this.waterNormal, normalScale: new T.Vector2(0.4, 0.4), vertexColors: true, depthWrite: false, depthTest: false }));
     var uv = new Float32Array(fw.v * 2); for (i = 0; i < fw.v; i++) { uv[i * 2] = fw.p[i * 3] / 70; uv[i * 2 + 1] = fw.p[i * 3 + 2] / 70; }
     wg.setAttribute('uv', new T.BufferAttribute(uv, 2));
     wm.material.normalMap = this.waterNormal.clone(); wm.material.normalMap.repeat.set(1, 1); wm.material.normalMap.needsUpdate = true; this.inlandNormal = wm.material.normalMap;
@@ -704,7 +705,7 @@
     }, { repeat: true });
     dashTex.wrapS = T.ClampToEdgeWrapping; dashTex.magFilter = T.LinearFilter;
     this.matFlat = this._flatMat(1);
-    this.matDash = new T.MeshLambertMaterial({ map: dashTex, vertexColors: true, alphaTest: 0.5, transparent: false, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -4, polygonOffsetUnits: -8 });
+    this.matDash = new T.MeshLambertMaterial({ map: dashTex, vertexColors: true, alphaTest: 0.5, transparent: false, depthWrite: false, depthTest: false });
     this.matElev = new T.MeshLambertMaterial({ color: 0xffffff });
     var fac = this.facade, U = this.uniforms, bm = this.matBuilding;
     this.roadTiles = [];

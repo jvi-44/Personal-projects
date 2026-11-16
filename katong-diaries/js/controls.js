@@ -194,12 +194,24 @@
       L.yaw += (LG.yaw - L.yaw) * Math.min(1, dt * 14); L.pitch += (LG.pitch - L.pitch) * k; L.dist += (LG.dist - L.dist) * k; L.pov += (LG.pov - L.pov) * Math.min(1, dt * 14); L.fov += (LG.fov - L.fov) * k;
       var av = this.avatar; av.group.position.x = this.pos.x; av.group.position.z = this.pos.z; av.baseY = this.pos.y; av.group.rotation.y = this.heading; av.update(dt, this.speed);
       if (this.mode === 'stroll') {
-        var cp = Math.cos(L.pitch), ox = Math.sin(L.yaw) * cp, oy = Math.sin(L.pitch), oz = Math.cos(L.yaw) * cp, hx = this.pos.x, hy = this.pos.y + 1.45, hz = this.pos.z, dist = L.dist, w = this.world;
-        for (var s = 1; s <= 12; s++) {           // keep the camera out of walls
-          var t = s / 12 * L.dist, qx = hx + ox * t, qz = hz + oz * t, qy = hy + oy * t, b = w.buildingAt(qx, qz);
-          if (b && qy < b.h + 0.5 && !w.walkable(qx, qz)) { dist = Math.max(1.6, (s - 1) / 12 * L.dist); break; }
+        var hx = this.pos.x, hy = this.pos.y + 1.45, hz = this.pos.z, w = this.world, yaw = L.yaw, want = L.dist;
+        // how far back can the camera sit at this pitch before a wall gets in the way?
+        var probe = function (pitch) {
+          var cp = Math.cos(pitch), ox = Math.sin(yaw) * cp, oy = Math.sin(pitch), oz = Math.cos(yaw) * cp;
+          for (var s = 1; s <= 12; s++) {
+            var t = s / 12 * want, qx = hx + ox * t, qz = hz + oz * t, qy = hy + oy * t, b = w.buildingAt(qx, qz);
+            if (b && qy < b.h + 0.5 && !w.walkable(qx, qz)) return Math.max(1.6, (s - 1) / 12 * want);
+          }
+          return want;
+        };
+        var pitch = L.pitch, dist = probe(pitch);
+        if (dist < Math.min(want, 5)) {            // boxed in: lift the camera over the obstacle instead of crowding her
+          for (var a = 1; a <= 4; a++) { var p2 = Math.min(1.35, L.pitch + a * 0.28), d2 = probe(p2); if (d2 > dist + 1) { dist = d2; pitch = p2; if (d2 >= want * 0.9) break; } }
         }
-        d.position.set(hx + ox * dist, Math.max(0.5, hy + oy * dist), hz + oz * dist); d.lookAt(hx, hy + 0.1, hz); d.fov = 55;
+        if (this.camD === undefined || KD.fast) { this.camD = dist; this.camP = pitch; }
+        var kk = Math.min(1, dt * 7); this.camD += (dist - this.camD) * kk; this.camP += (pitch - this.camP) * kk;
+        var cp2 = Math.cos(this.camP);
+        d.position.set(hx + Math.sin(yaw) * cp2 * this.camD, Math.max(0.5, hy + Math.sin(this.camP) * this.camD), hz + Math.cos(yaw) * cp2 * this.camD); d.lookAt(hx, hy + 0.1, hz); d.fov = 55;
       } else {
         var c2 = Math.cos(L.pov); d.position.set(this.pos.x, this.pos.y + 1.62, this.pos.z);
         d.lookAt(this.pos.x - Math.sin(L.yaw) * c2, this.pos.y + 1.62 + Math.sin(L.pov), this.pos.z - Math.cos(L.yaw) * c2); d.fov = L.fov;
