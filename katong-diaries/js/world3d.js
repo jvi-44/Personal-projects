@@ -414,7 +414,7 @@
         .replace('#include <begin_vertex>', '#include <begin_vertex>\nvTint = tint; vFuv = uv;');
       sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nprecision highp sampler2DArray;\nuniform sampler2DArray facadeTex;\nuniform sampler2DArray glowTex;\nuniform float uGlow;\nvarying vec4 vTint;\nvarying vec2 vFuv;')
         .replace('#include <map_fragment>', 'float kdLayer = floor(vTint.a * 255.0 + 0.5);\nvec4 kdT = texture(facadeTex, vec3(vFuv, kdLayer));\nvec3 kdTint = pow(vTint.rgb, vec3(2.2));\ndiffuseColor.rgb = mix(kdT.rgb, kdT.rgb * kdTint, kdT.a);')
-        .replace('#include <emissivemap_fragment>', 'float kdG = texture(glowTex, vec3(vFuv, kdLayer)).r;\nfloat kdCell = fract(sin(dot(floor(vFuv) + kdLayer * 7.0, vec2(12.9898, 78.233))) * 43758.5453);\ntotalEmissiveRadiance += vec3(1.0, 0.74, 0.42) * kdG * uGlow * (0.25 + 0.75 * step(0.42, kdCell));');
+        .replace('#include <emissivemap_fragment>', 'float kdG = texture(glowTex, vec3(vFuv, kdLayer)).r;\nfloat kdCell = fract(sin(dot(floor(vFuv) + kdLayer * 7.0, vec2(12.9898, 78.233))) * 43758.5453);\ntotalEmissiveRadiance += (vec3(1.0, 0.7, 0.36) * 0.55 + kdT.rgb * 0.5) * kdG * uGlow * (0.12 + 0.88 * step(0.45, kdCell));');
     };
     this.noise = KD.noiseTexture(T, 256, 7, 200, 255);
     this.noise.repeat.set(1, 1);
@@ -434,7 +434,8 @@
         ' float s = max(dot(d, normalize(sunDir)), 0.0); c += sunCol * (pow(s, 900.0) * 6.0 + pow(s, 12.0) * 0.22 + pow(s, 3.0) * 0.08);\n' +
         ' if (d.y > 0.0) { vec2 q = d.xz / (d.y + 0.22) * 1.4 + vec2(cloudT, cloudT * 0.6); float n = vn(q) * 0.55 + vn(q * 2.1 + 3.7) * 0.3 + vn(q * 4.3 + 9.1) * 0.15;\n' +
         '   float cl = smoothstep(0.52, 0.78, n) * smoothstep(0.0, 0.18, d.y); c = mix(c, mix(hor, vec3(1.0), 0.7) * (0.55 + 0.45 * cloudLit), cl * 0.85); }\n' +
-        ' if (stars > 0.01) { vec2 g = floor(d.xz / max(d.y, 0.05) * 60.0); float st = step(0.992, h21(g)) * smoothstep(0.05, 0.4, d.y); c += vec3(st) * stars; }\n' +
+        ' if (stars > 0.01 && d.y > 0.02) { vec2 sp = d.xz / (d.y + 0.35) * 90.0; vec2 g = floor(sp); vec2 f = fract(sp) - 0.5; float on = step(0.965, h21(g));\n' +
+        '   float st = on * smoothstep(0.16, 0.0, length(f)) * smoothstep(0.02, 0.35, d.y) * (0.5 + 0.5 * h21(g + 7.0)); c += vec3(st) * stars; }\n' +
         ' gl_FragColor = vec4(c, 1.0);\n #include <tonemapping_fragment>\n #include <colorspace_fragment>\n }'
     });
     this.sky = new T.Mesh(new T.SphereGeometry(1, 32, 16), m); this.sky.scale.setScalar(30000); this.sky.renderOrder = -100; this.sky.frustumCulled = false;
@@ -456,7 +457,7 @@
     }, { repeat: true });
     nm.colorSpace = T.NoColorSpace; nm.repeat.set(900, 900);
     this.waterNormal = nm;
-    this.matWater = new T.MeshStandardMaterial({ color: 0x3d8ca6, roughness: 0.22, metalness: 0.15, normalMap: nm, normalScale: new T.Vector2(0.55, 0.55) });
+    this.matWater = new T.MeshPhongMaterial({ color: 0x3d8ca6, specular: 0x9fb8c4, shininess: 70, normalMap: nm, normalScale: new T.Vector2(0.5, 0.5) });
     var sea = new T.Mesh(new T.PlaneGeometry(70000, 70000), this.matWater); sea.rotation.x = -Math.PI / 2; sea.position.y = -0.55; sea.renderOrder = -5;
     this.scene.add(sea); this.sea = sea;
     // land
@@ -494,7 +495,7 @@
     }
     var m = new T.Mesh(f.toGeometry(), this._flatMat(0)); m.receiveShadow = true; m.renderOrder = -3; this.scene.add(m); this.areasMesh = m;
     var wg = fw.toGeometry();
-    var wm = new T.Mesh(wg, new T.MeshStandardMaterial({ color: 0x4f9bb0, roughness: 0.25, metalness: 0.12, normalMap: this.waterNormal, normalScale: new T.Vector2(0.4, 0.4), vertexColors: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 }));
+    var wm = new T.Mesh(wg, new T.MeshPhongMaterial({ color: 0x4f9bb0, specular: 0x8fa8b4, shininess: 60, normalMap: this.waterNormal, normalScale: new T.Vector2(0.4, 0.4), vertexColors: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 }));
     var uv = new Float32Array(fw.v * 2); for (i = 0; i < fw.v; i++) { uv[i * 2] = fw.p[i * 3] / 70; uv[i * 2 + 1] = fw.p[i * 3 + 2] / 70; }
     wg.setAttribute('uv', new T.BufferAttribute(uv, 2));
     wm.material.normalMap = this.waterNormal.clone(); wm.material.normalMap.repeat.set(1, 1); wm.material.normalMap.needsUpdate = true; this.inlandNormal = wm.material.normalMap;
@@ -832,7 +833,7 @@
       g.rotateY(a); g.translate(0, 8.3, 0); parts.push({ g: g, c: '#4f8f3f', c2: '#3c7a33' });
     }
     var palm = merge(parts);
-    var small = merge([{ g: cyl(0.12, 0.18, 2.6, 0, 5), c: trunk }, { g: ico(2.1, 1, 0.95, 1, 0, 4.1, 0, 1), c: '#4c8a3c', c2: '#8cc060' }]);
+    var small = merge([{ g: cyl(0.1, 0.16, 3.4, 0, 5), c: trunk }, { g: ico(1.7, 1.1, 0.8, 1.1, 0, 4.5, 0, 1), c: '#5a9a48', c2: '#9ccc6c' }, { g: ico(1.1, 1, 0.8, 1, 0.9, 5.3, 0.3), c: '#64a450', c2: '#a8d478' }]);
     var c1 = new T.ConeGeometry(2.0, 5.2, 7); c1.translate(0, 5.4, 0); var c2 = new T.ConeGeometry(1.4, 4.4, 7); c2.translate(0, 8.4, 0);
     var casu = merge([{ g: cyl(0.14, 0.2, 3.2, 0, 5), c: trunk }, { g: c1, c: '#2f6a45', c2: '#4b8c5a' }, { g: c2, c: '#356f48', c2: '#5a9a62' }]);
     this.treeGeo = [rain, palm, small, casu];
@@ -892,8 +893,8 @@
   var TOD = {
     morning: { top: 0x6fa9e0, hor: 0xf6dcc4, fog: 0xead9cc, sun: 0xffe2bd, sunI: 2.1, hemiS: 0xe6efff, hemiG: 0xa59a88, hemiI: 0.95, dir: [-0.72, 0.42, 0.25], exp: 1.02, glow: 0.0, stars: 0, water: 0x4a93a8, land: 0xc2d0a8, label: 'Morning' },
     day: { top: 0x3f86d8, hor: 0xcfe6f2, fog: 0xd3e6ef, sun: 0xfff4e2, sunI: 2.6, hemiS: 0xdcecff, hemiG: 0x9c9686, hemiI: 1.05, dir: [0.38, 0.86, 0.3], exp: 1.0, glow: 0.0, stars: 0, water: 0x3d8ca6, land: 0xbfcfa6, label: 'Midday' },
-    golden: { top: 0x5a7fc0, hor: 0xffc28a, fog: 0xf3c9a4, sun: 0xffb066, sunI: 2.5, hemiS: 0xffd9c0, hemiG: 0x8f7f76, hemiI: 0.8, dir: [0.82, 0.24, -0.35], exp: 1.05, glow: 0.35, stars: 0, water: 0x5f8fa0, land: 0xc7c79a, label: 'Golden hour' },
-    night: { top: 0x070d24, hor: 0x24304f, fog: 0x1c2640, sun: 0x8fa6e0, sunI: 0.55, hemiS: 0x41507c, hemiG: 0x1c1e2a, hemiI: 0.75, dir: [-0.3, 0.75, -0.4], exp: 1.25, glow: 1.6, stars: 1, water: 0x16314a, land: 0x55664f, label: 'Night' }
+    golden: { top: 0x5a7fc0, hor: 0xffc28a, fog: 0xf3c9a4, sun: 0xffb066, sunI: 2.5, hemiS: 0xffd9c0, hemiG: 0x8f7f76, hemiI: 0.8, dir: [0.82, 0.24, -0.35], exp: 1.05, glow: 0.3, stars: 0, water: 0x6d9db0, land: 0xc7c79a, label: 'Golden hour' },
+    night: { top: 0x070d24, hor: 0x24304f, fog: 0x1c2640, sun: 0x8fa6e0, sunI: 0.55, hemiS: 0x41507c, hemiG: 0x1c1e2a, hemiI: 0.75, dir: [-0.3, 0.75, -0.4], exp: 1.25, glow: 1.0, stars: 1, water: 0x1b3a55, land: 0x55664f, label: 'Night' }
   };
   KD.TOD = TOD;
   World.prototype.setTimeOfDay = function (name, instant) {
