@@ -1,0 +1,2317 @@
+{
+"parkway-parade": {
+"name": "Parkway Parade",
+"stores": [
+{
+"n": "1st Prize Home DIY",
+"u": "#B1-23/24",
+"c": "Houseware & Furnishings"
+},
+{
+"n": "50 Years Taste of Tradition",
+"u": "#B1-111",
+"c": "Food & Beverages"
+},
+{
+"n": "6 Elements Hair Spa",
+"u": "#02-08",
+"c": "Beauty & Health"
+},
+{
+"n": "Adore Cosmetics",
+"u": "#B1-49 & 67",
+"c": "Beauty & Health"
+},
+{
+"n": "Align Braces Clinic",
+"u": "#05-16",
+"c": "Medical & Dental"
+},
+{
+"n": "AMACHA",
+"u": "#01-11E",
+"c": "Food & Beverages"
+},
+{
+"n": "ANAKE",
+"u": "#01-23C/23D",
+"c": "Beauty & Health"
+},
+{
+"n": "AquaFlask",
+"u": "#01-K4",
+"c": "Lifestyle"
+},
+{
+"n": "Arch Angel",
+"u": "#02-19",
+"c": "Shoes & Bags"
+},
+{
+"n": "ASICS",
+"u": "#01-49-52",
+"c": "Sporting Goods & Apparel"
+},
+{
+"n": "Aslowe",
+"u": "#02-56",
+"c": "Jewellery & Watches"
+},
+{
+"n": "Aspire Hub Education",
+"u": "#01-58",
+"c": "Educational & Stationery"
+},
+{
+"n": "AsterSpring",
+"u": "#02-65/66",
+"c": "Beauty & Health"
+},
+{
+"n": "Auntie Anne's",
+"u": "#B1-08",
+"c": "Food & Beverages"
+},
+{
+"n": "Bank of China",
+"u": "#01-59-62A",
+"c": "Banks"
+},
+{
+"n": "Barani",
+"u": "#02-61",
+"c": "Shoes & Bags"
+},
+{
+"n": "Bata",
+"u": "#01-65-67",
+"c": "Shoes & Bags"
+},
+{
+"n": "Bed Bath N' Table",
+"u": "#B1-41/41A/42",
+"c": "Houseware & Furnishings"
+},
+{
+"n": "Bee Cheng Hiang",
+"u": "#B1-88",
+"c": "Food & Beverages"
+},
+{
+"n": "BEGA",
+"u": "#01-74/75",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Below Zero",
+"u": "#B1-89/90",
+"c": "Beauty & Health"
+},
+{
+"n": "Bengawan Solo",
+"u": "#B1-78/79",
+"c": "Food & Beverages"
+},
+{
+"n": "Benjamin Barker",
+"u": "#01-25/26",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Best Denki",
+"u": "#03-29/30",
+"c": "Electrical & Electronics"
+},
+{
+"n": "Better Vision",
+"u": "#B1-05/06",
+"c": "Optical"
+},
+{
+"n": "bloomB",
+"u": "#02-26 ",
+"c": "Kids"
+},
+{
+"n": "Blumora",
+"u": "#B1-30-32",
+"c": "Gifts & Souvenirs"
+},
+{
+"n": "BMF Clinic",
+"u": "#B1-157/158",
+"c": "Beauty & Health"
+},
+{
+"n": "BMF The Aesthetics People",
+"u": "#B1-156",
+"c": "Beauty & Health"
+},
+{
+"n": "Bonage",
+"u": "#B1-21",
+"c": "Beauty & Health"
+},
+{
+"n": "Bottles & Bottles",
+"u": "#B1-83K/83L",
+"c": "Food & Beverages"
+},
+{
+"n": "Bountifuliving",
+"u": "#03-30E",
+"c": "Houseware & Furnishings"
+},
+{
+"n": "Braun B\u00fcffel",
+"u": "#01-47/48",
+"c": "Shoes & Bags"
+},
+{
+"n": "BreadTalk",
+"u": "#B1-83P/83Q",
+"c": "Food & Beverages"
+},
+{
+"n": "Browhaus",
+"u": "#B1-83G",
+"c": "Beauty & Health"
+},
+{
+"n": "Canton Paradise",
+"u": "#01-34",
+"c": "Food & Beverages"
+},
+{
+"n": "CARS International",
+"u": "L3 Carpark",
+"c": "Services"
+},
+{
+"n": "Cedele",
+"u": "#B1-83D",
+"c": "Food & Beverages"
+},
+{
+"n": "CFOOT",
+"u": "#02-57",
+"c": "Shoes & Bags"
+},
+{
+"n": "CHAGEE",
+"u": "#01-03-06",
+"c": "Food & Beverages"
+},
+{
+"n": "Chalk Farm",
+"u": "#B1-83M",
+"c": "Food & Beverages"
+},
+{
+"n": "Challenger",
+"u": "#04-01",
+"c": "Electrical & Electronics"
+},
+{
+"n": "CHANEL",
+"u": "#01-20/21",
+"c": "Beauty & Health"
+},
+{
+"n": "Chateau de Sable",
+"u": "#02-25",
+"c": "Kids"
+},
+{
+"n": "Chateraise ",
+"u": "#03-30B",
+"c": "Food & Beverages"
+},
+{
+"n": "Clarins",
+"u": "#01-18",
+"c": "Beauty & Health"
+},
+{
+"n": "Clarks",
+"u": "#01-76-77",
+"c": "Shoes & Bags"
+},
+{
+"n": "Clippers Barber",
+"u": "#03-12",
+"c": "Beauty & Health"
+},
+{
+"n": "Cotton On",
+"u": "#01-80-82",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Cotton On Kids",
+"u": "#02-48-51",
+"c": "Kids"
+},
+{
+"n": "Crocs",
+"u": "#02-37-39",
+"c": "Shoes & Bags"
+},
+{
+"n": "CS Fresh",
+"u": "#B1-84",
+"c": "Supermarket"
+},
+{
+"n": "Dah Kai Medical & Dept Store",
+"u": "#03-20/20A",
+"c": "Beauty & Health"
+},
+{
+"n": "Daiso",
+"u": "#03-26B",
+"c": "Lifestyle"
+},
+{
+"n": "DBS",
+"u": "#01-12",
+"c": "Banks"
+},
+{
+"n": "Dental Icon",
+"u": "#05-03",
+"c": "Medical & Dental"
+},
+{
+"n": "Denticare",
+"u": "#05-02",
+"c": "Medical & Dental"
+},
+{
+"n": "Dian Xiao Er",
+"u": "#02-14-17 & 68-70",
+"c": "Food & Beverages"
+},
+{
+"n": "Din Tai Fung",
+"u": "#01-15",
+"c": "Food & Beverages"
+},
+{
+"n": "Eco Ring",
+"u": "#02-06/07",
+"c": "Services"
+},
+{
+"n": "Elite Supplements",
+"u": "#B1-53",
+"c": "Beauty & Health"
+},
+{
+"n": "Emperor Optics",
+"u": "#B1-72/73",
+"c": "Optical"
+},
+{
+"n": "Empire Chinese Cuisine",
+"u": "#02-13/13A",
+"c": "Food & Beverages"
+},
+{
+"n": "Epitex",
+"u": "#03-23",
+"c": "Houseware & Furnishings"
+},
+{
+"n": "Eu Yan Sang",
+"u": "#03-26A",
+"c": "Beauty & Health"
+},
+{
+"n": "Evergreen Stationery",
+"u": "#03-25",
+"c": "Educational & Stationery"
+},
+{
+"n": "Eye Care Clinic",
+"u": "#01-11B",
+"c": "Medical & Dental"
+},
+{
+"n": "FairPrice Xtra ",
+"u": "#03-28",
+"c": "Supermarket"
+},
+{
+"n": "Famous Amos",
+"u": "#B1-61",
+"c": "Food & Beverages"
+},
+{
+"n": "Fish Mart Sakuraya",
+"u": "#B1-84D",
+"c": "Food & Beverages"
+},
+{
+"n": "Fortune Wigs ",
+"u": "#01-68A",
+"c": "Beauty & Health"
+},
+{
+"n": "Four Leaves",
+"u": "#B1-80-82",
+"c": "Food & Beverages"
+},
+{
+"n": "Fun Toast",
+"u": "#02-K3",
+"c": "Food & Beverages"
+},
+{
+"n": "Gadget Top",
+"u": "#B1-45/46",
+"c": "IT & Telecommunications"
+},
+{
+"n": "GG<5",
+"u": "#01-78-79",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Godmama Peranakan",
+"u": "#01-69A/K5/K6",
+"c": "Food & Beverages"
+},
+{
+"n": "Gokoku Japanese Bakery",
+"u": "#B1-51/52/65",
+"c": "Food & Beverages"
+},
+{
+"n": "Goldheart",
+"u": "#01-22/23",
+"c": "Jewellery & Watches"
+},
+{
+"n": "Guardian Health & Beauty",
+"u": "#B1-147-149 & 155A",
+"c": "Beauty & Health"
+},
+{
+"n": "Gyukatsu Kyoto Katsugyu",
+"u": "#01-11",
+"c": "Food & Beverages"
+},
+{
+"n": "HAKKA YU",
+"u": "#01-36",
+"c": "Food & Beverages"
+},
+{
+"n": "Harvey Norman Superstore",
+"u": "#02-34/34A/34C/35/36",
+"c": "Electrical & Electronics"
+},
+{
+"n": "Harvey Norman Superstore",
+"u": "#02-01/02/03/04/05/64 ",
+"c": "Electrical & Electronics"
+},
+{
+"n": "Hearing Partners",
+"u": "#03-11",
+"c": "Medical & Dental"
+},
+{
+"n": "Heart to Heart Jewellery",
+"u": "#02-K1",
+"c": "Jewellery & Watches"
+},
+{
+"n": "HELEN",
+"u": "#01-K7",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Hokkaido Baked Cheese Tart",
+"u": "#01-23B",
+"c": "Food & Beverages"
+},
+{
+"n": "Home & Giving",
+"u": "#03-32",
+"c": "Houseware & Furnishings"
+},
+{
+"n": "HoneyWorld\u2122",
+"u": "#B1-55",
+"c": "Food & Beverages"
+},
+{
+"n": "HOOGA",
+"u": "#01-33",
+"c": "Houseware & Furnishings"
+},
+{
+"n": "HSBC",
+"u": "#01-92",
+"c": "Banks"
+},
+{
+"n": "HYSSES ",
+"u": "#B1-102",
+"c": "Beauty & Health"
+},
+{
+"n": "Ichiban Boshi",
+"u": "#02-12/12A",
+"c": "Food & Beverages"
+},
+{
+"n": "iClaw Taiwan",
+"u": "#B1-18B/25",
+"c": "Entertainment & Music"
+},
+{
+"n": "Income Insurance",
+"u": "#03-31",
+"c": "Services"
+},
+{
+"n": "Indulge Skin & Body Lab",
+"u": "#02-09/10",
+"c": "Beauty & Health"
+},
+{
+"n": "iStudio",
+"u": "#B1-107/108",
+"c": "Electrical & Electronics"
+},
+{
+"n": "itea",
+"u": "#B1-83",
+"c": "Food & Beverages"
+},
+{
+"n": "J.PENDULUM",
+"u": "#01-24",
+"c": "Jewellery & Watches"
+},
+{
+"n": "Jack's Place",
+"u": "#03-30D",
+"c": "Food & Beverages"
+},
+{
+"n": "Japan Home",
+"u": "#B1-83F",
+"c": "Houseware & Furnishings"
+},
+{
+"n": "Japan IPL Express",
+"u": "#B1-19/20",
+"c": "Beauty & Health"
+},
+{
+"n": "Jean Yip Beauty",
+"u": "#04-05/06",
+"c": "Beauty & Health"
+},
+{
+"n": "Ji De Chi Dessert",
+"u": "#B1-83J",
+"c": "Food & Beverages"
+},
+{
+"n": "JON LOUIS PARIS",
+"u": "#02-K5",
+"c": "Shoes & Bags"
+},
+{
+"n": "J@Wardrobe",
+"u": "#02-17A",
+"c": "Fashion & Accessories"
+},
+{
+"n": "K-Market ",
+"u": "#B1-84A",
+"c": "Specialty Store"
+},
+{
+"n": "Kawai Music School ",
+"u": "#04-02",
+"c": "Entertainment & Music"
+},
+{
+"n": "Kawai Music School",
+"u": "#03-04-06",
+"c": "Entertainment & Music"
+},
+{
+"n": "Key Power Sports",
+"u": "#01-71-73",
+"c": "Sporting Goods & Apparel"
+},
+{
+"n": "Keyshoe Enterprises",
+"u": "#03-16",
+"c": "Services"
+},
+{
+"n": "Kiehl's",
+"u": "#01-19",
+"c": "Beauty & Health"
+},
+{
+"n": "Kimage",
+"u": "#02-46/47",
+"c": "Beauty & Health"
+},
+{
+"n": "Kiminoya Garment",
+"u": "#02-27",
+"c": "Fashion & Accessories"
+},
+{
+"n": "KKV",
+"u": "#02-28-30",
+"c": "Lifestyle"
+},
+{
+"n": "KOI TH\u00c9",
+"u": "#01-K32",
+"c": "Food & Beverages"
+},
+{
+"n": "Koong Woh Tong",
+"u": "#B1-K4",
+"c": "Food & Beverages"
+},
+{
+"n": "Kopitiam Food Hall",
+"u": "#B1-85-87 & 112-146",
+"c": "Food & Beverages"
+},
+{
+"n": "Kskin",
+"u": "#B1-12",
+"c": "Beauty & Health"
+},
+{
+"n": "LAC Nutrition For Life",
+"u": "#B1-K1",
+"c": "Beauty & Health"
+},
+{
+"n": "LACQU\u00c4R",
+"u": "#02-59",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Lenskart.com",
+"u": "#B1-99/100",
+"c": "Optical"
+},
+{
+"n": "LeNu",
+"u": "#01-34",
+"c": "Food & Beverages"
+},
+{
+"n": "Levi's",
+"u": "#01-41/42",
+"c": "Fashion & Accessories"
+},
+{
+"n": "LionShield Select",
+"u": "#B1-28",
+"c": "IT & Telecommunications"
+},
+{
+"n": "Lovisa",
+"u": "#01-23A",
+"c": "Fashion & Accessories"
+},
+{
+"n": "luckin coffee",
+"u": "#01-16A",
+"c": "Food & Beverages"
+},
+{
+"n": "M14",
+"u": "#04-07",
+"c": "Beauty & Health"
+},
+{
+"n": "Ma Kuang TCM",
+"u": "#04-03",
+"c": "Beauty & Health"
+},
+{
+"n": "Madam Ang KK",
+"u": "#01-K1 & K41",
+"c": "Food & Beverages"
+},
+{
+"n": "MANGO",
+"u": "#01-88-90",
+"c": "Fashion & Accessories"
+},
+{
+"n": "ManneQUEEN",
+"u": "#02-58",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Meilleur Moment",
+"u": "#01-43-46",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Meyson Jewellery",
+"u": "#B1-150/151/152",
+"c": "Jewellery & Watches"
+},
+{
+"n": "Mister Donut",
+"u": "#01-16",
+"c": "Food & Beverages"
+},
+{
+"n": "Mister Mobile",
+"u": "#B1-56",
+"c": "IT & Telecommunications"
+},
+{
+"n": "Moomoo",
+"u": "#01-K2",
+"c": "Services"
+},
+{
+"n": "Mothercare",
+"u": "#02-34B",
+"c": "Kids"
+},
+{
+"n": "MUJI",
+"u": "#B1-153-155D",
+"c": "Lifestyle"
+},
+{
+"n": "Munchi Pancakes",
+"u": "#03-30C",
+"c": "Food & Beverages"
+},
+{
+"n": "My First Skool",
+"u": "#04-08/09",
+"c": "Educational & Stationery"
+},
+{
+"n": "Nail Palace ",
+"u": "#01-54/55",
+"c": "Beauty & Health"
+},
+{
+"n": "Nails Fifth Avenue",
+"u": "#02-71",
+"c": "Beauty & Health"
+},
+{
+"n": "Nam Kee Pau",
+"u": "#01-09A",
+"c": "Food & Beverages"
+},
+{
+"n": "Nan Yang Dao",
+"u": "#01-17A",
+"c": "Food & Beverages"
+},
+{
+"n": "Nitori",
+"u": "#02-31/32",
+"c": "Lifestyle"
+},
+{
+"n": "NK Hairworks",
+"u": "#01-63/64",
+"c": "Beauty & Health"
+},
+{
+"n": "novita",
+"u": "#B1-74",
+"c": "Lifestyle"
+},
+{
+"n": "novita",
+"u": "#B1-K3",
+"c": "Lifestyle"
+},
+{
+"n": "OGAWA",
+"u": "#B1-95/95A",
+"c": "Beauty & Health"
+},
+{
+"n": "OJO Optometrist",
+"u": "#B1-26/27",
+"c": "Optical"
+},
+{
+"n": "Old Chang Kee",
+"u": "#01-14",
+"c": "Food & Beverages"
+},
+{
+"n": "Only Luxury Collection",
+"u": "#02-17B",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Oriental Hair Solutions",
+"u": "#05-17",
+"c": "Beauty & Health"
+},
+{
+"n": "OSIM",
+"u": "#B1-63",
+"c": "Beauty & Health"
+},
+{
+"n": "OTO",
+"u": "#B1-91/92",
+"c": "Beauty & Health"
+},
+{
+"n": "OWELL",
+"u": "#B1-101",
+"c": "Beauty & Health"
+},
+{
+"n": "OWNDAYS",
+"u": "#B1-96-98",
+"c": "Optical"
+},
+{
+"n": "Paradise Classic",
+"u": "#01-35",
+"c": "Food & Beverages"
+},
+{
+"n": "Paris Baguette",
+"u": "#01-K3 & K43",
+"c": "Food & Beverages"
+},
+{
+"n": "Paris Miki",
+"u": "#B1-09",
+"c": "Optical"
+},
+{
+"n": "Pat's Oven",
+"u": "#B1-83N",
+"c": "Food & Beverages"
+},
+{
+"n": "Pavilion Optics",
+"u": "#B1-57",
+"c": "Optical"
+},
+{
+"n": "Peaches and Herbs",
+"u": "#B1-43",
+"c": "Beauty & Health"
+},
+{
+"n": "Pepper Lunch",
+"u": "#01-35A",
+"c": "Food & Beverages"
+},
+{
+"n": "Pet Lovers Centre",
+"u": "#B1-13",
+"c": "Services"
+},
+{
+"n": "Pierre Cardin",
+"u": "#02-60",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Pixie Nail Spa",
+"u": "#04-K1/K2 ",
+"c": "Beauty & Health"
+},
+{
+"n": "Poh Heng Jewellery",
+"u": "#B1-109/110",
+"c": "Jewellery & Watches"
+},
+{
+"n": "Potato Corner",
+"u": "#01-14A",
+"c": "Food & Beverages"
+},
+{
+"n": "Presto Drycleaners",
+"u": "#03-13",
+"c": "Services"
+},
+{
+"n": "Pretticure",
+"u": "#03-14/15",
+"c": "Beauty & Health"
+},
+{
+"n": "PriceBreaker",
+"u": "#01-68",
+"c": "Services"
+},
+{
+"n": "Princess Jewellery",
+"u": "#B1-93/94",
+"c": "Jewellery & Watches"
+},
+{
+"n": "PUTIEN",
+"u": "#01-36",
+"c": "Food & Beverages"
+},
+{
+"n": "QB House",
+"u": "#01-53",
+"c": "Beauty & Health"
+},
+{
+"n": "QB Premium",
+"u": "#B1-44",
+"c": "Beauty & Health"
+},
+{
+"n": "Ramen Hitoyoshi Lobster & Grill",
+"u": "#01-11F/11G",
+"c": "Food & Beverages"
+},
+{
+"n": "R&B Tea",
+"u": "#03-30A",
+"c": "Food & Beverages"
+},
+{
+"n": "RedMan by Phoon Huat",
+"u": "#B1-83C",
+"c": "Specialty Store"
+},
+{
+"n": "Relev\u00e9 Gym & Dance",
+"u": "#07-10/11",
+"c": "Lifestyle"
+},
+{
+"n": "RHB Bank",
+"u": "#B1-83A/83B",
+"c": "Banks"
+},
+{
+"n": "Robert Piano",
+"u": "#03-07/08",
+"c": "Entertainment & Music"
+},
+{
+"n": "Rouge by Barracks",
+"u": "#02-18",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Royce Dental Surgery",
+"u": "#05-23",
+"c": "Medical & Dental"
+},
+{
+"n": "Safewell",
+"u": "#B1-62",
+"c": "Electrical & Electronics"
+},
+{
+"n": "Samsonite",
+"u": "#02-23/23A",
+"c": "Lifestyle"
+},
+{
+"n": "Samsung Experience Store",
+"u": "#B1-106",
+"c": "Electrical & Electronics"
+},
+{
+"n": "Sanook Kitchen",
+"u": "#01-17",
+"c": "Food & Beverages"
+},
+{
+"n": "Scholar Basketball Academy",
+"u": "#07-16/17 ",
+"c": "Lifestyle"
+},
+{
+"n": "Sci-Fi Pop-Up Library",
+"u": "#04-K3",
+"c": "Services"
+},
+{
+"n": "Scissors Paper Stone",
+"u": "#02-52",
+"c": "Kids"
+},
+{
+"n": "Scoop Wholefoods Australia",
+"u": "#01-32",
+"c": "Specialty Store"
+},
+{
+"n": "Selffix",
+"u": "#03-17-19",
+"c": "Houseware & Furnishings"
+},
+{
+"n": "Shake Shack",
+"u": "#01-11A/11C/11D",
+"c": "Food & Beverages"
+},
+{
+"n": "Simply Flowers",
+"u": "#B1-37",
+"c": "Gifts & Souvenirs"
+},
+{
+"n": "Singtel Shop",
+"u": "#B1-01/02",
+"c": "IT & Telecommunications"
+},
+{
+"n": "Sino Money Changer",
+"u": "#01-01",
+"c": "Services"
+},
+{
+"n": "SK Jewellery",
+"u": "#B1-58-60",
+"c": "Jewellery & Watches"
+},
+{
+"n": "Skechers",
+"u": "#02-42/43",
+"c": "Sporting Goods & Apparel"
+},
+{
+"n": "SLEEPNIGHT",
+"u": "#03-24",
+"c": "Houseware & Furnishings"
+},
+{
+"n": "SLEEPTEC",
+"u": "#03-30F",
+"c": "Houseware & Furnishings"
+},
+{
+"n": "Smiggle",
+"u": "#02-24",
+"c": "Kids"
+},
+{
+"n": "Smooy",
+"u": "#B1-83E",
+"c": "Food & Beverages"
+},
+{
+"n": "Solace Studios",
+"u": "#B1-70/71",
+"c": "Lifestyle"
+},
+{
+"n": "Spacio TCM Wellness",
+"u": "#03-21/22",
+"c": "Beauty & Health"
+},
+{
+"n": "Spectacle Hut",
+"u": "#B1-76A/77",
+"c": "Optical"
+},
+{
+"n": "Standard Photo",
+"u": "#B1-22",
+"c": "Services"
+},
+{
+"n": "STRIP",
+"u": "#B1-83G",
+"c": "Beauty & Health"
+},
+{
+"n": "stuff'd",
+"u": "#01-K39",
+"c": "Food & Beverages"
+},
+{
+"n": "Style Na Hair by Pro Trim",
+"u": "#02-67",
+"c": "Beauty & Health"
+},
+{
+"n": "Sun Paradise",
+"u": "#02-53/54",
+"c": "Sporting Goods & Apparel"
+},
+{
+"n": "SUPERGREEN",
+"u": "#01-K9",
+"c": "Food & Beverages"
+},
+{
+"n": "Surene Collection",
+"u": "#02-55",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Sushi Express",
+"u": "#01-K33/K34",
+"c": "Food & Beverages"
+},
+{
+"n": "Sushidan",
+"u": "#01-10",
+"c": "Food & Beverages"
+},
+{
+"n": "Svenson",
+"u": "#02-11",
+"c": "Beauty & Health"
+},
+{
+"n": "Swarovski",
+"u": "#01-09/K8",
+"c": "Jewellery & Watches"
+},
+{
+"n": "Swensen's",
+"u": "#B1-33/34",
+"c": "Food & Beverages"
+},
+{
+"n": "SYOUJIN",
+"u": "#03-02/03",
+"c": "Beauty & Health"
+},
+{
+"n": "Taka Jewellery",
+"u": "#B1-68/69",
+"c": "Jewellery & Watches"
+},
+{
+"n": "Team Salon",
+"u": "#02-45",
+"c": "Beauty & Health"
+},
+{
+"n": "Tech House",
+"u": "#02-K4",
+"c": "IT & Telecommunications"
+},
+{
+"n": "The Body Shop",
+"u": "#B1-50 & 66",
+"c": "Beauty & Health"
+},
+{
+"n": "The Chinese Wedding Shop",
+"u": "#B1-29",
+"c": "Lifestyle"
+},
+{
+"n": "The Coffee Bean and Tea Leaf",
+"u": "#B1-83H",
+"c": "Food & Beverages"
+},
+{
+"n": "The Wallet Shop",
+"u": "#01-31",
+"c": "Lifestyle"
+},
+{
+"n": "Thermomix Vorwerk",
+"u": "#B1-11",
+"c": "Electrical & Electronics"
+},
+{
+"n": "Think Academy",
+"u": "#07-12-15 & 18",
+"c": "Educational & Stationery"
+},
+{
+"n": "Tim Hortons",
+"u": "#01-02 & K42",
+"c": "Food & Beverages"
+},
+{
+"n": "Times Of Feng Shui",
+"u": "#B1-38/39",
+"c": "Lifestyle"
+},
+{
+"n": "Toast Box",
+"u": "#B1-83P/83Q",
+"c": "Food & Beverages"
+},
+{
+"n": "Tori Q",
+"u": "#01-14C",
+"c": "Food & Beverages"
+},
+{
+"n": "Toys \\\"R\\\" Us",
+"u": "#02-33",
+"c": "Toys & Hobbies"
+},
+{
+"n": "Triumph",
+"u": "#02-40/41/44",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Under Armour",
+"u": "#01-37-40 & 56/57",
+"c": "Sporting Goods & Apparel"
+},
+{
+"n": "UNIQLO",
+"u": "#01-83-87",
+"c": "Fashion & Accessories"
+},
+{
+"n": "UOB",
+"u": "#01-13",
+"c": "Banks"
+},
+{
+"n": "UOB Privilege Banking",
+"u": "#03-26",
+"c": "Banks"
+},
+{
+"n": "Utopia",
+"u": "#02-63",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Venchi",
+"u": "#01-07/08",
+"c": "Food & Beverages"
+},
+{
+"n": "Venus Beauty",
+"u": "#B1-35/36",
+"c": "Beauty & Health"
+},
+{
+"n": "VIVAIA",
+"u": "#01-27-29",
+"c": "Shoes & Bags"
+},
+{
+"n": "Wacoal",
+"u": "#02-20",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Watsons",
+"u": "#B1-14-16",
+"c": "Beauty & Health"
+},
+{
+"n": "Wellness for Life Chiropractic",
+"u": "#05-15",
+"c": "Medical & Dental"
+},
+{
+"n": "Wine Connection",
+"u": "#B1-54",
+"c": "Food & Beverages"
+},
+{
+"n": "Winter Time",
+"u": "#02-21/22",
+"c": "Fashion & Accessories"
+},
+{
+"n": "WJL",
+"u": "#B1-103/104",
+"c": "Beauty & Health"
+},
+{
+"n": "WOK HEY",
+"u": "#01-K39",
+"c": "Food & Beverages"
+},
+{
+"n": "WoW! Let's Party",
+"u": "#02-K2",
+"c": "Toys & Hobbies"
+},
+{
+"n": "Xiang Xiang Hunan Cuisine",
+"u": "#01-30",
+"c": "Food & Beverages"
+},
+{
+"n": "Xiaomi Store",
+"u": "#B1-03/04",
+"c": "Electrical & Electronics"
+},
+{
+"n": "Ya Kun Cafe",
+"u": "#01-14B",
+"c": "Food & Beverages"
+},
+{
+"n": "Yakadir",
+"u": "#01-16B",
+"c": "Services"
+},
+{
+"n": "Yakiniku-GO",
+"u": "#B1-84B/84C",
+"c": "Food & Beverages"
+},
+{
+"n": "Yale Smart Shop",
+"u": "#B1-K5",
+"c": "Electrical & Electronics"
+},
+{
+"n": "Yeah Gelato",
+"u": "#01-K38",
+"c": "Food & Beverages"
+},
+{
+"n": "Yuen Loong Watch Store ",
+"u": "#03-L1",
+"c": "Jewellery & Watches"
+},
+{
+"n": "Yutopia",
+"u": "#01-K31",
+"c": "Toys & Hobbies"
+},
+{
+"n": "Zero Healthcare",
+"u": "#B1-07",
+"c": "Beauty & Health"
+},
+{
+"n": "Zest Clinic",
+"u": "#05-04/05",
+"c": "Medical & Dental"
+},
+{
+"n": "Zest Oasis",
+"u": "#05-20",
+"c": "Beauty & Health"
+},
+{
+"n": "Zhang Liang Mala Tang",
+"u": "#03-01/02A",
+"c": "Food & Beverages"
+},
+{
+"n": "Zhong Yan Tang",
+"u": "#B1-47/48",
+"c": "Beauty & Health"
+},
+{
+"n": "ZTP",
+"u": "#B1-75/76",
+"c": "Beauty & Health"
+}
+]
+},
+"paya-lebar-quarter": {
+"name": "Paya Lebar Quarter",
+"stores": [
+{
+"n": "2nd STREET",
+"u": "#B1-09/10, PLQ Mall, Basement 1",
+"c": "Fashion"
+},
+{
+"n": "7-Eleven",
+"u": "PLQ Plaza #01-K1 PLQ 3 #01-08",
+"c": "Services"
+},
+{
+"n": "A Beautiful Day Caf\u00e9",
+"u": "#01-09, PLQ Parkside, Level 1",
+"c": "Food and Restaurants"
+},
+{
+"n": "AgnesG. Nails",
+"u": "#B1-06, PLQ Mall, Basement 1",
+"c": "Health & Beauty Services"
+},
+{
+"n": "Ajumma's",
+"u": "#B2-26, PLQ Mall, Basement 2",
+"c": "Food and Restaurants"
+},
+{
+"n": "ALDO",
+"u": "#01-11, PLQ Mall, Level 1",
+"c": "Bags & Shoes"
+},
+{
+"n": "Allbest Exchange",
+"u": "#B2-K11, PLQ Mall, Basement 2\u00a0",
+"c": "Money Changer"
+},
+{
+"n": "Anothersole",
+"u": "#01-09, PLQ Mall, Level 1",
+"c": "Bags & Shoes"
+},
+{
+"n": "Aspire Hub Education",
+"u": "#03-21, PLQ Mall, Level 3",
+"c": "Educational & Stationery"
+},
+{
+"n": "Attap House",
+"u": "#02-28, PLQ Mall, Level 2",
+"c": "Food and Restaurants"
+},
+{
+"n": "Auntie Anne's",
+"u": "#B2-K7, PLQ Mall, Basement 2",
+"c": "Food and Restaurants"
+},
+{
+"n": "Ballet Quarter",
+"u": "#03-04, PLQ Mall, Level 3",
+"c": "Educational & Stationery"
+},
+{
+"n": "Banana Story",
+"u": "#02-21, PLQ Mall, Level 2",
+"c": "Home & Lifestyle"
+},
+{
+"n": "Bata",
+"u": "#02-31, PLQ Mall, Level 2",
+"c": "Bags & Shoes"
+},
+{
+"n": "Become Aesthetics Clinic",
+"u": "#03-24, PLQ Mall, Level 3",
+"c": "Health & Beauty Services"
+},
+{
+"n": "Bee Cheng Hiang",
+"u": "#B2-30, PLQ Mall, Basement 2",
+"c": "Food and Restaurants"
+},
+{
+"n": "Bites by Scarlett",
+"u": "#03-14, PLQ Mall, Level 3",
+"c": "Food and Restaurants"
+},
+{
+"n": "Boost Juice Bars",
+"u": "#B2-K10, PLQ Mall, Basement 2",
+"c": "Food and Restaurants"
+},
+{
+"n": "Bottles & Bottles",
+"u": "#01-03A, PLQ 1, Level 1",
+"c": "Food and Restaurants"
+},
+{
+"n": "BreadTalk",
+"u": "#B2-19, PLQ Mall, Basement 2",
+"c": "Food and Restaurants"
+},
+{
+"n": "Cedele",
+"u": "#01-20, PLQ Mall, Level 1",
+"c": "Food and Restaurants"
+},
+{
+"n": "CHAGEE",
+"u": "#01-39, PLQ Mall, Level 1",
+"c": "Food and Restaurants"
+},
+{
+"n": "Challenger",
+"u": "#04-01, PLQ Mall, Level 4",
+"c": "Electronics & Technology"
+},
+{
+"n": "Chao Chao Xiang",
+"u": "#01-01, PLQ Parkside, Level 1",
+"c": "Food and Restaurants"
+},
+{
+"n": "Chen's",
+"u": "#02-20, PLQ Mall, Level 2",
+"c": "Food and Restaurants"
+},
+{
+"n": "CHICHA San Chen",
+"u": "#02-27, PLQ Mall, Level 2",
+"c": "Food and Restaurants"
+},
+{
+"n": "Chimichanga",
+"u": "#01-37, PLQ Mall, Level 1",
+"c": "Food and Restaurants"
+},
+{
+"n": "China Mobile | CMLink",
+"u": "#B2-22, PLQ Mall, Basement 2",
+"c": "Electronics & Technology"
+},
+{
+"n": "Clarks",
+"u": "#01-31, PLQ Mall, Level 1",
+"c": "Fashion"
+},
+{
+"n": "Clippers Barber",
+"u": "#01-09, PLQ3",
+"c": "Health & Beauty Services"
+},
+{
+"n": "Coco Ichibanya",
+"u": "#03-30, PLQ Mall, Level 3",
+"c": "Food and Restaurants"
+},
+{
+"n": "COLLIN\u2019S\u00ae",
+"u": "#B1-01, PLQ Mall, Basement 1",
+"c": "Food and Restaurants"
+},
+{
+"n": "Compose Coffee",
+"u": "#B1-K3, PLQ Mall, Basement 1",
+"c": "Food and Restaurants"
+},
+{
+"n": "Cotton On",
+"u": "#02-06 to 08, PLQ Mall, Level 2",
+"c": "Fashion"
+},
+{
+"n": "Crocs",
+"u": "",
+"c": "Fashion"
+},
+{
+"n": "Cuttour Hair Studio",
+"u": "#B1-03, PLQ Mall, Basement 1",
+"c": "Health & Beauty Services"
+},
+{
+"n": "D'Penyetz",
+"u": "#01-02, PLQ Parkside, Level 1 (Park Place Residences)",
+"c": "Food and Restaurants"
+},
+{
+"n": "Don Don Donki",
+"u": "",
+"c": "Food and Restaurants"
+},
+{
+"n": "Donburi King \u7206\u7206\u738b \u3070\u304f\u3070\u304f\u304a\u3046",
+"u": "#03-26, PLQ Mall, Level 3",
+"c": "Food and Restaurants"
+},
+{
+"n": "DRx Clinic",
+"u": "#B1-05, PLQ Mall, Level B1",
+"c": "Health & Beauty Services"
+},
+{
+"n": "Dunlopillo",
+"u": "",
+"c": "Home & Lifestyle"
+},
+{
+"n": "Eat Pizza",
+"u": "#01-K5, PLQ Plaza, Level 1",
+"c": "Food and Restaurants"
+},
+{
+"n": "EAT.",
+"u": "#B2-K2, PLQ Mall, Basement 2",
+"c": "Food and Restaurants"
+},
+{
+"n": "elemen \u5143\u7d20\u2122",
+"u": "#03-13, PLQ Mall, Level 3",
+"c": "Food and Restaurants"
+},
+{
+"n": "Esiney",
+"u": "#B1-13, PLQ Mall, Basement 1",
+"c": "Electronics & Technology"
+},
+{
+"n": "Eu Yan Sang",
+"u": "#B2-12, PLQ Mall, Basement 2",
+"c": "Beauty & Wellness"
+},
+{
+"n": "EX Style",
+"u": "#04-18/19, PLQ Mall, Level 4",
+"c": "Health & Beauty Services"
+},
+{
+"n": "Eyedentity",
+"u": "#01-12/13, PLQ Mall, Level 1",
+"c": "Optical"
+},
+{
+"n": "FairPrice Finest",
+"u": "#B2-09, PLQ Mall, Basement 2",
+"c": "Supermarket & Hypermarket"
+},
+{
+"n": "Finger Waltz Music",
+"u": "#03-20, PLQ Mall, Level 3",
+"c": "Educational & Stationery"
+},
+{
+"n": "Fisher King's Grill",
+"u": "#03-25, PLQ Mall, Level 3",
+"c": "Food and Restaurants"
+},
+{
+"n": "Fong Sheng Hao",
+"u": "#B2-04, PLQ Mall, Basement 2",
+"c": "Food and Restaurants"
+},
+{
+"n": "Footnote Reflexology",
+"u": "#04-15, PLQ Mall, Level 4",
+"c": "Health & Beauty Services"
+},
+{
+"n": "Four Leaves",
+"u": "#B2-16, PLQ Mall, Basement 2",
+"c": "Food and Restaurants"
+},
+{
+"n": "FUJIFILM",
+"u": "#B2-25A, PLQ Mall, Basement 2",
+"c": "Services"
+},
+{
+"n": "Fun Claw",
+"u": "#03-19, PLQ Mall, Level 3",
+"c": "Entertainment"
+},
+{
+"n": "GAC",
+"u": "#01-22/23, PLQ Mall, Level 1",
+"c": "Home & Lifestyle"
+},
+{
+"n": "Gifts Greetings",
+"u": "#B1-20, PLQ Mall, Basement 1",
+"c": "Home & Lifestyle"
+},
+{
+"n": "Glamour Beauty",
+"u": "#B1-04, PLQ Mall, Basement 1",
+"c": "Health & Beauty Services"
+},
+{
+"n": "Guardian Health & Beauty",
+"u": "#B2-01/35, PLQ Mall, Basement 2",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Haidilao Hot Pot",
+"u": "#03-11/12 & 27, PLQ Mall, Level 3",
+"c": "Food and Restaurants"
+},
+{
+"n": "Hanis Cafe & Bakery",
+"u": "#B2-18, PLQ Mall, Basement 2",
+"c": "Food and Restaurants"
+},
+{
+"n": "HarriAnns Nonya Table",
+"u": "#B2-03, PLQ Mall, Basement 2",
+"c": "Food and Restaurants"
+},
+{
+"n": "Heart Springs Wellness",
+"u": "#B1-17, PLQ Mall, Basement 1",
+"c": "Health & Beauty Services"
+},
+{
+"n": "Henri Charpentier",
+"u": "#01-07, PLQ Mall, Level 1",
+"c": "Food and Restaurants"
+},
+{
+"n": "heytea",
+"u": "#01-16, PLQ Mall, Level 1",
+"c": "Food and Restaurants"
+},
+{
+"n": "HLA",
+"u": "#02-17/18, PLQ Mall, Level 2",
+"c": "Fashion"
+},
+{
+"n": "Home's Harmony",
+"u": "#B1-29, PLQ Mall, Basement 1",
+"c": "Home & Lifestyle"
+},
+{
+"n": "HOOGA",
+"u": "#B1-23/24, PLQ Mall, Basement 1",
+"c": "Home & Lifestyle"
+},
+{
+"n": "Huggs Coffee",
+"u": "#01-03, PLQ 1, Level 1",
+"c": "Food and Restaurants"
+},
+{
+"n": "HYSSES",
+"u": "#01-15, PLQ Mall, Level 1",
+"c": "Home & Lifestyle"
+},
+{
+"n": "INNISFREE",
+"u": "#01-28, PLQ Mall, Level 1",
+"c": "Beauty & Wellness"
+},
+{
+"n": "iStudio",
+"u": "#01-04, PLQ Mall, Level 1",
+"c": "Electronics & Technology"
+},
+{
+"n": "J Glasses & Hearing",
+"u": "#03-17, PLQ Mall, Level 3",
+"c": "Optical"
+},
+{
+"n": "Japan Home",
+"u": "#B2-23, PLQ Mall, Basement 2",
+"c": "Home & Lifestyle"
+},
+{
+"n": "Japan IPL Express",
+"u": "#B1-22, PLQ Mall, Basement 1",
+"c": "Health & Beauty Services"
+},
+{
+"n": "K. STAR KARAOKE",
+"u": "#05-01, PLQ Mall, Level 5",
+"c": "Entertainment"
+},
+{
+"n": "kcuts",
+"u": "#B2-20A, PLQ Mall, Basement 2",
+"c": "Health & Beauty Services"
+},
+{
+"n": "Kebabs Faktory",
+"u": "#01-K3, PLQ Plaza, Level 1",
+"c": "Food and Restaurants"
+},
+{
+"n": "Kelme",
+"u": "#02-36, PLQ Mall, Level 2",
+"c": "Fashion"
+},
+{
+"n": "KFC\u00ae",
+"u": "#B1-14, PLQ Mall, Basement 1",
+"c": "Food and Restaurants"
+},
+{
+"n": "KIMOJ",
+"u": "#01-35, PLQ Mall, Level 1",
+"c": "Fashion"
+},
+{
+"n": "Kinohimitsu",
+"u": "",
+"c": "Beauty & Wellness"
+},
+{
+"n": "KOI Th\u00e9",
+"u": "#B1-02, PLQ Mall, Basement 1",
+"c": "Food and Restaurants"
+},
+{
+"n": "Komehyo",
+"u": "#01-34, PLQ Mall, Level 1",
+"c": "Fashion"
+},
+{
+"n": "Kopitiam",
+"u": "#04-11, PLQ Mall, Level 4",
+"c": "Food and Restaurants"
+},
+{
+"n": "Kosme Aesthetics",
+"u": "#01-05, PLQ 2, Level 1 ",
+"c": "Health & Beauty Services"
+},
+{
+"n": "Kott-Don 360",
+"u": "#04-09, PLQ Mall, Level 4 ",
+"c": "Food and Restaurants"
+},
+{
+"n": "Kskin",
+"u": "#02-13, PLQ Mall, Level 2",
+"c": "Health & Beauty Services"
+},
+{
+"n": "LAC Nutrition For Life",
+"u": "#B2-10, PLQ Mall, Basement 2",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Lagoon Laundry",
+"u": "#B2-21, PLQ Mall, Basement 2",
+"c": "Services"
+},
+{
+"n": "Lenskart.com",
+"u": "#B1-30, PLQ Mall, Basement 1",
+"c": "Optical"
+},
+{
+"n": "Liang Yi",
+"u": "#B1-21, PLQ Mall, Basement 1",
+"c": "Health & Beauty Services"
+},
+{
+"n": "London Fat Duck",
+"u": "#B2-25, PLQ Mall, Basement 2",
+"c": "Food and Restaurants"
+},
+{
+"n": "luckin coffee",
+"u": "",
+"c": "Food and Restaurants"
+},
+{
+"n": "M&G Life",
+"u": "B1-18, PLQ Mall, Basement 1 ",
+"c": "Home & Lifestyle"
+},
+{
+"n": "Maison Berger",
+"u": "#B1-K2, PLQ Mall, Basement 1",
+"c": "Home & Lifestyle"
+},
+{
+"n": "MANGO",
+"u": "#01-08, PLQ Mall, Level 2",
+"c": "Fashion"
+},
+{
+"n": "Maybank",
+"u": "#01-04, PLQ 2, Level 1",
+"c": "Services"
+},
+{
+"n": "Melissa",
+"u": "#01-10, PLQ Mall, Level 1",
+"c": "Bags & Shoes"
+},
+{
+"n": "Melvados",
+"u": "#B2-06, PLQ Mall, Basement 2",
+"c": "Food and Restaurants"
+},
+{
+"n": "MINISO",
+"u": "#B1-11/12, PLQ Mall, Level 1",
+"c": "Home & Lifestyle"
+},
+{
+"n": "Mr. Coconut",
+"u": "#B2-K8, PLQ Mall, Basement 2",
+"c": "Food and Restaurants"
+},
+{
+"n": "Ms New",
+"u": "#02-34, PLQ Mall, Level 2",
+"c": "Fashion"
+},
+{
+"n": "MyRepublic",
+"u": "#04-14, PLQ Mall, Level 4",
+"c": "Electronics & Technology"
+},
+{
+"n": "Nam Kee Pau",
+"u": "#B2-K4, PLQ Mall, Basement 2",
+"c": "Food and Restaurants"
+},
+{
+"n": "Nan Yang Dao",
+"u": "#B2-33, PLQ Mall, Basement 2",
+"c": "Food and Restaurants"
+},
+{
+"n": "Nene Neko",
+"u": "",
+"c": "Food and Restaurants"
+},
+{
+"n": "NIKUTOSAKE",
+"u": "#01-38, PLQ Mall, Level 1",
+"c": "Food and Restaurants"
+},
+{
+"n": "Novela",
+"u": "#02-15/16, PLQ Mall, Level 2",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Odoroki",
+"u": "#03-K2, PLQ Mall, Level 3",
+"c": "Entertainment"
+},
+{
+"n": "Old Chang Kee",
+"u": "#B2-32, PLQ Mall, Basement 2",
+"c": "Food and Restaurants"
+},
+{
+"n": "Old Street Bak Kut Teh",
+"u": "#B2-02, PLQ Mall, Basement 2",
+"c": "Food and Restaurants"
+},
+{
+"n": "OPPO",
+"u": "#B1-26, PLQ Mall, Basement 1",
+"c": "Electronics & Technology"
+},
+{
+"n": "Organic Hair Regrowth Solutions",
+"u": "#04-17, PLQ Mall, Level 4",
+"c": "Health & Beauty Services"
+},
+{
+"n": "Our Art Studio",
+"u": "#02-10, PLQ Mall, Level 2",
+"c": "Educational & Stationery"
+},
+{
+"n": "OWNDAYS",
+"u": "#02-30, PLQ Mall, Level 2",
+"c": "Optical"
+},
+{
+"n": "PANDORA",
+"u": "#01-29, PLQ Mall, Level 1",
+"c": "Jewellery & Watches"
+},
+{
+"n": "Papa Ayam",
+"u": "#B2-K3, PLQ Mall, Basement 2",
+"c": "Food and Restaurants"
+},
+{
+"n": "Paradise Dynasty",
+"u": "#03-08, PLQ Mall, Level 3",
+"c": "Food and Restaurants"
+},
+{
+"n": "Paris Baguette",
+"u": "#01-03/05/06, PLQ Mall, Level 1",
+"c": "Food and Restaurants"
+},
+{
+"n": "PastaGo",
+"u": "#B2-K1, PLQ Mall, Basement 2",
+"c": "Food and Restaurants"
+},
+{
+"n": "Pawa Bakery",
+"u": "#B2-07, PLQ Mall, Basement 2",
+"c": "Food and Restaurants"
+},
+{
+"n": "Picky Pic",
+"u": "",
+"c": "Services"
+},
+{
+"n": "Pierre Cardin",
+"u": "#02-33, PLQ Mall, Level 2",
+"c": "Fashion"
+},
+{
+"n": "Pixie Nail Spa",
+"u": "#04-16, PLQ Mall, Level 4",
+"c": "Health & Beauty Services"
+},
+{
+"n": "PlayMade",
+"u": "#B2-K5, PLQ Mall, Basement 2",
+"c": "Food and Restaurants"
+},
+{
+"n": "Poke Theory",
+"u": "#01-04, PLQ Parkside, Level 1",
+"c": "Food and Restaurants"
+},
+{
+"n": "Polar Puffs & Cakes",
+"u": "#B2-K9, PLQ Mall, Basement 2",
+"c": "Food and Restaurants"
+},
+{
+"n": "Pondok Jawa",
+"u": "#02-09, PLQ Mall, Level 2",
+"c": "Food and Restaurants"
+},
+{
+"n": "Popular Bookstore",
+"u": "#03-01 to 03, PLQ Mall, Level 3",
+"c": "Educational & Stationery"
+},
+{
+"n": "prettyFIT",
+"u": "#01-24/25/26, PLQ Mall, Level 1",
+"c": "Bags & Shoes"
+},
+{
+"n": "Pura Brasa",
+"u": "",
+"c": "Food and Restaurants"
+},
+{
+"n": "Q & M Dental Surgery (Paya Lebar)",
+"u": "#04-27, PLQ Mall, Level 4",
+"c": "Medical & Dental"
+},
+{
+"n": "QB HOUSE Premium",
+"u": "#04-25, PLQ Mall, Level 4",
+"c": "Health & Beauty Services"
+},
+{
+"n": "Rapid Physiocare",
+"u": "#01-06, PLQ 2, Level 1",
+"c": "Medical & Dental"
+},
+{
+"n": "Repair Station",
+"u": "#B1-19, PLQ Mall, Basement 1",
+"c": "Services"
+},
+{
+"n": "rumeL",
+"u": "#02-25/26, PLQ Mall, Level 2",
+"c": "Food and Restaurants"
+},
+{
+"n": "Saizeriya",
+"u": "#04-13, PLQ Mall, Level 4",
+"c": "Food and Restaurants"
+},
+{
+"n": "Sanook Kitchen",
+"u": "#03-28/29, PLQ Mall, Level 3",
+"c": "Food and Restaurants"
+},
+{
+"n": "SANS & SANS",
+"u": "#01-32, PLQ Mall, Level 1",
+"c": "Fashion"
+},
+{
+"n": "SHAW Theatres Paya Lebar Quarter",
+"u": "#05-02, PLQ Mall, Level 5",
+"c": "Entertainment"
+},
+{
+"n": "Shihlin Taiwan Street Snacks",
+"u": "#B2-K9, PLQ Mall, Basement 2",
+"c": "Food and Restaurants"
+},
+{
+"n": "Shine",
+"u": "#02-22 PLQ Mall, Level 2",
+"c": "Bags & Shoes"
+},
+{
+"n": "Shoe Clinic",
+"u": "#B2-20, PLQ Mall, Level B2",
+"c": "Services"
+},
+{
+"n": "Simba Service Centre",
+"u": "#B1-27, PLQ Mall, Basement 1",
+"c": "Electronics & Technology"
+},
+{
+"n": "Simmons Gallery",
+"u": "#03-15, PLQ Mall, Level 3",
+"c": "Home & Lifestyle"
+},
+{
+"n": "Singtel Exclusive Retailer",
+"u": "#B1-25, PLQ Mall, Basement 1",
+"c": "Electronics & Technology"
+},
+{
+"n": "SKP",
+"u": "#04-02, PLQ Mall, Level 4",
+"c": "Home & Lifestyle"
+},
+{
+"n": "Smigy",
+"u": "#03-05 to 06, PLQ Mall, Level 3",
+"c": "Entertainment"
+},
+{
+"n": "smol",
+"u": "#01-05, PLQ Parkside, Level 1",
+"c": "Food and Restaurants"
+},
+{
+"n": "SnackFirst",
+"u": "#B2-34, PLQ Mall, Basement 2",
+"c": "Food & Beverages"
+},
+{
+"n": "Star Watches",
+"u": "#01-36, PLQ Mall, Level 1",
+"c": "Jewellery & Watches"
+},
+{
+"n": "Starbucks Reserve",
+"u": "#01-14, PLQ Mall, Level 1",
+"c": "Food and Restaurants"
+},
+{
+"n": "Steak 99",
+"u": "#B2-17, PLQ Mall, Basement Two",
+"c": "Food and Restaurants"
+},
+{
+"n": "Sukiya",
+"u": "#B1-15/16, PLQ Mall, Basement 1",
+"c": "Food and Restaurants"
+},
+{
+"n": "Super Sub",
+"u": "#01-K2, PLQ Plaza, Level 1",
+"c": "Food and Restaurants"
+},
+{
+"n": "Sushi Express",
+"u": "#04-12, PLQ Mall, Level 4",
+"c": "Food and Restaurants"
+},
+{
+"n": "Tai Cheong Bakery",
+"u": "#B2-08, PLQ Mall, Level B2",
+"c": "Food and Restaurants"
+},
+{
+"n": "TAIER Sichuan Cusine",
+"u": "#04-10, PLQ Mall, Level 4",
+"c": "Food and Restaurants"
+},
+{
+"n": "TAKA Jewellery",
+"u": "#01-30, PLQ Mall, Level 1",
+"c": "Jewellery & Watches"
+},
+{
+"n": "Tanglin Cookhouse",
+"u": "#01-06/07, PLQ 3, Level 1",
+"c": "Food and Restaurants"
+},
+{
+"n": "The Bread Club",
+"u": "#B2-13, PLQ Mall, Basement 2",
+"c": "Food and Restaurants"
+},
+{
+"n": "The Green Party",
+"u": "#B1-07/08, PLQ Mall, Basement 1",
+"c": "Home & Lifestyle"
+},
+{
+"n": "The Stage Walk",
+"u": "#02-32, PLQ Mall, Level 2",
+"c": "Fashion"
+},
+{
+"n": "The Wallet Shop",
+"u": "#01-33, PLQ Mall, Level 1",
+"c": "Fashion"
+},
+{
+"n": "Tipsy Bird Gastrobar",
+"u": "#01-08 (B), PLQ 2, Level 1",
+"c": "Food and Restaurants"
+},
+{
+"n": "Tissot",
+"u": "#01-27, PLQ Mall, Level 1",
+"c": "Jewellery & Watches"
+},
+{
+"n": "TMC Academy",
+"u": "#01-01/02/03/04, PLQ3",
+"c": "Educational & Stationery"
+},
+{
+"n": "Toast Box",
+"u": "#B2-19, PLQ Mall, Basement 2",
+"c": "Food and Restaurants"
+},
+{
+"n": "Tom & Stefanie",
+"u": "#03-18, PLQ Mall, Level 3",
+"c": "Fashion"
+},
+{
+"n": "TOMORO COFFEE",
+"u": "#01-08A, PLQ 3, Level 1 ",
+"c": "Food and Restaurants"
+},
+{
+"n": "Toy Outpost",
+"u": "#04-03, PLQ Mall, Level 4",
+"c": "Gifts & Souvenirs"
+},
+{
+"n": "Tracyeinny",
+"u": "#02-35, PLQ Mall, Level 2",
+"c": "Fashion"
+},
+{
+"n": "Triumph",
+"u": "#02-29, PLQ Mall, Level 2",
+"c": "Fashion"
+},
+{
+"n": "TRT",
+"u": "#01-17/18/19, PLQ Mall, Level 1",
+"c": "Fashion"
+},
+{
+"n": "True Medical Clinic",
+"u": "#04-26, PLQ Mall, Level 4",
+"c": "Medical & Dental"
+},
+{
+"n": "TungLok Seafood",
+"u": "#03-09 to 10, PLQ Mall, Level 3",
+"c": "Food and Restaurants"
+},
+{
+"n": "Turtle",
+"u": "#B1-20, PLQ Mall, Basement 1",
+"c": "Home & Lifestyle"
+},
+{
+"n": "Uni Retreat",
+"u": "#04-28, PLQ Mall, Level 4 ",
+"c": "Beauty & Wellness"
+},
+{
+"n": "UNIQLO",
+"u": "#01-01 to 02, PLQ Mall, Level 1",
+"c": "Fashion"
+},
+{
+"n": "Unity",
+"u": "#B2-14, PLQ Mall, Basement 2",
+"c": "Beauty & Wellness"
+},
+{
+"n": "UOB",
+"u": "#02-11/12, PLQ Mall, Level 2",
+"c": "Services"
+},
+{
+"n": "Vain Beauty",
+"u": "#03-31, PLQ Mall, Level 3",
+"c": "Health & Beauty Services"
+},
+{
+"n": "Valu$",
+"u": "#04-24, PLQ Mall, Level 4",
+"c": "Home & Lifestyle"
+},
+{
+"n": "Venus Beauty",
+"u": "#B2-11, PLQ Mall, Basement 2",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Watch it!",
+"u": "#03-33, PLQ Mall, Level 3",
+"c": "Jewellery & Watches"
+},
+{
+"n": "Watsons",
+"u": "#02-19, PLQ Mall, Level 2",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Wine Connection",
+"u": "#01-07 (B), PLQ 2, Level 1",
+"c": "Food and Restaurants"
+},
+{
+"n": "Wing Joo Loong",
+"u": "#B2-27, PLQ Mall, Basement 2",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Xi Yan Zing",
+"u": "#01-06 to 08 , PLQ Parkside, Level 1",
+"c": "Food and Restaurants"
+},
+{
+"n": "Yakiniku Like",
+"u": "#B1-28, PLQ Mall, Basement 1",
+"c": "Food and Restaurants"
+},
+{
+"n": "YM Bakery",
+"u": "#B2-05, PLQ Mall, Basement 2",
+"c": "Food and Restaurants"
+},
+{
+"n": "Yum Yum Thai",
+"u": "#B2-15, PLQ Mall, Basement 2",
+"c": "Food and Restaurants"
+},
+{
+"n": "Zhang Liang Mala Tang",
+"u": "PLQ Mall #B2-29 ",
+"c": "Food and Restaurants"
+}
+]
+}
+}

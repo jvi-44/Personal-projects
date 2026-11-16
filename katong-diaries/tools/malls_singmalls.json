@@ -1,0 +1,5897 @@
+{
+"aperia-mall": {
+"name": "Aperia Mall",
+"addr": "8 - 12 Kallang Ave, Singapore 339509",
+"lat": 1.3100591,
+"lon": 103.8643756,
+"stores": [
+{
+"n": "25 Grams",
+"u": "#01-14",
+"c": "Food & Beverage"
+},
+{
+"n": "7 Eleven",
+"u": "#01-53B",
+"c": "Convenience Store"
+},
+{
+"n": "Artisan Jewellery",
+"u": "#01-16",
+"c": "Fashion"
+},
+{
+"n": "Au Croissant",
+"u": "#01-35",
+"c": "Food & Beverage"
+},
+{
+"n": "Aurora Asian Kitchen & Bar",
+"u": "#01-44/45",
+"c": "Food & Beverage"
+},
+{
+"n": "Blanco Court Beef Noodle",
+"u": "#01-39",
+"c": "Food & Beverage"
+},
+{
+"n": "Bodyworks Chiropractic",
+"u": "#03-06",
+"c": "Services"
+},
+{
+"n": "Boulder+",
+"u": "#03-17",
+"c": "Sports"
+},
+{
+"n": "Carbon&",
+"u": "#01-43/43A",
+"c": "Food & Beverage"
+},
+{
+"n": "Challenger PIT",
+"u": "#01-05",
+"c": "Electronics & Technology"
+},
+{
+"n": "Chef Foong Restaurant",
+"u": "#02-09",
+"c": "Food & Beverage"
+},
+{
+"n": "Cio Enzyme Drink",
+"u": "#01-29",
+"c": "Food & Beverage"
+},
+{
+"n": "CityGolfer",
+"u": "#03-10",
+"c": "Hobbies & Leisure"
+},
+{
+"n": "Cold Storage",
+"u": "#01-47 & 01-51",
+"c": "Supermarket & Specialty Mart"
+},
+{
+"n": "CTDI",
+"u": "#03-03/04",
+"c": "Services"
+},
+{
+"n": "Daily Grind by Spinelli",
+"u": "#01-34",
+"c": "Food & Beverage"
+},
+{
+"n": "Delta Dental Surgeons",
+"u": "#03-05",
+"c": "Services"
+},
+{
+"n": "F45",
+"u": "#03-09",
+"c": "Sports"
+},
+{
+"n": "Firstpointe",
+"u": "#01-10/11",
+"c": "Children"
+},
+{
+"n": "FM Food Master",
+"u": "#02-16",
+"c": "Food & Beverage"
+},
+{
+"n": "Ha Jun",
+"u": "#01-28 & 01-31A",
+"c": "Food & Beverage"
+},
+{
+"n": "Hao Lai Ke",
+"u": "#01-39",
+"c": "Food & Beverage"
+},
+{
+"n": "Ichiho - Donburi & Sushi",
+"u": "#02-07/08",
+"c": "Food & Beverage"
+},
+{
+"n": "In Trim Hair",
+"u": "#01-09",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Jollibean",
+"u": "#01-30A",
+"c": "Food & Beverage"
+},
+{
+"n": "Kaeden Cafe",
+"u": "#01-25",
+"c": "Food & Beverage"
+},
+{
+"n": "kcuts",
+"u": "#01-21",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Kopi & Tarts",
+"u": "#01-41",
+"c": "Food & Beverage"
+},
+{
+"n": "Lee Tat Seng",
+"u": "#01-07",
+"c": "Home & Furnishing"
+},
+{
+"n": "LiHO",
+"u": "#01-22",
+"c": "Food & Beverage"
+},
+{
+"n": "Mandarin Wellness",
+"u": "#02-04",
+"c": "Beauty & Wellness"
+},
+{
+"n": "McDonald's",
+"u": "#01-24",
+"c": "Food & Beverage"
+},
+{
+"n": "My Spice Affair",
+"u": "#02-11",
+"c": "Food & Beverage"
+},
+{
+"n": "Nature Caf\u00e9",
+"u": "#02-14/15",
+"c": "Food & Beverage"
+},
+{
+"n": "Nature's Nutrition",
+"u": "#01-52",
+"c": "Food & Beverage"
+},
+{
+"n": "Ofun",
+"u": "#01-08",
+"c": "Hobbies & Leisure"
+},
+{
+"n": "Pohang Seafood & Butchery",
+"u": "#02-10",
+"c": "Food & Beverage"
+},
+{
+"n": "POSB ATM",
+"u": "#01-K11",
+"c": "Services"
+},
+{
+"n": "PrimaD\u00e9li",
+"u": "#01-29A",
+"c": "Food & Beverage"
+},
+{
+"n": "Quantum Medical",
+"u": "#02-05/06",
+"c": "Services"
+},
+{
+"n": "Saizeriya",
+"u": "#03-07/08",
+"c": "Food & Beverage"
+},
+{
+"n": "Shine Korea",
+"u": "#01-04",
+"c": "Supermarket & Specialty Mart"
+},
+{
+"n": "Stalford Learning Centre",
+"u": "#03-11 & 03-1214",
+"c": "Children"
+},
+{
+"n": "Starbucks",
+"u": "#01-26",
+"c": "Food & Beverage"
+},
+{
+"n": "Sushi & Chopsticks",
+"u": "#01-42",
+"c": "Food & Beverage"
+},
+{
+"n": "The Alley",
+"u": "#01-27",
+"c": "Food & Beverage"
+},
+{
+"n": "The Clinic Group",
+"u": "#03-15",
+"c": "Services"
+},
+{
+"n": "The Pack Protein & Salad bar",
+"u": "#01-30",
+"c": "Food & Beverage"
+},
+{
+"n": "Tim Ho Wan",
+"u": "#01-01 to 03",
+"c": "Food & Beverage"
+},
+{
+"n": "Time Enterprise TCM",
+"u": "#03-16",
+"c": "Services"
+},
+{
+"n": "Transtar",
+"u": "#01-23",
+"c": "Services"
+},
+{
+"n": "TTEOK Sang \ub5a1\uc0c1",
+"u": "#01-37",
+"c": "Food & Beverage"
+},
+{
+"n": "Wonder Juice",
+"u": "#01-31",
+"c": "Food & Beverage"
+},
+{
+"n": "Ya Kun Kaya Toast",
+"u": "#01-28B & 01-33",
+"c": "Food & Beverage"
+},
+{
+"n": "Zheng Neng Zhu La Mian",
+"u": "#01-28A & 01-32",
+"c": "Food & Beverage"
+},
+{
+"n": "\u6765Makan (Thai Food)",
+"u": "#01-42A",
+"c": "Food & Beverage"
+}
+]
+},
+"bedok-mall": {
+"name": "Bedok Mall",
+"addr": "311 New Upper Changi Rd, Singapore 467360",
+"lat": 1.3245781,
+"lon": 103.9296683,
+"stores": [
+{
+"n": "7-Eleven",
+"u": "#01-94",
+"c": "Convenience Store"
+},
+{
+"n": "A.M Aesthetics",
+"u": "#B1-18",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Ajisen Ramen",
+"u": "#01-69/70",
+"c": "Food & Beverage"
+},
+{
+"n": "ASPIRE HUB EDUCATION",
+"u": "#B1-06",
+"c": "Children"
+},
+{
+"n": "AsterSpring",
+"u": "#B1-46/47",
+"c": "Beauty & Wellness"
+},
+{
+"n": "AU by Akemiuchi",
+"u": "#B1-68 to 70",
+"c": "Home & Furnishing"
+},
+{
+"n": "Au Croissant",
+"u": "#B2-15",
+"c": "Food & Beverage"
+},
+{
+"n": "Aureus Academy",
+"u": "#B1-04",
+"c": "Hobbies & Leisure"
+},
+{
+"n": "Balinese Thai Premier",
+"u": "#B1-05",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Bank of China",
+"u": "#B2-07",
+"c": "Services"
+},
+{
+"n": "Baskin Robbins",
+"u": "#B1-K1 to K3",
+"c": "Food & Beverage"
+},
+{
+"n": "Bata",
+"u": "#B1-21/22",
+"c": "Fashion"
+},
+{
+"n": "Beauty Language",
+"u": "#01-41",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Bee Cheng Hiang",
+"u": "#B2-23",
+"c": "Food & Beverage"
+},
+{
+"n": "BEGA",
+"u": "#01-62/63",
+"c": "Fashion"
+},
+{
+"n": "Beijing 101",
+"u": "#B1-55",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Best Denki",
+"u": "#B1-01 & B1-43/44",
+"c": "Electronics & Technology"
+},
+{
+"n": "Blackball",
+"u": "#01-03",
+"c": "Food & Beverage"
+},
+{
+"n": "Boost Juice Bars",
+"u": "#01-04",
+"c": "Food & Beverage"
+},
+{
+"n": "Bossini",
+"u": "#01-20/21",
+"c": "Fashion"
+},
+{
+"n": "BreadTalk",
+"u": "#B2-25",
+"c": "Food & Beverage"
+},
+{
+"n": "BreakFixNow",
+"u": "#B1-14",
+"c": "Services"
+},
+{
+"n": "Canton Paradise",
+"u": "#B2-11",
+"c": "Food & Beverage"
+},
+{
+"n": "Challenger Mobile",
+"u": "#B1-18 to 20",
+"c": "Electronics & Technology"
+},
+{
+"n": "Chateraise",
+"u": "#B2-19",
+"c": "Food & Beverage"
+},
+{
+"n": "Cheers",
+"u": "#01-09",
+"c": "Convenience Store"
+},
+{
+"n": "Citibank ATM",
+"u": "#B2-K23",
+"c": "Services"
+},
+{
+"n": "Clarks",
+"u": "#01-25",
+"c": "Fashion"
+},
+{
+"n": "Cloud 9 Studio",
+"u": "#01-36",
+"c": "Fashion"
+},
+{
+"n": "COFFEESARANG",
+"u": "#01-78",
+"c": "Food & Beverage"
+},
+{
+"n": "Coo.Seoul+",
+"u": "#01-24",
+"c": "Fashion"
+},
+{
+"n": "COTTON ON",
+"u": "#B1-71/72",
+"c": "Fashion"
+},
+{
+"n": "Cotton On Kids",
+"u": "#B1-63/64",
+"c": "Children, Fashion"
+},
+{
+"n": "CR Group",
+"u": "#B1-16",
+"c": "Electronics & Technology"
+},
+{
+"n": "CRAVE/Stuff'd",
+"u": "#B2-22",
+"c": "Food & Beverage"
+},
+{
+"n": "D & C (Design & Comfort)",
+"u": "#B1-66",
+"c": "Fashion"
+},
+{
+"n": "DDMC - Dye Dye Must Color",
+"u": "#B1-30A",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Devil Chicken",
+"u": "#B2-K11",
+"c": "Food & Beverage"
+},
+{
+"n": "Dian Xiao Er",
+"u": "#01-71 to 74",
+"c": "Food & Beverage"
+},
+{
+"n": "Dollars & Scent",
+"u": "#01-87/88",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Dorra Tummy, Hip & Thigh Slimming",
+"u": "#B1-48/49",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Dr J",
+"u": "#01-53",
+"c": "Fashion"
+},
+{
+"n": "Duke Bakery",
+"u": "#01-01",
+"c": "Food & Beverage"
+},
+{
+"n": "DUNKIN' DONUTS",
+"u": "#B2-K7",
+"c": "Food & Beverage"
+},
+{
+"n": "Eastern Rice Dumpling",
+"u": "#B2-K10",
+"c": "Food & Beverage"
+},
+{
+"n": "EAT.",
+"u": "#B2-K14",
+"c": "Food & Beverage"
+},
+{
+"n": "EC House",
+"u": "#B2-49A",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Echo",
+"u": "#01-64",
+"c": "Fashion"
+},
+{
+"n": "Emperor Optics",
+"u": "#B2-52",
+"c": "Fashion"
+},
+{
+"n": "Encik Tan",
+"u": "#B1-41/42",
+"c": "Food & Beverage"
+},
+{
+"n": "Eu Yan Sang",
+"u": "#B2-16",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Eurotex",
+"u": "#B1-61",
+"c": "Home & Furnishing"
+},
+{
+"n": "FairPrice Finest",
+"u": "#B2-60",
+"c": "Supermarket & Specialty Mart"
+},
+{
+"n": "Fengshui World",
+"u": "#01-85/86",
+"c": "Services"
+},
+{
+"n": "FIRMAN SHAH",
+"u": "#02-01A",
+"c": "Services"
+},
+{
+"n": "Fluff Brows+Lash",
+"u": "#01-18",
+"c": "Beauty & Wellness"
+},
+{
+"n": "FOTO Express",
+"u": "#B2-59C",
+"c": "Services"
+},
+{
+"n": "Four Leaves",
+"u": "#B2-56",
+"c": "Food & Beverage"
+},
+{
+"n": "FUN CLAW",
+"u": "#B1-35",
+"c": "Entertainment"
+},
+{
+"n": "Gain City",
+"u": "#B1-59",
+"c": "Electronics & Technology"
+},
+{
+"n": "Giordano",
+"u": "#01-49 to 51",
+"c": "Fashion"
+},
+{
+"n": "Glimpse",
+"u": "#01-34",
+"c": "Fashion"
+},
+{
+"n": "Gochi-So Shokudo",
+"u": "#01-75",
+"c": "Food & Beverage"
+},
+{
+"n": "Goldheart",
+"u": "#01-32/33",
+"c": "Fashion"
+},
+{
+"n": "Greendot",
+"u": "#B2-31",
+"c": "Food & Beverage"
+},
+{
+"n": "Guardian Health & Beauty",
+"u": "#B2-45 to 47",
+"c": "Beauty & Wellness"
+},
+{
+"n": "H2 Hub Timepiece",
+"u": "#01-83/84",
+"c": "Fashion"
+},
+{
+"n": "Haidilao Hot Pot \u6d77\u5e95\u635e\u706b\u9505",
+"u": "#01-13 to 17",
+"c": "Food & Beverage"
+},
+{
+"n": "Happy Walker",
+"u": "#B1-67",
+"c": "Fashion"
+},
+{
+"n": "HELEN",
+"u": "#01-23",
+"c": "Fashion"
+},
+{
+"n": "Ho Kee Pau",
+"u": "#B2-K3",
+"c": "Food & Beverage"
+},
+{
+"n": "Hockhua Tonic",
+"u": "#B2-17/18",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Holland & Barrett",
+"u": "#B2-58",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Hong Kong Sheng Kee Dessert",
+"u": "#B2-24",
+"c": "Food & Beverage"
+},
+{
+"n": "Hot Tomato",
+"u": "#B1-37/38",
+"c": "Food & Beverage"
+},
+{
+"n": "innisfree",
+"u": "#01-30",
+"c": "Beauty & Wellness"
+},
+{
+"n": "iORA",
+"u": "#01-29",
+"c": "Fashion"
+},
+{
+"n": "iStudio",
+"u": "#01-02",
+"c": "Electronics & Technology"
+},
+{
+"n": "Itacho Sushi",
+"u": "#B2-42/43",
+"c": "Food & Beverage"
+},
+{
+"n": "Japan Home",
+"u": "#B2-50/51",
+"c": "Department Store & Value Store"
+},
+{
+"n": "Japan IPL EXPRESS",
+"u": "#B1-31",
+"c": "Beauty & Wellness"
+},
+{
+"n": "JasonSally Hairdressers",
+"u": "#01-19",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Jean Yip Hair & Hair Spa",
+"u": "#B2-38",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Jollibee",
+"u": "#B2-06 & B2-33",
+"c": "Food & Beverage"
+},
+{
+"n": "JUEWEI",
+"u": "#B2-K12",
+"c": "Food & Beverage"
+},
+{
+"n": "Junshin Express",
+"u": "#B2-20",
+"c": "Food & Beverage"
+},
+{
+"n": "Kawata House of Socks",
+"u": "#B1-11",
+"c": "Fashion"
+},
+{
+"n": "kcuts",
+"u": "#B1-50",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Kenjo",
+"u": "#01-22",
+"c": "Fashion"
+},
+{
+"n": "Kiddy Palace",
+"u": "#B1-23 to 25",
+"c": "Children, Fashion"
+},
+{
+"n": "KIMOJ",
+"u": "#01-91",
+"c": "Fashion"
+},
+{
+"n": "Kin Teck Tong",
+"u": "#01-45/46",
+"c": "Beauty & Wellness"
+},
+{
+"n": "KOI THE",
+"u": "#01-97",
+"c": "Food & Beverage"
+},
+{
+"n": "La Vida",
+"u": "#01-27",
+"c": "Beauty & Wellness"
+},
+{
+"n": "LAC Nutrition for Life",
+"u": "#B2-53",
+"c": "Beauty & Wellness"
+},
+{
+"n": "LeNu Chef Wai\u2019s Noodle Bar",
+"u": "#B2-32",
+"c": "Food & Beverage"
+},
+{
+"n": "LiHO",
+"u": "#B2-K16",
+"c": "Food & Beverage"
+},
+{
+"n": "Lovisa",
+"u": "#01-90",
+"c": "Fashion"
+},
+{
+"n": "Luminous Dental Clinic",
+"u": "#B1-15",
+"c": "Services"
+},
+{
+"n": "LUSH aesthetics",
+"u": "#B2-37",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Master Fix Services",
+"u": "#B2-48A",
+"c": "Services"
+},
+{
+"n": "Mavis Tutorial Centre",
+"u": "#02-03/04",
+"c": "Children"
+},
+{
+"n": "McDonald's",
+"u": "#01-10/11",
+"c": "Food & Beverage"
+},
+{
+"n": "Men Men Don Don",
+"u": "#B2-27",
+"c": "Food & Beverage"
+},
+{
+"n": "Miniso",
+"u": "#B2-14",
+"c": "Department Store & Value Store, Books & Stationery"
+},
+{
+"n": "Minmed Clinic",
+"u": "#01-47/48",
+"c": "Services"
+},
+{
+"n": "MOBOT",
+"u": "#01-67/68",
+"c": "Hobbies & Leisure"
+},
+{
+"n": "MOS Burger",
+"u": "#B2-29",
+"c": "Food & Beverage"
+},
+{
+"n": "Mr Bean",
+"u": "#B2-K2",
+"c": "Food & Beverage"
+},
+{
+"n": "Mr. Coconut",
+"u": "#01-K1",
+"c": "Food & Beverage"
+},
+{
+"n": "MyRepublic",
+"u": "#B1-31A",
+"c": "Services"
+},
+{
+"n": "Nailz Gallery",
+"u": "#B2-04",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Nailz Treats",
+"u": "#B1-03",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Nailz Treats PLUS",
+"u": "#B1-65",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Nam Kee Pau",
+"u": "#B2-K25",
+"c": "Food & Beverage"
+},
+{
+"n": "NENE CHICKEN",
+"u": "#02-02",
+"c": "Food & Beverage"
+},
+{
+"n": "New Nada Barber",
+"u": "#B2-59A",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Nippon Home",
+"u": "#B2-21",
+"c": "Home & Furnishing"
+},
+{
+"n": "NK Hairworks",
+"u": "#B1-56/57",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Old Chang Kee",
+"u": "#B2-K4",
+"c": "Food & Beverage"
+},
+{
+"n": "OPPO Concept Store",
+"u": "#B1-33",
+"c": "Electronics & Technology"
+},
+{
+"n": "OSIM",
+"u": "#B2-57",
+"c": "Beauty & Wellness"
+},
+{
+"n": "OWNDAYS",
+"u": "#01-60/61",
+"c": "Fashion"
+},
+{
+"n": "Paik's Bibimbap",
+"u": "#01-95",
+"c": "Food & Beverage"
+},
+{
+"n": "Paradise Classic",
+"u": "#B2-10",
+"c": "Food & Beverage"
+},
+{
+"n": "Peniwern",
+"u": "#01-52",
+"c": "Fashion"
+},
+{
+"n": "Pepper Lunch",
+"u": "#01-05 to 08",
+"c": "Food & Beverage"
+},
+{
+"n": "Pet Lovers Centre",
+"u": "#B2-59",
+"c": "Hobbies & Leisure"
+},
+{
+"n": "Pezzo",
+"u": "#B2-K1",
+"c": "Food & Beverage"
+},
+{
+"n": "PHS Hairscience\u00ae",
+"u": "#B2-40/41",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Pierre Cardin Lingerie",
+"u": "#B1-30",
+"c": "Fashion"
+},
+{
+"n": "Pizza Hut",
+"u": "#B2-05 & B2-34",
+"c": "Food & Beverage"
+},
+{
+"n": "Play-e",
+"u": "#B1-17",
+"c": "Hobbies & Leisure"
+},
+{
+"n": "POLAR Puffs & Cakes",
+"u": "#B2-K5",
+"c": "Food & Beverage"
+},
+{
+"n": "POPULAR Bookstore",
+"u": "#B2-02 & B2-35/36",
+"c": "Hobbies & Leisure, Books & Stationery"
+},
+{
+"n": "POSB ATM",
+"u": "#B2-K20",
+"c": "Services"
+},
+{
+"n": "Presto Drycleaners",
+"u": "#B2-49",
+"c": "Services"
+},
+{
+"n": "PrimaDeli",
+"u": "#B2-K6",
+"c": "Food & Beverage"
+},
+{
+"n": "Q & M Dental Surgery",
+"u": "#02-01",
+"c": "Services"
+},
+{
+"n": "Ritz Apple Strudel",
+"u": "#B2-K8",
+"c": "Food & Beverage"
+},
+{
+"n": "Saap Saap Thai",
+"u": "#B1-39",
+"c": "Food & Beverage"
+},
+{
+"n": "Samsung",
+"u": "#B1-07",
+"c": "Electronics & Technology"
+},
+{
+"n": "San Ren Xing",
+"u": "#B1-40",
+"c": "Food & Beverage"
+},
+{
+"n": "Sanook Kitchen",
+"u": "#B2-44",
+"c": "Food & Beverage"
+},
+{
+"n": "SEA HORSE",
+"u": "#B1-60",
+"c": "Home & Furnishing"
+},
+{
+"n": "Seoul Garden Hotpot",
+"u": "#B1-51",
+"c": "Food & Beverage"
+},
+{
+"n": "Seoul Mart",
+"u": "#B1-54",
+"c": "Supermarket & Specialty Mart"
+},
+{
+"n": "SF FRUITS",
+"u": "#B2-K15",
+"c": "Food & Beverage"
+},
+{
+"n": "Sinchong",
+"u": "#B2-48",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Singtel Exclusive Retailer",
+"u": "#B1-02/02A",
+"c": "Electronics & Technology"
+},
+{
+"n": "SK JEWELLERY",
+"u": "#01-42 to 44",
+"c": "Fashion"
+},
+{
+"n": "SLEEPNIGHT",
+"u": "#B1-58",
+"c": "Home & Furnishing"
+},
+{
+"n": "S\u014d Ramen",
+"u": "#B1-09",
+"c": "Food & Beverage"
+},
+{
+"n": "Sorella",
+"u": "#01-35",
+"c": "Fashion"
+},
+{
+"n": "Sothys Premium Salon",
+"u": "#01-89",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Spacio TCM Wellness",
+"u": "#B2-39",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Spectacle Hut",
+"u": "#B1-36",
+"c": "Fashion"
+},
+{
+"n": "Starbucks",
+"u": "#01-92/93",
+"c": "Food & Beverage"
+},
+{
+"n": "Subway",
+"u": "#01-96",
+"c": "Food & Beverage"
+},
+{
+"n": "Surfers Paradise",
+"u": "#01-57 to 59",
+"c": "Fashion"
+},
+{
+"n": "Sushiro",
+"u": "#B1-10",
+"c": "Food & Beverage"
+},
+{
+"n": "Swensen's",
+"u": "#01-77",
+"c": "Food & Beverage"
+},
+{
+"n": "Taka Jewellery",
+"u": "#01-38",
+"c": "Fashion"
+},
+{
+"n": "TamJai SamGor Mixian",
+"u": "#B1-52",
+"c": "Food & Beverage"
+},
+{
+"n": "TeleStation GO Wireless",
+"u": "#01-80,01",
+"c": "Electronics & Technology"
+},
+{
+"n": "The Body Shop",
+"u": "#01-26",
+"c": "Beauty & Wellness"
+},
+{
+"n": "The Green Party",
+"u": "#B1-12",
+"c": "Home & Furnishing"
+},
+{
+"n": "The Wallet Shop",
+"u": "#01-54",
+"c": "Fashion"
+},
+{
+"n": "THEFACESHOP",
+"u": "#01-37",
+"c": "Beauty & Wellness"
+},
+{
+"n": "TOAST BOX",
+"u": "#B2-25/26",
+"c": "Food & Beverage"
+},
+{
+"n": "Top Secret STUDIO",
+"u": "#B2-K19",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Tori-Q",
+"u": "#B2-28",
+"c": "Food & Beverage"
+},
+{
+"n": "Tun Xiang",
+"u": "#01-76",
+"c": "Food & Beverage"
+},
+{
+"n": "Twelve Cupcakes",
+"u": "#B2-K13",
+"c": "Food & Beverage"
+},
+{
+"n": "Typo",
+"u": "#01-65/66",
+"c": "Books & Stationery"
+},
+{
+"n": "UNIQLO",
+"u": "#B1-26 to 28",
+"c": "Fashion"
+},
+{
+"n": "UOB ATM",
+"u": "#B2-K21",
+"c": "Services"
+},
+{
+"n": "UrbanWrite",
+"u": "#B2-03TO03A",
+"c": "Hobbies & Leisure"
+},
+{
+"n": "Venus Beauty",
+"u": "#B2-54/55",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Vintage Studio Hairdressing Spa",
+"u": "#B1-45",
+"c": "Beauty & Wellness"
+},
+{
+"n": "W Optics",
+"u": "#01-81/82",
+"c": "Fashion"
+},
+{
+"n": "Wacoal",
+"u": "#B1-34",
+"c": "Fashion"
+},
+{
+"n": "Watches of Japan",
+"u": "#01-28",
+"c": "Fashion"
+},
+{
+"n": "Watsons",
+"u": "#B2-12/13",
+"c": "Beauty & Wellness"
+},
+{
+"n": "WING.STOP",
+"u": "#B1-53",
+"c": "Food & Beverage"
+},
+{
+"n": "Wok Hey",
+"u": "#B2-K9",
+"c": "Food & Beverage"
+},
+{
+"n": "Xiaomi",
+"u": "#B1-13",
+"c": "Electronics & Technology"
+},
+{
+"n": "Ximenjie \u897f\u95e8\u8857",
+"u": "#B2-K11",
+"c": "Food & Beverage"
+},
+{
+"n": "Xpressflower.Com",
+"u": "#B2-59B",
+"c": "Services, Hobbies & Leisure"
+},
+{
+"n": "Ya Kun Kaya Toast",
+"u": "#01-12",
+"c": "Food & Beverage"
+},
+{
+"n": "Yale",
+"u": "#B1-33",
+"c": "Home & Furnishing"
+},
+{
+"n": "Yol\u00e9",
+"u": "#01-40",
+"c": "Food & Beverage"
+},
+{
+"n": "YOSHINOYA",
+"u": "#B2-30",
+"c": "Food & Beverage"
+},
+{
+"n": "Young hearts",
+"u": "#B1-32",
+"c": "Fashion"
+},
+{
+"n": "Yu Er Fashion",
+"u": "#01-39",
+"c": "Fashion"
+}
+]
+},
+"i12-katong": {
+"name": "i12 Katong",
+"addr": "112 E Coast Rd, Singapore 428802",
+"lat": 1.3052934,
+"lon": 103.9051599,
+"stores": [
+{
+"n": "001 Cafe @Bistro Bytes",
+"u": "#02-12 & 02-14BISTROBYTES",
+"c": "Food & Beverage"
+},
+{
+"n": "A-One Signature @Bistro Bytes",
+"u": "#02-12 & 02-14BISTROBYTES",
+"c": "Food & Beverage"
+},
+{
+"n": "Absolute Boutique Fitness Studio",
+"u": "#03-25 & 03-27",
+"c": "Fitness & Sports"
+},
+{
+"n": "All That Jazz Dance Academy",
+"u": "#03-14/15",
+"c": "Kids & Enrichment"
+},
+{
+"n": "Am Cosset",
+"u": "#04-18",
+"c": "Beauty & Health"
+},
+{
+"n": "Ana\u00efs An",
+"u": "Pop Palette, #02-19",
+"c": "Fashion & Accessories"
+},
+{
+"n": "AU by AKEMIUchi",
+"u": "#02-11",
+"c": "Homeware & Furnishings"
+},
+{
+"n": "August Society",
+"u": "Pop Palette, #02-19",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Ayam Penyet President",
+"u": "#04-07",
+"c": "Food & Beverage"
+},
+{
+"n": "Binibeca Fashion",
+"u": "#01-05",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Bistro Bytes",
+"u": "#02-12 & 02-14",
+"c": "Food & Beverage"
+},
+{
+"n": "Bochechas",
+"u": "Pop Palette, #02-19",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Boost Juice Bars",
+"u": "#B1-42",
+"c": "Food & Beverage"
+},
+{
+"n": "Ch\u00e2teau de Sable",
+"u": "Pop Palette, #02-19",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Churros Republic",
+"u": "#B1-34",
+"c": "Food & Beverage"
+},
+{
+"n": "Claw Planets",
+"u": "#04-21",
+"c": "Leisure & Entertainment"
+},
+{
+"n": "Climb Central",
+"u": "#04-01/02",
+"c": "Leisure & Entertainment"
+},
+{
+"n": "Core Clinic",
+"u": "#03-03/04",
+"c": "Medical Services"
+},
+{
+"n": "Core Collective",
+"u": "#03-01/02",
+"c": "Fitness & Sports"
+},
+{
+"n": "Coucou Hotpot \u2022 Brew Tea",
+"u": "#04-05/06",
+"c": "Food & Beverage"
+},
+{
+"n": "Crystal Jade La Mian Xiao Long Bao",
+"u": "#02-21",
+"c": "Food & Beverage"
+},
+{
+"n": "CS Fresh",
+"u": "#B1-01 & B1-05",
+"c": "Supermarket"
+},
+{
+"n": "Ding Wei Fried Master",
+"u": "Bistro Bytes, #02-12 & 02-14",
+"c": "Food & Beverage"
+},
+{
+"n": "Dulcet & Studio",
+"u": "#B1-31",
+"c": "Food & Beverage"
+},
+{
+"n": "Ed Florede",
+"u": "Bistro Bytes, #02-12 & 02-14",
+"c": "Food & Beverage"
+},
+{
+"n": "Fang Cao Yuan",
+"u": "#04-10/11",
+"c": "Kids & Enrichment"
+},
+{
+"n": "For The Love of Laundry",
+"u": "#01-16",
+"c": "Services"
+},
+{
+"n": "Gelatissimo",
+"u": "#01-22",
+"c": "Food & Beverage"
+},
+{
+"n": "Genki Sushi",
+"u": "#02-03",
+"c": "Food & Beverage"
+},
+{
+"n": "Golden Village ",
+"u": "#05-01/02",
+"c": "Leisure & Entertainment"
+},
+{
+"n": "Gong Cha",
+"u": "#B1-36",
+"c": "Food & Beverage"
+},
+{
+"n": "GOPIZZA",
+"u": "#B1-32",
+"c": "Food & Beverage"
+},
+{
+"n": "Green Signature",
+"u": "Bistro Bytes, #02-12 & 02-14BISTROBYTES",
+"c": "Food & Beverage"
+},
+{
+"n": "Guardian",
+"u": "#B1-15/16",
+"c": "Beauty & Health"
+},
+{
+"n": "Guzman Y Gomez",
+"u": "#01-27 & 01-31",
+"c": "Food & Beverage"
+},
+{
+"n": "Hanna Lee",
+"u": "#02-18",
+"c": "Fashion & Accessories"
+},
+{
+"n": "HardwareCity",
+"u": "#B1-25/26",
+"c": "Homeware & Furnishing"
+},
+{
+"n": "HealSpa",
+"u": "#B1-10",
+"c": "Beauty & Health"
+},
+{
+"n": "Hey! I am Yogost",
+"u": "#B1-30",
+"c": "Food & Beverage"
+},
+{
+"n": "Hockhua Tonic",
+"u": "#B1-27",
+"c": "Beauty & Health"
+},
+{
+"n": "Hopla! Kids Shoe Shop",
+"u": "Pop Palette, #02-19",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Huggs Collective",
+"u": "#01-20",
+"c": "Food & Beverage"
+},
+{
+"n": "Illumia",
+"u": "#03-05 to 07",
+"c": "Beauty & Health"
+},
+{
+"n": "IPPUDO",
+"u": "#01-04",
+"c": "Food & Beverage"
+},
+{
+"n": "iVegan",
+"u": "#02-20",
+"c": "Food & Beverage"
+},
+{
+"n": "J-mart",
+"u": "#B1-13/14",
+"c": "Food Specialty"
+},
+{
+"n": "Janice Wong Pure Imagination",
+"u": "#B1-44/45",
+"c": "Food & Beverage"
+},
+{
+"n": "Junior Page",
+"u": "#04-27/28",
+"c": "Kids & Enrichment"
+},
+{
+"n": "kcuts",
+"u": "#B1-22",
+"c": "Services"
+},
+{
+"n": "Kei Kaisendon",
+"u": "#B1-38/39",
+"c": "Food & Beverage"
+},
+{
+"n": "Kind Kones",
+"u": "#02-25",
+"c": "Food & Beverage"
+},
+{
+"n": "Kindermusik with Love Studios",
+"u": "#03-21",
+"c": "Kids & Enrichment"
+},
+{
+"n": "KRate",
+"u": "#B1-35",
+"c": "Food & Beverage"
+},
+{
+"n": "Lama Hot Mama",
+"u": "Bistro Bytes, #02-12 & 02-14BISTROBYTES",
+"c": "Food & Beverage"
+},
+{
+"n": "Liang Yi TCM",
+"u": "#03-12",
+"c": "Beauty & Health"
+},
+{
+"n": "Liliewoods Social",
+"u": "#03-08",
+"c": "Kids & Enrichment"
+},
+{
+"n": "LittleShop @Pop Palette",
+"u": "#02-19POPPALETTE",
+"c": "Kids & Enrichment"
+},
+{
+"n": "Lucca Vudor",
+"u": "#01-09",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Lululemon",
+"u": "#01-25/26",
+"c": "Fitness & Sports"
+},
+{
+"n": "Maki-San ",
+"u": "#B1-43",
+"c": "Food & Beverage"
+},
+{
+"n": "Malaysia Boleh (Food Court)",
+"u": "#B1-06 & B1-08",
+"c": "Food & Beverage"
+},
+{
+"n": "Mathnasium",
+"u": "#04-12",
+"c": "Kids & Enrichment"
+},
+{
+"n": "Moirai",
+"u": "Pop Palette, #02-19",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Mr Woofles",
+"u": "#04-15",
+"c": "Lifestyle, Pets & Hobbies"
+},
+{
+"n": "My Tampopo",
+"u": "Bistro Bytes, #02-12 & 02-14",
+"c": "Food & Beverage"
+},
+{
+"n": "Navis Hair & Beauty Salon",
+"u": "#04-20",
+"c": "Beauty & Health"
+},
+{
+"n": "NBCB Nothing But Cheese Burger",
+"u": "#01-17 & 01-30",
+"c": "Food & Beverage"
+},
+{
+"n": "Ninja Mama",
+"u": "#B1-29",
+"c": "Food & Beverage"
+},
+{
+"n": "OGAWA",
+"u": "#01-08",
+"c": "Beauty & Health"
+},
+{
+"n": "Olympic Taekwondo Academy",
+"u": "#04-13",
+"c": "Kids & Enrichment"
+},
+{
+"n": "One Wellness Medical",
+"u": "#04-19",
+"c": "Medical Services"
+},
+{
+"n": "Organic Express Hair Color Lab ",
+"u": "#03-13",
+"c": "Beauty & Health"
+},
+{
+"n": "Papilla Haircare",
+"u": "#03-05 to 07",
+"c": "Beauty & Health"
+},
+{
+"n": "Pita Tree Kebabs",
+"u": "#B1-28",
+"c": "Food & Beverage"
+},
+{
+"n": "PizzaExpress",
+"u": "Bistro Bytes, #02-12 & 02-14",
+"c": "Food & Beverage"
+},
+{
+"n": "Priv\u00e9",
+"u": "#01-28",
+"c": "Food & Beverage"
+},
+{
+"n": "PS.Cafe",
+"u": "#01-01 & 01-03",
+"c": "Food & Beverage"
+},
+{
+"n": "Re.juve",
+"u": "#B1-33",
+"c": "Food & Beverage"
+},
+{
+"n": "Rollgaadi",
+"u": "#B1-41",
+"c": "Food & Beverage"
+},
+{
+"n": "Royce Dental Surgery",
+"u": "#03-10/11",
+"c": "Medical Services"
+},
+{
+"n": "Scoop Wholefoods",
+"u": "#B1-17 & B1-20",
+"c": "Food Specialty"
+},
+{
+"n": "Shopping at Tiffany's",
+"u": "#01-23",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Signature KOI",
+"u": "#01-21",
+"c": "Food & Beverage"
+},
+{
+"n": "So Good Bakery",
+"u": "#01-19",
+"c": "Food & Beverage"
+},
+{
+"n": "So Good Char Chan Tang",
+"u": "#04-08/09",
+"c": "Food & Beverage"
+},
+{
+"n": "Spark Education",
+"u": "#04-16/17",
+"c": "Kids & Enrichment"
+},
+{
+"n": "Spectacle Hut",
+"u": "#01-06/07",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Sunday Bedding",
+"u": "#02-05",
+"c": "Homeware & Furnishings"
+},
+{
+"n": "Sweet Huts",
+"u": "#04-29",
+"c": "Food & Beverage"
+},
+{
+"n": "Table Matters",
+"u": "#02-08",
+"c": "Homeware & Furnishings"
+},
+{
+"n": "Tang Shan TCM & Massage",
+"u": "#03-22",
+"c": "Beauty & Health"
+},
+{
+"n": "Tea Pulse",
+"u": "#B1-47",
+"c": "Food & Beverage"
+},
+{
+"n": "TEMPUR",
+"u": "#02-07",
+"c": "Homeware & Furnishing"
+},
+{
+"n": "The Green Party",
+"u": "#02-15/16",
+"c": "Lifestyle, Pets & Hobbies"
+},
+{
+"n": "The Kin Thread",
+"u": "Pop Palette, #02-19",
+"c": "Fashion & Accessories"
+},
+{
+"n": "The Pizza Pasta Project",
+"u": "Bistro Bytes, #02-12 & 02-14BISTROBYTES",
+"c": "Food & Beverage"
+},
+{
+"n": "Tim Ho Wan",
+"u": "#02-01/02",
+"c": "Food & Beverage"
+},
+{
+"n": "Toriten",
+"u": "#B1-40",
+"c": "Food & Beverage"
+},
+{
+"n": "ToTT Store",
+"u": "#02-09/10",
+"c": "Lifestyle, Pets & Hobbies"
+},
+{
+"n": "Tree Art",
+"u": "#03-16/17",
+"c": "Kids & Enrichment"
+},
+{
+"n": "Typhoon Caf\u00e9",
+"u": "#B1-10 & B1-37",
+"c": "Food & Beverage"
+},
+{
+"n": "Typo",
+"u": "#01-24",
+"c": "Lifestyle, Pets & Hobbies"
+},
+{
+"n": "UOB ATM",
+"u": "#B1-37",
+"c": "Services"
+},
+{
+"n": "Wan To Play",
+"u": "#04-03/04",
+"c": "Kids & Enrichment"
+},
+{
+"n": "Watsons",
+"u": "#02-17",
+"c": "Beauty & Health"
+},
+{
+"n": "White Ginger",
+"u": "#02-06",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Wine Connection",
+"u": "#01-10",
+"c": "Food & Beverage"
+},
+{
+"n": "Yum Yum Thai",
+"u": "#B1-50",
+"c": "Food & Beverage"
+}
+]
+},
+"kallang-wave-mall": {
+"name": "Kallang Wave Mall",
+"addr": "1 Stadium Pl, Singapore 397628",
+"lat": 1.3032243,
+"lon": 103.8728714,
+"stores": [
+{
+"n": "A-One Claypot House",
+"u": "#01-33/34",
+"c": "Restaurants"
+},
+{
+"n": "Advance Lap",
+"u": "Kallang Wave Mall, #01-36",
+"c": "Fashion & Sports"
+},
+{
+"n": "Al Capone",
+"u": "Kallang Wave Mall, #01-15",
+"c": "Restaurants, Food Outlets & Caf\u00e9s"
+},
+{
+"n": "ASTONS Specialities",
+"u": "Kallang Wave Mall, #02-04",
+"c": "Restaurants, Food Outlets & Caf\u00e9s"
+},
+{
+"n": "Avone Beauty Secrets",
+"u": "Kallang Wave Mall, #01-50",
+"c": "Beauty, Health & Wellness"
+},
+{
+"n": "Ayam Penyet President",
+"u": "Kallang Wave Mall, #01-23",
+"c": "Restaurants, Food Outlets & Caf\u00e9s"
+},
+{
+"n": "Bar Soccer",
+"u": "Kallang Wave Mall, #01-13 & 01-K5",
+"c": "Restaurants, Food Outlets & Caf\u00e9s"
+},
+{
+"n": "BELLS New Media Lab",
+"u": "Kallang Wave Mall, #02-08",
+"c": "Education & Enrichment"
+},
+{
+"n": "Brewerkz Restaurants and Microbreweries",
+"u": "Singapore Indoor Stadium, #01-06/07",
+"c": "Restaurants, Food Outlets & Caf\u00e9s"
+},
+{
+"n": "Cheers",
+"u": "Kallang Wave Mall, #01-03",
+"c": "Convenience Store & Hypermart"
+},
+{
+"n": "CHICHA San Chen \u5403\u8336\u4e09\u5343",
+"u": "Kallang Wave Mall, #01-52",
+"c": "Restaurants, Food Outlets & Caf\u00e9s"
+},
+{
+"n": "Chocolate Origin",
+"u": "Kallang Wave Mall, #01-31",
+"c": "Special Confectionary"
+},
+{
+"n": "Climb Central",
+"u": "Kallang Wave Mall, #B1-01",
+"c": "Play & Experience"
+},
+{
+"n": "Cotton On",
+"u": "Kallang Wave Mall, #01-60 to 62",
+"c": "Fashion & Sports"
+},
+{
+"n": "CROSSFIT UNIT",
+"u": "Kallang Wave Mall, #02-05",
+"c": "Beauty, Health & Wellness"
+},
+{
+"n": "CycleOxygen",
+"u": "Kallang Wave Mall, #01-04/05",
+"c": "Play & Experience"
+},
+{
+"n": "Daiso",
+"u": "Kallang Wave Mall, #02-11",
+"c": "Home, Lifestyle & Gift"
+},
+{
+"n": "Elm Tree",
+"u": "Kallang Wave Mall, #01-38",
+"c": "Education & Enrichment"
+},
+{
+"n": "Encik Tan",
+"u": "Kallang Wave Mall, #01-32",
+"c": "Restaurants, Food Outlets & Caf\u00e9s"
+},
+{
+"n": "F45 @ Tanjong Rhu",
+"u": "#02-03",
+"c": "Health & Wellness"
+},
+{
+"n": "FairPrice Xtra",
+"u": "#01-29",
+"c": "Convenience Store & Hypermart"
+},
+{
+"n": "Fun Toast",
+"u": "Kallang Wave Mall, #01-39",
+"c": "Restaurants, Food Outlets & Caf\u00e9s"
+},
+{
+"n": "GFI: Superfruit Bowls & Shakes",
+"u": "#02-13",
+"c": "Food Outlets & Caf\u00e9s"
+},
+{
+"n": "Good Cheer 2",
+"u": "#01-14",
+"c": "Restaurants, Play & Experience"
+},
+{
+"n": "Gourmet Pizza To Go",
+"u": "#01-43",
+"c": "Restaurants, Food Outlets & Caf\u00e9s"
+},
+{
+"n": "Guardian",
+"u": "#01-51",
+"c": "Beauty, Health & Wellness"
+},
+{
+"n": "H&M",
+"u": "#01-74 to 78",
+"c": "Fashion & Sports"
+},
+{
+"n": "International Management and Sports College",
+"u": "#01-09 & 01-11",
+"c": "Education & Enrichment"
+},
+{
+"n": "Ji Xian Seafood & HK Dim Sum Express",
+"u": "Kallang Wave Mall, #02-15/16A",
+"c": "Restaurants, Food Outlets & Caf\u00e9s"
+},
+{
+"n": "Jolly Fields by ZOOMOOV",
+"u": "Kallang Wave Mall, #01-37",
+"c": "Play & Experience"
+},
+{
+"n": "Kcuts",
+"u": "Kallang Wave Mall, #02-14",
+"c": "Beauty, Health & Wellness"
+},
+{
+"n": "Kin Teck Tong",
+"u": "Kallang Wave Mall, #02-06",
+"c": "Beauty, Health & Wellness"
+},
+{
+"n": "Levure Naturelle",
+"u": "#01-30",
+"c": "Food Outlets & Caf\u00e9s"
+},
+{
+"n": "Lorna Whiston Preschool",
+"u": "Kallang Wave Mall, #01-24 to 28",
+"c": "Education & Enrichment"
+},
+{
+"n": "Mulberry Learning Centre",
+"u": "Water Sports Centre, #02-05",
+"c": "Education & Enrichment"
+},
+{
+"n": "MuzArt",
+"u": "Kallang Wave Mall, #01-53",
+"c": "Education & Enrichment"
+},
+{
+"n": "My Drum School",
+"u": "Kallang Wave Mall, #01-66",
+"c": "Education & Enrichment"
+},
+{
+"n": "My Kampung",
+"u": "#02-16",
+"c": "Restaurants, Food Outlets & Caf\u00e9s"
+},
+{
+"n": "Neue Fit",
+"u": "Kallang Wave Mall, #02-07",
+"c": "Beauty, Health & Wellness"
+},
+{
+"n": "Newport Dental",
+"u": "Kallang Wave Mall, #01-08",
+"c": "Beauty, Health & Wellness"
+},
+{
+"n": "Nullspace Robotics",
+"u": "Kallang Wave Mall, #01-72",
+"c": "Education & Enrichment"
+},
+{
+"n": "O-Ride Singapore Mini Segway Tours",
+"u": "Kallang Wave Mall, #02-19",
+"c": "Play & Experience"
+},
+{
+"n": "Old Chang Kee",
+"u": "#01-20",
+"c": "Food Outlets & Caf\u00e9s"
+},
+{
+"n": "Old Street Bak Kut Teh. You Tiao. Soya Milk",
+"u": "#01-22",
+"c": "Food Outlets & Caf\u00e9s"
+},
+{
+"n": "Old Town White Coffee",
+"u": "Kallang Wave Mall, #01-18/19",
+"c": "Restaurants, Food Outlets & Caf\u00e9s"
+},
+{
+"n": "OMOOMO Food Concepts",
+"u": "Kallang Wave Mall, #01-40",
+"c": "Restaurants, Food Outlets & Caf\u00e9s"
+},
+{
+"n": "OverworldVR",
+"u": "Kallang Wave Mall, #01-63/64",
+"c": "Play & Experience"
+},
+{
+"n": "Paco Funworld",
+"u": "Kallang Wave Mall, #01-02 & 01-59",
+"c": "Play & Experience"
+},
+{
+"n": "Pastamania",
+"u": "Kallang Wave Mall, #01-21 & 01-K10",
+"c": "Restaurants, Food Outlets & Caf\u00e9s"
+},
+{
+"n": "Petite Tayo KidsClub",
+"u": "Kallang Wave Mall, #01-06/07",
+"c": "Play & Experience"
+},
+{
+"n": "Popeyes Louisiana Kitchen",
+"u": "Kallang Wave Mall, #02-02",
+"c": "Restaurants, Food Outlets & Caf\u00e9s"
+},
+{
+"n": "Poulet",
+"u": "Kallang Wave Mall, #01-17",
+"c": "Restaurants, Food Outlets & Caf\u00e9s"
+},
+{
+"n": "Rocking Rickshaw",
+"u": "Kallang Wave Mall, #01-12",
+"c": "Restaurants, Food Outlets & Caf\u00e9s"
+},
+{
+"n": "Sanook Kitchen",
+"u": "Kallang Wave Mall, #01-16",
+"c": "Restaurants, Food Outlets & Caf\u00e9s"
+},
+{
+"n": "Seoul Yummy Chego",
+"u": "Kallang Wave Mall, #01-47",
+"c": "Restaurants, Food Outlets & Caf\u00e9s"
+},
+{
+"n": "Sparkle",
+"u": "Kallang Wave Mall, #01-54",
+"c": "Home, Lifestyle & Gift"
+},
+{
+"n": "Sports Zone",
+"u": "Kallang Wave Mall, #01-57",
+"c": "Fashion & Sports"
+},
+{
+"n": "Starbucks",
+"u": "Kallang Wave Mall, #01-56",
+"c": "Restaurants, Food Outlets & Caf\u00e9s"
+},
+{
+"n": "Subway",
+"u": "Kallang Wave Mall, #01-55",
+"c": "Restaurants, Food Outlets & Caf\u00e9s"
+},
+{
+"n": "SUKI-YA",
+"u": "Kallang Wave Mall, #01-35",
+"c": "Restaurants, Food Outlets & Caf\u00e9s"
+},
+{
+"n": "Tea Tree Kakigori",
+"u": "#01-46",
+"c": "Food Outlets & Caf\u00e9s"
+},
+{
+"n": "Teo Heng KTV Studio",
+"u": "Kallang Wave Mall, #01-64A/65",
+"c": "Play & Experience"
+},
+{
+"n": "Thai Village Restaurant",
+"u": "Singapore Indoor Stadium, #01-02/03",
+"c": "Restaurants, Food Outlets & Caf\u00e9s"
+},
+{
+"n": "The Coffee Bean & Tea Leaf",
+"u": "Kallang Wave Mall, #01-44/45",
+"c": "Restaurants, Food Outlets & Caf\u00e9s"
+},
+{
+"n": "The Ride Side Skate Store",
+"u": "Kallang Wave Mall, #01-10",
+"c": "Play & Experience"
+},
+{
+"n": "The Soup Spoon Union",
+"u": "Kallang Wave Mall, #01-41",
+"c": "Restaurants, Food Outlets & Caf\u00e9s"
+},
+{
+"n": "Tiara Waterfront",
+"u": "Singapore Indoor Stadium, #01-05",
+"c": "Restaurants, Food Outlets & Caf\u00e9s"
+},
+{
+"n": "Typhoon Cafe",
+"u": "Kallang Wave Mall, #01-35",
+"c": "Restaurants, Food Outlets & Caf\u00e9s"
+},
+{
+"n": "Venus Aesthetics Medical Clinic",
+"u": "Kallang Wave Mall, #01-49",
+"c": "Beauty, Health & Wellness"
+},
+{
+"n": "W Optics",
+"u": "Kallang Wave Mall, #01-48",
+"c": "Beauty, Health & Wellness"
+},
+{
+"n": "WESTON CORP",
+"u": "Kallang Wave Mall, #01-58",
+"c": "Fashion & Sports"
+},
+{
+"n": "Xuan Sports",
+"u": "Kallang Wave Mall, #02-01",
+"c": "Fashion & Sports"
+},
+{
+"n": "YAN BALLET ACADEMY",
+"u": "Kallang Wave Mall, #01-73",
+"c": "Education & Enrichment"
+},
+{
+"n": "Yarana",
+"u": "Singapore Indoor Stadium, #01-04",
+"c": "Restaurants, Food Outlets & Caf\u00e9s"
+},
+{
+"n": "Yu Kee Specialities",
+"u": "#02-12",
+"c": "Food Outlets & Caf\u00e9s"
+},
+{
+"n": "Yunomori Onsen & Spa",
+"u": "Kallang Wave Mall, #02-17/18",
+"c": "Beauty, Health & Wellness"
+}
+]
+},
+"katong-v": {
+"name": "Katong V",
+"addr": "30 E Coast Rd, Singapore 428751",
+"lat": 1.3036204,
+"lon": 103.9029678,
+"stores": [
+{
+"n": "5W1H WRITING STRATEGY BY ASKRUTH",
+"u": "#03-19",
+"c": "Education & Enrichment"
+},
+{
+"n": "ART ZONE",
+"u": "#03-07",
+"c": "Education & Enrichment"
+},
+{
+"n": "BAO ZHI TANG FOOT REFLEXOLOGY",
+"u": "#02-04",
+"c": "Hair / Beauty / Wellness"
+},
+{
+"n": "BIG MAMA",
+"u": "#02-03",
+"c": "Services & Others"
+},
+{
+"n": "BREAD & HEARTH",
+"u": "#02-27",
+"c": "Food & Beverage, Cafes & Desserts"
+},
+{
+"n": "DELHI6",
+"u": "#01-12",
+"c": "Food & Beverage, Restaurants"
+},
+{
+"n": "DR. BAGS",
+"u": "#02-05",
+"c": "Services & Others"
+},
+{
+"n": "EAST MANHATTAN",
+"u": "#01-04",
+"c": "Food & Beverage, Bakery & Confectionery"
+},
+{
+"n": "FAIRPRICE FINEST",
+"u": "#01-06",
+"c": "Supermarket"
+},
+{
+"n": "GIFTED AND TALENTED EDUCATION",
+"u": "#02-22",
+"c": "Education & Enrichment"
+},
+{
+"n": "GROUP THERAPY",
+"u": "#01-11",
+"c": "Food & Beverage, Cafes & Desserts"
+},
+{
+"n": "GROWING UP GIFTED",
+"u": "#03-01",
+"c": "Education & Enrichment"
+},
+{
+"n": "HCL EDUCATION CENTRE",
+"u": "#02-18",
+"c": "Education & Enrichment"
+},
+{
+"n": "JET CONCEPTS",
+"u": "#02-17",
+"c": "Hair / Beauty / Wellness"
+},
+{
+"n": "JS SKIN",
+"u": "#02-06",
+"c": "Hair / Beauty / Wellness"
+},
+{
+"n": "KINDERMUSIK WITH LOVE STUDIOS",
+"u": "#03-22",
+"c": "Education & Enrichment"
+},
+{
+"n": "KKKL TRAVEL & TOURS",
+"u": "#02-13",
+"c": "Services & Others"
+},
+{
+"n": "KUMON LEARNING CENTRE",
+"u": "#03-21",
+"c": "Education & Enrichment"
+},
+{
+"n": "LA PEAU BEAUTY SALON",
+"u": "#02-20",
+"c": "Hair / Beauty / Wellness"
+},
+{
+"n": "O'COLOR HAIR SALON",
+"u": "#02-21",
+"c": "Hair / Beauty / Wellness"
+},
+{
+"n": "OLYMPIC TAEKWONDO ACADEMY",
+"u": "#03-17",
+"c": "Education & Enrichment"
+},
+{
+"n": "OODLES LEARNING",
+"u": "#03-23",
+"c": "Education & Enrichment"
+},
+{
+"n": "SHOPPING AT TIFFANY'S",
+"u": "#01-03",
+"c": "Fashion & Accessories"
+},
+{
+"n": "SWAROYALE",
+"u": "#02-12",
+"c": "Jewellery / Watches / Optical"
+},
+{
+"n": "THE LAB",
+"u": "#03-15",
+"c": "Education & Enrichment"
+},
+{
+"n": "TOMI SUSHI",
+"u": "#02-14",
+"c": "Food & Beverage, Restaurants"
+},
+{
+"n": "YUN GA TRADITIONAL KOREAN RESTAURANT",
+"u": "#03-09 to 14",
+"c": "Food & Beverage, Restaurants"
+},
+{
+"n": "ZENER DIY",
+"u": "#01-10",
+"c": "Home & Furnishing"
+}
+]
+},
+"kinex": {
+"name": "Kinex",
+"addr": "11 Tanjong Katong Rd, Singapore 437157",
+"lat": 1.3147221,
+"lon": 103.8947554,
+"stores": [
+{
+"n": "Beauty In The Pot",
+"u": "#03-38/39",
+"c": "many"
+},
+{
+"n": "CGS Party",
+"u": "#03-16 to 18",
+"c": "Gifts & Hobbies"
+},
+{
+"n": "DACO",
+"u": "#03-11 to 13",
+"c": "Home & Furnishings"
+},
+{
+"n": "Daiso Japan x Threeppy",
+"u": "#01-01 to 12 & 01-58",
+"c": "Home & Furnishings"
+},
+{
+"n": "Dragon Corner Watches",
+"u": "#01-24",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Eccellente by HAO mart",
+"u": "#B1-36",
+"c": "Supermarket"
+},
+{
+"n": "Elmaya House of Fashion",
+"u": "#01-28",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Everyday Mart",
+"u": "#01-13",
+"c": "Supermarket"
+},
+{
+"n": "Fashion by Jay Gee",
+"u": "#01-29",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Hang Ten ",
+"u": "#01-45/46",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Isle & Isle",
+"u": "#01-32/33",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Japan Home",
+"u": "#B1-12",
+"c": "Home & Furnishings"
+},
+{
+"n": "Kreasi Indah",
+"u": "#01-26/27",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Makanan Sunnah by HRZ Trading",
+"u": "#01-47",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Men's Branded Outlet",
+"u": "#B1-01A",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Ming Sing Flowers",
+"u": "#03-20 to 24",
+"c": "Home & Furnishings"
+},
+{
+"n": "MR. DIY",
+"u": "#03-29",
+"c": "Home & Furnishings"
+},
+{
+"n": "Prestige Boutique",
+"u": "#01-48",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Steve Florists",
+"u": "#03-36/37",
+"c": "Home & Furnishings"
+},
+{
+"n": "Surfers Paradise",
+"u": "#01-54",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Vanda Win",
+"u": "#03-25 to 27 & 03-41 to 43",
+"c": "Home & Furnishings"
+}
+]
+},
+"parkway-parade": {
+"name": "Parkway Parade",
+"addr": "80 Marine Parade Rd, Singapore 449269",
+"lat": 1.3013366,
+"lon": 103.9052333,
+"stores": [
+{
+"n": "1st Prize Home DIY",
+"u": "#B-23/24",
+"c": "Homeware & Electrical"
+},
+{
+"n": "6  Elements Hair Spa",
+"u": "#02-08",
+"c": "Health & Beauty Services"
+},
+{
+"n": "7-Eleven",
+"u": "#01-16A",
+"c": "Services"
+},
+{
+"n": "8 Medical Aesthetic Clinic",
+"u": "#05-20",
+"c": "Medical & Dental"
+},
+{
+"n": "AIBI Health and Sports Centre",
+"u": "#B-106",
+"c": "Beauty & Wellness"
+},
+{
+"n": "ALDO",
+"u": "#01-04 to 06",
+"c": "Fashion"
+},
+{
+"n": "Align Braces Clinic",
+"u": "#05-16",
+"c": "Medical & Dental"
+},
+{
+"n": "Aslowe Jewelry",
+"u": "#02-56",
+"c": "Jewellery"
+},
+{
+"n": "Aspire Hub",
+"u": "#03-31",
+"c": "Educational & Stationery"
+},
+{
+"n": "Aspire Hub Education",
+"u": "#01-58",
+"c": "Educational & Stationery"
+},
+{
+"n": "AsterSpring",
+"u": "#02-65/66",
+"c": ", "
+},
+{
+"n": "Auntie Anne's",
+"u": "#B-08",
+"c": "Food & Restaurant"
+},
+{
+"n": "Barani",
+"u": "#02-61",
+"c": "Shoes & Bags"
+},
+{
+"n": "Bata",
+"u": "#01-65",
+"c": "Shoes & Bags"
+},
+{
+"n": "Beaut\u00e9 by Nature",
+"u": "#B-75/76",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Bed Bath N' Table",
+"u": "#B-41 to 42",
+"c": "Homewares & Lifestyle"
+},
+{
+"n": "Bee Cheng Hiang",
+"u": "#B-88",
+"c": "Food Specialties"
+},
+{
+"n": "Bengawan Solo",
+"u": "#B-78/79",
+"c": "Food & Restaurant"
+},
+{
+"n": "Benjamin Barker",
+"u": "#01-25/26",
+"c": "Fashion"
+},
+{
+"n": "Best Denki",
+"u": "#03-29/30",
+"c": "Homeware & Electrical"
+},
+{
+"n": "Best Tech",
+"u": "#B-92",
+"c": "Homeware & Electrical"
+},
+{
+"n": "Binibeca Fashion",
+"u": "#01-07",
+"c": "Shoes & Bags"
+},
+{
+"n": "Boost Juice",
+"u": "#01-09A",
+"c": "Food & Restaurant"
+},
+{
+"n": "Bose",
+"u": "B-64, #B-64",
+"c": "Homeware & Electrical"
+},
+{
+"n": "Bottles & Bottles",
+"u": "#B-83K/L",
+"c": "Food Specialties"
+},
+{
+"n": "Boulevard",
+"u": "#04-K3",
+"c": "Homewares & Lifestyle"
+},
+{
+"n": "Bountifuliving",
+"u": "#03-30E",
+"c": "Homewares & Lifestyle"
+},
+{
+"n": "BreadTalk",
+"u": "#B-47/48",
+"c": "Food & Restaurant"
+},
+{
+"n": "Browhaus",
+"u": "#B-83G",
+"c": "Health & Beauty Services"
+},
+{
+"n": "Burger King",
+"u": "#01-11",
+"c": "Food & Restaurant"
+},
+{
+"n": "caf\u00e9 Q classified",
+"u": "#01-69A & 01-K5/K6",
+"c": "Food & Restaurant"
+},
+{
+"n": "Canton Paradise",
+"u": "#01-34",
+"c": "many"
+},
+{
+"n": "CARS International",
+"u": "#03-CARPARK",
+"c": "Services"
+},
+{
+"n": "Cathay Cineplex",
+"u": "#07-10 & 07-17",
+"c": "Entertainment"
+},
+{
+"n": "Cedele",
+"u": "#B-83D",
+"c": "Food & Restaurant"
+},
+{
+"n": "CFOOT",
+"u": "#02-57",
+"c": "Shoes & Bags"
+},
+{
+"n": "Chalk Farm",
+"u": "#B-83M",
+"c": "Food & Restaurant"
+},
+{
+"n": "Challenger",
+"u": "#04-01",
+"c": "Homeware & Electrical"
+},
+{
+"n": "CHANEL",
+"u": "#01-20/21",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Chateraise",
+"u": "#03-30B",
+"c": "Food & Restaurant"
+},
+{
+"n": "Citibank",
+"u": "#01-02",
+"c": "Services"
+},
+{
+"n": "Clarins",
+"u": "#01-18",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Clarks",
+"u": "#01-76",
+"c": "Shoes & Bags"
+},
+{
+"n": "Coo. Seoul+",
+"u": "#02-60",
+"c": "Fashion, "
+},
+{
+"n": "Cotton On",
+"u": "#01-80",
+"c": "Fashion"
+},
+{
+"n": "Cotton On Kids",
+"u": "#02-48",
+"c": "Maternity & Children's Wear"
+},
+{
+"n": "Crocs",
+"u": "#02-37",
+"c": "Shoes & Bags"
+},
+{
+"n": "CS Fresh",
+"u": "#B-84",
+"c": "Supermarket & Hypermarket"
+},
+{
+"n": "Dabao Medical Hall",
+"u": "#B-40",
+"c": "Healthcare"
+},
+{
+"n": "Dah Kai Medical Hall \u5927\u958b\u53c2\u8338\u85e5\u884c",
+"u": "#03-20",
+"c": ", "
+},
+{
+"n": "Daiso",
+"u": "#03-26B",
+"c": "Homewares & Lifestyle"
+},
+{
+"n": "DBS",
+"u": "#01-12",
+"c": "Services"
+},
+{
+"n": "Dental Icon",
+"u": "#05-03",
+"c": "Medical & Dental"
+},
+{
+"n": "Din Tai Fung",
+"u": "#01-15",
+"c": "Food & Restaurant"
+},
+{
+"n": "Dunlopillo",
+"u": "#04-04",
+"c": "Homewares & Lifestyle"
+},
+{
+"n": "Dyson",
+"u": "#01-03",
+"c": "Homeware & Electrical"
+},
+{
+"n": "Eco Ring",
+"u": "#02-06/07",
+"c": "Services"
+},
+{
+"n": "Elm Tree",
+"u": "#02-26",
+"c": "Educational & Stationery"
+},
+{
+"n": "Emperor Optics",
+"u": "#B-72/73",
+"c": "Optical"
+},
+{
+"n": "Eu Yan Sang",
+"u": "#03-26A",
+"c": "Healthcare"
+},
+{
+"n": "Evergreen Stationery",
+"u": "#03-25",
+"c": "Educational & Stationery"
+},
+{
+"n": "FairPrice Xtra",
+"u": "#03-28",
+"c": "Supermarket & Hypermarket"
+},
+{
+"n": "Famous Amos",
+"u": "#B-61",
+"c": "Food & Restaurant"
+},
+{
+"n": "Fish Mart Sakuraya",
+"u": "#B-84D",
+"c": "Food & Restaurant"
+},
+{
+"n": "Food Republic",
+"u": "#B-85, #12-146",
+"c": "Food & Restaurant"
+},
+{
+"n": "Fortune Wigs",
+"u": "#01-68A",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Four Leaves",
+"u": "#B-80/81",
+"c": "Food & Restaurant"
+},
+{
+"n": "Fun Toast",
+"u": "#02-K3",
+"c": "Food & Restaurant"
+},
+{
+"n": "G2000",
+"u": "#01-78",
+"c": "Fashion"
+},
+{
+"n": "Gadget Solution",
+"u": "#B-56",
+"c": "Phones & Accessories"
+},
+{
+"n": "Gadget Top",
+"u": "#B-45/46",
+"c": "Phones & Accessories"
+},
+{
+"n": "GamePro Shop",
+"u": "#B-18B & B-25",
+"c": "Gift & Novelties"
+},
+{
+"n": "GG<5",
+"u": "#01-78",
+"c": "Fashion"
+},
+{
+"n": "Guardian Health & Beauty",
+"u": "#B-147 & B-155A",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Harvey Norman Superstore",
+"u": "#02-34 to 36",
+"c": ", "
+},
+{
+"n": "Hearing Partners",
+"u": "#03-11",
+"c": "Medical & Dental"
+},
+{
+"n": "Heart to Heart Jewellery",
+"u": "#02-K1",
+"c": "Jewellery"
+},
+{
+"n": "HELEN",
+"u": "#01-K7",
+"c": "Accessories"
+},
+{
+"n": "Hokkaido Baked Cheese Tart",
+"u": "#01-23B",
+"c": "Food & Restaurant"
+},
+{
+"n": "Holland & Barrett",
+"u": "#B-89/90",
+"c": ", "
+},
+{
+"n": "Home & Giving",
+"u": "#03-32",
+"c": "Gift & Novelties"
+},
+{
+"n": "HoneyWorld\u2122",
+"u": "#B-55",
+"c": "Food Specialties"
+},
+{
+"n": "HOTPOT By Seoul Garden Group",
+"u": "#03-01/02A",
+"c": "Food & Restaurant"
+},
+{
+"n": "HSBC",
+"u": "#01-92",
+"c": "Services"
+},
+{
+"n": "HYSSES",
+"u": "#B-102",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Ichiban Boshi",
+"u": "#02-12/12A",
+"c": "Food & Restaurant"
+},
+{
+"n": "Imagine Artly",
+"u": "#02-K5",
+"c": "Gift & Novelties"
+},
+{
+"n": "Indonesian Jamu Centre",
+"u": "#03-13",
+"c": "Food Specialties"
+},
+{
+"n": "IndoStop",
+"u": "#B-111",
+"c": "Food Specialties"
+},
+{
+"n": "Indulge Skin & Body Lab",
+"u": "#02-09/10",
+"c": "Health & Beauty Services"
+},
+{
+"n": "iStudio",
+"u": "#B-03/04",
+"c": "Phones & Accessories"
+},
+{
+"n": "J@Wardrobe",
+"u": "#02-17A",
+"c": "Fashion"
+},
+{
+"n": "Jack's Place",
+"u": "#01-30",
+"c": "Food & Restaurant"
+},
+{
+"n": "Japan Home",
+"u": "#B-83F",
+"c": "Homewares & Lifestyle"
+},
+{
+"n": "Jean Yip Beauty",
+"u": "#04-05/06",
+"c": "Health & Beauty Services"
+},
+{
+"n": "Jollibean",
+"u": "#01-14A",
+"c": "Food & Restaurant"
+},
+{
+"n": "JOLLY ECO",
+"u": "#B-70/71",
+"c": "Gift & Novelties"
+},
+{
+"n": "K-Market",
+"u": "#B-84A",
+"c": "Food Specialties"
+},
+{
+"n": "Kawai Music School",
+"u": "#04-02",
+"c": "Educational & Stationery"
+},
+{
+"n": "Key Power Sports",
+"u": "#01-71 to 73",
+"c": "Fashion"
+},
+{
+"n": "Keyshoe Enterprises",
+"u": "#03-16",
+"c": "Services"
+},
+{
+"n": "KFC",
+"u": "#01-11A",
+"c": "Food & Restaurant"
+},
+{
+"n": "Kiehl's",
+"u": "#01-19",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Kimage",
+"u": "#02-46/47",
+"c": "Health & Beauty Services"
+},
+{
+"n": "Kiminoya Garment",
+"u": "#02-27",
+"c": "Fashion"
+},
+{
+"n": "Koong Woh Tong",
+"u": "#B-K4",
+"c": "Food & Restaurant"
+},
+{
+"n": "Kraftwich by Swissbake / Pastamania Pronto",
+"u": "#B-83C",
+"c": "Food & Restaurant"
+},
+{
+"n": "Kskin",
+"u": "#B-12",
+"c": "Health & Beauty Services"
+},
+{
+"n": "LAC Nutrition For Life",
+"u": "#B-K1",
+"c": "Healthcare"
+},
+{
+"n": "LAMY",
+"u": "#B1-K5",
+"c": ", "
+},
+{
+"n": "Laser Clinics Asia",
+"u": "#B-156",
+"c": "Health & Beauty Services"
+},
+{
+"n": "Lenskart.com",
+"u": "#B-99/100",
+"c": "Optical"
+},
+{
+"n": "Levi's",
+"u": "#01-41/42",
+"c": "Fashion"
+},
+{
+"n": "Linen Gallery",
+"u": "#03-23",
+"c": "Homewares & Lifestyle"
+},
+{
+"n": "LionShield Select",
+"u": "#B-28",
+"c": "Phones & Accessories"
+},
+{
+"n": "Live It Up!",
+"u": "#B-83P/Q",
+"c": "Homewares & Lifestyle"
+},
+{
+"n": "Lovisa",
+"u": "#01-23A",
+"c": "Accessories"
+},
+{
+"n": "M1 Shop",
+"u": "#B-74",
+"c": "Services"
+},
+{
+"n": "Ma Kuang TCM",
+"u": "#04-03",
+"c": "Medical & Dental"
+},
+{
+"n": "Maison Berger",
+"u": "#B-152",
+"c": "Homewares & Lifestyle"
+},
+{
+"n": "MANGO",
+"u": "#01-88",
+"c": "Fashion"
+},
+{
+"n": "ManneQUEEN",
+"u": "#02-58",
+"c": "Fashion"
+},
+{
+"n": "Marks & Spencer",
+"u": "#02-28 to 32",
+"c": ", Supermarket & Hypermarket"
+},
+{
+"n": "Meyson Jewellery",
+"u": "#B-150/151",
+"c": "Jewellery, "
+},
+{
+"n": "Minmed Clinic",
+"u": "#05-21",
+"c": "Medical & Dental"
+},
+{
+"n": "Mothercare",
+"u": "#02-34B",
+"c": "Maternity & Children's Wear"
+},
+{
+"n": "Mr. Coconut",
+"u": "#B-83J",
+"c": "Food & Restaurant"
+},
+{
+"n": "Multiflora TCM Spa",
+"u": "#04-07",
+"c": "Health & Beauty Services"
+},
+{
+"n": "My First Skool",
+"u": "#04-08/09",
+"c": "Educational & Stationery"
+},
+{
+"n": "Nail Palace",
+"u": "#01-54/55",
+"c": "Health & Beauty Services"
+},
+{
+"n": "Nails Fifth Avenue",
+"u": "#02-71",
+"c": "Health & Beauty Services"
+},
+{
+"n": "Nanyang Optical",
+"u": "#B-58",
+"c": "Optical"
+},
+{
+"n": "Nature's Farm",
+"u": "#B-82/83",
+"c": "Healthcare"
+},
+{
+"n": "Nespresso",
+"u": "#01-K4",
+"c": "Food Specialties"
+},
+{
+"n": "New Balance",
+"u": "#01-27",
+"c": "Fashion"
+},
+{
+"n": "New Zealand Natural Ice Cream",
+"u": "#01-K1",
+"c": "Food & Restaurant"
+},
+{
+"n": "NK Hairworks",
+"u": "#01-63/64",
+"c": "Health & Beauty Services"
+},
+{
+"n": "NTUC Health Denticare",
+"u": "#05-02",
+"c": "Medical & Dental"
+},
+{
+"n": "Ogawa",
+"u": "#B-95/95A",
+"c": "Beauty & Wellness"
+},
+{
+"n": "OJO Optometrist",
+"u": "#B-26/27",
+"c": "Optical"
+},
+{
+"n": "Old Chang Kee",
+"u": "#01-14",
+"c": "Food & Restaurant"
+},
+{
+"n": "Oleh Oleh Tea House",
+"u": "#01-K3",
+"c": "Food & Restaurant"
+},
+{
+"n": "Only Luxury Collection",
+"u": "#02-17B",
+"c": "Fashion"
+},
+{
+"n": "Oriental Hair Solutions",
+"u": "#05-17",
+"c": "Health & Beauty Services"
+},
+{
+"n": "OSIM (Basement)",
+"u": "#B-63",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Owell",
+"u": "#B-101",
+"c": "Beauty & Wellness"
+},
+{
+"n": "OWNDAYS",
+"u": "#B-96",
+"c": "Optical"
+},
+{
+"n": "PappaRich",
+"u": "#01-17A",
+"c": "Food & Restaurant"
+},
+{
+"n": "Paradise Classic",
+"u": "#01-35",
+"c": "Food & Restaurant"
+},
+{
+"n": "Paris Miki",
+"u": "#B-09",
+"c": "Optical"
+},
+{
+"n": "Pat's Oven",
+"u": "#B-83N",
+"c": "Food Specialties"
+},
+{
+"n": "Pavilion Optics",
+"u": "#B-57",
+"c": "Optical"
+},
+{
+"n": "Peaches and Herbs",
+"u": "#B-43",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Pearly U",
+"u": "#01-23D",
+"c": "Accessories"
+},
+{
+"n": "Pet Lovers Centre",
+"u": "#B-13",
+"c": "Services"
+},
+{
+"n": "Pierre Cardin",
+"u": "#02-59",
+"c": "Fashion"
+},
+{
+"n": "Pixie Nail Spa",
+"u": "#04-K1/K2",
+"c": "Health & Beauty Services"
+},
+{
+"n": "Poh Heng Jewellery",
+"u": "#B-109/110",
+"c": "Jewellery"
+},
+{
+"n": "Poh Kim Video",
+"u": "#B-64",
+"c": "Entertainment"
+},
+{
+"n": "Precious Medical Centre",
+"u": "#01-11B",
+"c": "Medical & Dental"
+},
+{
+"n": "Premier Dead Sea",
+"u": "#01-08",
+"c": ", "
+},
+{
+"n": "Pretticure",
+"u": "#03-14/15",
+"c": "Health & Beauty Services"
+},
+{
+"n": "PriceBreaker",
+"u": "#01-68",
+"c": "Services"
+},
+{
+"n": "Princess Jewellery",
+"u": "#B-93/94",
+"c": "Jewellery"
+},
+{
+"n": "PUTIEN",
+"u": "#02-13",
+"c": "Food & Restaurant"
+},
+{
+"n": "QB House",
+"u": "#01-53",
+"c": "Health & Beauty Services"
+},
+{
+"n": "R&B Tea",
+"u": "#03-30A",
+"c": "Food & Restaurant"
+},
+{
+"n": "Ramen Dining Keisuke Tokyo",
+"u": "#B-18A",
+"c": "Food & Restaurant"
+},
+{
+"n": "Ramen Keisuke Tonkotsu King MATSURI",
+"u": "#B1-18A",
+"c": "Food & Restaurant"
+},
+{
+"n": "RHB Bank",
+"u": "#B-83B",
+"c": "Services"
+},
+{
+"n": "Rive Gauche Patisserie",
+"u": "#03-30C",
+"c": "Food & Restaurant"
+},
+{
+"n": "Robert Piano",
+"u": "#03-07/08",
+"c": "Educational & Stationery"
+},
+{
+"n": "Rose Of Sharon",
+"u": "#02-19",
+"c": "Fashion"
+},
+{
+"n": "Rouge by Barracks",
+"u": "#02-18",
+"c": "Fashion"
+},
+{
+"n": "Royce Dental Surgery",
+"u": "#05-23",
+"c": "Medical & Dental"
+},
+{
+"n": "Safewell",
+"u": "#B-62",
+"c": "Homeware & Electrical"
+},
+{
+"n": "Samsonite",
+"u": "#02-23/23A",
+"c": "Shoes & Bags"
+},
+{
+"n": "Sanook Kitchen",
+"u": "#01-17",
+"c": "Food & Restaurant"
+},
+{
+"n": "Scissors Paper Stone",
+"u": "#02-52",
+"c": "Health & Beauty Services"
+},
+{
+"n": "Scoop Wholefoods Australia",
+"u": "#01-32",
+"c": "Food Specialties"
+},
+{
+"n": "Secret Chamber",
+"u": "#B-22",
+"c": "Gift & Novelties"
+},
+{
+"n": "Selffix",
+"u": "#03-17",
+"c": "Homeware & Electrical"
+},
+{
+"n": "Shang Pin Hot Pot",
+"u": "#01-10",
+"c": "Food & Restaurant"
+},
+{
+"n": "Sharetea",
+"u": "#B-21",
+"c": "Food & Restaurant"
+},
+{
+"n": "Showgirl",
+"u": "#02-25",
+"c": "Fashion"
+},
+{
+"n": "Simply Flowers",
+"u": "#B-37",
+"c": "Gift & Novelties"
+},
+{
+"n": "Singapore Post",
+"u": "#B-83A",
+"c": "Services"
+},
+{
+"n": "Singtel Shop",
+"u": "#B-01/02",
+"c": "Services"
+},
+{
+"n": "Sino Money Changer",
+"u": "#01-01",
+"c": "Services"
+},
+{
+"n": "Skechers",
+"u": "#02-43/43",
+"c": "Fashion"
+},
+{
+"n": "Sleepnight",
+"u": "#03-24",
+"c": "Homewares & Lifestyle"
+},
+{
+"n": "Sm\u00f6oy",
+"u": "#B-83E",
+"c": "Food & Restaurant"
+},
+{
+"n": "So Pho",
+"u": "#03-30D",
+"c": "Food & Restaurant"
+},
+{
+"n": "Southaven",
+"u": "#01-43",
+"c": "Fashion"
+},
+{
+"n": "Spacio TCM Wellness",
+"u": "#03-21/22",
+"c": "Health & Beauty Services"
+},
+{
+"n": "Spectacle Hut",
+"u": "#B-76A/77",
+"c": "Optical"
+},
+{
+"n": "Sri Nada (Hairdressing Salon)",
+"u": "#03-12",
+"c": ", "
+},
+{
+"n": "Stalford Learning Centre",
+"u": "#01-59",
+"c": "Educational & Stationery"
+},
+{
+"n": "Standard Photo",
+"u": "#B-19/20",
+"c": "Services"
+},
+{
+"n": "Starbucks Coffee",
+"u": "#01-10A & 01-10B,PARKWAYPARADE",
+"c": "Food & Restaurant"
+},
+{
+"n": "Strip",
+"u": "#B-83G",
+"c": "Health & Beauty Services"
+},
+{
+"n": "Style Na Hair by Pro Trim",
+"u": "#02-67",
+"c": ", "
+},
+{
+"n": "Sun Paradise",
+"u": "#02-53/54",
+"c": "Fashion"
+},
+{
+"n": "Surene Collection",
+"u": "#02-55",
+"c": "Fashion"
+},
+{
+"n": "Sushi Express",
+"u": "#01-17B",
+"c": "Food & Restaurant"
+},
+{
+"n": "Sushiro",
+"u": "#B-17/17A",
+"c": "Food & Restaurant"
+},
+{
+"n": "Svenson",
+"u": "#02-11",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Swarovski",
+"u": "#01-09 & 01-K8",
+"c": "Jewellery"
+},
+{
+"n": "Swensen's",
+"u": "#B-33/34",
+"c": "Food & Restaurant"
+},
+{
+"n": "SYOUJIN",
+"u": "#03-02/03",
+"c": "Health & Beauty Services"
+},
+{
+"n": "TAKA Jewellery",
+"u": "#B-05/06",
+"c": "Jewellery"
+},
+{
+"n": "Team Salon",
+"u": "#02-45",
+"c": "Health & Beauty Services"
+},
+{
+"n": "Tech House",
+"u": "#02-K4",
+"c": "Phones & Accessories"
+},
+{
+"n": "Tenya",
+"u": "#B-51/52 & B-65",
+"c": "Food & Restaurant"
+},
+{
+"n": "The Body Shop",
+"u": "#B-50 & B-66",
+"c": "Beauty & Wellness"
+},
+{
+"n": "The Chinese Wedding Shop",
+"u": "#B-29",
+"c": "Gift & Novelties"
+},
+{
+"n": "The Cocoa Trees",
+"u": "#B-35/36",
+"c": "Food Specialties"
+},
+{
+"n": "The Coffee Bean and Tea Leaf",
+"u": "#B-83H",
+"c": "Food & Restaurant"
+},
+{
+"n": "The Digital Gadgets",
+"u": "#B-49 & B-67",
+"c": "Phones & Accessories"
+},
+{
+"n": "The Face Shop",
+"u": "#B-68/69",
+"c": "Beauty & Wellness"
+},
+{
+"n": "The Green Party",
+"u": "#B-30",
+"c": "Gift & Novelties"
+},
+{
+"n": "The Hour Glass",
+"u": "#01-47",
+"c": "Watches"
+},
+{
+"n": "The Sense House",
+"u": "#B-10",
+"c": "Homewares & Lifestyle"
+},
+{
+"n": "The Underground",
+"u": "#02-62",
+"c": "Fashion"
+},
+{
+"n": "The Wallet Shop",
+"u": "#01-31",
+"c": "Shoes & Bags"
+},
+{
+"n": "The Whisky Distillery",
+"u": "#B-54",
+"c": "Food Specialties"
+},
+{
+"n": "Times Of Feng Shui",
+"u": "#B-38/39",
+"c": "Gift & Novelties"
+},
+{
+"n": "Timezone",
+"u": "#03-27",
+"c": "Entertainment"
+},
+{
+"n": "Tori Q",
+"u": "#01-14C",
+"c": "Food & Restaurant"
+},
+{
+"n": "Toys \"R\" Us",
+"u": "#02-33",
+"c": "Gift & Novelties"
+},
+{
+"n": "Treasures Yi Dian Xin",
+"u": "#02-14 to 17",
+"c": "Food & Restaurant"
+},
+{
+"n": "Triumph",
+"u": "#02-40/41 & 02-44",
+"c": "Fashion"
+},
+{
+"n": "Twelve Cupcakes",
+"u": "#01-16",
+"c": "Food & Restaurant"
+},
+{
+"n": "Twin City Endodontics",
+"u": "#05-09",
+"c": "Medical & Dental"
+},
+{
+"n": "TYPO",
+"u": "#01-22/23",
+"c": "Educational & Stationery"
+},
+{
+"n": "Under Armour",
+"u": "#01-37 & 01-56/57",
+"c": "Fashion"
+},
+{
+"n": "Uniqlo",
+"u": "#01-83",
+"c": "Fashion"
+},
+{
+"n": "UOB",
+"u": "#01-13",
+"c": "Services"
+},
+{
+"n": "UOB Privilege Banking",
+"u": "#03-26",
+"c": "Services"
+},
+{
+"n": "Urban Republic",
+"u": "#B-11",
+"c": "Homeware & Electrical"
+},
+{
+"n": "Utopia",
+"u": "#02-63",
+"c": "Fashion"
+},
+{
+"n": "V\u00c4LA\u00cdSS Cosmetics",
+"u": "#01-23C",
+"c": "Beauty & Wellness"
+},
+{
+"n": "VitaKids",
+"u": "#B-53",
+"c": "Healthcare"
+},
+{
+"n": "Wan Yang Health Products and Foot Reflexology",
+"u": "#03-09/10",
+"c": "Health & Beauty Services"
+},
+{
+"n": "Watsons",
+"u": "#B-14",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Whittard of Chelsea",
+"u": "#01-K31",
+"c": "Food Specialties"
+},
+{
+"n": "Wing Joo Loong",
+"u": "#B-103/104",
+"c": "Healthcare"
+},
+{
+"n": "Winter Time",
+"u": "#02-21/22",
+"c": "Fashion"
+},
+{
+"n": "Wok Hey",
+"u": "#01-K9",
+"c": "Food & Restaurant"
+},
+{
+"n": "WoW! Let's Party",
+"u": "#02-K2",
+"c": "Gift & Novelties"
+},
+{
+"n": "Ya Kun Cafe",
+"u": "#01-14B",
+"c": "Food & Restaurant"
+},
+{
+"n": "Yakadir",
+"u": "#01-16B",
+"c": "Services"
+},
+{
+"n": "Yakiniku-GO",
+"u": "#B-84B/C",
+"c": "Food & Restaurant"
+},
+{
+"n": "Yong How Time",
+"u": "#B-44",
+"c": "Jewellery, , "
+},
+{
+"n": "Young Hearts",
+"u": "#02-20",
+"c": "Fashion"
+},
+{
+"n": "Yuen Loong Watch Store",
+"u": "#03-L1",
+"c": "Jewellery, "
+}
+]
+},
+"paya-lebar-quarter": {
+"name": "Paya Lebar Quarter",
+"addr": "10 Paya Lebar Rd, Singapore 409057",
+"lat": 1.3175284,
+"lon": 103.8928037,
+"stores": [
+{
+"n": "6ixty8ight",
+"u": "#01-22/23",
+"c": "Fashion"
+},
+{
+"n": "7-Eleven",
+"u": "#01-08",
+"c": "Services"
+},
+{
+"n": "AgnesG. Nails",
+"u": "#B1-06",
+"c": "Health & Beauty Services"
+},
+{
+"n": "Ajumma's",
+"u": "#B2-26",
+"c": "Food & Restaurant"
+},
+{
+"n": "ALDO",
+"u": "#01-11",
+"c": "Shoes & Bags"
+},
+{
+"n": "Anothersole",
+"u": "#01-09",
+"c": "Shoes & Bags"
+},
+{
+"n": "Aspire Hub Education",
+"u": "#03-21",
+"c": "Educational & Stationery"
+},
+{
+"n": "Attap House",
+"u": "#02-28",
+"c": "Food & Restaurant"
+},
+{
+"n": "AU by Akemiuchi",
+"u": "#B1-23/24",
+"c": "Homewares & Lifestyle"
+},
+{
+"n": "Auntie Anne's",
+"u": "#B2-K7",
+"c": "Food & Restaurant"
+},
+{
+"n": "Ballet Quarter",
+"u": "#03-04",
+"c": "Educational & Stationery"
+},
+{
+"n": "Barcook Bakery",
+"u": "",
+"c": "many"
+},
+{
+"n": "Bata",
+"u": "#02-31",
+"c": "Shoes & Bags"
+},
+{
+"n": "Bee Cheng Hiang \u7f8e\u73cd\u9999",
+"u": "#B2-30",
+"c": "Food & Restaurant"
+},
+{
+"n": "Black by Blue Brave",
+"u": "#02-22",
+"c": "Jewellery & Watches"
+},
+{
+"n": "Bonchon",
+"u": "#02-09",
+"c": "Food & Restaurant"
+},
+{
+"n": "Boost Juice Bars",
+"u": "#B2-K10",
+"c": "Food & Restaurant"
+},
+{
+"n": "BottomSlim",
+"u": "#03-24",
+"c": "Health & Beauty Services"
+},
+{
+"n": "BreadTalk",
+"u": "#B2-19",
+"c": "Food & Restaurant"
+},
+{
+"n": "Cafe Red Ginger",
+"u": "#B2-31",
+"c": "Food & Restaurant"
+},
+{
+"n": "Challenger",
+"u": "#04-01",
+"c": "IT & Telecommunication"
+},
+{
+"n": "ChaTraMue",
+"u": "#01-38",
+"c": "Food & Restaurant"
+},
+{
+"n": "CHICHA San Chen",
+"u": "#02-27",
+"c": "Food & Restaurant"
+},
+{
+"n": "Chimichanga",
+"u": "#01-37",
+"c": "Food & Restaurant"
+},
+{
+"n": "Chug Chug",
+"u": "#01-09",
+"c": "Food & Restaurant"
+},
+{
+"n": "Clippers Barber",
+"u": "#02-14",
+"c": "Health & Beauty Services"
+},
+{
+"n": "COLLIN\u2019S\u00ae",
+"u": "#B1-01",
+"c": "Food & Restaurant"
+},
+{
+"n": "Cotton On",
+"u": "#02-06 to 08",
+"c": "Fashion"
+},
+{
+"n": "Crocs",
+"u": "#02-24",
+"c": "many"
+},
+{
+"n": "Cuttour Hair Studio",
+"u": "#B1-03",
+"c": "Health & Beauty Services"
+},
+{
+"n": "Donburi King",
+"u": "#03-26",
+"c": "Food & Restaurant"
+},
+{
+"n": "DRx Clinic",
+"u": "#B1-05",
+"c": "Health & Beauty Services"
+},
+{
+"n": "Du Yi Bookshop",
+"u": "#B1-31",
+"c": "Educational & Stationery"
+},
+{
+"n": "Duckland",
+"u": "#B2-33",
+"c": "Food & Restaurant"
+},
+{
+"n": "EAT.",
+"u": "#B2-K2",
+"c": "Food & Restaurant"
+},
+{
+"n": "elemen \u5143\u7d20",
+"u": "#03-13",
+"c": "Food & Restaurant"
+},
+{
+"n": "Esiney",
+"u": "#B1-13",
+"c": "IT & Telecommunication"
+},
+{
+"n": "Eu Yan Sang",
+"u": "#B2-12",
+"c": "Beauty & Wellness"
+},
+{
+"n": "EX Style Prestige Spa Salon",
+"u": "#04-18/19",
+"c": "Health & Beauty Services"
+},
+{
+"n": "Eyedentity",
+"u": "#01-12/13",
+"c": "Optical"
+},
+{
+"n": "FairPrice Finest",
+"u": "#B2-09",
+"c": "Supermarket & Hypermarket"
+},
+{
+"n": "Finger Waltz Music",
+"u": "#03-20",
+"c": "Entertainment"
+},
+{
+"n": "Fisher King's Grill",
+"u": "#03-25",
+"c": "Food & Restaurant"
+},
+{
+"n": "Flash Coffee",
+"u": "#01-K5",
+"c": "Food & Restaurant"
+},
+{
+"n": "Fluff Stack",
+"u": "#B1-K3",
+"c": "Food & Restaurant"
+},
+{
+"n": "Fong Sheng Hao",
+"u": "#B2-04",
+"c": "Food & Restaurant"
+},
+{
+"n": "Foot Locker",
+"u": "#02-05",
+"c": "Fashion"
+},
+{
+"n": "Footnote Reflexology",
+"u": "#04-15",
+"c": "Health & Beauty Services"
+},
+{
+"n": "FUJIFILM",
+"u": "#B2-25A",
+"c": "Services"
+},
+{
+"n": "Fun Claw",
+"u": "#03-19",
+"c": "Entertainment"
+},
+{
+"n": "G2000",
+"u": "#02-23",
+"c": "Fashion"
+},
+{
+"n": "Glamour Beauty",
+"u": "#B1-04",
+"c": "Health & Beauty Services"
+},
+{
+"n": "Guardian",
+"u": "#B2-01 & B2-35",
+"c": "Beauty & Wellness"
+},
+{
+"n": "H&M",
+"u": "#01-01 to 02",
+"c": "Fashion"
+},
+{
+"n": "Haidilao Hot Pot",
+"u": "#03-11/12 & 03-27",
+"c": "Food & Restaurant"
+},
+{
+"n": "HANDS",
+"u": "#B1-11/12",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Hanis Cafe & Bakery",
+"u": "#B2-18",
+"c": "Food & Restaurant"
+},
+{
+"n": "Heart Springs Wellness",
+"u": "#B1-17",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Henri Charpentier",
+"u": "",
+"c": "many"
+},
+{
+"n": "HLA",
+"u": "#02-17/18",
+"c": "Fashion"
+},
+{
+"n": "Home's Harmony",
+"u": "#B1-29",
+"c": "Homewares & Lifestyle"
+},
+{
+"n": "Hot Tomato Cafe & Grill",
+"u": "#04-09 & 04-29",
+"c": "Food & Restaurant"
+},
+{
+"n": "HOUZE",
+"u": "#03-14",
+"c": "Homewares & Lifestyle"
+},
+{
+"n": "Huggs Coffeebar",
+"u": "#01-03",
+"c": "Food & Restaurant"
+},
+{
+"n": "i Wan AI Selfie Studio i \u73a9AI\u81ea\u62cd\u9986",
+"u": "#B2-24",
+"c": "Services"
+},
+{
+"n": "Ichikokudo Hokkaido Ramen",
+"u": "#B1-15/16",
+"c": "Food & Restaurant"
+},
+{
+"n": "innisfree",
+"u": "#01-28",
+"c": "Beauty & Wellness"
+},
+{
+"n": "iStudio",
+"u": "#01-04",
+"c": "IT & Telecommunication"
+},
+{
+"n": "J Glasses & Hearing",
+"u": "#03-17",
+"c": "Optical"
+},
+{
+"n": "Japan Home",
+"u": "#B2-23",
+"c": "Homewares & Lifestyle"
+},
+{
+"n": "Japan IPL Express",
+"u": "#B1-22",
+"c": "Health & Beauty Services"
+},
+{
+"n": "Jimmy Monkey Caf\u00e9",
+"u": "#01-10",
+"c": "Food & Restaurant"
+},
+{
+"n": "Jin Hor Dessert",
+"u": "#01-02",
+"c": "Food & Restaurant"
+},
+{
+"n": "Joe & Dough",
+"u": "#02-25/26",
+"c": "Food & Restaurant"
+},
+{
+"n": "Kanada-Ya",
+"u": "#03-30",
+"c": "Food & Restaurant"
+},
+{
+"n": "kcuts",
+"u": "#B2-20A",
+"c": "Health & Beauty Services"
+},
+{
+"n": "KFC",
+"u": "#B1-14",
+"c": "Food & Restaurant"
+},
+{
+"n": "Killiney Bistro & Bar",
+"u": "#01-10",
+"c": "Food & Restaurant"
+},
+{
+"n": "KIMOJ",
+"u": "#01-35",
+"c": "Fashion"
+},
+{
+"n": "KOI Th\u00e9",
+"u": "#B1-02",
+"c": "Food & Restaurant"
+},
+{
+"n": "KOMME",
+"u": "#B1-10",
+"c": "Homewares & Lifestyle"
+},
+{
+"n": "KopiTime",
+"u": "#04-11",
+"c": "Food & Restaurant"
+},
+{
+"n": "Krispy Kreme",
+"u": "#B2-K6",
+"c": "Food & Restaurant"
+},
+{
+"n": "Kskin",
+"u": "#02-13",
+"c": "Health & Beauty Services"
+},
+{
+"n": "La Vida",
+"u": "#04-28",
+"c": "Health & Beauty Services"
+},
+{
+"n": "LAC Nutrition For Life",
+"u": "#B2-10",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Lagoon Laundry",
+"u": "#B2-21",
+"c": "Services"
+},
+{
+"n": "Lenskart.com",
+"u": "#B1-30",
+"c": "Optical"
+},
+{
+"n": "Levi's",
+"u": "#01-32",
+"c": "Fashion"
+},
+{
+"n": "Liang Yi",
+"u": "#B1-21",
+"c": "Health & Beauty Services"
+},
+{
+"n": "London Fat Duck",
+"u": "#B2-25",
+"c": "Food & Restaurant"
+},
+{
+"n": "Lovisa",
+"u": "#01-34",
+"c": "Jewellery & Watches"
+},
+{
+"n": "Maccha House",
+"u": "#02-20",
+"c": "Food & Restaurant"
+},
+{
+"n": "Maison Berger",
+"u": "#B1-K2",
+"c": "Homewares & Lifestyle"
+},
+{
+"n": "MANGO",
+"u": "#01-08",
+"c": "Fashion"
+},
+{
+"n": "Melissa",
+"u": "#01-10",
+"c": "Shoes & Bags"
+},
+{
+"n": "Melvados",
+"u": "#B2-06",
+"c": "Food & Restaurant"
+},
+{
+"n": "Moley Apparels",
+"u": "#02-36",
+"c": "Fashion"
+},
+{
+"n": "Mr Bean",
+"u": "#B2-16",
+"c": "Food & Restaurant"
+},
+{
+"n": "Mr. Coconut",
+"u": "#B2-K8",
+"c": "Food & Restaurant"
+},
+{
+"n": "Ms New",
+"u": "#02-34",
+"c": "Fashion"
+},
+{
+"n": "myEureka",
+"u": "#B2-34",
+"c": "Food & Restaurant"
+},
+{
+"n": "Nam Kee Pau",
+"u": "#B2-K4",
+"c": "Food & Restaurant"
+},
+{
+"n": "Odoroki",
+"u": "#03-K2",
+"c": "Entertainment"
+},
+{
+"n": "OGAWA",
+"u": "#03-32",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Old Chang Kee",
+"u": "#B2-32",
+"c": "Food & Restaurant"
+},
+{
+"n": "Old Street Bak Kut Teh",
+"u": "#B2-02",
+"c": "Food & Restaurant"
+},
+{
+"n": "OPPO",
+"u": "#B1-26",
+"c": "IT & Telecommunication"
+},
+{
+"n": "Organic Hair Regrowth Solutions",
+"u": "#04-17",
+"c": "Health & Beauty Services"
+},
+{
+"n": "Our Art Studio",
+"u": "#02-10",
+"c": "Entertainment"
+},
+{
+"n": "OWNDAYS",
+"u": "#02-30",
+"c": "Optical"
+},
+{
+"n": "PANDORA",
+"u": "#01-29",
+"c": "Jewellery & Watches"
+},
+{
+"n": "Papa Ayam",
+"u": "#B2-K3",
+"c": "Food & Restaurant"
+},
+{
+"n": "Paradise Dynasty",
+"u": "#03-08",
+"c": "Food & Restaurant"
+},
+{
+"n": "Paris Baguette",
+"u": "#01-03 & 01-05/06",
+"c": "Food & Restaurant"
+},
+{
+"n": "Pierre Cardin",
+"u": "#02-33",
+"c": "Fashion"
+},
+{
+"n": "Pixie Nail Spa",
+"u": "#04-16",
+"c": "Health & Beauty Services"
+},
+{
+"n": "Pizza Hut",
+"u": "#04-10",
+"c": "Food & Restaurant"
+},
+{
+"n": "Plant & Plant",
+"u": "#B1-K1",
+"c": "Homewares & Lifestyle"
+},
+{
+"n": "Playdress",
+"u": "#02-15/16",
+"c": "Fashion"
+},
+{
+"n": "PlayMade by \u4e38\u4f5c",
+"u": "#B2-K5",
+"c": "Food & Restaurant"
+},
+{
+"n": "Poke Theory",
+"u": "",
+"c": "Food & Restaurant"
+},
+{
+"n": "Popular Bookstore",
+"u": "#03-01 to 03",
+"c": "Educational & Stationery"
+},
+{
+"n": "Purely",
+"u": "#01-24 to 26",
+"c": "Homewares & Lifestyle"
+},
+{
+"n": "Q & M Dental Surgery (Paya Lebar)",
+"u": "#04-27",
+"c": "Medical & Dental"
+},
+{
+"n": "QB HOUSE Premium",
+"u": "#04-25",
+"c": "Health & Beauty Services"
+},
+{
+"n": "Rapid Physiocare",
+"u": "#01-06",
+"c": "Medical & Dental"
+},
+{
+"n": "Rempapa",
+"u": "#01-01 to 03",
+"c": "Food & Restaurant"
+},
+{
+"n": "Repair Station",
+"u": "#B1-19",
+"c": "Services"
+},
+{
+"n": "Saizeriya",
+"u": "#04-13",
+"c": "Food & Restaurant"
+},
+{
+"n": "Salvo by Pasta Fresca",
+"u": "#01-05",
+"c": "Food & Restaurant"
+},
+{
+"n": "Sanook Kitchen",
+"u": "#03-28/29",
+"c": "Food & Restaurant"
+},
+{
+"n": "Scoop Wholefoods Australia",
+"u": "#B1-07 to 09",
+"c": "Fresh Food"
+},
+{
+"n": "Selffix DIY",
+"u": "#B2-14",
+"c": "Homewares & Lifestyle"
+},
+{
+"n": "SHAW Theatres",
+"u": "#05-02",
+"c": "Entertainment"
+},
+{
+"n": "Shihlin Taiwan Street Snacks",
+"u": "#B2-K9",
+"c": "Food & Restaurant"
+},
+{
+"n": "Shoe Clinic",
+"u": "#B2-20",
+"c": "Services"
+},
+{
+"n": "Simba Service Centre",
+"u": "#B1-27",
+"c": "IT & Telecommunication"
+},
+{
+"n": "Simmons Gallery",
+"u": "#03-15",
+"c": "Homewares & Lifestyle"
+},
+{
+"n": "Singtel Exclusive Retailer",
+"u": "#B1-25",
+"c": "IT & Telecommunication"
+},
+{
+"n": "SKP",
+"u": "#04-02",
+"c": "Homewares & Lifestyle"
+},
+{
+"n": "Smigy",
+"u": "#03-05/06",
+"c": "Entertainment"
+},
+{
+"n": "smol",
+"u": "#01-K3",
+"c": "Food & Restaurant"
+},
+{
+"n": "Sm\u00f6oy\u2122",
+"u": "#B2-K1",
+"c": "Food & Restaurant"
+},
+{
+"n": "Star Watches",
+"u": "#01-36",
+"c": "Jewellery & Watches"
+},
+{
+"n": "Starbucks Reserve",
+"u": "#01-14",
+"c": "Food & Restaurant"
+},
+{
+"n": "Super Sub",
+"u": "#01-K2",
+"c": "Food & Restaurant"
+},
+{
+"n": "Sushi Express",
+"u": "#04-12",
+"c": "Food & Restaurant"
+},
+{
+"n": "Tai Cheong Bakery",
+"u": "#B2-08",
+"c": "Food & Restaurant"
+},
+{
+"n": "The Body Shop",
+"u": "#01-30",
+"c": "Beauty & Wellness"
+},
+{
+"n": "The Bread Club",
+"u": "#B2-13",
+"c": "Food & Restaurant"
+},
+{
+"n": "The Green Party",
+"u": "#B1-18",
+"c": "Entertainment"
+},
+{
+"n": "The Providore",
+"u": "#01-01(B)",
+"c": "Food & Restaurant"
+},
+{
+"n": "The Seafood Market Place by Song Fish",
+"u": "#B2-11",
+"c": "Fresh Food"
+},
+{
+"n": "The Wallet Shop",
+"u": "#01-33",
+"c": "Fashion"
+},
+{
+"n": "The Whisky Distillery",
+"u": "#01-15",
+"c": "Fresh Food"
+},
+{
+"n": "Thirty Three",
+"u": "#04-24",
+"c": "Homewares & Lifestyle"
+},
+{
+"n": "Tingkat PeraMakan",
+"u": "#B2-03",
+"c": "Food & Restaurant"
+},
+{
+"n": "Tipsy Bird Gastrobar",
+"u": "#01-08(B)",
+"c": "Food & Restaurant"
+},
+{
+"n": "Tissot",
+"u": "#01-27",
+"c": "Jewellery & Watches"
+},
+{
+"n": "TMC Academy",
+"u": "#01-01 to 04",
+"c": "Educational & Stationery"
+},
+{
+"n": "Toast Box",
+"u": "#B2-19",
+"c": "Food & Restaurant"
+},
+{
+"n": "Tom & Stefanie",
+"u": "#03-18",
+"c": "Fashion"
+},
+{
+"n": "Toss & Turn",
+"u": "#01-20",
+"c": "Food & Restaurant"
+},
+{
+"n": "Tracyeinny",
+"u": "",
+"c": "Fashion"
+},
+{
+"n": "Triton",
+"u": "#B1-20",
+"c": "Services"
+},
+{
+"n": "Triumph",
+"u": "#02-29",
+"c": "Fashion"
+},
+{
+"n": "TRT",
+"u": "#01-17 to 19",
+"c": "Fashion"
+},
+{
+"n": "True Medical Clinic",
+"u": "#04-26",
+"c": "Medical & Dental"
+},
+{
+"n": "Tuk Tuk Cha",
+"u": "#01-K4",
+"c": "Food & Restaurant"
+},
+{
+"n": "TungLok Seafood",
+"u": "#03-09/10",
+"c": "Food & Restaurant"
+},
+{
+"n": "umisushi",
+"u": "#B2-15",
+"c": "Food & Restaurant"
+},
+{
+"n": "Uniqlo",
+"u": "#02-01 to 04",
+"c": "Fashion"
+},
+{
+"n": "UOB",
+"u": "#02-11/12",
+"c": "Services"
+},
+{
+"n": "Vacanza",
+"u": "#01-31",
+"c": "Fashion"
+},
+{
+"n": "Vain Beauty",
+"u": "#03-31",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Watch it!",
+"u": "#03-33",
+"c": "Jewellery & Watches"
+},
+{
+"n": "Watsons",
+"u": "#02-19",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Western Mahua Noodles",
+"u": "#B2-28",
+"c": "Food & Restaurant"
+},
+{
+"n": "Wine Connection",
+"u": "#01-07(B)",
+"c": "Food & Restaurant"
+},
+{
+"n": "Wing Joo Loong",
+"u": "#B2-27",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Wursthans Switzerland",
+"u": "#01-39",
+"c": "Food & Restaurant"
+},
+{
+"n": "XiXiang Kaya Kopitiam",
+"u": "#B2-17",
+"c": "Food & Restaurant"
+},
+{
+"n": "Xpressflower",
+"u": "#B2-22",
+"c": "Services"
+},
+{
+"n": "Yakiniku Like",
+"u": "#B1-28",
+"c": "Food & Restaurant"
+},
+{
+"n": "YM Bakery",
+"u": "#B2-05",
+"c": "Food & Restaurant"
+},
+{
+"n": "Zhang Liang Mala Tang",
+"u": "#B2-29",
+"c": "Food & Restaurant"
+},
+{
+"n": "Zing",
+"u": "#01-06 to 08",
+"c": "Food & Restaurant"
+},
+{
+"n": "Zoff",
+"u": "#01-16",
+"c": "Optical"
+}
+]
+},
+"paya-lebar-square": {
+"name": "Paya Lebar Square",
+"addr": "60 Paya Lebar Rd, Singapore 409051",
+"lat": 1.3191484,
+"lon": 103.8925321,
+"stores": [
+{
+"n": "4Fingers Crispy Chicken",
+"u": "#01-89 to K1",
+"c": "Restaurant & Cafe And Fast Food"
+},
+{
+"n": "5 Little Bears\u4e94\u96bb\u5c0f\u718a",
+"u": "#B1-09",
+"c": "Restaurant & Cafe And Fast Food"
+},
+{
+"n": "Ah Long Pancake",
+"u": "#01-48",
+"c": "F&b Specialties"
+},
+{
+"n": "Ah Mah Homemade Cake",
+"u": "#B1-46",
+"c": "F&b Specialties"
+},
+{
+"n": "AK Collections",
+"u": "#01-18",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Ardennes Health",
+"u": "#02-01 to 04",
+"c": "Health"
+},
+{
+"n": "Asian Skin Aesthetic",
+"u": "#B1-37 & B1-40/41",
+"c": "Hair & Beauty And Wellness"
+},
+{
+"n": "Bear\u2019s Cafe",
+"u": "#B1-10",
+"c": "Restaurant & Cafe And Fast Food"
+},
+{
+"n": "Beauty Language",
+"u": "#B1-44",
+"c": "Hair & Beauty And Wellness"
+},
+{
+"n": "Burger King",
+"u": "#01-37/38 & 01-3940 to 43",
+"c": "Restaurant & Cafe And Fast Food"
+},
+{
+"n": "Calista",
+"u": "#01-64",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Cantine",
+"u": "#B1-51",
+"c": "Food Court"
+},
+{
+"n": "Charcoal Grill & Salad Bar Keisuke",
+"u": "#B1-16",
+"c": "Restaurant & Cafe And Fast Food"
+},
+{
+"n": "Chicken Run",
+"u": "#02-18 to 20 & 02-K4",
+"c": "Restaurant & Cafe And Fast Food"
+},
+{
+"n": "Chinese Tofu Magician",
+"u": "#01-51",
+"c": "F&b Specialties"
+},
+{
+"n": "Crave",
+"u": "#B1-45",
+"c": "Restaurant & Cafe And Fast Food"
+},
+{
+"n": "De Arte Hair Salon",
+"u": "#01-22",
+"c": "Hair & Beauty And Wellness"
+},
+{
+"n": "Delibowl \u58f9\u7897",
+"u": "#01-80",
+"c": "Restaurant & Cafe And Fast Food"
+},
+{
+"n": "Eastern Rice Dumpling",
+"u": "#01-62",
+"c": "F&b Specialties"
+},
+{
+"n": "ECOK CharcoalHouse",
+"u": "#B1-13",
+"c": "Home & Lifestyle"
+},
+{
+"n": "eCreative",
+"u": "#01-58",
+"c": "F&b Specialties"
+},
+{
+"n": "Elite Medical Aesthetics Clinic",
+"u": "#B1-15",
+"c": "Hair & Beauty And Wellness"
+},
+{
+"n": "Eminu",
+"u": "#01-82",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Empire Charme",
+"u": "#01-20",
+"c": "Hair & Beauty And Wellness"
+},
+{
+"n": "Four Leaves",
+"u": "#B1-18",
+"c": "F&b Specialties"
+},
+{
+"n": "Fovero",
+"u": "#01-21",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Fun Toast Express",
+"u": "#01-01",
+"c": "Restaurant & Cafe And Fast Food"
+},
+{
+"n": "Gelare",
+"u": "#01-71 & 01-K6/K7",
+"c": "Restaurant & Cafe And Fast Food"
+},
+{
+"n": "Giant",
+"u": "#B1-01 to 05",
+"c": "Supermarket"
+},
+{
+"n": "Greendot",
+"u": "#02-15 to 17 & 02-K2/K3 & 02-21",
+"c": "Restaurant & Cafe And Fast Food"
+},
+{
+"n": "Hairz",
+"u": "#01-65",
+"c": "Hair & Beauty And Wellness"
+},
+{
+"n": "Holla Juice",
+"u": "#B1-47",
+"c": "F&b Specialties"
+},
+{
+"n": "House of Teochew",
+"u": "#B1-06",
+"c": "Restaurant & Cafe And Fast Food"
+},
+{
+"n": "I.E.F",
+"u": "#01-81",
+"c": "Fashion & Accessories"
+},
+{
+"n": "ICBC",
+"u": "#01-33 to 36",
+"c": "Banks & Financial Services"
+},
+{
+"n": "IndoStop",
+"u": "#B1-39",
+"c": "Convenience & Services"
+},
+{
+"n": "iPOT Mala Tri-Pot",
+"u": "#B1-07",
+"c": "Restaurant & Cafe And Fast Food"
+},
+{
+"n": "iTea",
+"u": "#01-50",
+"c": "F&b Specialties"
+},
+{
+"n": "J.CO Donuts & Coffee",
+"u": "#01-78/79 & 01-K2",
+"c": "Restaurant & Cafe And Fast Food"
+},
+{
+"n": "Ji De Chi",
+"u": "#01-56",
+"c": "Restaurant & Cafe And Fast Food"
+},
+{
+"n": "JML",
+"u": "#01-24/25",
+"c": "Home & Lifestyle"
+},
+{
+"n": "Jollibee",
+"u": "#01-05 to 07",
+"c": "Restaurant & Cafe And Fast Food"
+},
+{
+"n": "JUEWEI \u7edd\u5473",
+"u": "#01-70",
+"c": "F&b Specialties"
+},
+{
+"n": "Kajiken",
+"u": "#01-86",
+"c": "Restaurant & Cafe And Fast Food"
+},
+{
+"n": "Kei Kaisendon",
+"u": "#01-84",
+"c": "Restaurant & Cafe And Fast Food"
+},
+{
+"n": "Kskin",
+"u": "#01-29",
+"c": "Hair & Beauty And Wellness"
+},
+{
+"n": "Lion City Chiropractic",
+"u": "#B1-49/50",
+"c": "Health"
+},
+{
+"n": "London Weight Management",
+"u": "#01-44 & 01-54/55",
+"c": "Hair & Beauty And Wellness"
+},
+{
+"n": "Lotus Thai",
+"u": "#02-13/14 & 02-K1",
+"c": "Restaurant & Cafe And Fast Food"
+},
+{
+"n": "Madura\u2019s",
+"u": "#01-08",
+"c": "Restaurant & Cafe And Fast Food"
+},
+{
+"n": "McDonald\u2019s",
+"u": "#01-68/69 & 01-74 to 76 & 01-K3",
+"c": "Restaurant & Cafe And Fast Food"
+},
+{
+"n": "Miniso",
+"u": "#01-12 to 14",
+"c": "Home & Lifestyle"
+},
+{
+"n": "Mixue",
+"u": "#01-32",
+"c": "F&b Specialties"
+},
+{
+"n": "Monster Planet",
+"u": "#01-57",
+"c": "Restaurant & Cafe And Fast Food"
+},
+{
+"n": "Mos Burger",
+"u": "#01-72 to K5",
+"c": "Restaurant & Cafe And Fast Food"
+},
+{
+"n": "Mr Fix",
+"u": "#B1-32/33",
+"c": "Home & Lifestyle"
+},
+{
+"n": "Ms New",
+"u": "#01-83",
+"c": "Fashion & Accessories"
+},
+{
+"n": "MySmile Dental",
+"u": "#01-16",
+"c": "Health"
+},
+{
+"n": "Nine Fresh",
+"u": "#01-49",
+"c": "F&b Specialties"
+},
+{
+"n": "OBRO",
+"u": "#01-28",
+"c": "Home & Lifestyle"
+},
+{
+"n": "OCBC",
+"u": "#01-45/46 & 01-52/53",
+"c": "Banks & Financial Services"
+},
+{
+"n": "Old Chang Kee",
+"u": "#01-47",
+"c": "F&b Specialties"
+},
+{
+"n": "Onkei",
+"u": "#01-85",
+"c": "Restaurant & Cafe And Fast Food"
+},
+{
+"n": "Pastamania",
+"u": "#01-09 to 11",
+"c": "Restaurant & Cafe And Fast Food"
+},
+{
+"n": "Peniwern",
+"u": "#01-91",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Perception",
+"u": "#01-59/60",
+"c": "Optical"
+},
+{
+"n": "Perdure",
+"u": "#B1-17",
+"c": "Telco & Electronics"
+},
+{
+"n": "Pezzo",
+"u": "#01-61",
+"c": "F&b Specialties"
+},
+{
+"n": "Phoenix Medical Group",
+"u": "#02-09",
+"c": "Health"
+},
+{
+"n": "Physio X",
+"u": "#B1-20",
+"c": "Health"
+},
+{
+"n": "Pontian Wanton Noodles",
+"u": "#01-88",
+"c": "Restaurant & Cafe And Fast Food"
+},
+{
+"n": "Printvolution",
+"u": "#B1-35",
+"c": "Convenience & Services"
+},
+{
+"n": "QB House",
+"u": "#B1-42",
+"c": "Hair & Beauty And Wellness"
+},
+{
+"n": "Qin Ji Rougamo",
+"u": "#B1-08",
+"c": "Restaurant & Cafe And Fast Food"
+},
+{
+"n": "QM Wellness",
+"u": "#B1-43",
+"c": "Hair & Beauty And Wellness"
+},
+{
+"n": "QQ Fashion",
+"u": "#01-66",
+"c": "Fashion & Accessories"
+},
+{
+"n": "R.P.G \u2013 Right Place for Gadgets",
+"u": "#B1-48",
+"c": "Telco & Electronics"
+},
+{
+"n": "Ramen Keisuke Niku King",
+"u": "#01-02/03",
+"c": "Restaurant & Cafe And Fast Food"
+},
+{
+"n": "Ramen Keisuke Tonkotsu King",
+"u": "#01-04",
+"c": "Restaurant & Cafe And Fast Food"
+},
+{
+"n": "Rehab Mart",
+"u": "#B1-36",
+"c": "Health"
+},
+{
+"n": "Salad Crunch",
+"u": "#B1-47",
+"c": "F&b Specialties"
+},
+{
+"n": "Salva\u2019s Foreign Exchange",
+"u": "#B1-27",
+"c": "Banks & Financial Services"
+},
+{
+"n": "SanHe Geomancy \u4e09\u548c\u98a8\u6c34",
+"u": "#B1-38",
+"c": "Convenience & Services"
+},
+{
+"n": "Saute Sushi",
+"u": "#B1-19",
+"c": "Restaurant & Cafe And Fast Food"
+},
+{
+"n": "Shiok Burger",
+"u": "#01-77",
+"c": "Restaurant & Cafe And Fast Food"
+},
+{
+"n": "Sin Kang TCM Clinic",
+"u": "#01-19",
+"c": "Health"
+},
+{
+"n": "Singtel Exclusive Retailer",
+"u": "#B1-11/12",
+"c": "Telco & Electronics"
+},
+{
+"n": "Step By Step",
+"u": "#02-07/08 & 02-10",
+"c": "Health"
+},
+{
+"n": "Stuff\u2019d",
+"u": "#01-61",
+"c": "F&b Specialties"
+},
+{
+"n": "Swee Heng 1989 Express",
+"u": "#01-30",
+"c": "F&b Specialties"
+},
+{
+"n": "Taste of Indonesia",
+"u": "#B1-29 to 31",
+"c": "Restaurant & Cafe And Fast Food"
+},
+{
+"n": "The Bust Specialist",
+"u": "#01-26/27",
+"c": "Hair & Beauty And Wellness"
+},
+{
+"n": "The Face Century",
+"u": "#02-05/06",
+"c": "Hair & Beauty And Wellness"
+},
+{
+"n": "The Soup Spoon",
+"u": "#01-09 to 11",
+"c": "Restaurant & Cafe And Fast Food"
+},
+{
+"n": "Valu$",
+"u": "#B1-25/26",
+"c": "Convenience & Services"
+},
+{
+"n": "VidaJoie Chiropractic",
+"u": "#02-11/12",
+"c": "Health"
+},
+{
+"n": "Visual Art\u2019s Optics",
+"u": "#01-63",
+"c": "Optical"
+},
+{
+"n": "Vogue Diva",
+"u": "#01-67",
+"c": "Fashion & Accessories"
+},
+{
+"n": "W.3",
+"u": "#01-15",
+"c": "Fashion & Accessories"
+},
+{
+"n": "W.Two",
+"u": "#01-17",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Wok Hey",
+"u": "#01-62",
+"c": "F&b Specialties"
+},
+{
+"n": "Ya Kun Kaya Toast",
+"u": "#01-87",
+"c": "Restaurant & Cafe And Fast Food"
+},
+{
+"n": "YanHo Luxury",
+"u": "#B1-34",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Yol\u00e9",
+"u": "#B1-14",
+"c": "F&b Specialties"
+},
+{
+"n": "Youth Station",
+"u": "#01-23",
+"c": "Hair & Beauty And Wellness"
+},
+{
+"n": "Yu Ying TCM",
+"u": "#B1-28",
+"c": "Health"
+},
+{
+"n": "Yun Nam Hair Care",
+"u": "#B1-21 to 24",
+"c": "Hair & Beauty And Wellness"
+},
+{
+"n": "ZR Fashion",
+"u": "#01-31",
+"c": "Fashion & Accessories"
+}
+]
+},
+"sing-post-centre": {
+"name": "Singpost Centre",
+"addr": "10 Eunos Rd 8, Singapore 408600",
+"lat": 1.3190065,
+"lon": 103.8943833,
+"stores": [
+{
+"n": "1Gravity",
+"u": "#02-121",
+"c": "Beauty & Wellness"
+},
+{
+"n": "2510 Sunpin",
+"u": "#01-112",
+"c": "Entertainment / Lifestyle"
+},
+{
+"n": "7-Eleven",
+"u": "#01-105",
+"c": "Convenience & Services"
+},
+{
+"n": "8Bar Espresso",
+"u": "#01-131",
+"c": "Cafes, Restaurants & Food Court"
+},
+{
+"n": "A.M Aesthetics",
+"u": "#02-140/141",
+"c": "Beauty & Wellness"
+},
+{
+"n": "AJI ICHI",
+"u": "#01-114",
+"c": "Cafes, Restaurants & Food Court"
+},
+{
+"n": "Anthony Hair Boutique",
+"u": "#02-119",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Artary, Academy of Children's Art",
+"u": "#01-201/202",
+"c": "Enrichment"
+},
+{
+"n": "Astons Specialities",
+"u": "#01-115",
+"c": "Cafes, Restaurants & Food Court"
+},
+{
+"n": "Bakery Cuisine",
+"u": "#B1-153/154",
+"c": "Food Kiosk / Takeaway"
+},
+{
+"n": "Beard Papa's",
+"u": "#B1-161",
+"c": "Food Kiosk / Takeaway"
+},
+{
+"n": "Bibimbap!",
+"u": "#B1-154",
+"c": "Cafes, Restaurants & Food Court"
+},
+{
+"n": "Bon Aesthetics",
+"u": "#02-120",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Boulder World",
+"u": "#01-204 to 206",
+"c": "Entertainment / Lifestyle"
+},
+{
+"n": "Boxgreen Healthy Vending Machine",
+"u": "#01-K03",
+"c": "Entertainment / Lifestyle"
+},
+{
+"n": "Carl's Jr",
+"u": "#03-105",
+"c": "Cafes, Restaurants & Food Court"
+},
+{
+"n": "Challenger PIT",
+"u": "#02-135",
+"c": "Digital / Electronics"
+},
+{
+"n": "Ch\u00e2terais\u00e9",
+"u": "#01-134/135",
+"c": "Food Kiosk / Takeaway"
+},
+{
+"n": "Cheongdam Korean Skin Management",
+"u": "#B1-118",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Chic-A-Boo Chicken Specialty",
+"u": "#01-148",
+"c": "Cafes, Restaurants & Food Court"
+},
+{
+"n": "Choc Spot",
+"u": "#01-104",
+"c": "Food Kiosk / Takeaway"
+},
+{
+"n": "Citi Beauty Aesthetics",
+"u": "#02-126",
+"c": "Beauty & Wellness"
+},
+{
+"n": "CocoBite",
+"u": "#B1-149",
+"c": "Food Kiosk / Takeaway"
+},
+{
+"n": "COLDWEAR",
+"u": "#01-120/121",
+"c": "Fashion & Accessories"
+},
+{
+"n": "da Vinci Picture",
+"u": "#B1-114",
+"c": "Convenience & Services"
+},
+{
+"n": "Daiso Japan",
+"u": "#B1-119/120 & B1-124",
+"c": "Entertainment / Lifestyle"
+},
+{
+"n": "DMK",
+"u": "#01-146",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Dough Culture",
+"u": "#01-151A",
+"c": "Food Kiosk / Takeaway"
+},
+{
+"n": "Dr. Lash",
+"u": "#02-127",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Dr. Stretch",
+"u": "#01-117 to 119",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Dryclyn Express",
+"u": "#B1-116",
+"c": "Convenience & Services"
+},
+{
+"n": "EC House",
+"u": "#B1-113",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Encik Tan",
+"u": "#B1-156 & B1-159",
+"c": "Cafes, Restaurants & Food Court"
+},
+{
+"n": "Farm Frozen",
+"u": "#B1-117",
+"c": "Supermarket"
+},
+{
+"n": "FITNESS FIRST",
+"u": "#02-104 to 108 & 02-113 to 115",
+"c": "Entertainment / Lifestyle"
+},
+{
+"n": "Flower Matters",
+"u": "#B1-B1/112",
+"c": "Convenience & Services"
+},
+{
+"n": "Fruit Box",
+"u": "#B1-153",
+"c": "Food Kiosk / Takeaway"
+},
+{
+"n": "Fun Claw",
+"u": "#02-K07",
+"c": "Entertainment / Lifestyle"
+},
+{
+"n": "Fun Toast",
+"u": "#01-126",
+"c": "Cafes, Restaurants & Food Court"
+},
+{
+"n": "Gadget Mix",
+"u": "#02-K01 to K03",
+"c": "Digital / Electronics"
+},
+{
+"n": "General Post Office",
+"u": "#01-123 to 125",
+"c": "Convenience & Services"
+},
+{
+"n": "Genki Sushi",
+"u": "#01-139",
+"c": "Cafes, Restaurants & Food Court"
+},
+{
+"n": "Glamour Beauty",
+"u": "#02-126",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Golden Village",
+"u": "#03-107",
+"c": "Entertainment / Lifestyle"
+},
+{
+"n": "Gong Cha",
+"u": "#01-141A/B",
+"c": "Food Kiosk / Takeaway"
+},
+{
+"n": "Grove Cafe \u7d20\u6797",
+"u": "#01-151",
+"c": "Cafes, Restaurants & Food Court"
+},
+{
+"n": "Heguru Education Centre",
+"u": "#01-209 to 211",
+"c": "Enrichment"
+},
+{
+"n": "Hockhua Tonic",
+"u": "#B1-123",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Hollin",
+"u": "#01-133",
+"c": "Food Kiosk / Takeaway"
+},
+{
+"n": "Home's Harmony",
+"u": "#B1-115",
+"c": "Home & Furnishing"
+},
+{
+"n": "Hopii Mung Bean Smoothie \u4f55\u5fc5\u554f \u7eff\u8c46\u51b0\u6c99",
+"u": "#01-107A",
+"c": "Food Kiosk / Takeaway"
+},
+{
+"n": "I Love TaiMei",
+"u": "#B1-155",
+"c": "Food Kiosk / Takeaway"
+},
+{
+"n": "iPower Mobile",
+"u": "#02-130",
+"c": "Convenience & Services"
+},
+{
+"n": "issho izakaya",
+"u": "#03-103",
+"c": "Cafes, Restaurants & Food Court"
+},
+{
+"n": "JAI SIAM",
+"u": "#B1-147/148 & B1-167",
+"c": "Cafes, Restaurants & Food Court"
+},
+{
+"n": "Jonsson Protein Healthy Hair Growth",
+"u": "#02-124/125",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Kaffe & Toast / Thai Noodle Bar",
+"u": "#B1-157",
+"c": "Cafes, Restaurants & Food Court"
+},
+{
+"n": "Keep Drinking (\u4e00\u76f4\u559d)",
+"u": "#01-132",
+"c": "Entertainment / Lifestyle"
+},
+{
+"n": "Kin Teck Tong",
+"u": "#02-128",
+"c": "Beauty & Wellness"
+},
+{
+"n": "KJ Optometrists",
+"u": "#B1-121",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Kodecoon Academy",
+"u": "#03-01 & 03-03",
+"c": "Enrichment"
+},
+{
+"n": "Koo Kee",
+"u": "#B1-126",
+"c": "Cafes, Restaurants & Food Court"
+},
+{
+"n": "Kopi & Tarts",
+"u": "#01-129/130",
+"c": "Cafes, Restaurants & Food Court"
+},
+{
+"n": "Kopitiam",
+"u": "#03-102 to 104",
+"c": "Cafes, Restaurants & Food Court"
+},
+{
+"n": "Lau Wang Claypot",
+"u": "#01-137/138",
+"c": "Cafes, Restaurants & Food Court"
+},
+{
+"n": "Lee Mart",
+"u": "#B1-08",
+"c": "Convenience & Services"
+},
+{
+"n": "Linen Gallery",
+"u": "#02-103",
+"c": "Home & Furnishing"
+},
+{
+"n": "Little Caesars Pizza",
+"u": "#01-139/140",
+"c": "Cafes, Restaurants & Food Court"
+},
+{
+"n": "Long John Silver's",
+"u": "#01-149",
+"c": "Cafes, Restaurants & Food Court"
+},
+{
+"n": "Malaysia Chiak",
+"u": "#B1-151/152",
+"c": "Cafes, Restaurants & Food Court"
+},
+{
+"n": "ManNa Korean Restaurant",
+"u": "#02-138/139",
+"c": "Cafes, Restaurants & Food Court"
+},
+{
+"n": "Mayer",
+"u": "#B1-132",
+"c": "Digital / Electronics"
+},
+{
+"n": "Mei Heong Yuen Dessert",
+"u": "#B1-162/163",
+"c": "Food Kiosk / Takeaway"
+},
+{
+"n": "Milksha",
+"u": "#B1-150",
+"c": "Food Kiosk / Takeaway"
+},
+{
+"n": "MINISO",
+"u": "#B1-108 to 110",
+"c": "Entertainment / Lifestyle"
+},
+{
+"n": "Minmed Clinic",
+"u": "#02-122",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Mr Teh Tarik Express",
+"u": "#B1-130/131",
+"c": "Cafes, Restaurants & Food Court"
+},
+{
+"n": "MR.DIY",
+"u": "#B1-144 to 146",
+"c": "Home & Furnishing"
+},
+{
+"n": "My Greatest Child",
+"u": "#02-131",
+"c": "Books & Stationeries"
+},
+{
+"n": "Nail Words",
+"u": "#B1-134",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Natural Wild Honey",
+"u": "#B1-135",
+"c": "Food Kiosk / Takeaway"
+},
+{
+"n": "New Balance Outlet",
+"u": "#02-109 to 112",
+"c": "Fashion & Accessories"
+},
+{
+"n": "NorthStar Gymnastics & Fitness",
+"u": "#03-02",
+"c": "Enrichment"
+},
+{
+"n": "Novela",
+"u": "#02-101/102",
+"c": "Beauty & Wellness"
+},
+{
+"n": "NTUC CLUB CLUBHOUSE",
+"u": "#03-102",
+"c": "Entertainment / Lifestyle"
+},
+{
+"n": "NTUC FairPrice",
+"u": "#B1-101 to 107",
+"c": "Supermarket"
+},
+{
+"n": "Old Chang Kee",
+"u": "#01-147",
+"c": "Cafes, Restaurants & Food Court"
+},
+{
+"n": "ORRO",
+"u": "#01-103",
+"c": "Fashion & Accessories"
+},
+{
+"n": "OWNDAYS",
+"u": "#01-141/142",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Peniwern",
+"u": "#01-109/110",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Philatelic Store @ GPO",
+"u": "#01-127/128",
+"c": "Convenience & Services"
+},
+{
+"n": "POSB",
+"u": "#01-106 to 108",
+"c": "Convenience & Services"
+},
+{
+"n": "PrimaD\u00e9li",
+"u": "#B1-164",
+"c": "Food Kiosk / Takeaway"
+},
+{
+"n": "Pu Tien",
+"u": "#03-106",
+"c": "Cafes, Restaurants & Food Court"
+},
+{
+"n": "Regina",
+"u": "#B1-133",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Salmon Warrior",
+"u": "#B1-165/166",
+"c": "Food Kiosk / Takeaway"
+},
+{
+"n": "Schone Mama",
+"u": "#02-116 to 118",
+"c": "Beauty & Wellness"
+},
+{
+"n": "School of Concepts",
+"u": "#02-132",
+"c": "Enrichment"
+},
+{
+"n": "SF Fruits",
+"u": "#B1-150",
+"c": "Food Kiosk / Takeaway"
+},
+{
+"n": "Simply Toys",
+"u": "#02-133",
+"c": "Entertainment / Lifestyle"
+},
+{
+"n": "Singapura Heritage",
+"u": "#02-142",
+"c": "Cafes, Restaurants & Food Court"
+},
+{
+"n": "SKECHERS",
+"u": "#01-101/102",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Slumberland",
+"u": "#02-134",
+"c": "Home & Furnishing"
+},
+{
+"n": "Sparkle",
+"u": "#01-143",
+"c": "Entertainment / Lifestyle"
+},
+{
+"n": "Subway",
+"u": "#B1-127",
+"c": "Cafes, Restaurants & Food Court"
+},
+{
+"n": "Superland Pre-School",
+"u": "#01-208",
+"c": "Enrichment"
+},
+{
+"n": "Swee Heng 1989 Bakery Caf\u00e9",
+"u": "#B1-158",
+"c": "Cafes, Restaurants & Food Court"
+},
+{
+"n": "Swensen's",
+"u": "#02-136/137",
+"c": "Cafes, Restaurants & Food Court"
+},
+{
+"n": "Syoujin \u5320\u4eba",
+"u": "#B1-142/143",
+"c": "Beauty & Wellness"
+},
+{
+"n": "The Body Shop",
+"u": "#01-113",
+"c": "Beauty & Wellness"
+},
+{
+"n": "The Coffee Bean and Tea Leaf",
+"u": "#01-144/145",
+"c": "Cafes, Restaurants & Food Court"
+},
+{
+"n": "The Dental Practice",
+"u": "#02-123",
+"c": "Convenience & Services"
+},
+{
+"n": "The Mockingjay Hair Salon",
+"u": "#02-129",
+"c": "Beauty & Wellness"
+},
+{
+"n": "The Physics Caf\u00e9",
+"u": "#01-207",
+"c": "Enrichment"
+},
+{
+"n": "The Smell Lab",
+"u": "#B1-140",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Tsukada Nojo",
+"u": "#01-136",
+"c": "Cafes, Restaurants & Food Court"
+},
+{
+"n": "Twelve Cupcakes",
+"u": "#B1-136",
+"c": "Food Kiosk / Takeaway"
+},
+{
+"n": "Unity Pharmacy",
+"u": "#B1-122",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Venus Beauty",
+"u": "#B1-139",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Watch Club",
+"u": "#B1-B1 & B1-111",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Watsons",
+"u": "#B1-137/138",
+"c": "Beauty & Wellness"
+},
+{
+"n": "Wee Nam Kee Chicken Rice",
+"u": "#B1-125",
+"c": "Cafes, Restaurants & Food Court"
+},
+{
+"n": "Yang Guo Fu Mala Tang",
+"u": "#01-150",
+"c": "Cafes, Restaurants & Food Court"
+},
+{
+"n": "Young Hearts Lingerie",
+"u": "#01-111",
+"c": "Fashion & Accessories"
+},
+{
+"n": "Zuya Vegetarian",
+"u": "#B1-160",
+"c": "Food Kiosk / Takeaway"
+},
+{
+"n": "\u725b\u4e00\u5634 N\u00faodle",
+"u": "#B1-128/129",
+"c": "Cafes, Restaurants & Food Court"
+}
+]
+}
+}

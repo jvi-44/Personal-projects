@@ -1,0 +1,69 @@
+[
+{"id":"pilates-princess","title":"Pilates princess morning","who":"Solo or with a friend","when":"Saturday or Sunday morning","time":"8:30am to 1pm","budget":"$$$ · about $70 to $110","vibe":"Sweat, matcha, a little shopping","blurb":"A reformer class, a matcha reward and a slow wander down Joo Chiat Road to lululemon. Wear the matching set.","outfit":"pilates","stops":[
+ {"id":"vaura-pilates","t":"8:30am","note":"Reformer class. Book the trial ahead."},
+ {"id":"miura","t":"11:00am","note":"Whisked matcha and a strawberry daifuku. Opens at 11."},
+ {"id":"in-good-company","t":"11:40am","note":"Browse the racks. Miura is inside this boutique."},
+ {"id":"lululemon-katong","t":"12:15pm","note":"Try on the new drop at i12 Katong."},
+ {"id":"birds-of-paradise","t":"12:45pm","note":"Gelato in a thyme cone to finish."}]},
+{"id":"photo-walk","title":"Main character photo walk","who":"Solo","when":"Any morning, best before 9am","time":"8am to 11am","budget":"$ · about $20","vibe":"Pastel houses, kaya toast, street art","blurb":"The classic Katong loop while the light is soft and the pavements are empty. Charge your phone.","outfit":"boho","stops":[
+ {"id":"chin-mee-chin","t":"8:00am","note":"Kaya toast and kopi at marble tables since 1925."},
+ {"id":"jc-community-club","t":"8:50am","note":"Pink Wes Anderson facade."},
+ {"id":"koon-seng-road","t":"9:15am","note":"The famous row. Shoot from the walkway."},
+ {"id":"kohi-coffee","t":"9:45am","note":"Hole-in-the-wall coffee in the alley beside the shophouses."},
+ {"id":"jousting-painters","t":"10:15am","note":"The jousting kids mural."},
+ {"id":"elijah-pies","t":"10:40am","note":"Pie slice to end. Opens at 10."}]},
+{"id":"thrift-vinyl","title":"Thrift and vinyl Saturday","who":"Friends","when":"Saturday afternoon","time":"12:30pm to 6pm","budget":"$$ · depends on your willpower","vibe":"Vintage racks, record crates, pizza","blurb":"Joo Chiat Road has one of Singapore's best stretches of independent shops. Start north, dig your way south.","outfit":"coolgirl","stops":[
+ {"id":"a-vintage-tale","t":"12:30pm","note":"1950s to 90s pieces, plus the pay-by-weight Kilo Tale corner."},
+ {"id":"echo-vintage","t":"1:30pm","note":"More vintage racks."},
+ {"id":"choice-cuts","t":"2:15pm","note":"Crate-dig, then pizza for lunch."},
+ {"id":"cat-socrates","t":"3:30pm","note":"Indie gifts, books and the shop cat."},
+ {"id":"retrocrates","t":"4:15pm","note":"Vinyl and turntables."},
+ {"id":"vintage-flea","t":"5:00pm","note":"First weekend of the month only: the flea market at Katong Square."}]},
+{"id":"rainy-day","title":"Rainy day mall crawl","who":"Friends","when":"Any wet afternoon","time":"1pm to 8pm","budget":"$$ · about $50 to $80","vibe":"Shopping, climbing, a movie, cake","blurb":"When the sky opens, Katong's two malls are a short covered dash apart. Everything here is indoors.","outfit":"coolgirl","stops":[
+ {"id":"parkway-parade","t":"1:00pm","note":"UNIQLO, MANGO, KKV and the beauty counters on level 1."},
+ {"id":"i12-katong","t":"3:00pm","note":"lululemon and Typo on level 1."},
+ {"id":"climb-central","t":"4:00pm","note":"Indoor climbing on level 4. No experience needed."},
+ {"id":"gv-katong","t":"5:30pm","note":"Movie on level 5."},
+ {"id":"awfully-chocolate","t":"7:45pm","note":"Chocolate cake across the road. Open late."}]},
+{"id":"peranakan-heritage","title":"Peranakan heritage afternoon","who":"Friends or a date","when":"Weekday or weekend, book ahead","time":"11am to 7pm","budget":"$$$ · about $80 to $120","vibe":"Kueh, kebayas, antiques, Nyonya dinner","blurb":"Katong was the heartland of the Straits Chinese. Eat and tour your way through the culture that painted these streets.","outfit":"kebaya","stops":[
+ {"id":"kim-choo","t":"11:00am","note":"Nyonya dumplings and kueh. See the kebaya boutique upstairs."},
+ {"id":"328-katong-laksa","t":"12:00pm","note":"Spoon-only laksa for lunch."},
+ {"id":"katong-antique-house","t":"1:30pm","note":"Baba-Nyonya antiques. Call ahead."},
+ {"id":"the-intan","t":"3:00pm","note":"Home museum tour with tea. Appointment only."},
+ {"id":"koon-seng-road","t":"4:45pm","note":"See the real houses in late light."},
+ {"id":"guan-hoe-soon","t":"6:00pm","note":"Dinner at Singapore's oldest Peranakan restaurant."}]},
+{"id":"laksa-showdown","title":"The laksa showdown","who":"Friends","when":"Any day, lunchtime","time":"11am to 2pm","budget":"$ · under $25","vibe":"Two bowls, one verdict, gelato after","blurb":"Two famous laksa shops face each other across East Coast Road and each claims the crown. Try both and settle it.","outfit":"coolgirl","stops":[
+ {"id":"janggut-laksa","t":"11:00am","note":"The self-declared original, in Roxy Square. Closes 4:30pm."},
+ {"id":"328-katong-laksa","t":"11:45am","note":"The one that beat Gordon Ramsay."},
+ {"id":"red-house","t":"12:30pm","note":"The 1925 bakery landmark."},
+ {"id":"birds-of-paradise","t":"12:40pm","note":"Gelato to cool down."},
+ {"id":"june-coffee","t":"1:15pm","note":"Coffee and the final verdict."}]},
+{"id":"golden-hour-ecp","title":"Golden hour at East Coast Park","who":"A date or friends","when":"Late afternoon, clear day","time":"3:30pm to 8:30pm","budget":"$$ · about $40 to $60","vibe":"Bikes, sea breeze, sunset, satay","blurb":"Rent bikes, ride east with the sea on your right, watch the sky turn from the jetty and end at Singapore's only beachside hawker centre.","outfit":"coastal","stops":[
+ {"id":"east-coast-commune","t":"3:30pm","note":"Coffee at Marine Cove before you ride."},
+ {"id":"cyclist-park","t":"4:15pm","note":"Rent bikes nearby and head east."},
+ {"id":"singapore-wake-park","t":"5:15pm","note":"Stop to watch the wakeboarders."},
+ {"id":"bedok-jetty","t":"6:15pm","note":"Sunset is around 7pm all year."},
+ {"id":"lagoon-food-village","t":"7:15pm","note":"Satay and BBQ stingray by the beach."}]},
+{"id":"creative-sunday","title":"Make something Sunday","who":"Solo or friends","when":"Sunday","time":"10am to 4pm","budget":"$$$ · about $70 to $100","vibe":"Brunch, pottery, painting","blurb":"A slow day of making things with your hands in the quiet eastern end of Joo Chiat.","outfit":"boho","stops":[
+ {"id":"brewing-ground","t":"10:00am","note":"Brunch in the old school compound."},
+ {"id":"hue-your-days","t":"11:30am","note":"Paint a ceramic piece. Same compound."},
+ {"id":"3arts-pottery","t":"1:30pm","note":"Or go deeper with a wheel-throwing trial. Book ahead."},
+ {"id":"side-quest","t":"3:00pm","note":"Figurine painting or DIY charms."}]},
+{"id":"matcha-crawl","title":"The matcha crawl","who":"Solo or friends","when":"Saturday, so Studio Frond is open","time":"10:30am to 3pm","budget":"$$ · about $35 to $50","vibe":"Four matchas, one street","blurb":"Joo Chiat has quietly become matcha row. Pace yourself.","outfit":"pilates","stops":[
+ {"id":"june-coffee","t":"10:30am","note":"Kinako Matcha."},
+ {"id":"hara-hetta","t":"11:30am","note":"Matcha with a warm shio pan."},
+ {"id":"studio-frond","t":"12:30pm","note":"Matcha with a mini bouquet. Weekends only."},
+ {"id":"miura","t":"1:30pm","note":"Whisked matcha and wagashi."},
+ {"id":"okada-coffee","t":"2:30pm","note":"Matcha red bean cake."}]},
+{"id":"solo-reset","title":"Weekday solo reset","who":"Solo","when":"A quiet weekday","time":"9am to 2pm","budget":"$$$ · about $70 to $90","vibe":"Journal, move, unwind","blurb":"For the week you need to hear yourself think. Phone on silent.","outfit":"oldmoney","stops":[
+ {"id":"accompany-coffee","t":"9:00am","note":"Coffee and your journal inside a furniture showroom."},
+ {"id":"flow-lab","t":"10:30am","note":"Reformer or barre class."},
+ {"id":"project-acai","t":"12:00pm","note":"Açaí bowl."},
+ {"id":"feet-haven","t":"12:45pm","note":"Reflexology."},
+ {"id":"wan-mei","t":"1:45pm","note":"Black sesame paste to finish."}]},
+{"id":"late-night","title":"Supper and late sweets","who":"Friends","when":"Friday or Saturday night","time":"8:30pm to midnight","budget":"$$ · about $30 to $45","vibe":"Supper, cocktails, dessert past 11","blurb":"Katong stays up later than you would think.","outfit":"y2k","stops":[
+ {"id":"ponggol-nasi-lemak","t":"8:30pm","note":"Build-your-own nasi lemak."},
+ {"id":"jc-oyster-house","t":"9:45pm","note":"Oysters and a cocktail. Open till 11 on Wed to Sat."},
+ {"id":"muted-gelato","t":"10:45pm","note":"Pistachio on a waffle."},
+ {"id":"within-the-walls","t":"11:30pm","note":"Desserts until 2am on weekends."}]}
+]
