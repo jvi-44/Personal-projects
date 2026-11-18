@@ -1,0 +1,417 @@
+{
+ "date": "2026-11-18",
+ "week": "2026-11-15",
+ "tasks": [
+  {
+   "id": "ex_t1",
+   "title": "ESAT practice paper, timed",
+   "tier": "primary",
+   "est": 120,
+   "done": false
+  },
+  {
+   "id": "ex_t2",
+   "title": "Personal statement: final read-through",
+   "tier": "primary",
+   "est": 60,
+   "done": false
+  },
+  {
+   "id": "ex_t3",
+   "title": "STEMulate Academy partner emails",
+   "tier": "primary",
+   "est": 60,
+   "done": false
+  },
+  {
+   "id": "ex_t4",
+   "title": "Chem flashcards: organic mechanisms",
+   "tier": "secondary",
+   "est": 45,
+   "done": false
+  },
+  {
+   "id": "ex_t5",
+   "title": "Watercolour: 20-minute sky study",
+   "tier": "secondary",
+   "est": 30,
+   "done": false
+  },
+  {
+   "id": "ex_t6",
+   "title": "Plan the next astro session",
+   "tier": "secondary",
+   "est": 30,
+   "done": false
+  }
+ ],
+ "admin": [
+  {
+   "id": "ex_a1",
+   "title": "Reply to Ms Tan",
+   "done": false,
+   "go": false
+  },
+  {
+   "id": "ex_a2",
+   "title": "Pay the ISC fee",
+   "done": false,
+   "go": true
+  },
+  {
+   "id": "ex_a3",
+   "title": "Print consent forms",
+   "done": false,
+   "go": false
+  }
+ ],
+ "fixed": [
+  {
+   "id": "ex_f1",
+   "title": "Physics consult",
+   "start": "14:00",
+   "end": "15:00",
+   "place": "school"
+  }
+ ],
+ "places": {
+  "am": "cafe",
+  "pm": "school",
+  "eve": "home"
+ },
+ "wake": "05:30",
+ "sleep": "22:00",
+ "note": "Example day: these are sample tasks.",
+ "plan": {
+  "at": 1794949200000,
+  "source": "example",
+  "summary": "A café morning for the two hardest things while your head is fresh, school after lunch for the consult and lighter work, then home for dinner and a quiet evening. The ESAT paper gets the first and best two hours.",
+  "blocks": [
+   {
+    "id": "bmwm5ug5y1c8",
+    "start": "05:30",
+    "end": "05:55",
+    "title": "Wake up, water, get ready",
+    "kind": "routine",
+    "ref": "r_rise",
+    "place": "home",
+    "detail": "A glass of water before your phone, curtains open.",
+    "done": false,
+    "skipped": false
+   },
+   {
+    "id": "bmwm5ug5y2uv",
+    "start": "05:55",
+    "end": "06:25",
+    "title": "Exercise",
+    "kind": "routine",
+    "ref": "r_move",
+    "place": "home",
+    "detail": "Twenty minutes of the circuit and a short stretch. It is what makes the 7am focus block work.",
+    "done": false,
+    "skipped": false
+   },
+   {
+    "id": "bmwm5ug5y3fk",
+    "start": "06:25",
+    "end": "06:45",
+    "title": "Breakfast",
+    "kind": "meal",
+    "ref": "r_breakfast",
+    "place": "home",
+    "detail": "Something with protein; the paper is long.",
+    "done": false,
+    "skipped": false
+   },
+   {
+    "id": "bmwm5ug5z4ic",
+    "start": "06:45",
+    "end": "07:05",
+    "title": "Travel to Café (MRT)",
+    "kind": "travel",
+    "ref": null,
+    "refs": [
+     "ex_a2"
+    ],
+    "place": "cafe",
+    "detail": "Pay the ISC fee on the train so it is off your mind before you sit down.",
+    "done": false,
+    "skipped": false
+   },
+   {
+    "id": "bmwm5ug5z5ld",
+    "start": "07:05",
+    "end": "08:35",
+    "title": "ESAT practice paper, timed (1/2)",
+    "kind": "primary",
+    "ref": "ex_t1",
+    "place": "cafe",
+    "detail": "Section 1 under exam conditions: phone in your bag, one timer, no notes. Do not mark anything yet.",
+    "done": false,
+    "skipped": false
+   },
+   {
+    "id": "bmwm5ug5z6t8",
+    "start": "08:35",
+    "end": "08:45",
+    "title": "Break",
+    "kind": "break",
+    "ref": null,
+    "place": "cafe",
+    "detail": "Stand up, refill your water, look at something far away.",
+    "done": false,
+    "skipped": false
+   },
+   {
+    "id": "bmwm5ug5z7ov",
+    "start": "08:45",
+    "end": "09:15",
+    "title": "ESAT practice paper, timed (2/2)",
+    "kind": "primary",
+    "ref": "ex_t1",
+    "place": "cafe",
+    "detail": "Mark it against the scheme and write down the three question types that cost you the most time.",
+    "done": false,
+    "skipped": false
+   },
+   {
+    "id": "bmwm5ug5z81f",
+    "start": "09:25",
+    "end": "10:25",
+    "title": "Personal statement: final read-through",
+    "kind": "primary",
+    "ref": "ex_t2",
+    "place": "cafe",
+    "detail": "Read it aloud once, start to finish. Cut any sentence that does not show what you did or what you learned; check the character count last.",
+    "done": false,
+    "skipped": false
+   },
+   {
+    "id": "bmwm5ug5z9su",
+    "start": "10:25",
+    "end": "10:40",
+    "title": "Longer break",
+    "kind": "break",
+    "ref": null,
+    "place": "cafe",
+    "detail": "A short walk round the block. No scrolling.",
+    "done": false,
+    "skipped": false
+   },
+   {
+    "id": "bmwm5ug5za6y",
+    "start": "10:40",
+    "end": "11:00",
+    "title": "Admin sprinkle",
+    "kind": "admin",
+    "ref": null,
+    "refs": [
+     "ex_a1",
+     "ex_a3"
+    ],
+    "place": "cafe",
+    "detail": "Reply to Ms Tan, then queue the consent forms to print at school.",
+    "done": false,
+    "skipped": false
+   },
+   {
+    "id": "bmwm5ug5zbbv",
+    "start": "11:00",
+    "end": "12:00",
+    "title": "STEMulate Academy partner emails",
+    "kind": "primary",
+    "ref": "ex_t3",
+    "place": "cafe",
+    "detail": "Write one template, then personalise the first line for each partner. Send them, do not schedule them.",
+    "done": false,
+    "skipped": false
+   },
+   {
+    "id": "bmwm5ug5zck",
+    "start": "12:00",
+    "end": "12:30",
+    "title": "Buffer",
+    "kind": "buffer",
+    "ref": null,
+    "place": "cafe",
+    "detail": "Slack in case the paper ran long. If it did not, close the laptop early.",
+    "done": false,
+    "skipped": false
+   },
+   {
+    "id": "bmwm5ug5zd9w",
+    "start": "12:30",
+    "end": "13:10",
+    "title": "Lunch",
+    "kind": "meal",
+    "ref": "r_lunch",
+    "place": "cafe",
+    "detail": "Eat before you pack up; the afternoon is long.",
+    "done": false,
+    "skipped": false
+   },
+   {
+    "id": "bmwm5ug5zevj",
+    "start": "13:10",
+    "end": "13:45",
+    "title": "Travel to School (MRT)",
+    "kind": "travel",
+    "ref": null,
+    "place": "school",
+    "detail": "Reread the two ESAT questions you could not crack, for the consult.",
+    "done": false,
+    "skipped": false
+   },
+   {
+    "id": "bmwm5ug5zfg7",
+    "start": "13:45",
+    "end": "13:50",
+    "title": "Midday check-in",
+    "kind": "checkin",
+    "ref": "check_midday",
+    "place": "school",
+    "detail": "Tick off the morning and see whether the afternoon still fits.",
+    "done": false,
+    "skipped": false
+   },
+   {
+    "id": "bmwm5ug5zg5a",
+    "start": "14:00",
+    "end": "15:00",
+    "title": "Physics consult",
+    "kind": "fixed",
+    "ref": "ex_f1",
+    "place": "school",
+    "detail": "Bring the two ESAT questions from this morning.",
+    "done": false,
+    "skipped": false
+   },
+   {
+    "id": "bmwm5ug5zh1c",
+    "start": "15:00",
+    "end": "15:45",
+    "title": "Chem flashcards: organic mechanisms",
+    "kind": "secondary",
+    "ref": "ex_t4",
+    "place": "school",
+    "detail": "Curly arrows from memory first, then check. Flag the three you got wrong for tomorrow.",
+    "done": false,
+    "skipped": false
+   },
+   {
+    "id": "bmwm5ug5zisz",
+    "start": "15:45",
+    "end": "15:55",
+    "title": "Break",
+    "kind": "break",
+    "ref": null,
+    "place": "school",
+    "detail": "Stand up, stretch, water. No scrolling.",
+    "done": false,
+    "skipped": false
+   },
+   {
+    "id": "bmwm5ug5zjrp",
+    "start": "15:55",
+    "end": "16:25",
+    "title": "Plan the next astro session",
+    "kind": "secondary",
+    "ref": "ex_t6",
+    "place": "school",
+    "detail": "Pick the target, book the slot and post it in the club chat before you leave.",
+    "done": false,
+    "skipped": false
+   },
+   {
+    "id": "bmwm5ug5zkoa",
+    "start": "16:25",
+    "end": "17:25",
+    "title": "Catch-up slot",
+    "kind": "buffer",
+    "ref": null,
+    "place": "school",
+    "detail": "Anything that ran over goes here. If nothing did, head home early.",
+    "done": false,
+    "skipped": false
+   },
+   {
+    "id": "bmwm5ug5zlqy",
+    "start": "17:25",
+    "end": "18:00",
+    "title": "Head home (MRT)",
+    "kind": "travel",
+    "ref": null,
+    "place": "home",
+    "detail": "Music, or rest your eyes.",
+    "done": false,
+    "skipped": false
+   },
+   {
+    "id": "bmwm5ug5zmgl",
+    "start": "19:00",
+    "end": "19:40",
+    "title": "Dinner",
+    "kind": "meal",
+    "ref": "r_dinner",
+    "place": "home",
+    "detail": "Phone stays in your room.",
+    "done": false,
+    "skipped": false
+   },
+   {
+    "id": "bmwm5ug5znz2",
+    "start": "19:45",
+    "end": "20:15",
+    "title": "Watercolour: 20-minute sky study",
+    "kind": "secondary",
+    "ref": "ex_t5",
+    "place": "home",
+    "detail": "Set a 20-minute timer for one wet-on-wet sky and no fixing. Date it and photograph it for the art log.",
+    "done": false,
+    "skipped": false
+   },
+   {
+    "id": "bmwm5ug5zotl",
+    "start": "20:45",
+    "end": "20:55",
+    "title": "Evening wrap-up",
+    "kind": "checkin",
+    "ref": "check_evening",
+    "place": "home",
+    "detail": "Tick the day off, move anything unfinished to tomorrow, pack your bag.",
+    "done": false,
+    "skipped": false
+   },
+   {
+    "id": "bmwm5ug5zpym",
+    "start": "21:20",
+    "end": "21:40",
+    "title": "Read 10 pages",
+    "kind": "routine",
+    "ref": "r_read",
+    "place": "home",
+    "detail": "Paper book, bed light only.",
+    "done": false,
+    "skipped": false
+   },
+   {
+    "id": "bmwm5ug5zqzl",
+    "start": "21:40",
+    "end": "22:00",
+    "title": "Screens off, wind down",
+    "kind": "routine",
+    "ref": "r_wind",
+    "place": "home",
+    "detail": "Lights out at ten.",
+    "done": false,
+    "skipped": false
+   }
+  ],
+  "overflow": [],
+  "note": ""
+ },
+ "checkins": [],
+ "rev": 0,
+ "example": true,
+ "updatedAt": 1794949200000
+}

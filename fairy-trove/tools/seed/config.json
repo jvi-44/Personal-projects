@@ -1,0 +1,107 @@
+{
+ "name": "Vi",
+ "wake": "05:30",
+ "sleep": "22:00",
+ "places": [
+  {
+   "id": "home",
+   "name": "Home",
+   "travel": 0,
+   "mode": ""
+  },
+  {
+   "id": "cafe",
+   "name": "Café",
+   "travel": 20,
+   "mode": "MRT"
+  },
+  {
+   "id": "school",
+   "name": "School",
+   "travel": 35,
+   "mode": "MRT"
+  }
+ ],
+ "routines": [
+  {
+   "id": "r_rise",
+   "name": "Wake up, water, get ready",
+   "anchor": "wake",
+   "offset": 0,
+   "min": 25,
+   "kind": "routine",
+   "on": true
+  },
+  {
+   "id": "r_move",
+   "name": "Exercise",
+   "anchor": "wake",
+   "offset": 25,
+   "min": 30,
+   "kind": "routine",
+   "on": true
+  },
+  {
+   "id": "r_breakfast",
+   "name": "Breakfast",
+   "anchor": "wake",
+   "offset": 55,
+   "min": 20,
+   "kind": "meal",
+   "on": true
+  },
+  {
+   "id": "r_lunch",
+   "name": "Lunch",
+   "anchor": "time",
+   "time": "12:30",
+   "min": 40,
+   "kind": "meal",
+   "on": true
+  },
+  {
+   "id": "r_dinner",
+   "name": "Dinner",
+   "anchor": "time",
+   "time": "19:00",
+   "min": 40,
+   "kind": "meal",
+   "on": true
+  },
+  {
+   "id": "r_read",
+   "name": "Read 10 pages",
+   "anchor": "sleep",
+   "offset": 40,
+   "min": 20,
+   "kind": "routine",
+   "on": true
+  },
+  {
+   "id": "r_wind",
+   "name": "Screens off, wind down",
+   "anchor": "sleep",
+   "offset": 20,
+   "min": 20,
+   "kind": "routine",
+   "on": true
+  }
+ ],
+ "checkins": {
+  "midday": "13:30",
+  "evening": "20:45"
+ },
+ "focus": {
+  "primary": 90,
+  "secondary": 45,
+  "session": 90,
+  "breakMin": 10,
+  "adminPer": 7
+ },
+ "notion": {
+  "auto": true,
+  "page": "https://www.notion.so/16872bf06f3180cebf9dd82a1a6c063c",
+  "marker": "",
+  "armed": false
+ }
+}

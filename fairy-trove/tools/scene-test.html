@@ -1,0 +1,24 @@
+<!doctype html>
+<html><head><meta charset="utf8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>scene test</title>
+<style>
+  html,body{height:100%;margin:0;background:#cbb7f3;font-family:system-ui,sans-serif}
+  #space{position:fixed;inset:0;width:100%;height:100%;display:block}
+  #stage{position:absolute;inset:0}
+  #labels{position:fixed;inset:0;pointer-events:none}
+  .pollen-chip{position:absolute;left:0;top:0;border:0;border-radius:999px;padding:4px 10px;font:600 12px system-ui;background:rgba(255,255,255,.8);color:#7a1750;white-space:nowrap}
+  .pollen-chip[data-state="empty"]{background:rgba(255,255,255,.45);font-weight:400}
+</style></head><body>
+<canvas id="space"></canvas><div id="stage"></div><div id="labels"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="../src/scene.js"></script>
+<script>
+  var q = new URLSearchParams(location.search);
+  window.addEventListener('error', function(e){ document.title = 'ERR ' + e.message; });
+  var s = FTScene.create({ canvas: document.getElementById('space'), stage: document.getElementById('stage'), labels: document.getElementById('labels'), theme: q.get('theme') || 'light', reducedMotion: q.get('still') === '1' });
+  window.__scene = s;
+  if (q.get('tasks') !== '0') s.setTasks([{title:'Finish UCAS essay', done:true},{title:'ESAT paper 4', active:true},{title:'STEMulate deck'},{title:'Read 10 pages'},{title:'', done:false},{title:'Email Ms Tan', done:true}]);
+  s.setAdmin(5, 2); s.setGlow(0.4);
+  if (q.get('yaw')) s.debug.set(parseFloat(q.get('yaw')), parseFloat(q.get('pitch') || '0'));
+  document.title = s.ok ? 'OK' : 'FALLBACK';
+</script></body></html>
