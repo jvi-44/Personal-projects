@@ -1,4 +1,4 @@
-// Builds the starting data: Vi's config (routines from the Starmap habit tracker, the places she named)
+// Builds the starting data: Vi's config (routines from the Starmap habit tracker, the places named in the request)
 // and one clearly-marked example day, woven the way Claude would and cleaned by the planner.
 // node tools/make-seed.mjs [YYYY-MM-DD]   → tools/seed/*.json and tools/example-seed.js (for the mock)
 import fs from 'node:fs';

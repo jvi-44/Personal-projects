@@ -236,7 +236,7 @@
       var mineW = S.weeks[ws];
       if (week && !S.store.dirty('week', ws) && !(mineW && mineW.updatedAt && (!week.updatedAt || mineW.updatedAt >= week.updatedAt))) S.weeks[ws] = Object.assign({ label: '', notion: null }, week);
       if (S.composerFor && S.composerFor.indexOf(S.date + ':') === 0 && document.activeElement && document.activeElement.closest && document.activeElement.closest('#compose-form')) {
-        renderWeek(); renderNow(); syncScene();           // she is typing: leave the form alone
+        renderWeek(); renderNow(); syncScene();           // mid-typing: leave the form alone
       } else render();
       if (firm) checkPendingSync(ws);
     });

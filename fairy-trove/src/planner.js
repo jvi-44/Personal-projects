@@ -98,7 +98,7 @@
     return t;
   }
 
-  // Where she is at `from`, read off the current plan. A trip in progress moves `from` to its end.
+  // Where the planner's owner is at `from`, read off the current plan. A trip in progress moves `from` to its end.
   function currentSpot(day, from) {
     var here = 'home', until = from;
     var bl = ((day.plan && day.plan.blocks) || []).filter(function (b) { return !b.skipped; })
@@ -149,7 +149,7 @@
       hard.push(r);
     });
 
-    // Where she needs to be, in order. A trip goes in wherever the place changes.
+    // Where the day needs to happen, in order. A trip goes in wherever the place changes.
     var places = day.places || {}, am = places.am || 'home', pm = places.pm || 'home', eve = places.eve || 'home';
     var wakeEnd = w.wake, lunch = null, dinner = null, night = null;
     hard.forEach(function (h) {
@@ -222,7 +222,7 @@
     hard.sort(function (a, b) { return a.s - b.s; });
     return { hard: hard, keep: keep, from: from, wake: w.wake, sleep: w.sleep, startPlace: startPlace, replanning: replanning };
   }
-  // Give every block the place she is at when it starts: trips change it, commitments name their own.
+  // Give every block the place it happens in: trips change it, commitments name their own.
   function assignPlaces(list, startPlace) {
     var here = startPlace || 'home';
     list.sort(function (a, b) { return a.s - b.s; }).forEach(function (b) {
@@ -407,7 +407,7 @@
     var A = (day.admin || []).filter(function (a) { return a.title && !a.done; }).map(function (a, i) { var sid = 'a' + (i + 1); ids[sid] = { type: 'admin', id: a.id, title: a.title }; return { id: sid, title: a.title, on_the_go: !!a.go }; });
     var Rr = [], Fx = [], Tr = [];
     sc.hard.forEach(function (h) {
-      if (h.kind === 'fixed') { var fid = 'f' + (Fx.length + 1); ids[fid] = { type: 'fixed', id: h.ref, title: h.title, s: h.s, e: h.e }; Fx.push({ id: fid, title: h.title, start: toHM(h.s), end: toHM(h.e), place: h.at || 'wherever she is' }); }
+      if (h.kind === 'fixed') { var fid = 'f' + (Fx.length + 1); ids[fid] = { type: 'fixed', id: h.ref, title: h.title, s: h.s, e: h.e }; Fx.push({ id: fid, title: h.title, start: toHM(h.s), end: toHM(h.e), place: h.at || 'wherever they are' }); }
       else if (h.kind === 'routine' || h.kind === 'meal') { var rid = 'r' + (Rr.length + 1); ids[rid] = { type: h.kind, id: h.ref, title: h.title }; Rr.push({ id: rid, title: h.title, usual_start: toHM(h.s), minutes: h.e - h.s, kind: h.kind, at_home: h.anchor !== 'time' }); }
       else if (h.kind === 'travel') Tr.push({ to: h.to, from: h.fromPlace, minutes: h.e - h.s, suggested_start: toHM(h.s) });
     });
@@ -419,7 +419,7 @@
       where: { morning: (day.places || {}).am || 'home', afternoon: (day.places || {}).pm || 'home', evening: (day.places || {}).eve || 'home', right_now: sc.startPlace },
       places: places, tasks: T, admin: A, fixed: Fx, routines: Rr, travel_needed: Tr,
       check_ins: { midday: (cfg.checkins || {}).midday || null, evening: (cfg.checkins || {}).evening || null },
-      note_from_her: day.note || '', energy_now: opts.energy ? opts.energy + '/5' : null, check_in_note: opts.note || ''
+      note_from_them: day.note || '', energy_now: opts.energy ? opts.energy + '/5' : null, check_in_note: opts.note || ''
     };
     if (replanning) data.already_happened = past.map(function (b) { return b.start + '-' + b.end + ' ' + b.title + (b.done ? ' (done)' : ' (not done)'); });
     var prompt = [
@@ -438,7 +438,7 @@
       '- Batch the other admin items into one or two short "admin" blocks (ids in "refs").',
       '- Include the check-ins near their times: kind "checkin", ref "check_midday" / "check_evening", 5-10 minutes.',
       '- Leave roughly 10-15% of the waking day as breaks or buffer, and keep the wind-down before sleep free of work.',
-      '- If energy_now or a note says she is tired or unwell, shorten sessions, add rest, and say what you changed.',
+      '- If energy_now or a note says they are tired or unwell, shorten sessions, add rest, and say what you changed.',
       '- "detail" is concrete and warm: what to open or do first, how to set up the place, what done looks like. No generic motivation, no emoji.',
       '- "place" is one of the place ids. Titles for task blocks reuse the task title.',
       '',
@@ -530,7 +530,7 @@
     out.sort(function (a, b) { return a.s - b.s; }).forEach(function (b) {
       if (b.kind === 'travel') { here = b.place || here; b.place = here; }
       else if (b.kind === 'fixed' && b.at) { b.place = b.at; here = b.at; }
-      else b.place = here;                                   // no teleporting: a block happens where she is
+      else b.place = here;                                   // no teleporting: a block happens where the last trip ended
     });
     describe(out, day, cfg);
     var blocks = strip(finish(out, day, cfg));

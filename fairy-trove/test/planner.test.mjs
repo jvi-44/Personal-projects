@@ -30,12 +30,12 @@ function assertSane(blocks, label) {
     assert.ok(P.minsOf(b) >= 5, `${label}: block too short ${b.start}-${b.end} ${b.title}`);
     assert.ok(P.KINDS[b.kind], `${label}: unknown kind ${b.kind}`);
   }
-  // she is never somewhere she has not travelled to
+  // nothing happens somewhere the plan never travelled to
   let here = 'home';
   for (const b of sorted) {
     if (b.kind === 'travel') { here = b.place; continue; }
     if (b.kind === 'fixed') { here = b.place; continue; }
-    assert.equal(b.place, here, `${label}: ${b.start} ${b.title} is at ${b.place} but she is at ${here}`);
+    assert.equal(b.place, here, `${label}: ${b.start} ${b.title} is at ${b.place} but the plan is at ${here}`);
   }
 }
 const show = (blocks) => blocks.map((b) => `${b.start}-${b.end} ${b.kind.padEnd(9)} ${(b.place || '').padEnd(7)} ${b.done ? '✓ ' : '  '}${b.title}`).join('\n');
@@ -78,7 +78,7 @@ test('a fixed commitment somewhere else gets a trip there and back', () => {
   assert.equal(after.place, 'cafe');
 });
 
-test('a fixed commitment with no place happens wherever she is', () => {
+test('a fixed commitment with no place happens wherever the plan already is', () => {
   const day = sampleDay();
   day.fixed = [{ id: 'f1', title: 'Zoom call', start: '10:00', end: '10:30' }];
   const plan = P.localPlan(day, cfg);
