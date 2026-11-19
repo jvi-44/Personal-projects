@@ -125,7 +125,7 @@ button { cursor: pointer; }
 .sync-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--ink-3); flex: none; box-shadow: 0 0 0 3px rgba(255, 255, 255, .25); }
 .sync-chip[data-state="ok"] .sync-dot { background: var(--leaf); }
 .sync-chip[data-state="syncing"] .sync-dot, .sync-chip[data-state="pending"] .sync-dot { background: var(--gold-2); animation: pulse 1.1s ease-in-out infinite; }
-.sync-chip[data-state="error"] .sync-dot, .sync-chip[data-state="approval"] .sync-dot { background: var(--warn); }
+.sync-chip[data-state="error"] .sync-dot, .sync-chip[data-state="approval"] .sync-dot, .sync-chip[data-state="held"] .sync-dot { background: var(--warn); }
 @keyframes pulse { 50% { transform: scale(.6); opacity: .5; } }
 
 /* ---------------------------------------------------------------- main grid */
@@ -530,6 +530,9 @@ dialog::backdrop { background: rgba(40, 10, 50, .35); backdrop-filter: blur(3px)
       <button class="chip-btn" id="go-today" type="button" hidden>Today</button>
     </div>
     <div class="top-actions">
+      <button class="sync-chip" id="cal-chip" type="button" data-state="idle" aria-label="Google Calendar sync status">
+        <span class="sync-dot" aria-hidden="true"></span><span class="sync-text" id="cal-text">Google Calendar</span>
+      </button>
       <button class="sync-chip" id="sync-chip" type="button" data-state="idle" aria-label="Notion sync status">
         <span class="sync-dot" aria-hidden="true"></span><span class="sync-text" id="sync-text">Vi's Starmap</span>
       </button>
@@ -618,5 +621,6 @@ dialog::backdrop { background: rgba(40, 10, 50, .35); backdrop-filter: blur(3px)
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="src/planner.js"></script>
 <script src="src/notion.js"></script>
+<script src="src/gcal.js"></script>
 <script src="src/scene.js"></script>
 <script src="src/app.js"></script>

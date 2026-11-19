@@ -8,7 +8,9 @@
   var q = new URLSearchParams(location.search);
   function clone(o) { return o == null ? o : JSON.parse(JSON.stringify(o)); }
   var store = {}, listeners = [];
-  window.__mock = { store: store, notionWrites: [], notionPage: '', sampleCalls: 0 };
+  window.__mock = { store: store, notionWrites: [], notionPage: '', sampleCalls: 0, cal: { calls: [], events: [] } };
+  // a calendar that already has one thing on the test day, so linking can be checked
+  window.__mock.cal.events.push({ id: 'existing_lunch', summary: 'Lunch', start: { dateTime: '2026-11-18T12:30:00+08:00' }, end: { dateTime: '2026-11-18T13:10:00+08:00' }, organizer: { self: true }, status: 'confirmed' });
 
   function snapOf(path) {
     var d = store[path];
@@ -109,12 +111,39 @@
 
   // ---- Notion: a copy of a real page export, edited the way the connector edits it
   var pageReady = fetch('/fixture/page.txt').then(function (r) { return r.ok ? r.text() : ''; }).then(function (t) {
-    window.__mock.notionPage = t || '<page url="https://app.notion.com/p/x">\n<content>\n<callout color="purple_bg">\n<b><span color="yellow_bg"><u>✮ 山乇乇Ҝㄥㄚ 卂Ꮆ乇几ᗪ卂 ✮</u></span></b>\n\n<toggle>\n<span color="yellow_bg">ЩΣΣK Old </span>\n\n<toggle color="yellow_bg">\nƧЦПDΛY <code>[27 Sep]</code>\n\n- [ ] Old task\n</toggle>\n</toggle>\n</callout>\n</content>\n</page>';
+    window.__mock.notionPage = t || '<page url="https://app.notion.com/p/x">\n<content>\n<callout color="purple_bg">\n<b><span color="yellow_bg"><u>✮ 山乇乇Ҝㄥㄚ 卂Ꮆ乇几ᗪ卂 ✮</u></span></b>\n\n<toggle>\n<span color="yellow_bg">ЩΣΣK After Prelims </span>\n\n<toggle color="yellow_bg">\nƧЦПDΛY <code>[27 Sep]</code>\n\n- [ ] Old task\n- [ ] \n  - [ ] \n</toggle>\n\n<toggle color="gray_bg">\nMӨПDΛY <code>[28 Sep]</code>\n\n- [ ] \n</toggle>\n</toggle>\n\n<unknown url="https://app.notion.com/p/x#button1" alt="button" />\n</callout>\n\n- [ ] \n</content>\n</page>';
   });
   var approved = !q.get('approval');
+  var calSeq = 0;
+  function calTool(tool, input) {
+    var cal = window.__mock.cal;
+    cal.calls.push({ tool: tool, input: clone(input) });
+    var off = '+08:00';
+    if (tool === 'list_calendars') return { calendars: [{ id: 'school@example.org', summary: 'School timetable', timeZone: 'UTC' }] };
+    if (tool === 'list_events') {
+      var a = input.startTime, b = input.endTime;
+      return { events: cal.events.filter(function (e) { var s = e.start.dateTime.slice(0, 19); return s >= a && s < b; }) };
+    }
+    if (tool === 'create_event') {
+      var ev = { id: 'ev' + (++calSeq), summary: input.summary, start: { dateTime: input.startTime + off }, end: { dateTime: input.endTime + off }, location: input.location, description: input.description, colorId: input.colorId, organizer: { self: true }, status: 'confirmed' };
+      cal.events.push(ev); return clone(ev);
+    }
+    var found = cal.events.filter(function (e) { return e.id === input.eventId; })[0];
+    if (!found) throw { code: 'tool_error', message: 'Not Found' };
+    if (tool === 'update_event') {
+      if (input.summary) found.summary = input.summary;
+      if (input.startTime) found.start = { dateTime: input.startTime + off };
+      if (input.endTime) found.end = { dateTime: input.endTime + off };
+      if (input.location != null) found.location = input.location;
+      return clone(found);
+    }
+    if (tool === 'delete_event') { cal.events.splice(cal.events.indexOf(found), 1); return {}; }
+    throw { code: 'not_in_manifest', message: tool };
+  }
   var mcp = {
     listTools: function () { return Promise.resolve({ servers: [{ server: 'Notion', authStatus: 'connected', tools: [{ name: 'notion-fetch' }, { name: 'notion-update-page' }] }] }); },
     callTool: function (server, tool, input) {
+      if (server === 'Google Calendar') return new Promise(function (r) { setTimeout(r, 25); }).then(function () { var p = calTool(tool, input); return { content: [{ type: 'text', text: JSON.stringify(p) }], payload: p }; });
       return pageReady.then(function () {
         if (!approved) { approved = true; throw { code: 'approval_required', message: 'needs approval' }; }
         if (tool === 'notion-fetch') {
@@ -127,8 +156,13 @@
           if (input.command === 'update_content') {
             input.content_updates.forEach(function (u) {
               var n = page.split(u.old_str).length - 1;
-              if (n !== 1) warnings.push('no match for an update'); else page = page.replace(u.old_str, function () { return u.new_str; });
+              if (u.replace_all_matches) {
+                if (q.get('notionloses')) return;          // ?notionloses=1: a Notion on which the checkbox guard stops working
+                if (n < 1) warnings.push('no match for an update'); else page = page.split(u.old_str).join(u.new_str);
+              } else if (n !== 1) warnings.push('no match for an update'); else page = page.replace(u.old_str, function () { return u.new_str; });
             });
+            // Like Notion, the page is re-read after a search-and-replace, and that loses every empty to-do written as "- [ ] ".
+            page = page.replace(/^[ \t]*- \[ \] ?\n/gm, '');
           } else if (input.command === 'insert_content') page = page.replace('\n</content>', '\n' + input.content + '\n</content>');
           window.__mock.notionPage = page.split('<todo checked="false"></todo>').join('- [ ] ');
           return { content: [{ type: 'text', text: '{}' }], payload: warnings.length ? { page_id: input.page_id, warnings: warnings } : { page_id: input.page_id } };

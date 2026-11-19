@@ -14,7 +14,7 @@ export function start(port = 0) {
     if (url.pathname === '/fixture/page.txt') {
       const f = process.env.FT_PAGE_TEXT;
       if (f && fs.existsSync(f)) { res.writeHead(200, { 'content-type': types['.txt'] }); res.end(fs.readFileSync(f)); }
-      else { res.writeHead(404); res.end(''); }
+      else { res.writeHead(200, { 'content-type': types['.txt'] }); res.end(''); }   // empty: the mock uses its own small page
       return;
     }
     const rel = url.pathname === '/' ? '/index.html' : decodeURIComponent(url.pathname);

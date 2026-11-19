@@ -6,6 +6,7 @@
   'use strict';
   var P = window.FTPlan, N = window.FTNotion;
   var NOTION = 'Notion';
+  var GCAL = 'Google Calendar';
   var STARMAP_ID = '16872bf06f3180cebf9dd82a1a6c063c';
   var STARMAP_URL = 'https://www.notion.so/' + STARMAP_ID;
   var CHECKABLE = { primary: 1, secondary: 1, routine: 1, meal: 1, admin: 1, fixed: 1, travel: 0, checkin: 1 };
@@ -80,12 +81,14 @@
     composerFor: null
   };
   S.cfg.notion = Object.assign({ auto: true, page: STARMAP_URL, marker: '', armed: false }, S.cfg.notion || {});
+  S.cfg.gcal = { auto: true, calendarId: 'primary', calendarName: '', routines: true, armed: false };
 
   function mergeConfig(data) {
     var d = P.defaultConfig(), c = Object.assign({}, d, data || {});
     c.focus = Object.assign({}, d.focus, (data && data.focus) || {});
     c.checkins = Object.assign({}, d.checkins, (data && data.checkins) || {});
     c.notion = Object.assign({ auto: true, page: STARMAP_URL, marker: '', armed: false }, (data && data.notion) || {});
+    c.gcal = Object.assign({ auto: true, calendarId: 'primary', calendarName: '', routines: true, armed: false }, (data && data.gcal) || {});
     if (!Array.isArray(c.places) || !c.places.length) c.places = d.places;
     if (!c.places.some(function (p) { return p.id === 'home'; })) c.places.unshift({ id: 'home', name: 'Home', travel: 0, mode: '' });
     if (!Array.isArray(c.routines)) c.routines = d.routines;
@@ -204,7 +207,7 @@
     day.updatedAt = Date.now();
     if (S.store) S.store.saveDay(stripDay(day));
     if (!(opts && opts.quiet)) { renderWeek(); syncScene(); renderNow(); }
-    if (!day.example) scheduleSync(day.week);
+    if (!day.example) { scheduleSync(day.week); scheduleCal(day.date); }
   }
   function stripDay(day) {             // empty slots are not worth storing
     var d = clone(day);
@@ -284,6 +287,7 @@
     renderWeek();
     syncScene();
     updateSyncChip();
+    updateCalChip();
   }
 
   function renderTop() {
@@ -447,8 +451,9 @@
     var v = $('plan-view'), scroll = $('plan-scroll'), keep = scroll.scrollTop;
     clear(v);
     var plan = day.plan, today = isToday(), now = today ? nowMin() : -1;
-    var srcLabel = plan.source === 'claude' ? 'Woven by Claude' : plan.source === 'example' ? 'Example plan' : 'Quick plan';
-    v.appendChild(h('div', { class: 'plan-summary' }, h('p', { text: plan.summary || '' }), h('span', { class: 'src' }, srcLabel + (plan.at ? ' · ' + clockOf(plan.at) : ''))));
+    var srcLabel = plan.source === 'claude' ? 'Woven by Claude' : plan.source === 'example' ? 'Example plan' : plan.source === 'calendar' ? 'From Google Calendar' : 'Quick plan';
+    var calCount = day.gcal ? Object.keys(day.gcal.events || {}).filter(function (k) { return !day.gcal.events[k].gone; }).length : 0;
+    v.appendChild(h('div', { class: 'plan-summary' }, h('p', { text: plan.summary || '' }), h('span', { class: 'src' }, srcLabel + (plan.at ? ' · ' + clockOf(plan.at) : '') + (calCount ? ' · ' + calCount + ' in Google Calendar' : ''))));
     if (plan.note) v.appendChild(h('p', { class: 'note', text: plan.note }));
     if (plan.overflow && plan.overflow.length) v.appendChild(h('p', { class: 'note warn' }, 'Didn’t fit today: ' + plan.overflow.map(function (o) { return o.title; }).join(', ') + '. Move it to tomorrow from its menu, or trim the day and re-weave.'));
     if (plan.late) v.appendChild(h('p', { class: 'note warn' }, 'This runs ' + P.dur(plan.late) + ' past lights out. Re-weave to trim it.'));
@@ -655,6 +660,7 @@
     if (S.mcp === null) return 'Notion sync works when this page is open on claude.ai.';
     if (S.cfg.notion.auto === false) return 'Starmap sync is off. Turn it on in settings.';
     if (!S.cfg.notion.armed) return 'Starmap sync starts with your first real plan.';
+    if (S.cfg.notion.hold) return 'Starmap: sync paused. Something outside this week went missing; see settings.';
     if (Sync.week === ws && (Sync.state === 'syncing' || Sync.state === 'pending')) return 'Starmap: saving this week to Notion…';
     if (Sync.week === ws && (Sync.state === 'error' || Sync.state === 'approval')) return 'Starmap: ' + Sync.message;
     if (wk.notion && wk.notion.at) return 'Starmap: synced ' + ago(wk.notion.at);
@@ -813,7 +819,7 @@
     day.plan = plan;
     S.composing[day.date] = false;
     S.menu = null; S.editing = null;
-    if (!day.example && !S.cfg.notion.armed) { S.cfg.notion.armed = true; saveConfig(); }
+    if (!day.example && (!S.cfg.notion.armed || !S.cfg.gcal.armed)) { S.cfg.notion.armed = true; S.cfg.gcal.armed = true; saveConfig(); }
     S.scrollToNow = day.date === todayISO();
     saveDay(day, { quiet: true });
     render();
@@ -967,19 +973,59 @@
       status);
     if (Sync.state === 'error' && Sync.code === 'not_in_manifest' && S.perms) box.appendChild(h('button', { type: 'button', class: 'btn btn-small', onclick: function () { S.perms.manage().catch(function () { toast('Open this artifact’s Permissions menu to allow Notion.'); }); } }, 'Open permissions'));
     body.appendChild(h('section', null, h('h3', null, 'Notion: Vi’s Starmap 2026'), box));
+    // google calendar
+    var calAuto = h('label', { class: 'switch' }, h('input', { type: 'checkbox', id: 'cal-auto', checked: cfg.gcal.auto !== false }), h('span'));
+    calAuto.querySelector('input').addEventListener('change', function (e) { cfg.gcal.auto = e.target.checked; });
+    var calRout = h('label', { class: 'switch' }, h('input', { type: 'checkbox', id: 'cal-routines', checked: cfg.gcal.routines !== false }), h('span'));
+    calRout.querySelector('input').addEventListener('change', function (e) { cfg.gcal.routines = e.target.checked; });
+    var calSel = h('select', { class: 'sel', id: 'cal-which', 'aria-label': 'Which calendar' }, h('option', { value: 'primary', selected: (cfg.gcal.calendarId || 'primary') === 'primary' }, 'Your main calendar'));
+    if (cfg.gcal.calendarId && cfg.gcal.calendarId !== 'primary') calSel.appendChild(h('option', { value: cfg.gcal.calendarId, selected: true }, cfg.gcal.calendarName || cfg.gcal.calendarId));
+    calSel.addEventListener('change', function () { cfg.gcal.calendarId = calSel.value; cfg.gcal.calendarName = calSel.options[calSel.selectedIndex].textContent; });
+    var loadCals = h('button', { type: 'button', class: 'btn btn-small', id: 'cal-load' }, 'Show my other calendars');
+    loadCals.addEventListener('click', function () {
+      if (!S.mcp) { toast('Google Calendar is only reachable on claude.ai.'); return; }
+      loadCals.disabled = true; loadCals.textContent = 'Loading…';
+      calCall('list_calendars', { pageSize: 100 }).then(function (p) {
+        (p && p.calendars || []).forEach(function (c) {
+          if (!c || !c.id || calSel.querySelector('option[value="' + CSS.escape(c.id) + '"]')) return;
+          calSel.appendChild(h('option', { value: c.id }, c.summary || c.id));
+        });
+        loadCals.remove();
+      }, function () { loadCals.disabled = false; loadCals.textContent = 'Show my other calendars'; toast('Couldn’t list your calendars just now.'); });
+    });
+    var calNow = h('button', { type: 'button', class: 'btn btn-small btn-petal', id: 'cal-sync-now' }, 'Send ' + (S.date >= todayISO() ? (isToday() ? 'today' : dayName(S.date)) : 'today') + ' to Calendar now');
+    calNow.addEventListener('click', function () {
+      S.cfg.gcal = Object.assign({}, S.cfg.gcal, { auto: cfg.gcal.auto, calendarId: cfg.gcal.calendarId, calendarName: cfg.gcal.calendarName, routines: cfg.gcal.routines, armed: true });
+      cfg.gcal.armed = true; saveConfig();
+      var iso = S.date >= todayISO() ? S.date : todayISO();
+      if (Cal.queue.indexOf(iso) === -1) Cal.queue.push(iso);
+      runCal();
+    });
+    body.appendChild(h('section', null, h('h3', null, 'Google Calendar'), h('div', { class: 'sync-box' },
+      h('div', { class: 'sync-line' }, calAuto, h('label', { for: 'cal-auto' }, h('b', null, 'Send each woven day’s activities to Google Calendar'))),
+      h('p', { class: 'fine' }, 'Tasks, commitments, admin, travel, routines and meals become events; breaks and check-ins stay here. Events already in your calendar at the same time with the same name (like your recurring Morning or Run) are linked instead of copied: they move when you move them here, keep their own names, and are never deleted. Invites from other people are never changed.'),
+      h('div', { class: 'sync-line' }, calRout, h('label', { for: 'cal-routines' }, 'Include routines and meals')),
+      h('label', { class: 'stack-label', for: 'cal-which' }, 'Calendar', calSel),
+      h('div', { class: 'sync-line' }, loadCals, calNow),
+      h('p', { class: 'fine', id: 'cal-status', text: calStatusLong() }))));
+
+
 
     $('settings-form').onsubmit = function (e) {
       e.preventDefault();
       cfg.routines = cfg.routines.filter(function (r) { return r.name && r.name.trim(); });
       cfg.places = cfg.places.filter(function (p) { return p.name && p.name.trim(); });
-      var wasAuto = S.cfg.notion.auto;
+      var wasAuto = S.cfg.notion.auto, calBefore = JSON.stringify([S.cfg.gcal.auto, S.cfg.gcal.calendarId, S.cfg.gcal.routines]);
       cfg.notion.armed = S.cfg.notion.armed || cfg.notion.armed;
+      cfg.notion.hold = S.cfg.notion.hold || null;          // a pause set while this dialog was open stays
+      cfg.gcal.armed = S.cfg.gcal.armed || cfg.gcal.armed;
       S.cfg = mergeConfig(cfg);
       saveConfig();
       $('settings-dlg').close();
       S.composerFor = null;
       render();
       if (!wasAuto && S.cfg.notion.auto) scheduleSync(weekStartOf(S.date), 1500);
+      if (calBefore !== JSON.stringify([S.cfg.gcal.auto, S.cfg.gcal.calendarId, S.cfg.gcal.routines]) && S.date >= todayISO()) scheduleCal(S.date, 1500);
       toast('Settings saved. Re-weave a day to use new routines.');
     };
     $('settings-dlg').showModal();
@@ -993,7 +1039,24 @@
   /* ------------------------------------------------------------------ Notion sync */
   var Sync = { state: 'idle', timer: null, running: false, again: null, week: null, message: '', code: '', last: 0 };
 
-  function canSync() { return !!S.mcp && S.cfg.notion.auto !== false && !!S.cfg.notion.armed && !S.readOnly; }
+  function canSync() { return !!S.mcp && S.cfg.notion.auto !== false && !!S.cfg.notion.armed && !S.readOnly && !S.cfg.notion.hold; }
+  // A write after which the rest of the page has less on it pauses automatic syncing until someone has looked.
+  function holdSync(lost) {
+    S.cfg.notion.hold = { at: Date.now(), lost: lost };
+    saveConfig();
+    clearTimeout(Sync.timer);
+  }
+  function lostText(lost) {
+    var out = [], e = lost.emptyTodos || 0, n = Math.max(lost.todos || 0, e);
+    if (n) out.push(n + (n > e ? ' checkbox' : ' empty checkbox') + (n === 1 ? '' : 'es'));
+    if (lost.toggles) out.push(lost.toggles + (lost.toggles === 1 ? ' toggle' : ' toggles'));
+    if (lost.buttons) out.push(lost.buttons + (lost.buttons === 1 ? ' button or embed' : ' buttons or embeds'));
+    return out.join(', ') || 'some blocks';
+  }
+  function holdText() {
+    var hold = S.cfg.notion.hold || {};
+    return 'Automatic syncing is paused. After the last write, ' + lostText(hold.lost || {}) + ' outside this week went missing from Vi’s Starmap. You can restore them from the page’s version history in Notion, then sync again here.';
+  }
   function scheduleSync(ws, delay) {
     if (!canSync()) { updateSyncChip(); return; }
     Sync.week = ws; if (!Sync.running) Sync.state = 'pending';
@@ -1055,6 +1118,10 @@
   }
   function runSync(ws, manual) {
     if (!S.mcp) { Sync.state = 'error'; Sync.message = 'Notion is only reachable when this page is open on claude.ai.'; updateSyncChip(); return; }
+    if (S.cfg.notion.hold) {
+      if (!manual) { updateSyncChip(); return; }
+      S.cfg.notion.hold = null; saveConfig();             // syncing by hand is the go-ahead
+    }
     if (Sync.running) { Sync.again = ws; return; }
     clearTimeout(Sync.timer);
     Sync.running = true; Sync.week = ws; Sync.state = 'syncing'; Sync.last = Date.now(); updateSyncChip(); renderWeekSyncLine();
@@ -1065,20 +1132,21 @@
       before = text;
       var plan = N.planSync({ text: text, weekStart: ws, label: wk.label || '', blocks: weekBlocks(ws), pushed: (wk.notion && wk.notion.pushed) || {}, marker: S.cfg.notion.marker || undefined });
       mode = plan.mode;
-      if (plan.mode === 'blocked') throw { code: 'blocked', message: 'Couldn’t find a safe place in the Weekly Agenda to write this week.' };
+      if (plan.mode === 'blocked') throw { code: 'blocked', message: plan.reason === 'unsafe_guard'
+        ? 'Vi’s Starmap has the text “- [ ]” somewhere that isn’t a checkbox (in a code block?). A write could change it, so nothing was written.'
+        : 'Couldn’t find a safe place in the Weekly Agenda to write this week.' };
       if (plan.mode === 'noop') return plan;
       var call = plan.mode === 'append'
         ? notionCall('notion-update-page', { page_id: pageId, command: 'insert_content', content: plan.content, position: { type: 'end' }, allow_async: false })
         : notionCall('notion-update-page', { page_id: pageId, command: 'update_content', content_updates: plan.updates, allow_async: false });
       return call.then(settle).then(function (res) {
         var warns = res && res.warnings;
-        if (warns && warns.length) throw { code: 'partial', message: 'Notion couldn’t match part of the week; it will be rewritten on the next sync.' };
-        var whole = plan.mode !== 'update' || plan.updates.some(function (u) { return u.old_str.length > 4000; });
-        if (!whole) return plan;
+        // Notion re-reads the whole page on every write, so every write is checked, the rest of the page included.
         return notionFetch(pageId).then(function (after) {
           var v = N.verify(before, after, ws, S.cfg.notion.marker || undefined);
+          if (v.damaged) holdSync(v.lost);
+          if (warns && warns.length) throw { code: 'partial', message: 'Notion couldn’t match part of the week; it will be rewritten on the next sync.' };
           if (!v.weekFound) throw { code: 'verify', message: 'The week didn’t show up on the page after writing.' };
-          if (v.lostBlocks) toast('Synced. Notion now lists fewer buttons or embeds on the page than before; check its page history.');
           return plan;
         });
       });
@@ -1086,7 +1154,8 @@
       weekDoc(ws).notion = { pushed: plan.hashes, at: Date.now(), status: 'ok' };
       saveWeek(ws);
       Sync.state = 'ok'; Sync.message = ''; Sync.code = '';
-      if (manual || mode === 'insert' || mode === 'append') toast(mode === 'noop' ? 'The Weekly Agenda is already up to date.' : 'Synced to the Weekly Agenda on Vi’s Starmap.');
+      if (S.cfg.notion.hold) toast(holdText(), 'Details', function () { openSettings(); setTimeout(function () { var n = $('notion-status'); if (n) n.scrollIntoView({ block: 'center' }); }, 50); });
+      else if (manual || mode === 'insert' || mode === 'append') toast(mode === 'noop' ? 'The Weekly Agenda is already up to date.' : 'Synced to the Weekly Agenda on Vi’s Starmap.');
     }, function (e) {
       var code = (e && e.code) || 'upstream_error';
       Sync.code = code; Sync.state = code === 'approval_required' ? 'approval' : 'error';
@@ -1111,6 +1180,7 @@
   function syncStatusLong() {
     var wk = weekDoc(weekStartOf(S.date));
     if (S.mcp === null) return 'Notion can only be reached when this page is open on claude.ai with the Notion connector added.';
+    if (S.cfg.notion.hold) return holdText();
     if (Sync.state === 'error' || Sync.state === 'approval') return Sync.message;
     if (wk.notion && wk.notion.at) return 'This week was last written to Notion ' + ago(wk.notion.at) + '.';
     if (!S.cfg.notion.armed) return 'Nothing has been written yet. The first sync happens after you weave your first real day, or now with the button.';
@@ -1118,20 +1188,153 @@
   }
   function updateSyncChip() {
     var chip = $('sync-chip'), text = $('sync-text');
-    var st = S.mcp === null ? 'off' : S.cfg.notion.auto === false ? 'off' : !S.cfg.notion.armed ? 'idle' : Sync.state;
+    var st = S.mcp === null ? 'off' : S.cfg.notion.auto === false ? 'off' : S.cfg.notion.hold ? 'held' : !S.cfg.notion.armed ? 'idle' : Sync.state;
     chip.setAttribute('data-state', st);
-    var label = st === 'off' ? (S.mcp === null ? 'Notion: open on claude.ai' : 'Starmap sync off') :
+    var label = st === 'off' ? (S.mcp === null ? 'Notion: open on claude.ai' : 'Starmap sync off') : st === 'held' ? 'Starmap sync paused' :
       st === 'idle' ? 'Vi’s Starmap' : st === 'pending' ? 'Starmap: changes waiting' : st === 'syncing' ? 'Syncing to Starmap…' :
       st === 'ok' ? 'Starmap synced' : st === 'approval' ? 'Starmap needs your OK' : 'Starmap sync failed';
     text.textContent = label;
-    chip.title = st === 'error' || st === 'approval' ? Sync.message : label;
-    chip.setAttribute('aria-label', 'Notion sync: ' + label + (Sync.message && (st === 'error' || st === 'approval') ? '. ' + Sync.message : ''));
+    chip.title = st === 'held' ? holdText() : st === 'error' || st === 'approval' ? Sync.message : label;
+    chip.setAttribute('aria-label', 'Notion sync: ' + label + (st === 'held' ? '. ' + holdText() : Sync.message && (st === 'error' || st === 'approval') ? '. ' + Sync.message : ''));
   }
   $('sync-chip').addEventListener('click', function () {
     var st = $('sync-chip').getAttribute('data-state');
     if ((st === 'error' || st === 'approval') && S.mcp && Sync.code !== 'not_in_manifest' && Sync.code !== 'needs_reauth' && Sync.code !== 'server_not_connected') { runSync(Sync.week || weekStartOf(S.date), true); return; }
     openSettings();
     setTimeout(function () { var n = $('notion-sync-now'); if (n) n.scrollIntoView({ block: 'center' }); }, 50);
+  });
+
+  /* ------------------------------------------------------------------ Google Calendar sync */
+  // Woven days send their activities to Google Calendar (see src/gcal.js for what is sent and how
+  // events are matched). Only today and later days are touched; the example day never is.
+  var Cal = { state: 'idle', running: false, queue: [], timer: null, message: '', code: '', done: 0, total: 0, at: 0 };
+
+  function canCal() { return !!S.mcp && S.cfg.gcal.auto !== false && !!S.cfg.gcal.armed && !S.readOnly; }
+  function calNeedsWork(day) {
+    if (!day || day.example || !day.plan || day.date < todayISO()) return false;
+    var cal = S.cfg.gcal.calendarId || 'primary';
+    if (!day.gcal || day.gcal.cal !== cal || !day.gcal.checked) return Object.keys(window.FTCal.wanted(day, S.cfg)).length > 0;
+    return window.FTCal.planOps(day.gcal, window.FTCal.wanted(day, S.cfg)).some(function (o) { return o.op !== 'unlink' && o.op !== 'mark'; });
+  }
+  function scheduleCal(iso, delay) {
+    if (!canCal()) { updateCalChip(); return; }
+    var day = getDay(iso);
+    if (!calNeedsWork(day)) { if (day && day.gcal && !Cal.running) settleLinks(day); return; }
+    if (Cal.queue.indexOf(iso) === -1) Cal.queue.push(iso);
+    if (!Cal.running) Cal.state = 'pending';
+    clearTimeout(Cal.timer);
+    Cal.timer = setTimeout(runCal, delay == null ? 4000 : delay);
+    updateCalChip();
+  }
+  function settleLinks(day) {          // unlink or mark without any call when that is all a change needs
+    var ops = window.FTCal.planOps(day.gcal, window.FTCal.wanted(day, S.cfg)), changed = false;
+    ops.forEach(function (o) { if (o.op === 'unlink') { delete day.gcal.events[o.key]; changed = true; } else if (o.op === 'mark') { day.gcal.events[o.key].h = o.h; changed = true; } });
+    if (changed) saveDayQuiet(day);
+  }
+  function saveDayQuiet(day) { day.updatedAt = Date.now(); if (S.store) S.store.saveDay(stripDay(day)); }
+  function calCall(tool, input) { return S.mcp.callTool(GCAL, tool, input, { cache: false }).then(payloadOf); }
+
+  function runCal() {
+    if (Cal.running || !Cal.queue.length) return;
+    if (!canCal()) { Cal.queue = []; updateCalChip(); return; }
+    clearTimeout(Cal.timer);
+    Cal.running = true; Cal.state = 'syncing'; Cal.message = ''; Cal.code = ''; updateCalChip();
+    var rounds = 0;
+    function next() {
+      if (!Cal.queue.length) { Cal.running = false; Cal.state = 'ok'; Cal.at = Date.now(); updateCalChip(); renderPlanPanelSoft(); return; }
+      var iso = Cal.queue[0];
+      syncCalDay(iso).then(function () {
+        var day = getDay(iso);
+        if (calNeedsWork(day) && ++rounds < 3) return next();       // it changed again while syncing
+        Cal.queue.shift(); rounds = 0; next();
+      }, function (e) {
+        Cal.running = false;
+        var code = (e && e.code) || 'upstream_error';
+        Cal.code = code; Cal.state = code === 'approval_required' ? 'approval' : 'error';
+        Cal.message = {
+          approval_required: 'Google Calendar needs your OK. Tap to allow and sync.',
+          needs_reauth: 'Reconnect Google Calendar in claude.ai Settings → Connectors.',
+          server_not_connected: 'Add the Google Calendar connector in claude.ai Settings → Connectors.',
+          selection_required: 'Choose which Google Calendar connection to use when claude.ai asks.',
+          not_in_manifest: 'Google Calendar is switched off for this page. Allow it from the artifact’s Permissions.',
+          blocked_by_policy: 'Your organization blocks this Google Calendar tool.',
+          server_unavailable: 'Google Calendar didn’t answer. Tap to try again.'
+        }[code] || (e && e.message ? String(e.message).slice(0, 160) : 'Calendar sync failed. Tap to try again.');
+        updateCalChip(); renderPlanPanelSoft();
+      });
+    }
+    next();
+  }
+  function syncCalDay(iso) {
+    var day = getDay(iso);
+    if (!day || day.example || !day.plan || iso < todayISO()) return Promise.resolve();
+    var C = window.FTCal, cal = S.cfg.gcal.calendarId || 'primary';
+    if (!day.gcal || day.gcal.cal !== cal) day.gcal = { cal: cal, events: {}, checked: false };
+    var st = day.gcal, want = C.wanted(day, S.cfg);
+    var first = st.checked ? Promise.resolve() : calCall('list_events', {
+      calendarId: cal, startTime: iso + 'T00:00:00', endTime: N.addDays(iso, 1) + 'T06:00:00', orderBy: 'startTime', pageSize: 100
+    }).then(function (res) {
+      C.linkExisting(st, want, (res && res.events) || [], iso);
+      st.checked = true;
+      saveDayQuiet(day);
+    });
+    return first.then(function () {
+      var ops = C.planOps(st, want);
+      Cal.total = ops.filter(function (o) { return o.op !== 'unlink' && o.op !== 'mark'; }).length; Cal.done = 0; updateCalChip();
+      var chain = Promise.resolve();
+      ops.forEach(function (op) {
+        chain = chain.then(function () {
+          if (op.op === 'mark') { st.events[op.key].h = op.h; return; }
+          if (op.op === 'unlink') { delete st.events[op.key]; return; }
+          var call = op.op === 'create' ? calCall('create_event', C.createInput(op, cal)).then(function (p) {
+              var id = C.eventIdOf(p);
+              if (!id) throw { code: 'tool_error', message: 'Google Calendar didn’t say which event it created.' };
+              st.events[op.key] = { id: id, h: op.h };
+            })
+            : op.op === 'update' ? calCall('update_event', C.updateInput(op, cal)).then(function () { st.events[op.key].h = op.h; })
+            : calCall('delete_event', { calendarId: cal, eventId: op.id, notificationLevel: 'NONE' }).then(function () { delete st.events[op.key]; });
+          return call.then(null, function (e) {
+            // deleted in the calendar already: stop tracking it (a later change to the block adds it back)
+            if (e && e.code === 'tool_error' && op.op === 'update') { st.events[op.key] = { gone: true, h: C.hashFull(want[op.key].ev) }; return; }
+            if (e && e.code === 'tool_error' && op.op === 'delete') { delete st.events[op.key]; return; }
+            throw e;
+          }).then(function () { Cal.done++; updateCalChip(); saveDayQuiet(day); });
+        });
+      });
+      return chain.then(function () { saveDayQuiet(day); }, function (e) { saveDayQuiet(day); throw e; });
+    });
+  }
+  function updateCalChip() {
+    var chip = $('cal-chip'), text = $('cal-text'); if (!chip) return;
+    var st = S.mcp === null ? 'off' : S.cfg.gcal.auto === false ? 'off' : !S.cfg.gcal.armed ? 'idle' : Cal.state;
+    chip.setAttribute('data-state', st);
+    var label = st === 'off' ? (S.mcp === null ? 'Calendar: open on claude.ai' : 'Calendar sync off') :
+      st === 'idle' ? 'Google Calendar' : st === 'pending' ? 'Calendar: changes waiting' :
+      st === 'syncing' ? (Cal.total ? 'Calendar ' + Cal.done + '/' + Cal.total + '…' : 'Syncing calendar…') :
+      st === 'ok' ? 'Calendar synced' : st === 'approval' ? 'Calendar needs your OK' : 'Calendar sync failed';
+    text.textContent = label;
+    chip.title = st === 'error' || st === 'approval' ? Cal.message : label;
+    chip.setAttribute('aria-label', 'Google Calendar sync: ' + label + (Cal.message && (st === 'error' || st === 'approval') ? '. ' + Cal.message : ''));
+    var line = $('cal-status'); if (line) line.textContent = calStatusLong();
+  }
+  function calStatusLong() {
+    if (S.mcp === null) return 'Google Calendar can only be reached when this page is open on claude.ai with the Google Calendar connector added.';
+    if (Cal.state === 'error' || Cal.state === 'approval') return Cal.message;
+    if (!S.cfg.gcal.armed) return 'Nothing sent yet. The first sync happens after you weave your first real day, or now with the button.';
+    if (Cal.at) return 'Last synced ' + ago(Cal.at) + '.';
+    return 'Ready. Woven days go to your calendar a few seconds after they change.';
+  }
+  function renderPlanPanelSoft() {       // refresh the "in Google Calendar" note without rebuilding a form
+    if (!$('plan-view').hidden && !S.menu && !S.editing) renderPlanView(ensureDay(S.date));
+  }
+  $('cal-chip').addEventListener('click', function () {
+    var st = $('cal-chip').getAttribute('data-state');
+    if ((st === 'error' || st === 'approval') && S.mcp && ['not_in_manifest', 'needs_reauth', 'server_not_connected', 'blocked_by_policy'].indexOf(Cal.code) === -1) {
+      if (!Cal.queue.length) Cal.queue.push(S.date >= todayISO() ? S.date : todayISO());
+      runCal(); return;
+    }
+    openSettings();
+    setTimeout(function () { var n = $('cal-sync-now'); if (n) n.scrollIntoView({ block: 'center' }); }, 50);
   });
 
   /* ------------------------------------------------------------------ scene */

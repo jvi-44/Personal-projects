@@ -6,6 +6,7 @@ import { createRequire } from 'node:module';
 import { start } from './serve.mjs';
 const require = createRequire('/opt/node-tools/node_modules/');
 const { chromium } = require('playwright');
+const N = createRequire(import.meta.url)('../src/notion.js');
 
 const OUT = process.env.OUT || path.resolve('shots');
 fs.mkdirSync(OUT, { recursive: true });
@@ -36,6 +37,8 @@ const mock = (page, expr) => page.evaluate(expr);
 
 async function fresh() {
   const { page, ctx, errors } = await open('?mock=1');
+  await page.waitForFunction(() => window.__mock.notionPage.length > 0);
+  const page0 = await mock(page, () => window.__mock.notionPage);
   await shot(page, '01-fresh');
   check('fresh: composer shown', await page.isVisible('#p1-title'));
   check('fresh: notion chip waits for the first plan', (await page.textContent('#sync-text')).includes('Starmap'));
@@ -76,13 +79,28 @@ async function fresh() {
   const writes = await mock(page, () => window.__mock.notionWrites);
   check('first sync wrote to Notion once', writes.length === 1, writes.length + ' writes');
   const pageText = await mock(page, () => window.__mock.notionPage);
+  const u1 = (writes[0] && writes[0].content_updates) || [];
+  check('the write ends by protecting the page’s empty checkboxes', u1.length > 1 && u1[u1.length - 1].replace_all_matches === true && u1[u1.length - 1].old_str === '- [ ] \n');
+  const v1 = N.verify(page0, pageText, '2026-11-15');
+  check('every empty checkbox outside the week survived the write', N.census(page0).emptyTodos > 0 && !v1.damaged, N.census(page0).emptyTodos + ' before; lost ' + JSON.stringify(v1.lost));
   const wk = pageText.indexOf('ЩΣΣK 47 (15/11 - 21/11)');
   check('week 47 is on the page', wk > 0);
   check('week sits after "After Prelims"', wk > pageText.indexOf('ЩΣΣK After Prelims'));
   const wed = pageText.slice(pageText.indexOf('ЩΣDПΣƧDΛY <code>[18 Nov]</code>', wk), pageText.indexOf('ƬΉЦЯƧDΛY <code>[19 Nov]</code>', wk));
   console.log('\n--- Wednesday in Notion ---\n' + wed + '\n---');
-  check('Wednesday lists the starred task with its time', /- \[ \] \\\[[0-9.]+(am|pm)?-[0-9.]+(am|pm)\\\] ★ ESAT practice paper, timed/.test(wed));
+  check('Wednesday lists the starred task with its sessions and times', /- \[ \] ★ ESAT practice paper, timed\n  - \[ \] \\\[[0-9.]+(am|pm)?-[0-9.]+(am|pm)\\\] ESAT practice paper, timed \(1\/2\)/.test(wed));
   check('the template button survived', pageText.includes('alt="button" />'));
+  check('Notion lists tasks, not the timeline', !wed.includes('Break') && !wed.includes('Dinner') && /★ ESAT practice paper, timed/.test(wed));
+  // Google Calendar: activities become events, the lunch already there is linked
+  await page.waitForFunction(() => document.querySelector('#cal-chip').getAttribute('data-state') === 'ok', null, { timeout: 30000 }).catch(() => {});
+  const cal1 = await mock(page, () => window.__mock.cal);
+  const creates1 = cal1.calls.filter((c) => c.tool === 'create_event').map((c) => c.input.summary);
+  console.log('created events: ' + creates1.join(' | '));
+  check('the calendar was read once before writing', cal1.calls[0] && cal1.calls[0].tool === 'list_events');
+  check('activities became events', creates1.some((t) => t.startsWith('ESAT practice paper')) && creates1.some((t) => t.startsWith('Travel')) && creates1.includes('Physics consult'));
+  check('breaks and check-ins stayed out', !creates1.some((t) => /Break|check-in|Buffer/.test(t)));
+  check('the lunch already in the calendar was linked, not copied', !creates1.includes('Lunch') && cal1.events.filter((e) => e.summary === 'Lunch').length === 1);
+  const calCreatesBefore = creates1.length;
   await shot(page, '04-synced');
   // tick the first win-the-day block, expect a one-day update
   await page.click('#timeline .blk.kind-primary .tick');
@@ -90,7 +108,11 @@ async function fresh() {
   const chip = await page.getAttribute('.pollen-chip[data-slot="0"]', 'data-state');
   await page.waitForFunction(() => window.__mock.notionWrites.length >= 2, null, { timeout: 30000 }).catch(() => {});
   const w2 = await mock(page, () => window.__mock.notionWrites[1]);
-  check('a tick sends a one-day update', w2 && w2.command === 'update_content' && w2.content_updates.length === 1, w2 ? w2.content_updates.length + ' updates' : 'no second write');
+  const own2 = w2 ? w2.content_updates.filter((u) => !u.replace_all_matches) : [];
+  check('a tick sends a one-day update', w2 && w2.command === 'update_content' && own2.length === 1 && w2.content_updates[w2.content_updates.length - 1].replace_all_matches, w2 ? w2.content_updates.length + ' updates' : 'no second write');
+  const v2 = N.verify(page0, await mock(page, () => window.__mock.notionPage), '2026-11-15');
+  check('the page still has every empty checkbox after the update', !v2.damaged, JSON.stringify(v2.lost));
+  check('the sync chip is not paused', (await page.getAttribute('#sync-chip', 'data-state')) !== 'held');
   check('pollen chip state follows the tick', chip === 'done' || chip === 'active' || chip === 'todo', chip);
   // check-in → re-weave the rest
   await page.click('.now-card .btn-leaf');
@@ -104,6 +126,16 @@ async function fresh() {
   const prompt = await mock(page, () => window.__mock.lastPrompt);
   check('the re-weave prompt carries the check-in', prompt.includes('"energy_now": "2/5"') && prompt.includes('Tired after the paper'));
   check('the re-weave keeps the morning as history', prompt.includes('already_happened'));
+  await page.waitForFunction(() => document.querySelector('#cal-chip').getAttribute('data-state') === 'ok', null, { timeout: 30000 }).catch(() => {});
+  await page.waitForTimeout(5000);
+  await page.waitForFunction(() => document.querySelector('#cal-chip').getAttribute('data-state') === 'ok', null, { timeout: 30000 }).catch(() => {});
+  const cal2 = await mock(page, () => window.__mock.cal);
+  const dupes = {};
+  cal2.events.forEach((e) => { const k = e.summary + '@' + e.start.dateTime; dupes[k] = (dupes[k] || 0) + 1; });
+  check('re-weaving moved events instead of duplicating them', Object.values(dupes).every((n) => n === 1), JSON.stringify(Object.entries(dupes).filter(([, n]) => n > 1)));
+  const tally = (c) => cal2.calls.filter((x) => x.tool === c).length;
+  console.log('calendar calls: list ' + tally('list_events') + ', create ' + tally('create_event') + ', update ' + tally('update_event') + ', delete ' + tally('delete_event'));
+  check('the existing lunch was never deleted', cal2.events.some((e) => e.id === 'existing_lunch'));
   await shot(page, '06-rewoven');
   // running late
   await page.click('.late-bar button:has-text("+30 min")');
@@ -179,7 +211,35 @@ async function approval() {
   await ctx.close();
 }
 
-const all = { fresh, example, mobile, offline, approval };
+// A Notion on which the checkbox guard stops working: the first write costs the page its empty checkboxes,
+// so the dashboard must stop syncing by itself and say why, until it is told to go on.
+async function guardlost() {
+  const { page, ctx, errors } = await open('?mock=1&notionloses=1');
+  await page.fill('#p1-title', 'Finish the lab report');
+  await page.click('#quick-plan');
+  await page.waitForFunction(() => document.querySelector('#sync-chip').getAttribute('data-state') === 'held', null, { timeout: 25000 }).catch(() => {});
+  check('a write that loses checkboxes pauses the sync', (await page.getAttribute('#sync-chip', 'data-state')) === 'held');
+  check('the chip says it is paused', (await page.textContent('#sync-text')).includes('paused'));
+  const why = await page.getAttribute('#sync-chip', 'title');
+  check('and what went missing', /\d+ empty checkbox/.test(why) && why.includes('version history'), why);
+  check('the week panel agrees', (await page.textContent('#week-sync')).includes('paused'));
+  await shot(page, '14-sync-paused');
+  await page.click('#timeline .blk .tick');
+  await page.waitForTimeout(17000);
+  check('nothing more is written while paused', (await mock(page, () => window.__mock.notionWrites.length)) === 1);
+  await page.click('#sync-chip');
+  await page.waitForSelector('#settings-dlg[open]');
+  check('settings explain the pause', (await page.textContent('#notion-status')).includes('paused'));
+  await page.click('#notion-sync-now');
+  await page.waitForFunction(() => window.__mock.notionWrites.length >= 2, null, { timeout: 15000 }).catch(() => {});
+  check('syncing by hand goes ahead', (await mock(page, () => window.__mock.notionWrites.length)) >= 2);
+  await page.waitForFunction(() => document.querySelector('#sync-chip').getAttribute('data-state') === 'ok', null, { timeout: 15000 }).catch(() => {});
+  check('and lifts the pause once nothing more is lost', (await page.getAttribute('#sync-chip', 'data-state')) === 'ok');
+  check('no page errors (guardlost)', !errors.length, errors.join(' | '));
+  await ctx.close();
+}
+
+const all = { fresh, example, mobile, offline, approval, guardlost };
 for (const k of Object.keys(all)) if (!only.length || only.includes(k)) { console.log('\n== ' + k); try { await all[k](); } catch (e) { check(k + ' ran to the end', false, e.message.split('\n').slice(0, 5).join(' / ')); } }
 await browser.close(); server.close();
 const failed = results.filter((r) => !r.ok);

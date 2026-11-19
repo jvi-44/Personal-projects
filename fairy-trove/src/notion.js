@@ -86,58 +86,44 @@
   }
 
   /* ---------- building blocks ---------- */
-  var CHECKABLE = { primary: 1, secondary: 1, routine: 1, admin: 1, fixed: 1 };
-
   function todo(done, text) { return '- [' + (done ? 'x' : ' ') + '] ' + text; }
 
+  // A day in Notion is its list of tasks: win-the-day ones starred, each with the time it is scheduled for.
+  // The minute-by-minute timeline (routines, meals, travel, breaks) lives in Google Calendar instead.
   function dayLines(day) {
     var out = [];
     day = day || {};
-    var tasks = day.tasks || [], admin = day.admin || [];
-    var taskById = {}, adminById = {};
-    tasks.forEach(function (t) { taskById[t.id] = t; });
-    admin.forEach(function (a) { adminById[a.id] = a; });
-    var blocks = day.plan && day.plan.blocks && day.plan.blocks.length ? day.plan.blocks.slice() : null;
+    var tasks = (day.tasks || []).filter(function (t) { return t.title; });
+    var admin = (day.admin || []).filter(function (a) { return a.title; });
+    var blocks = (day.plan && day.plan.blocks || []).filter(function (b) { return !b.skipped; })
+      .slice().sort(function (a, b) { return toMin(a.start) - toMin(b.start); });
+    var when = function (b) { return '\\[' + fmtRange(b.start, b.end) + '\\] '; };
+    var items = [];
+    tasks.forEach(function (t, i) {
+      var star = t.tier === 'primary' ? '★ ' : '';
+      var mine = blocks.filter(function (b) { return b.ref === t.id; });
+      if (mine.length > 1) {
+        var lines = [todo(t.done, star + esc(t.title))];
+        mine.forEach(function (b) { lines.push('  ' + todo(t.done || b.done, when(b) + esc(b.title))); });
+        items.push({ at: toMin(mine[0].start), order: i, lines: lines });
+      } else if (mine.length === 1) {
+        items.push({ at: toMin(mine[0].start), order: i, lines: [todo(t.done || mine[0].done, when(mine[0]) + star + esc(t.title))] });
+      } else {
+        items.push({ at: 100000 + (t.tier === 'primary' ? 0 : 1), order: i, lines: [todo(t.done, star + esc(t.title))] });
+      }
+    });
+    var fixedBlocks = blocks.filter(function (b) { return b.kind === 'fixed'; });
+    if (fixedBlocks.length) fixedBlocks.forEach(function (b) { items.push({ at: toMin(b.start), order: 50, lines: [todo(b.done, when(b) + esc(b.title))] }); });
+    else (day.fixed || []).forEach(function (f) {
+      if (f.title && f.start && f.end) items.push({ at: toMin(f.start), order: 50, lines: [todo(false, '\\[' + fmtRange(f.start, f.end) + '\\] ' + esc(f.title))] });
+    });
+    items.sort(function (a, b) { return a.at - b.at || a.order - b.order; });
+    items.forEach(function (it) { out.push.apply(out, it.lines); });
 
-    if (blocks) {
-      blocks.sort(function (a, b) { return toMin(a.start) - toMin(b.start); });
-      var placedAdmin = {}, placedTask = {};
-      blocks.forEach(function (b) {
-        if (b.skipped) return;
-        var when = '\\[' + fmtRange(b.start, b.end) + '\\] ';
-        var title = esc(b.title);
-        if (b.kind === 'primary') title = '★ ' + title;
-        var task = b.ref && taskById[b.ref];
-        if (task) placedTask[task.id] = 1;
-        var done = !!b.done || !!(task && task.done);
-        if (CHECKABLE[b.kind]) out.push(todo(done, when + title));
-        else out.push('- ' + when + title);
-        (b.refs || []).forEach(function (id) {
-          var a = adminById[id];
-          if (!a) return;
-          placedAdmin[id] = 1;
-          out.push('  ' + todo(a.done, esc(a.title)));
-        });
-      });
-      // anything the plan has not placed yet still shows up, untimed
-      tasks.forEach(function (t) {
-        if (!placedTask[t.id] && t.title) out.push(todo(t.done, (t.tier === 'primary' ? '★ ' : '') + esc(t.title)));
-      });
-      var loose = admin.filter(function (a) { return !placedAdmin[a.id] && a.title; });
-      if (loose.length) {
-        out.push('', 'Admin:', '');
-        loose.forEach(function (a) { out.push(todo(a.done, esc(a.title))); });
-      }
-    } else {
-      tasks.forEach(function (t) {
-        if (t.title) out.push(todo(t.done, (t.tier === 'primary' ? '★ ' : '') + esc(t.title)));
-      });
-      var named = admin.filter(function (a) { return a.title; });
-      if (named.length) {
-        if (out.length) out.push('');
-        out.push('Admin:', '');
-        named.forEach(function (a) { out.push(todo(a.done, esc(a.title))); });
-      }
+    if (admin.length) {
+      if (out.length) out.push('');
+      out.push('Admin:', '');
+      admin.forEach(function (a) { out.push(todo(a.done, esc(a.title) + (a.go ? ' \\[on the go\\]' : ''))); });
     }
 
     (day.checkins || []).forEach(function (c) {
@@ -249,6 +235,31 @@
     return found;
   }
 
+  /* ---------- keeping the rest of the page whole ----------
+   * Notion re-reads the whole page after every search-and-replace, and an empty to-do written as "- [ ] "
+   * doesn't survive that re-read, wherever it is on the page (seen live: one small edit cost the Starmap
+   * about 200 empty checkboxes). Written as a tag it survives, and reads back as "- [ ] ". So every write
+   * ends with a replace-all that turns the page's empty to-dos into tags. It is left out only when there is
+   * nothing to protect, and the write is refused if that text also appears where it isn't a checkbox. */
+  var BARE = ['- [ ] \n', '- [ ]\n'];
+  function bareLines(t, form) {      // lines that are only this empty to-do, outside code blocks
+    var re = new RegExp('^[ \\t]*' + form.slice(0, -1).replace(/[[\]]/g, '\\$&') + '$', 'gm');
+    return (t.replace(/^```[\s\S]*?^```.*$/gm, '').match(re) || []).length;
+  }
+  function guarded(text, updates) {
+    if (!updates.length) return updates;
+    var t = text;
+    updates.forEach(function (u) { t = t.replace(u.old_str, function () { return u.new_str; }); });
+    var out = updates.slice();
+    for (var i = 0; i < BARE.length; i++) {
+      var n = count(t, BARE[i]);
+      if (!n) continue;
+      if (n !== bareLines(t, BARE[i])) return null;
+      out.push({ old_str: BARE[i], new_str: EMPTY_TODO + '\n', replace_all_matches: true });
+    }
+    return out;
+  }
+
   /* ---------- the sync plan ----------
    * text      page text as returned by notion-fetch
    * weekStart ISO date of the Sunday
@@ -285,7 +296,9 @@
         anchor = L.slice(from, lastClose + 1).join('\n');
       }
       if (count(text, anchor) !== 1) return { mode: 'blocked', reason: 'no_unique_anchor', updates: [], hashes: hashes, changed: [] };
-      return { mode: 'insert', updates: [{ old_str: anchor, new_str: anchor + '\n\n' + weekBlock }], hashes: hashes, changed: dates.slice() };
+      var ins = guarded(text, [{ old_str: anchor, new_str: anchor + '\n\n' + weekBlock }]);
+      if (!ins) return { mode: 'blocked', reason: 'unsafe_guard', updates: [], hashes: hashes, changed: [] };
+      return { mode: 'insert', updates: ins, hashes: hashes, changed: dates.slice() };
     }
 
     var found = findDays(ix, week, dates);
@@ -322,15 +335,33 @@
       if (count(text, oldWeek) !== 1) return { mode: 'blocked', reason: 'week_not_unique', updates: [], hashes: hashes, changed: [] };
       updates = oldWeek === newWeek ? [] : [{ old_str: oldWeek, new_str: newWeek }];
     }
-    return { mode: updates.length ? 'update' : 'noop', updates: updates, hashes: hashes, changed: dirty };
+    var out = guarded(text, updates);
+    if (!out) return { mode: 'blocked', reason: 'unsafe_guard', updates: [], hashes: hashes, changed: [] };
+    return { mode: updates.length ? 'update' : 'noop', updates: out, hashes: hashes, changed: dirty };
   }
 
-  // After a write: is our week on the page, and did the page's own blocks survive?
+  // What the page holds that a careless rewrite could lose.
+  function census(text) {
+    return {
+      emptyTodos: (text.match(/^[ \t]*- \[ \] ?$/gm) || []).length,
+      todos: (text.match(/^[ \t]*- \[[ xX]\]/gm) || []).length,
+      toggles: count(text, '<toggle'),
+      buttons: count(text, '<unknown ')
+    };
+  }
+  function withoutWeek(text, weekStart, marker) {
+    var ix = index(text), key = weekKey(weekStart);
+    var week = findWeek(ix, key, findAgenda(ix, marker || AGENDA_MARKER)) || findWeek(ix, key, null);
+    if (!week) return { text: text, found: false };
+    var s = span(ix, week.open, week.close);
+    return { text: text.slice(0, s.start) + text.slice(s.end), found: true };
+  }
+  // After a write: is our week on the page, and is everything outside it still there?
   function verify(before, after, weekStart, marker) {
-    var ix = index(after), region = findAgenda(ix, marker || AGENDA_MARKER);
-    var week = findWeek(ix, weekKey(weekStart), region) || findWeek(ix, weekKey(weekStart), null);
-    var unknownBefore = count(before, '<unknown '), unknownAfter = count(after, '<unknown ');
-    return { weekFound: !!week, lostBlocks: Math.max(0, unknownBefore - unknownAfter) };
+    var b = withoutWeek(before, weekStart, marker), a = withoutWeek(after, weekStart, marker);
+    var cb = census(b.text), ca = census(a.text), lost = {}, damaged = false;
+    Object.keys(cb).forEach(function (k) { if (ca[k] < cb[k]) { lost[k] = cb[k] - ca[k]; damaged = true; } });
+    return { weekFound: a.found, lostBlocks: lost.buttons || 0, lost: lost, damaged: damaged };
   }
 
   var api = {
@@ -339,7 +370,7 @@
     weekKey: weekKey, isoWeekNumber: isoWeekNumber, defaultWeekLabel: defaultWeekLabel,
     esc: esc, toMin: toMin, fmtRange: fmtRange, fmtClock: fmtClock, hash: hash,
     dayLines: dayLines, buildDayBlock: buildDayBlock, buildWeekBlock: buildWeekBlock,
-    weekHeaderLine: weekHeaderLine, planSync: planSync, verify: verify,
+    weekHeaderLine: weekHeaderLine, planSync: planSync, verify: verify, census: census,
     _index: index, _findAgenda: findAgenda, _findWeek: findWeek, _findDays: findDays, _count: count
   };
   root.FTNotion = api;
